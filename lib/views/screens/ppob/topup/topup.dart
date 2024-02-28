@@ -34,15 +34,15 @@ class _TopUpScreenState extends State<TopUpScreen> {
   String paymentChannel = "";
 
   Future<void> getData() async {
-    if(mounted) {
+    if (mounted) {
       await context.read<PPOBProvider>().getListWalletDenom(context);
     }
-    if(mounted) {
+    if (mounted) {
       await context.read<PPOBProvider>().getVA(context);
     }
   }
 
-  @override 
+  @override
   void initState() {
     super.initState();
 
@@ -51,7 +51,7 @@ class _TopUpScreenState extends State<TopUpScreen> {
     Future.wait([getData()]);
   }
 
-  @override 
+  @override
   void dispose() {
     ec.dispose();
 
@@ -60,31 +60,32 @@ class _TopUpScreenState extends State<TopUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return buildUI();  
-  } 
-  
+    return buildUI();
+  }
+
   Widget buildUI() {
     return Scaffold(
-      backgroundColor: ColorResources.greyLightPrimary,
-      body: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-    
-          return RefreshIndicator(
-            onRefresh: () {
-              return Future.sync(() {
-                context.read<PPOBProvider>().getListWalletDenom(context);
-                context.read<PPOBProvider>().getVA(context);
-              });
-            },
-            child: CustomScrollView(
-              physics: const NeverScrollableScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-              slivers: [
-          
-                const CustomAppBar( title: 'TopUp Saldoku', ).buildSliverAppBar(context),
-                
-                Consumer<PPOBProvider>(
-                  builder: (BuildContext context, PPOBProvider ppobProvider, Widget? child) {
-                  if(ppobProvider.listWalletDenomStatus == ListWalletDenomStatus.loading) {
+        backgroundColor: ColorResources.greyLightPrimary,
+        body: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            return RefreshIndicator(
+              onRefresh: () {
+                return Future.sync(() {
+                  context.read<PPOBProvider>().getListWalletDenom(context);
+                  context.read<PPOBProvider>().getVA(context);
+                });
+              },
+              child: CustomScrollView(
+                physics: const NeverScrollableScrollPhysics(
+                    parent: AlwaysScrollableScrollPhysics()),
+                slivers: [
+                  const CustomAppBar(
+                    title: 'TopUp Saldoku',
+                  ).buildSliverAppBar(context),
+                  Consumer<PPOBProvider>(builder: (BuildContext context,
+                      PPOBProvider ppobProvider, Widget? child) {
+                    if (ppobProvider.listWalletDenomStatus ==
+                        ListWalletDenomStatus.loading) {
                       return const SliverFillRemaining(
                         hasScrollBody: false,
                         child: Center(
@@ -93,138 +94,175 @@ class _TopUpScreenState extends State<TopUpScreen> {
                           ),
                         ),
                       );
-                    }
-                    else if(ppobProvider.listWalletDenomStatus == ListWalletDenomStatus.empty) {
+                    } else if (ppobProvider.listWalletDenomStatus ==
+                        ListWalletDenomStatus.empty) {
                       return SliverFillRemaining(
                         hasScrollBody: false,
                         child: Center(
-                          child: Text(getTranslated("THERE_IS_NO_DATA", context),
+                          child: Text(
+                            getTranslated("THERE_IS_NO_DATA", context),
                             style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeDefault
-                            ),
+                                fontSize: Dimensions.fontSizeDefault),
                           ),
                         ),
                       );
-                    }
-                    else if(ppobProvider.listWalletDenomStatus == ListWalletDenomStatus.error) {
+                    } else if (ppobProvider.listWalletDenomStatus ==
+                        ListWalletDenomStatus.error) {
                       return SliverFillRemaining(
                         hasScrollBody: false,
                         child: Center(
-                          child: Text(getTranslated("THERE_WAS_PROBLEM", context),
+                          child: Text(
+                            getTranslated("THERE_WAS_PROBLEM", context),
                             style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeDefault
-                            ),
+                                fontSize: Dimensions.fontSizeDefault),
                           ),
                         ),
                       );
-                    }
-                  else {
-                    return SliverList(
-                      delegate: SliverChildListDelegate([
+                    } else {
+                      return SliverList(
+                          delegate: SliverChildListDelegate([
                         Consumer<PPOBProvider>(
-                          builder: (BuildContext context, PPOBProvider ppobProvider, Widget? child) {
+                          builder: (BuildContext context,
+                              PPOBProvider ppobProvider, Widget? child) {
                             return Container(
                               margin: const EdgeInsets.only(
-                                top: 10.0,
-                                left: 25.0,
-                                right: 25.0
-                              ),
+                                  top: 10.0, left: 25.0, right: 25.0),
                               child: GridView.builder(
                                 shrinkWrap: true,
                                 itemCount: ppobProvider.listWalletDenom.length,
-                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 3,
                                   childAspectRatio: 1.0,
                                 ),
                                 physics: const NeverScrollableScrollPhysics(),
                                 scrollDirection: Axis.vertical,
                                 itemBuilder: (BuildContext context, int i) {
-                                  final WalletDenomData selectedDenom = ppobProvider.listWalletDenom[i];
+                                  final WalletDenomData selectedDenom =
+                                      ppobProvider.listWalletDenom[i];
                                   return Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Expanded(
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: ColorResources.white,
-                                            borderRadius: BorderRadius .circular(13.0),
-                                            border: Border.all(
-                                              width: 2.5,
-                                              color: selectedTopup == i
-                                                ? ColorResources.primary
-                                                : ColorResources.hintColor
-                                            ),
-                                          ),
-                                          margin: const EdgeInsets.all(5.0),
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                selectedTopup = i;
-                                                productId = selectedDenom.id!;
-                                                price = selectedDenom.denom.toString();
-                                              });
-                                              NS.push(context, ConfirmPaymentV2(
-                                                accountNumber: SharedPrefs.getUserPhone(),
-                                                description: 'Isi Saldo sebesar ${selectedDenom.denom}',
-                                                price: selectedDenom.denom!.toDouble(),
-                                                adminFee: ppobProvider.adminFee!,
-                                                productId: selectedDenom.id!,
-                                                provider: 'asdasd',
-                                                productName: 'Saldo',
-                                                type: "topup",
-                                              ));
-                                            },
-                                            child: Container(
-                                              width: 100.0,
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        Expanded(
+                                          child: Container(
                                               decoration: BoxDecoration(
-                                                color: selectedTopup == i ? ColorResources.primary.withOpacity(0.3) : ColorResources.white,
-                                                borderRadius: BorderRadius .circular(10.0)
-                                              ),
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Text(NumberFormat("###,000", "id_ID").format(selectedDenom.denom),
-                                                    style: robotoRegular.copyWith(
-                                                      color: ColorResources.black,
-                                                      fontSize: Dimensions.fontSizeOverLarge,
-                                                      fontWeight: FontWeight.w600
-                                                    ),
-                                                  ),
-                                                  const SizedBox(height: 5.0),
-                                                  Text(NumberFormat("###,000", "id_ID").format((selectedDenom.denom! + ppobProvider.adminFee!)),
-                                                    style: robotoRegular.copyWith(
-                                                      fontSize: Dimensions.fontSizeDefault,
-                                                      color: selectedTopup == i 
+                                                color: ColorResources.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(13.0),
+                                                border: Border.all(
+                                                    width: 2.5,
+                                                    color: selectedTopup == i
                                                         ? ColorResources.primary
-                                                        :ColorResources.black,
-                                                      fontWeight: selectedTopup == i 
-                                                        ? FontWeight.w500
-                                                        : FontWeight.w300
-                                                    ),
-                                                  )
-                                                ],
+                                                        : ColorResources
+                                                            .hintColor),
                                               ),
-                                            ),
-                                          )
-                                        ),
-                                      )
-                                    ]
-                                  );
+                                              margin: const EdgeInsets.all(5.0),
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  setState(() {
+                                                    selectedTopup = i;
+                                                    productId =
+                                                        selectedDenom.id!;
+                                                    price = selectedDenom.denom
+                                                        .toString();
+                                                  });
+                                                  NS.push(
+                                                      context,
+                                                      ConfirmPaymentV2(
+                                                        accountNumber:
+                                                            SharedPrefs
+                                                                .getUserPhone(),
+                                                        description:
+                                                            'Isi Saldo sebesar ${selectedDenom.denom}',
+                                                        price: selectedDenom
+                                                            .denom!
+                                                            .toDouble(),
+                                                        adminFee: ppobProvider
+                                                            .adminFee!,
+                                                        productId:
+                                                            selectedDenom.id!,
+                                                        provider: 'asdasd',
+                                                        productName: 'Saldo',
+                                                        type: "topup",
+                                                      ));
+                                                },
+                                                child: Container(
+                                                  width: 100.0,
+                                                  decoration: BoxDecoration(
+                                                      color: selectedTopup == i
+                                                          ? ColorResources
+                                                              .primary
+                                                              .withOpacity(0.3)
+                                                          : ColorResources
+                                                              .white,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10.0)),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Text(
+                                                        NumberFormat("###,000",
+                                                                "id_ID")
+                                                            .format(
+                                                                selectedDenom
+                                                                    .denom),
+                                                        style: robotoRegular.copyWith(
+                                                            color:
+                                                                ColorResources
+                                                                    .black,
+                                                            fontSize: Dimensions
+                                                                .fontSizeOverLarge,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w600),
+                                                      ),
+                                                      const SizedBox(
+                                                          height: 5.0),
+                                                      Text(
+                                                        NumberFormat("###,000",
+                                                                "id_ID")
+                                                            .format((selectedDenom
+                                                                    .denom! +
+                                                                ppobProvider
+                                                                    .adminFee!)),
+                                                        style: robotoRegular.copyWith(
+                                                            fontSize: Dimensions
+                                                                .fontSizeDefault,
+                                                            color: selectedTopup ==
+                                                                    i
+                                                                ? ColorResources
+                                                                    .primary
+                                                                : ColorResources
+                                                                    .black,
+                                                            fontWeight:
+                                                                selectedTopup ==
+                                                                        i
+                                                                    ? FontWeight
+                                                                        .w500
+                                                                    : FontWeight
+                                                                        .w300),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              )),
+                                        )
+                                      ]);
                                 },
                               ),
                             );
                           },
                         ),
-                      ]
-                    )
-                  );
-                  }
-                })
-              ],
-            ),
-          );
-        },
-      )
-    );
+                      ]));
+                    }
+                  })
+                ],
+              ),
+            );
+          },
+        ));
   }
 }

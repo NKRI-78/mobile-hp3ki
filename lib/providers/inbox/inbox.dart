@@ -10,18 +10,25 @@ import 'package:hp3ki/views/basewidgets/dialog/custom/custom.dart';
 import 'package:hp3ki/views/screens/notification/detail.dart';
 
 enum InboxInfoStatus { idle, loading, loaded, error, empty }
+
 enum FetchInboxInfoStatus { idle, loading, loaded, error, empty }
+
 enum InboxPanicStatus { idle, loading, loaded, error, empty }
+
 enum FetchInboxPanicStatus { idle, loading, loaded, error, empty }
+
 enum InboxPaymentStatus { idle, loading, loaded, error, empty }
+
 enum FetchInboxPaymentStatus { idle, loading, loaded, error, empty }
+
 enum InboxCountStatus { idle, loading, loaded, error, empty }
+
 enum InboxDetailStatus { idle, loading, loaded, error, empty }
 
 class InboxProvider with ChangeNotifier {
   final InboxRepo ir;
 
-  InboxProvider({ required this.ir });
+  InboxProvider({required this.ir});
 
   int? _readCount;
   int? get readCount => _readCount;
@@ -47,7 +54,9 @@ class InboxProvider with ChangeNotifier {
   List<InboxData>? get inboxInfo => _inboxInfo;
 
   int? _inboxInfoCount;
+
   int? get inboxInfoCount => _inboxInfoCount;
+  int inboxTransactionCount = 0;
 
   InboxPaymentModel? _inboxPaymentModel;
   InboxPaymentModel? get inboxPaymentModel => _inboxPaymentModel;
@@ -85,8 +94,10 @@ class InboxProvider with ChangeNotifier {
   FetchInboxInfoStatus _fetchInboxInfoStatus = FetchInboxInfoStatus.idle;
   FetchInboxInfoStatus get fetchInboxInfoStatus => _fetchInboxInfoStatus;
 
-  FetchInboxPaymentStatus _fetchInboxPaymentStatus = FetchInboxPaymentStatus.idle;
-  FetchInboxPaymentStatus get fetchInboxPaymentStatus => _fetchInboxPaymentStatus;
+  FetchInboxPaymentStatus _fetchInboxPaymentStatus =
+      FetchInboxPaymentStatus.idle;
+  FetchInboxPaymentStatus get fetchInboxPaymentStatus =>
+      _fetchInboxPaymentStatus;
 
   FetchInboxPanicStatus _fetchInboxPanicStatus = FetchInboxPanicStatus.idle;
   FetchInboxPanicStatus get fetchInboxPanicStatus => _fetchInboxPanicStatus;
@@ -95,7 +106,7 @@ class InboxProvider with ChangeNotifier {
     _inboxInfoStatus = inboxInfoStatus;
     Future.delayed(Duration.zero, () => notifyListeners());
   }
-  
+
   void setStateInboxPanicStatus(InboxPanicStatus inboxPanicStatus) {
     _inboxPanicStatus = inboxPanicStatus;
     Future.delayed(Duration.zero, () => notifyListeners());
@@ -121,12 +132,14 @@ class InboxProvider with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  void setStateFetchInboxPaymentStatus(FetchInboxPaymentStatus fetchInboxPaymentStatus) {
+  void setStateFetchInboxPaymentStatus(
+      FetchInboxPaymentStatus fetchInboxPaymentStatus) {
     _fetchInboxPaymentStatus = fetchInboxPaymentStatus;
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  void setStateFetchInboxPanicStatus(FetchInboxPanicStatus fetchInboxPanicStatus) {
+  void setStateFetchInboxPanicStatus(
+      FetchInboxPanicStatus fetchInboxPanicStatus) {
     _fetchInboxPanicStatus = fetchInboxPanicStatus;
     Future.delayed(Duration.zero, () => notifyListeners());
   }
@@ -146,19 +159,22 @@ class InboxProvider with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  void toggleMoreInboxInfo(BuildContext context, {required int pageCount}) async {
+  void toggleMoreInboxInfo(BuildContext context,
+      {required int pageCount}) async {
     await fetchMoreInboxInfo(context, page: pageCount);
     isLoadInboxInfo = false;
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  void toggleMoreInboxPayment(BuildContext context, {required int pageCount}) async {
+  void toggleMoreInboxPayment(BuildContext context,
+      {required int pageCount}) async {
     await fetchMoreInboxPayment(context, page: pageCount);
     isLoadInboxPayment = false;
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  void toggleMoreInboxPanic(BuildContext context, {required int pageCount}) async {
+  void toggleMoreInboxPanic(BuildContext context,
+      {required int pageCount}) async {
     await fetchMoreInboxPanic(context, page: pageCount);
     isLoadInboxPanic = false;
     Future.delayed(Duration.zero, () => notifyListeners());
@@ -185,13 +201,14 @@ class InboxProvider with ChangeNotifier {
   Future<void> getReadCount(BuildContext context) async {
     setStateInboxCountStatus(InboxCountStatus.loading);
     try {
-      InboxCountModel? icm = await ir.getInboxCount(userId: SharedPrefs.getUserId());
-      InboxCountPaymentModel? icpm = await ir.getInboxCountPayment(userId: SharedPrefs.getUserId());
+      InboxCountModel? icm =
+          await ir.getInboxCount(userId: SharedPrefs.getUserId());
+      InboxCountPaymentModel? icpm =
+          await ir.getInboxCountPayment(userId: SharedPrefs.getUserId());
       int? icmCount = icm?.data?.total;
       int? icpmCount = icpm?.data?.total;
-      if(icmCount == 0 && icpmCount == 0
-      || icpmCount == null && icmCount == null
-      ) {
+      if (icmCount == 0 && icpmCount == 0 ||
+          icpmCount == null && icmCount == null) {
         setStateInboxCountStatus(InboxCountStatus.empty);
       } else {
         _readCount = icmCount! + icpmCount!;
@@ -200,11 +217,11 @@ class InboxProvider with ChangeNotifier {
       resetInboxInfoPageCount();
       resetInboxPanicPageCount();
       resetInboxPaymentPageCount();
-    } on CustomException catch(e) {
+    } on CustomException catch (e) {
       debugPrint(e.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'IR01');
       setStateInboxCountStatus(InboxCountStatus.error);
-    } catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'IP01');
       setStateInboxCountStatus(InboxCountStatus.error);
@@ -223,14 +240,14 @@ class InboxProvider with ChangeNotifier {
       _inboxInfo!.addAll(inboxModel!.data!);
       _inboxInfoCount = inboxModel!.pageDetail!.badges!;
       setStateInboxInfoStatus(InboxInfoStatus.loaded);
-      if(inboxInfo!.isEmpty) {
+      if (inboxInfo!.isEmpty) {
         setStateInboxInfoStatus(InboxInfoStatus.empty);
       }
-    } on CustomException catch(e) {
+    } on CustomException catch (e) {
       debugPrint(e.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'IR02');
       setStateInboxInfoStatus(InboxInfoStatus.error);
-    } catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'IP02');
       setStateInboxInfoStatus(InboxInfoStatus.error);
@@ -248,14 +265,14 @@ class InboxProvider with ChangeNotifier {
       _inboxInfo!.addAll(inboxModel!.data!);
       _inboxInfoCount = inboxModel!.pageDetail!.badges!;
       setStateFetchInboxInfoStatus(FetchInboxInfoStatus.loaded);
-      if(inboxInfo!.isEmpty) {
+      if (inboxInfo!.isEmpty) {
         setStateFetchInboxInfoStatus(FetchInboxInfoStatus.empty);
       }
-    } on CustomException catch(e) {
+    } on CustomException catch (e) {
       debugPrint(e.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'IR03');
       setStateFetchInboxInfoStatus(FetchInboxInfoStatus.error);
-    } catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'IP03');
       setStateFetchInboxInfoStatus(FetchInboxInfoStatus.error);
@@ -266,21 +283,19 @@ class InboxProvider with ChangeNotifier {
     setStateInboxPanicStatus(InboxPanicStatus.loading);
     try {
       _inboxPanic = [];
-      _inboxModel = await ir.getInbox(
-        userId: SharedPrefs.getUserId(),
-        type: 'sos'
-      );
+      _inboxModel =
+          await ir.getInbox(userId: SharedPrefs.getUserId(), type: 'sos');
       _inboxPanic!.addAll(inboxModel!.data!);
       _inboxPanicCount = inboxModel!.pageDetail!.badges!;
       setStateInboxPanicStatus(InboxPanicStatus.loaded);
-      if(inboxPanic!.isEmpty) {
+      if (inboxPanic!.isEmpty) {
         setStateInboxPanicStatus(InboxPanicStatus.empty);
       }
-    } on CustomException catch(e) {
+    } on CustomException catch (e) {
       debugPrint(e.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'IR04');
       setStateInboxPanicStatus(InboxPanicStatus.error);
-    } catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'IP04');
       setStateInboxPanicStatus(InboxPanicStatus.error);
@@ -298,14 +313,14 @@ class InboxProvider with ChangeNotifier {
       _inboxPanic!.addAll(inboxModel!.data!);
       _inboxPanicCount = inboxModel!.pageDetail!.badges!;
       setStateFetchInboxPanicStatus(FetchInboxPanicStatus.loaded);
-      if(inboxPanic!.isEmpty) {
+      if (inboxPanic!.isEmpty) {
         setStateFetchInboxPanicStatus(FetchInboxPanicStatus.empty);
       }
-    } on CustomException catch(e) {
+    } on CustomException catch (e) {
       debugPrint(e.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'IR05');
       setStateFetchInboxPanicStatus(FetchInboxPanicStatus.error);
-    } catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'IP05');
       setStateFetchInboxPanicStatus(FetchInboxPanicStatus.error);
@@ -319,28 +334,27 @@ class InboxProvider with ChangeNotifier {
       _inboxPaymentModel = await ir.getInboxPayment(
         userId: SharedPrefs.getUserId(),
       );
-      InboxCountPaymentModel? count = await ir.getInboxCountPayment(
-        userId: SharedPrefs.getUserId()
-      );
+      InboxCountPaymentModel? count =
+          await ir.getInboxCountPayment(userId: SharedPrefs.getUserId());
       Body body = inboxPaymentModel!.body!;
-      if(body.data!.isEmpty) {
+      if (body.data!.isEmpty) {
         setStateInboxPaymentStatus(InboxPaymentStatus.empty);
       } else {
         _inboxPayment!.addAll(body.data!);
         _inboxPaymentCount = count!.data!.total;
         setStateInboxPaymentStatus(InboxPaymentStatus.loaded);
       }
-    } on CustomException catch(e) {
+    } on CustomException catch (e) {
       debugPrint(e.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'IR06');
       setStateInboxPaymentStatus(InboxPaymentStatus.error);
-    } catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'IP06');
       setStateInboxPaymentStatus(InboxPaymentStatus.error);
     }
   }
-  
+
   Future<void> fetchMoreInboxPayment(BuildContext context, {int? page}) async {
     setStateFetchInboxPaymentStatus(FetchInboxPaymentStatus.loading);
     try {
@@ -348,30 +362,30 @@ class InboxProvider with ChangeNotifier {
         userId: SharedPrefs.getUserId(),
         page: page,
       );
-      InboxCountPaymentModel? count = await ir.getInboxCountPayment(
-        userId: SharedPrefs.getUserId()
-      );
+      InboxCountPaymentModel? count =
+          await ir.getInboxCountPayment(userId: SharedPrefs.getUserId());
       Body body = inboxPaymentModel!.body!;
       _inboxPayment!.addAll(body.data!);
       _inboxPaymentCount = count!.data!.total;
       setStateInboxPaymentStatus(InboxPaymentStatus.loaded);
-      if(inboxPayment!.isEmpty) {
+      if (inboxPayment!.isEmpty) {
         setStateInboxPaymentStatus(InboxPaymentStatus.empty);
       }
-    } on CustomException catch(e) {
+    } on CustomException catch (e) {
       debugPrint(e.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'IR07');
       setStateFetchInboxPaymentStatus(FetchInboxPaymentStatus.error);
-    } catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'IP07');
       setStateFetchInboxPaymentStatus(FetchInboxPaymentStatus.error);
     }
   }
 
-  Future<void> getInboxDetailAndUpdateInboxPayment(BuildContext context, {
-    required int inboxId, 
-    required InboxPaymentData inboxSelected, 
+  Future<void> getInboxDetailAndUpdateInboxPayment(
+    BuildContext context, {
+    required int inboxId,
+    required InboxPaymentData inboxSelected,
   }) async {
     setStateInboxDetailStatus(InboxDetailStatus.loading);
     try {
@@ -380,28 +394,34 @@ class InboxProvider with ChangeNotifier {
       await ir.updateInboxPayment(inboxId: inboxId);
       NS.push(context, const DetailInboxScreen());
       setStateInboxDetailStatus(InboxDetailStatus.loaded);
-      Future.delayed(const Duration(seconds: 1,), () async {
-        Future.wait([
-          getInboxInfo(context),
-          getInboxPayment(context),
-          getInboxPanic(context),
-          getReadCount(context),
-        ]);
-      },);
-    } on CustomException catch(e) {
+      Future.delayed(
+        const Duration(
+          seconds: 1,
+        ),
+        () async {
+          Future.wait([
+            getInboxInfo(context),
+            getInboxPayment(context),
+            getInboxPanic(context),
+            getReadCount(context),
+          ]);
+        },
+      );
+    } on CustomException catch (e) {
       debugPrint(e.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'IR08');
       setStateInboxDetailStatus(InboxDetailStatus.error);
-    } catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'IP08');
       setStateInboxDetailStatus(InboxDetailStatus.error);
     }
   }
 
-  Future<void> getInboxDetailAndUpdateInbox(BuildContext context, {
-    required String inboxId, 
-    required InboxData inboxSelected, 
+  Future<void> getInboxDetailAndUpdateInbox(
+    BuildContext context, {
+    required String inboxId,
+    required InboxData inboxSelected,
   }) async {
     setStateInboxDetailStatus(InboxDetailStatus.loading);
     try {
@@ -410,19 +430,24 @@ class InboxProvider with ChangeNotifier {
       await ir.updateInbox(inboxId: inboxId, userId: SharedPrefs.getUserId());
       NS.push(context, const DetailInboxScreen());
       setStateInboxDetailStatus(InboxDetailStatus.loaded);
-      Future.delayed(const Duration(seconds: 1,), () async {
-        Future.wait([
-          getInboxInfo(context),
-          getInboxPayment(context),
-          getInboxPanic(context),
-          getReadCount(context),
-        ]);
-      },);
-    } on CustomException catch(e) {
+      Future.delayed(
+        const Duration(
+          seconds: 1,
+        ),
+        () async {
+          Future.wait([
+            getInboxInfo(context),
+            getInboxPayment(context),
+            getInboxPanic(context),
+            getReadCount(context),
+          ]);
+        },
+      );
+    } on CustomException catch (e) {
       debugPrint(e.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'IR08');
       setStateInboxDetailStatus(InboxDetailStatus.error);
-    } catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'IP08');
       setStateInboxDetailStatus(InboxDetailStatus.error);

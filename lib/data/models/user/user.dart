@@ -41,6 +41,7 @@ class UserData extends Equatable {
   final String? memberType;
   final int? remainingDays;
   final bool? fulfilledUserData;
+  final String? storeId;
 
   const UserData({
     this.id,
@@ -62,6 +63,7 @@ class UserData extends Equatable {
     this.memberType,
     this.remainingDays,
     this.fulfilledUserData,
+    this.storeId,
   });
 
   factory UserData.fromJson(Map<String, dynamic> json) => UserData(
@@ -84,6 +86,7 @@ class UserData extends Equatable {
         memberType: json["member_type"],
         remainingDays: json["remaining_days"],
         fulfilledUserData: json["fulfilledData"],
+        storeId: json['store_id'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -106,6 +109,7 @@ class UserData extends Equatable {
         "member_type": memberType,
         "remaining_days": remainingDays,
         "fulfilledData": fulfilledUserData,
+        "store_id": storeId,
       };
 
   @override
@@ -129,5 +133,6 @@ class UserData extends Equatable {
         memberType,
         remainingDays,
         fulfilledUserData,
+        storeId,
       ];
 }

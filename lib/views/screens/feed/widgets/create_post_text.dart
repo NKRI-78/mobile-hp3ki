@@ -15,7 +15,7 @@ import 'package:hp3ki/views/basewidgets/loader/circular.dart';
 
 class CreatePostText extends StatefulWidget {
   const CreatePostText({
-    Key? key, 
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -23,7 +23,6 @@ class CreatePostText extends StatefulWidget {
 }
 
 class _CreatePostTextState extends State<CreatePostText> {
-
   late ScrollController scrollC;
   late TextEditingController captionC;
 
@@ -31,15 +30,15 @@ class _CreatePostTextState extends State<CreatePostText> {
     NS.pop(context);
     return Future.value(true);
   }
- 
-  @override 
+
+  @override
   void initState() {
     super.initState();
     scrollC = ScrollController();
     captionC = TextEditingController();
   }
 
-  @override 
+  @override
   void dispose() {
     scrollC.dispose();
     captionC.dispose();
@@ -52,38 +51,32 @@ class _CreatePostTextState extends State<CreatePostText> {
   }
 
   Widget buildUI() {
+    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: willPopScope,
-      child: Scaffold(
-        
-        body: SafeArea(
-          child: LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints) {
-              return NestedScrollView(
-                controller: scrollC,
-                headerSliverBuilder: (BuildContext context, bool inner) {
-                  return [
-                    buildAppBar(context)
-                  ];
-                },  
-                body: buildBodyContent(context),
-              );
+      child: Scaffold(body: SafeArea(child: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          return NestedScrollView(
+            controller: scrollC,
+            headerSliverBuilder: (BuildContext context, bool inner) {
+              return [buildAppBar(context)];
             },
-          )
-        )
-      ),
+            body: buildBodyContent(context),
+          );
+        },
+      ))),
     );
   }
 
   SliverAppBar buildAppBar(BuildContext context) {
     return SliverAppBar(
       backgroundColor: ColorResources.white,
-      title: Text(getTranslated("CREATE_POST", context), 
+      title: Text(
+        getTranslated("CREATE_POST", context),
         style: poppinsRegular.copyWith(
-          color: ColorResources.black,
-          fontSize: Dimensions.fontSizeLarge,
-          fontWeight: FontWeight.bold
-        ),
+            color: ColorResources.black,
+            fontSize: Dimensions.fontSizeLarge,
+            fontWeight: FontWeight.bold),
       ),
       leading: IconButton(
         icon: const Icon(
@@ -91,55 +84,78 @@ class _CreatePostTextState extends State<CreatePostText> {
           color: ColorResources.black,
           size: Dimensions.iconSizeExtraLarge,
         ),
-        onPressed: context.watch<FeedProvider>().writePostStatus == WritePostStatus.loading ? () {} : () => Navigator.of(context).pop(),
+        onPressed: context.watch<FeedProvider>().writePostStatus ==
+                WritePostStatus.loading
+            ? () {}
+            : () => Navigator.of(context).pop(),
       ),
       actions: [
         Container(
           margin: const EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 0.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              InkWell(
-                onTap: context.watch<FeedProvider>().writePostStatus == WritePostStatus.loading ? () {} : () async {
-                  String caption = captionC.text.trim();
-                  if(caption.isEmpty) {
-                    ShowSnackbar.snackbar(context, 'Caption harus diisi', "", ColorResources.error);
-                    return;
-                  }
-                  if(caption.isNotEmpty) {
-                    if(caption.length < 10) {
-                      ShowSnackbar.snackbar(context, getTranslated("CAPTION_MINIMUM", context), "", ColorResources.error);
-                      return;
-                    }
-                  } 
-                  if(caption.length > 1000) {
-                    ShowSnackbar.snackbar(context, getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
-                    return;
-                  }                  await context.read<FeedProvider>().sendPostText(context, caption);   
-                  NS.pop(context);
-                },
-                child: Container(
-                  width: context.watch<FeedProvider>().writePostStatus == WritePostStatus.loading ? null : 80.0,
-                  padding: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    color: ColorResources.primary,
-                    borderRadius: BorderRadius.circular(20.0)
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InkWell(
+                  onTap: context.watch<FeedProvider>().writePostStatus ==
+                          WritePostStatus.loading
+                      ? () {}
+                      : () async {
+                          String caption = captionC.text.trim();
+                          if (caption.isEmpty) {
+                            ShowSnackbar.snackbar(
+                                context,
+                                'Caption harus diisi',
+                                "",
+                                ColorResources.error);
+                            return;
+                          }
+                          if (caption.isNotEmpty) {
+                            if (caption.length < 10) {
+                              ShowSnackbar.snackbar(
+                                  context,
+                                  getTranslated("CAPTION_MINIMUM", context),
+                                  "",
+                                  ColorResources.error);
+                              return;
+                            }
+                          }
+                          if (caption.length > 1000) {
+                            ShowSnackbar.snackbar(
+                                context,
+                                getTranslated("CAPTION_MAXIMAL", context),
+                                "",
+                                ColorResources.error);
+                            return;
+                          }
+                          await context
+                              .read<FeedProvider>()
+                              .sendPostText(context, caption);
+                          NS.pop(context);
+                        },
+                  child: Container(
+                    width: context.watch<FeedProvider>().writePostStatus ==
+                            WritePostStatus.loading
+                        ? null
+                        : 80.0,
+                    padding: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                        color: ColorResources.primary,
+                        borderRadius: BorderRadius.circular(20.0)),
+                    child: context.watch<FeedProvider>().writePostStatus ==
+                            WritePostStatus.loading
+                        ? const Loader(
+                            color: ColorResources.white,
+                          )
+                        : Text(
+                            'Post',
+                            textAlign: TextAlign.center,
+                            style: poppinsRegular.copyWith(
+                                color: ColorResources.white),
+                          ),
                   ),
-                  child: context.watch<FeedProvider>().writePostStatus == WritePostStatus.loading 
-                  ? const Loader(
-                      color: ColorResources.white,
-                    ) 
-                  : Text('Post',
-                    textAlign: TextAlign.center,
-                    style: poppinsRegular.copyWith(
-                      color: ColorResources.white
-                    ),
-                  ),
-                ),
-              )
-            ]
-          ),
+                )
+              ]),
         )
       ],
       centerTitle: false,
@@ -152,27 +168,17 @@ class _CreatePostTextState extends State<CreatePostText> {
       child: TextField(
         maxLines: 3,
         controller: captionC,
-        style: poppinsRegular.copyWith(
-          fontSize: Dimensions.fontSizeDefault
-        ),
+        style: poppinsRegular.copyWith(fontSize: Dimensions.fontSizeDefault),
         decoration: InputDecoration(
           labelText: getTranslated("WRITE_POST", context),
           labelStyle: poppinsRegular.copyWith(
-            fontSize: Dimensions.fontSizeDefault,
-            color: Colors.grey
-          ),
+              fontSize: Dimensions.fontSizeDefault, color: Colors.grey),
           floatingLabelBehavior: FloatingLabelBehavior.auto,
           focusedBorder: const OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.grey, 
-              width: 1.0
-            ),
+            borderSide: BorderSide(color: Colors.grey, width: 1.0),
           ),
           enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.grey, 
-              width: 1.0
-            ),
+            borderSide: BorderSide(color: Colors.grey, width: 1.0),
           ),
         ),
       ),

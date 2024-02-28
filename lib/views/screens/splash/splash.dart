@@ -18,14 +18,13 @@ import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({ Key? key }) : super(key: key);
+  const SplashScreen({Key? key}) : super(key: key);
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
   PackageInfo packageInfo = PackageInfo(
     appName: 'Unknown',
     packageName: 'com.inovatif78.hp3ki',
@@ -37,45 +36,46 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> initPackageInfo() async {
     PackageInfo info = await PackageInfo.fromPlatform();
     setState(() {
-      if(mounted) {
+      if (mounted) {
         packageInfo = info;
       }
     });
   }
 
   void getData() {
-    if(mounted) { 
+    if (mounted) {
       NewVersionPlus newVersion = NewVersionPlus(
-        androidId: 'com.inovatif78.hp3ki',
-        iOSId: 'com.inovatif78.hp3ki'
-      );
+          androidId: 'com.inovatif78.hp3ki', iOSId: 'com.inovatif78.hp3ki');
       Future.delayed(Duration.zero, () async {
         VersionStatus? vs = await newVersion.getVersionStatus();
-        if(vs!.canUpdate) {
+        if (vs?.canUpdate ?? false) {
           NS.pushReplacement(context, const UpdateScreen());
-        } 
+        }
       });
     }
-    if(mounted) {
+    if (mounted) {
       context.read<SplashProvider>().getMaintenanceStatus(context);
     }
-    if(mounted) {
+    if (mounted) {
       context.read<MaintenanceProvider>().getDemoStatus(context);
     }
   }
 
   void navigateScreen() {
     Future.delayed(Duration.zero, () {
-      if(mounted) {
+      if (mounted) {
         context.read<SplashProvider>().initConfig().then((_) {
-          if (context.read<SplashProvider>().isMaintenance == true){
+          if (context.read<SplashProvider>().isMaintenance == true) {
             NS.pushReplacement(
-              context,
-              const ComingSoonScreen(title: 'HP3KI', isMaintenance: true, isNavbarItem: true,)
-            );
+                context,
+                const ComingSoonScreen(
+                  title: 'HP3KI',
+                  isMaintenance: true,
+                  isNavbarItem: true,
+                ));
           } else if (context.read<SplashProvider>().isSkipOnboarding()) {
             // if (SharedPrefs.isLoggedIn()) {
-              NS.pushReplacement(context, const DashboardScreen());
+            NS.pushReplacement(context, const DashboardScreen());
             // } else {
             //   NS.pushReplacement(context, const SignInScreen());
             // }
@@ -87,11 +87,11 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
-  @override 
+  @override
   void initState() {
     super.initState();
     initPackageInfo();
-    
+
     Future.microtask(() {
       getData();
     });
@@ -110,57 +110,49 @@ class _SplashScreenState extends State<SplashScreen> {
     return AnnotatedRegion(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
-        body: SafeArea(
-          child: LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints) {
-              return Container(
-                width: MediaQuery.sizeOf(context).width,
-                height: MediaQuery.sizeOf(context).height,
-                decoration: const BoxDecoration(
+        body: SafeArea(child: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            return Container(
+              width: MediaQuery.sizeOf(context).width,
+              height: MediaQuery.sizeOf(context).height,
+              decoration: const BoxDecoration(
                   backgroundBlendMode: BlendMode.darken,
                   gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      ColorResources.black,
-                      Color(0xff0B1741)
-                    ]
-                  ),
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [ColorResources.black, Color(0xff0B1741)]),
                   image: DecorationImage(
-                    image: AssetImage('assets/images/background/bg.png'),
-                    fit: BoxFit.cover
-                  )
-                ),
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Center(
-                      child:  Image.asset('assets/images/logo/logo.png',
-                        width: 400.0,
-                        height: 400.0,
-                      ),
+                      image: AssetImage('assets/images/background/bg.png'),
+                      fit: BoxFit.cover)),
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Center(
+                    child: Image.asset(
+                      'assets/images/logo/logo.png',
+                      width: 400.0,
+                      height: 400.0,
                     ),
-                    Positioned(
+                  ),
+                  Positioned(
                       left: 0.0,
                       right: 0.0,
                       bottom: 30.0,
                       child: Center(
-                        child: Text("${getTranslated("VERSION", context)} ${packageInfo.version}",
+                        child: Text(
+                          "${getTranslated("VERSION", context)} ${packageInfo.version}",
                           style: poppinsRegular.copyWith(
-                            fontWeight: FontWeight.w600,
-                            fontSize: Dimensions.fontSizeLarge,
-                            color: ColorResources.white
-                          ),
+                              fontWeight: FontWeight.w600,
+                              fontSize: Dimensions.fontSizeLarge,
+                              color: ColorResources.white),
                           textAlign: TextAlign.center,
                         ),
-                      )
-                    )
-                  ],
-                ),
-              );
-            },
-          )
-        ),
+                      ))
+                ],
+              ),
+            );
+          },
+        )),
       ),
     );
   }

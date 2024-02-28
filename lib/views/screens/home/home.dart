@@ -8,6 +8,7 @@ import 'package:hp3ki/providers/location/location.dart';
 import 'package:hp3ki/providers/news/news.dart';
 import 'package:hp3ki/providers/ppob/ppob.dart';
 import 'package:hp3ki/providers/profile/profile.dart';
+import 'package:hp3ki/utils/modal.dart';
 import 'package:hp3ki/utils/shared_preferences.dart';
 import 'package:hp3ki/views/basewidgets/button/bounce.dart';
 import 'package:hp3ki/views/screens/about/about_menu.dart';
@@ -18,10 +19,14 @@ import 'package:hp3ki/views/screens/comingsoon/comingsoon.dart';
 import 'package:hp3ki/views/screens/feed/index.dart';
 import 'package:hp3ki/views/screens/media/media.dart';
 import 'package:hp3ki/views/screens/membernear/membernear.dart';
+import 'package:hp3ki/views/screens/my_store/persentation/pages/my_store_page.dart';
+import 'package:hp3ki/views/screens/my_store_create/persentation/pages/store_open_page.dart';
 import 'package:hp3ki/views/screens/notification/index.dart';
+import 'package:hp3ki/views/screens/ppob/confirm_paymentv2.dart';
 import 'package:hp3ki/views/screens/ppob/ppobv2.dart';
 import 'package:hp3ki/views/screens/ppob/topup/topup.dart';
 import 'package:hp3ki/views/screens/profile/profile.dart';
+import 'package:hp3ki/views/screens/shop/persentation/pages/shop_page.dart';
 import 'package:hp3ki/views/screens/sos/indexv2.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -49,15 +54,14 @@ import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
 class DashboardScreen extends StatefulWidget {
   final int? index;
 
-  const DashboardScreen({
-    Key? key, this.index 
-  }) : super(key: key);
+  const DashboardScreen({Key? key, this.index}) : super(key: key);
 
   @override
   _DashboardScreenState createState() => _DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProviderStateMixin  {
+class _DashboardScreenState extends State<DashboardScreen>
+    with SingleTickerProviderStateMixin {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   late PanelController panelC;
@@ -67,7 +71,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
   dynamic currentBackPressTime;
 
   List widgetOptions = [];
-  
+
   void onItemTapped(int index) {
     setState(() {
       panelC.close();
@@ -77,9 +81,11 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
 
   Future<bool> willPopScope() {
     DateTime now = DateTime.now();
-    if (currentBackPressTime == null || now.difference(currentBackPressTime) > const Duration(seconds: 2)) {
+    if (currentBackPressTime == null ||
+        now.difference(currentBackPressTime) > const Duration(seconds: 2)) {
       currentBackPressTime = now;
-      ShowSnackbar.snackbar(context, getTranslated("PRESS_TWICE_BACK", context), "", ColorResources.primary);
+      ShowSnackbar.snackbar(context, getTranslated("PRESS_TWICE_BACK", context),
+          "", ColorResources.primary);
       return Future.value(false);
     }
     SystemNavigator.pop();
@@ -87,11 +93,12 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
   }
 
   Future<void> getData1() async {
-    if(mounted) {
+    if (mounted) {
       setState(() {
         widgetOptions = [
           const HomeScreen(),
-          ComingSoonScreen(title: getTranslated('DONATE', context), isNavbarItem: true),
+          ComingSoonScreen(
+              title: getTranslated('DONATE', context), isNavbarItem: true),
           const FeedIndex(),
           const NotificationScreen(),
         ];
@@ -100,7 +107,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
   }
 
   Future<void> getData2() async {
-    if(mounted) {
+    if (mounted) {
       setState(() {
         widgetOptions = [
           const HomeScreen(),
@@ -113,7 +120,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
   }
 
   Future<void> getDataRemote() async {
-    if(mounted) {
+    if (mounted) {
       context.read<ProfileProvider>().remote();
     }
   }
@@ -125,49 +132,47 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     panelC = PanelController();
 
     Future.delayed(const Duration(seconds: 1), () => getDataRemote());
-   
-    if(context.read<ProfileProvider>().isActive == 1) {
+
+    if (context.read<ProfileProvider>().isActive == 1) {
       getData1();
     } else {
       getData2();
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return buildUI();
   }
-  
+
   Widget buildUI() {
     final screenSize = MediaQuery.sizeOf(context);
+    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: willPopScope,
       child: Scaffold(
         key: scaffoldKey,
         endDrawerEnableOpenDragGesture: false,
         extendBody: true,
-        body: !SharedPrefs.isLoggedIn() 
-        ? widgetOptions.elementAt(selectedIndex)
-        : SlidingUpPanel(
-          controller: panelC,
-          maxHeight: screenSize.height,
-          color: Colors.transparent,
-          panelSnapping: true,
-          panel: buildMenuPanel(),
-          body: widgetOptions.isEmpty 
-            ? Container() 
-            : widgetOptions.elementAt(selectedIndex),
-        ),
+        body: !SharedPrefs.isLoggedIn()
+            ? widgetOptions.elementAt(selectedIndex)
+            : SlidingUpPanel(
+                controller: panelC,
+                maxHeight: screenSize.height,
+                color: Colors.transparent,
+                panelSnapping: true,
+                panel: buildMenuPanel(),
+                body: widgetOptions.isEmpty
+                    ? Container()
+                    : widgetOptions.elementAt(selectedIndex),
+              ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: !SharedPrefs.isLoggedIn() 
-        ? const SizedBox() 
-        : buildMenuBar(),
-        bottomNavigationBar: !SharedPrefs.isLoggedIn() 
-        ? const SizedBox() 
-        : buildNavbar(),
+        floatingActionButton:
+            !SharedPrefs.isLoggedIn() ? const SizedBox() : buildMenuBar(),
+        bottomNavigationBar:
+            !SharedPrefs.isLoggedIn() ? const SizedBox() : buildNavbar(),
       ),
     );
-    
   }
 
   Widget buildMenuPanel() {
@@ -217,6 +222,21 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
         "icon": "bottomsheet/icon-membernear.png",
         "screen": const MembernearScreen(),
       },
+      {
+        "name": "Market",
+        "icon": "bottomsheet/icon-membernear.png",
+        "screen": const ShopPage(),
+      },
+      {
+        "name": "Mart",
+        "icon": "bottomsheet/icon-mart.png",
+        "screen": const ComingSoonScreen(title: 'HP3KI Mart'),
+      },
+      {
+        "name": "SHOP",
+        "icon": "bottomsheet/icon-membernear.png",
+        "screen": const MembernearScreen(),
+      },
     ];
 
     return Stack(
@@ -226,14 +246,16 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
           bottom: 0.0,
           left: 0.0,
           right: 0.0,
-          child: Image.asset('assets/images/bottomsheet/bottomsheet.png',
+          child: Image.asset(
+            'assets/images/bottomsheet/bottomsheet.png',
             width: double.infinity,
             fit: BoxFit.fill,
           ),
         ),
         Center(
           child: AlignedGridView.count(
-            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+            physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics()),
             crossAxisCount: 3,
             mainAxisSpacing: 16.0,
             crossAxisSpacing: 2.0,
@@ -241,133 +263,223 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
             itemCount: menu.length,
             padding: const EdgeInsets.symmetric(horizontal: 75.0),
             itemBuilder: (context, index) {
-              return menu[index]["name"] == "Mart" || menu[index]["name"] == "SOS" || menu[index]["name"] == "Calender"
-              ? context.watch<ProfileProvider>().isActive != 1 
-              ? const SizedBox() 
-              : Column(
-                  children: [
-                  Bouncing(
-                    onPress: () {
-                      final String membershipStatus = SharedPrefs.getUserMemberType().trim(); 
-                      final selectedMenu = menu[index];
-                      final String selectedMenuName = selectedMenu["name"];
-                      final selectedMenuScreen = selectedMenu["screen"];
-                      if(membershipStatus != "PLATINUM" || membershipStatus == "-"){
-                        if(selectedMenuName.contains("Member")
-                          || selectedMenuName.contains('Check')
-                          || selectedMenuName.contains('SOS')
-                        ){
-                          context.read<ProfileProvider>().showNonPlatinumLimit(context);
-                        } else {
-                          NS.push(context, selectedMenuScreen);
-                        }
-                      } else {
-                        NS.push(context, selectedMenuScreen);
-                      }
-                    },
-                    child: Container(
-                      height: 80.0,
-                      width: 80.0,
-                      padding: const EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25.0),
-                        boxShadow: kElevationToShadow[2],
-                        color: const Color(0xffE7E4F5),
-                      ),
-                      child: Image.asset('assets/images/${menu[index]["icon"]}'),
-                    ),
-                  ),
-                  const SizedBox(height: 10,),
-                  Text(menu[index]["name"],
-                    style: poppinsRegular.copyWith(
-                      color: const Color(0xff101660),
-                      fontWeight: FontWeight.w600,
-                    ),
-                  )
-                ],
-              ) : Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Bouncing(
-                      onPress: () {
-                        final String membershipStatus = SharedPrefs.getUserMemberType().trim(); 
-                        final selectedMenu = menu[index];
-                        final String selectedMenuName = selectedMenu["name"];
-                        final selectedMenuScreen = selectedMenu["screen"];
-                        if(membershipStatus != "PLATINUM" || membershipStatus == "-"){
-                          if(selectedMenuName.contains("Member")
-                            || selectedMenuName.contains('Check')
-                            || selectedMenuName.contains('SOS')
-                          ){
-                            context.read<ProfileProvider>().showNonPlatinumLimit(context);
-                          } else {
-                            NS.push(context, selectedMenuScreen);
-                          }
-                        } else {
-                          NS.push(context, selectedMenuScreen);
-                        }
-                      },
-                      child: Container(
-                        height: 80.0,
-                        width: 80.0,
-                        padding: const EdgeInsets.all(10.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25.0),
-                          boxShadow: kElevationToShadow[2],
-                          color: const Color(0xffE7E4F5),
+              if (menu[index]['name'] == "SHOP") {
+                return Consumer<PPOBProvider>(builder: (context, ppob, child) {
+                  return Consumer<ProfileProvider>(
+                      builder: (context, notifier, child) {
+                    bool hasStore = notifier.user?.storeId != null;
+                    return Column(
+                      children: [
+                        Bouncing(
+                          onPress: () {
+                            if (!hasStore) {
+                              if ((ppob.balance ?? 0) <= 20000) {
+                                GeneralModal.error(context,
+                                    msg: getTranslated(
+                                        "TXT_OPEN_STORE_MINIM_WALLET", context),
+                                    onOk: () {
+                                  Navigator.pop(context);
+
+                                  NS.push(
+                                      context,
+                                      ConfirmPaymentV2(
+                                        accountNumber:
+                                            SharedPrefs.getUserPhone(),
+                                        description:
+                                            'Isi Saldo sebesar Rp 20.000',
+                                        price: 20000,
+                                        adminFee: 6500,
+                                        productId:
+                                            "17805178-2f32-48a3-aab3-ce7a55eb3227",
+                                        provider: 'asdasd',
+                                        productName: 'Saldo',
+                                        type: "topup",
+                                      ));
+                                });
+                                return;
+                              }
+                              NS.push(context, const StoreOpenPage());
+                            } else {
+                              NS.push(context, const MyStorePage());
+                            }
+                          },
+                          child: Container(
+                            height: 80.0,
+                            width: 80.0,
+                            padding: const EdgeInsets.all(10.0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25.0),
+                              boxShadow: kElevationToShadow[2],
+                              color: const Color(0xffE7E4F5),
+                            ),
+                            child: const Icon(
+                              Icons.store_outlined,
+                              color: Colors.blue,
+                              size: 40,
+                            ),
+                          ),
                         ),
-                        child: Image.asset('assets/images/${menu[index]["icon"]}'),
-                      ),
-                    ),
-                    const SizedBox(height: 10.0),
-                    Text(menu[index]["name"],
-                      style: poppinsRegular.copyWith(
-                        color: const Color(0xff101660),
-                        fontWeight: FontWeight.w600,
-                      ),
-                    )
-                  ],
-                );
-              },
-            ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          hasStore ? 'Store' : 'Open Store',
+                          style: poppinsRegular.copyWith(
+                            color: const Color(0xff101660),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        )
+                      ],
+                    );
+                  });
+                });
+              }
+              return menu[index]["name"] == "Mart" ||
+                      menu[index]["name"] == "SOS" ||
+                      menu[index]["name"] == "Calender"
+                  ? context.watch<ProfileProvider>().isActive != 1
+                      ? const SizedBox()
+                      : Column(
+                          children: [
+                            Bouncing(
+                              onPress: () {
+                                final String membershipStatus =
+                                    SharedPrefs.getUserMemberType().trim();
+                                final selectedMenu = menu[index];
+                                final String selectedMenuName =
+                                    selectedMenu["name"];
+                                final selectedMenuScreen =
+                                    selectedMenu["screen"];
+                                if (membershipStatus != "PLATINUM" ||
+                                    membershipStatus == "-") {
+                                  if (selectedMenuName.contains("Member") ||
+                                      selectedMenuName.contains('Check') ||
+                                      selectedMenuName.contains('SOS')) {
+                                    context
+                                        .read<ProfileProvider>()
+                                        .showNonPlatinumLimit(context);
+                                  } else {
+                                    NS.push(context, selectedMenuScreen);
+                                  }
+                                } else {
+                                  NS.push(context, selectedMenuScreen);
+                                }
+                              },
+                              child: Container(
+                                height: 80.0,
+                                width: 80.0,
+                                padding: const EdgeInsets.all(10.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(25.0),
+                                  boxShadow: kElevationToShadow[2],
+                                  color: const Color(0xffE7E4F5),
+                                ),
+                                child: Image.asset(
+                                    'assets/images/${menu[index]["icon"]}'),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              menu[index]["name"],
+                              style: poppinsRegular.copyWith(
+                                color: const Color(0xff101660),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            )
+                          ],
+                        )
+                  : Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Bouncing(
+                          onPress: () {
+                            final String membershipStatus =
+                                SharedPrefs.getUserMemberType().trim();
+                            final selectedMenu = menu[index];
+                            final String selectedMenuName =
+                                selectedMenu["name"];
+                            final selectedMenuScreen = selectedMenu["screen"];
+                            if (membershipStatus != "PLATINUM" ||
+                                membershipStatus == "-") {
+                              if (selectedMenuName.contains("Member") ||
+                                  selectedMenuName.contains('Check') ||
+                                  selectedMenuName.contains('SOS')) {
+                                context
+                                    .read<ProfileProvider>()
+                                    .showNonPlatinumLimit(context);
+                              } else {
+                                NS.push(context, selectedMenuScreen);
+                              }
+                            } else {
+                              NS.push(context, selectedMenuScreen);
+                            }
+                          },
+                          child: Container(
+                            height: 80.0,
+                            width: 80.0,
+                            padding: const EdgeInsets.all(10.0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25.0),
+                              boxShadow: kElevationToShadow[2],
+                              color: const Color(0xffE7E4F5),
+                            ),
+                            child: Image.asset(
+                                'assets/images/${menu[index]["icon"]}'),
+                          ),
+                        ),
+                        const SizedBox(height: 10.0),
+                        Text(
+                          menu[index]["name"],
+                          style: poppinsRegular.copyWith(
+                            color: const Color(0xff101660),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        )
+                      ],
+                    );
+            },
+          ),
         ),
-        ],
-      );
-    }
+      ],
+    );
+  }
 
   InkWell buildMenuBar() {
     return InkWell(
-        onTap: () {
-          if(panelC.isPanelOpen) {
-            panelC.close();
-          } else {
-            panelC.open();
-          }
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15.0),
-            boxShadow: [
-              const BoxShadow(
-                color: ColorResources.white,
-                spreadRadius: -5.0,
-                blurRadius: 5.0,
-              ),
-              BoxShadow(
-                color: ColorResources.primary.withOpacity(0.9),
-              ),
-            ],
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Image.asset('assets/images/home/sidebar.png',
-              width: 45.0,
-              height: 45.0,
-              fit: BoxFit.cover,
+      onTap: () {
+        if (panelC.isPanelOpen) {
+          panelC.close();
+        } else {
+          panelC.open();
+        }
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15.0),
+          boxShadow: [
+            const BoxShadow(
+              color: ColorResources.white,
+              spreadRadius: -5.0,
+              blurRadius: 5.0,
             ),
+            BoxShadow(
+              color: ColorResources.primary.withOpacity(0.9),
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Image.asset(
+            'assets/images/home/sidebar.png',
+            width: 45.0,
+            height: 45.0,
+            fit: BoxFit.cover,
           ),
         ),
-      );
+      ),
+    );
   }
 
   Widget buildNavbar() {
@@ -377,112 +489,139 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     );
 
     return BottomAppBar(
-      clipBehavior: Clip.antiAlias,
-      color: ColorResources.transparent,
+      color: Colors.transparent,
+      height: 120,
       notchMargin: 12,
       child: SizedBox(
-        height: 90.0,
-        child: Consumer<ProfileProvider>(
-          builder: (__, profile, _) {
-            return Stack(
-              children: [
-                Image.asset('assets/images/home/navbar.png',
-                  fit: BoxFit.fitWidth,
-                  width: double.infinity,
-                ),
-
-                profile.isActive == 0 
-                ? Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        buildNavbarItem(index: 0, image: "navbar-home", label: "HOME"),
-                        buildNavbarItem(index: 1, image: "navbar-news", label: "NEWS"),
-                        placeholder,
-                        buildNavbarItem(index: 2, image: "navbar-forum", label: "FORUM"),
-                        buildNotificationItem(),
-                      ],
-                    ),
-                  )
-                : Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      buildNavbarItem(index: 0, image: "navbar-home", label: "HOME"),
-                      buildNavbarItem(index: 1, image: "navbar-donate", label: "DONATE"),
-                      placeholder,
-                      buildNavbarItem(index: 2, image: "navbar-forum", label: "FORUM"),
-                      buildNotificationItem(),
-                    ],
+          width: double.infinity,
+          child: Consumer<ProfileProvider>(
+            builder: (__, profile, _) {
+              return Stack(
+                children: [
+                  Image.asset(
+                    'assets/images/home/navbar.png',
+                    fit: BoxFit.fitWidth,
+                    width: double.infinity,
                   ),
-                ),
-              ],
-            );
-          },
-        )
-      ),
+                  profile.isActive == 0
+                      ? Padding(
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              buildNavbarItem(
+                                  index: 0,
+                                  image: "navbar-home",
+                                  label: "HOME"),
+                              buildNavbarItem(
+                                  index: 1,
+                                  image: "navbar-news",
+                                  label: "NEWS"),
+                              placeholder,
+                              buildNavbarItem(
+                                  index: 2,
+                                  image: "navbar-forum",
+                                  label: "FORUM"),
+                              buildNotificationItem(),
+                            ],
+                          ),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              buildNavbarItem(
+                                  index: 0,
+                                  image: "navbar-home",
+                                  label: "HOME"),
+                              buildNavbarItem(
+                                  index: 1,
+                                  image: "navbar-donate",
+                                  label: "DONATE"),
+                              placeholder,
+                              buildNavbarItem(
+                                  index: 2,
+                                  image: "navbar-forum",
+                                  label: "FORUM"),
+                              buildNotificationItem(),
+                            ],
+                          ),
+                        ),
+                ],
+              );
+            },
+          )),
     );
   }
 
   Consumer<InboxProvider> buildNotificationItem() {
-    return Consumer<InboxProvider>(
-      builder: (BuildContext context, InboxProvider inboxProvider, Widget? child) {
-        if(inboxProvider.inboxCountStatus == InboxCountStatus.loading) {
-          return buildNavbarItem(index: 3, image: "navbar-notif", label: "NOTIFICATION");
-        }
-        else if(inboxProvider.inboxCountStatus == InboxCountStatus.empty) {
-          return buildNavbarItem(index: 3, image: "navbar-notif", label: "NOTIFICATION");
-        }
-        else if(inboxProvider.inboxCountStatus == InboxCountStatus.error) {
-          return buildNavbarItem(index: 3, image: "navbar-notif", label: "NOTIFICATION");
-        } else {
-          return b.Badge(
+    return Consumer<InboxProvider>(builder:
+        (BuildContext context, InboxProvider inboxProvider, Widget? child) {
+      if (inboxProvider.inboxCountStatus == InboxCountStatus.loading) {
+        return buildNavbarItem(
+            index: 3, image: "navbar-notif", label: "NOTIFICATION");
+      } else if (inboxProvider.inboxCountStatus == InboxCountStatus.empty) {
+        return buildNavbarItem(
+            index: 3, image: "navbar-notif", label: "NOTIFICATION");
+      } else if (inboxProvider.inboxCountStatus == InboxCountStatus.error) {
+        return buildNavbarItem(
+            index: 3, image: "navbar-notif", label: "NOTIFICATION");
+      } else {
+        return b.Badge(
             position: const b.BadgePosition(
               end: 15.0,
               top: 0.0,
             ),
             badgeColor: ColorResources.error,
-            badgeContent: Text(inboxProvider.readCount?.toString() ?? "...",
+            badgeContent: Text(
+              inboxProvider.readCount?.toString() ?? "...",
               style: poppinsRegular.copyWith(
                 fontWeight: FontWeight.w600,
                 color: ColorResources.white,
               ),
             ),
-            child: buildNavbarItem(index: 3, image: "navbar-notif", label: "NOTIFICATION")
-          );
-        }
+            child: buildNavbarItem(
+                index: 3, image: "navbar-notif", label: "NOTIFICATION"));
       }
-    );
+    });
   }
 
-  Widget buildNavbarItem({required int index, required String image, required String label}) {
+  Widget buildNavbarItem(
+      {required int index, required String image, required String label}) {
     return GestureDetector(
       onTap: () => onItemTapped(index),
       child: Column(
         children: [
           IconButton(
             onPressed: () => onItemTapped(index),
-            icon: image == "navbar-news" 
-            ? const Icon(Icons.newspaper)
-            : Image.asset('assets/images/home/$image.png',
-              width: 30.0,
-              height: 30.0,
-              fit: BoxFit.fill,
-              color: selectedIndex == index ? ColorResources.white : ColorResources.white.withOpacity(0.7),
-            ),
+            icon: image == "navbar-news"
+                ? const Icon(Icons.newspaper)
+                : Image.asset(
+                    'assets/images/home/$image.png',
+                    width: 30.0,
+                    height: 30.0,
+                    fit: BoxFit.fill,
+                    color: selectedIndex == index
+                        ? ColorResources.white
+                        : ColorResources.white.withOpacity(0.7),
+                  ),
             color: ColorResources.white,
           ),
-          GlowText(getTranslated(label, context),
+          GlowText(
+            getTranslated(label, context),
             style: poppinsRegular.copyWith(
               fontSize: Dimensions.fontSizeDefault,
               fontWeight: FontWeight.w500,
-              color: selectedIndex == index ? ColorResources.white : ColorResources.white.withOpacity(0.7),
+              color: selectedIndex == index
+                  ? ColorResources.white
+                  : ColorResources.white.withOpacity(0.7),
             ),
-            glowColor: selectedIndex == index ? Colors.amberAccent : ColorResources.transparent,
+            glowColor: selectedIndex == index
+                ? Colors.amberAccent
+                : ColorResources.transparent,
             blurRadius: 10.0,
           ),
         ],
@@ -492,8 +631,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
 }
 
 class HomeScreen extends StatefulWidget {
-
-  const HomeScreen({ Key? key}) : super(key: key);
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -505,51 +643,51 @@ class _HomeScreenState extends State<HomeScreen> {
   int currentIndex = 0;
 
   Future<void> getData() async {
-    if(mounted) {
+    if (mounted) {
       await Geolocator.requestPermission();
     }
-    if(mounted) {
+    if (mounted) {
       await Permission.storage.request();
     }
-    if(mounted) {
+    if (mounted) {
       await Permission.notification.request();
     }
-    if(mounted) {
+    if (mounted) {
       context.read<NewsProvider>().getNews(context);
     }
-    if(mounted) {
+    if (mounted) {
       context.read<BannerProvider>().getBanner(context);
     }
-    if(SharedPrefs.isLoggedIn()) {
+    if (SharedPrefs.isLoggedIn()) {
       if (mounted) {
         Future.delayed(const Duration(seconds: 1), () {
-          if(SharedPrefs.getUserFulfilledDataStatus() == false) {
+          if (SharedPrefs.getUserFulfilledDataStatus() == false) {
             context.read<ProfileProvider>().showFullFillDataDialog(context);
           }
         });
       }
-      if(mounted) {
+      if (mounted) {
         context.read<ProfileProvider>().getProfile(context);
       }
-      if(mounted) {
+      if (mounted) {
         context.read<FirebaseProvider>().initFcm(context);
       }
-      if(mounted) {
+      if (mounted) {
         context.read<PPOBProvider>().initPaymentGatewayFCM(context);
       }
-      if(mounted) {
+      if (mounted) {
         context.read<PPOBProvider>().createWalletData(context);
       }
-      if(mounted) {
+      if (mounted) {
         context.read<PPOBProvider>().getBalance(context);
       }
-      if(mounted) {
+      if (mounted) {
         context.read<ProfileProvider>().remote();
       }
-      if(mounted) {
+      if (mounted) {
         context.read<LocationProvider>().getCurrentPosition(context);
       }
-      if(mounted) {
+      if (mounted) {
         await context.read<InboxProvider>().getReadCount(context);
       }
     }
@@ -597,13 +735,20 @@ class _HomeScreenState extends State<HomeScreen> {
             });
           },
           child: CustomScrollView(
-            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+            physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics()),
             slivers: [
               buildUserInfoBox(),
               buildBannerCarousel(),
-              const SliverToBoxAdapter(child: SizedBox(height: 30,)),
+              const SliverToBoxAdapter(
+                  child: SizedBox(
+                height: 30,
+              )),
               buildNewsSection(),
-              const SliverToBoxAdapter(child: SizedBox(height: 30,)),
+              const SliverToBoxAdapter(
+                  child: SizedBox(
+                height: 30,
+              )),
               buildProductsSection(),
             ],
           ),
@@ -614,26 +759,24 @@ class _HomeScreenState extends State<HomeScreen> {
 
   BoxDecoration buildBackgroundImage() {
     return const BoxDecoration(
-      backgroundBlendMode: BlendMode.darken,
-      gradient: LinearGradient(
-        begin: Alignment.centerLeft,
-        end: Alignment.centerRight,
-        colors: [
-          ColorResources.primary,
-          Color.fromARGB(255, 12, 59, 153),
-        ]
-      ),
-      image: DecorationImage(
-        image: AssetImage('assets/images/background/bg.png'),
-        opacity: 0.7,
-        fit: BoxFit.cover,
-      )
-    );
+        backgroundBlendMode: BlendMode.darken,
+        gradient: LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: [
+              ColorResources.primary,
+              Color.fromARGB(255, 12, 59, 153),
+            ]),
+        image: DecorationImage(
+          image: AssetImage('assets/images/background/bg.png'),
+          opacity: 0.7,
+          fit: BoxFit.cover,
+        ));
   }
 
   Widget buildUserInfoBox() {
-
-    if(context.read<ProfileProvider>().profileStatus == ProfileStatus.loading){
+    if (context.read<ProfileProvider>().profileStatus ==
+        ProfileStatus.loading) {
       return SliverToBoxAdapter(
         child: Container(
           margin: const EdgeInsets.only(
@@ -647,13 +790,13 @@ class _HomeScreenState extends State<HomeScreen> {
             baseColor: Colors.grey[300]!,
             child: Card(
               margin: EdgeInsets.zero,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0)),
               child: Container(
                 height: 80.0,
                 padding: const EdgeInsets.symmetric(
-                  horizontal: Dimensions.marginSizeExtraSmall,
-                  vertical: Dimensions.marginSizeSmall
-                ),
+                    horizontal: Dimensions.marginSizeExtraSmall,
+                    vertical: Dimensions.marginSizeSmall),
               ),
             ),
           ),
@@ -661,176 +804,199 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     } else {
       return SliverToBoxAdapter(
-        child: !SharedPrefs.isLoggedIn() 
-        ? Container(
-          margin: const EdgeInsets.only(
-            top: 80.0,
-            left: Dimensions.marginSizeLarge,
-            right: Dimensions.marginSizeLarge,
-          ),
-          child: Material(
-            color: ColorResources.transparent,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(15.0),
-              onTap: () {
-                NS.pushDown(context, const SignInScreen());
-              },
-              child: Hero(
-                tag: 'userBox',
-                child: Card(
-                  margin: EdgeInsets.zero,
-                  elevation: 10.0,
-                  color: const Color.fromARGB(141, 68, 99, 158).withOpacity(0.7),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: Dimensions.marginSizeExtraSmall,
-                      vertical: Dimensions.marginSizeSmall
-                    ),
-                  child: Center(
-                    child: Text("Login",
-                      style: poppinsRegular.copyWith(
-                        fontSize: Dimensions.fontSizeLarge,
-                        color: ColorResources.white
-                      ),
-                    )
-                  )
+        child: !SharedPrefs.isLoggedIn()
+            ? Container(
+                margin: const EdgeInsets.only(
+                  top: 80.0,
+                  left: Dimensions.marginSizeLarge,
+                  right: Dimensions.marginSizeLarge,
                 ),
-              ),
-            ),
-          )),
-        )
-        : Container(
-          margin: const EdgeInsets.only(
-            top: 80.0,
-            left: Dimensions.marginSizeLarge,
-            right: Dimensions.marginSizeLarge,
-          ),
-          child: Material(
-            color: ColorResources.transparent,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(15.0),
-              onTap: () {
-                NS.pushDown(context, const ProfileScreen());
-              },
-              child: Hero(
-                tag: 'userBox',
-                child: Card(
-                  margin: EdgeInsets.zero,
-                  elevation: 10.0,
-                  color: const Color.fromARGB(141, 68, 99, 158).withOpacity(0.7),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: Dimensions.marginSizeExtraSmall,
-                      vertical: Dimensions.marginSizeSmall
-                    ),
-                    child: ListTile(
-                      horizontalTitleGap: 0.0,
-                      leading: CircleAvatar(
-                        backgroundColor: ColorResources.white,
-                        radius: 40.0,
-                        child: Consumer<ProfileProvider>(
-                          builder: (BuildContext context, ProfileProvider profileProvider, Widget? child) {
-                            if(profileProvider.profileStatus == ProfileStatus.loading) {
-                              return const CircleAvatar(
-                                backgroundColor: ColorResources.backgroundDisabled,
-                                maxRadius: 40.0,
-                              );
-                            }
-                            if(profileProvider.profileStatus == ProfileStatus.error) {
-                              return const CircleAvatar(
-                                backgroundColor: ColorResources.backgroundDisabled,
-                                maxRadius: 40.0,
-                              );
-                            }
-                            UserData? user = profileProvider.user;
-                            return CachedNetworkImage(
-                              fit: BoxFit.fill,
-                              imageUrl: user?.avatar ?? AppConstants.avatarError,
-                              imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
-                                return CircleAvatar(
-                                  backgroundColor: ColorResources.white,
-                                  backgroundImage: imageProvider,
-                                  maxRadius: 40.0,
-                                );
-                              },
-                              errorWidget: (BuildContext context, String url, dynamic error) {
-                                return CircleAvatar(
-                                  backgroundColor: ColorResources.greyDarkPrimary,
-                                  maxRadius: 40.0,
-                                  child: Image.asset("assets/images/icons/ic-person.png",)
-                                );
-                              },
-                            );
-                          },
+                child: Material(
+                    color: ColorResources.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(15.0),
+                      onTap: () {
+                        NS.pushDown(context, const SignInScreen());
+                      },
+                      child: Hero(
+                        tag: 'userBox',
+                        child: Card(
+                          margin: EdgeInsets.zero,
+                          elevation: 10.0,
+                          color: const Color.fromARGB(141, 68, 99, 158)
+                              .withOpacity(0.7),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0)),
+                          child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: Dimensions.marginSizeExtraSmall,
+                                  vertical: Dimensions.marginSizeSmall),
+                              child: Center(
+                                  child: Text(
+                                "Login",
+                                style: poppinsRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeLarge,
+                                    color: ColorResources.white),
+                              ))),
                         ),
                       ),
-                      title: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(getTranslated("WELCOME", context),
-                            style: poppinsRegular.copyWith(
-                              color: ColorResources.white,
-                              fontSize: Dimensions.fontSizeLarge,
+                    )),
+              )
+            : Container(
+                margin: const EdgeInsets.only(
+                  top: 80.0,
+                  left: Dimensions.marginSizeLarge,
+                  right: Dimensions.marginSizeLarge,
+                ),
+                child: Material(
+                  color: ColorResources.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(15.0),
+                    onTap: () {
+                      NS.pushDown(context, const ProfileScreen());
+                    },
+                    child: Hero(
+                      tag: 'userBox',
+                      child: Card(
+                        margin: EdgeInsets.zero,
+                        elevation: 10.0,
+                        color: const Color.fromARGB(141, 68, 99, 158)
+                            .withOpacity(0.7),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0)),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: Dimensions.marginSizeExtraSmall,
+                              vertical: Dimensions.marginSizeSmall),
+                          child: ListTile(
+                            horizontalTitleGap: 0.0,
+                            leading: CircleAvatar(
+                              backgroundColor: ColorResources.white,
+                              radius: 40.0,
+                              child: Consumer<ProfileProvider>(
+                                builder: (BuildContext context,
+                                    ProfileProvider profileProvider,
+                                    Widget? child) {
+                                  if (profileProvider.profileStatus ==
+                                      ProfileStatus.loading) {
+                                    return const CircleAvatar(
+                                      backgroundColor:
+                                          ColorResources.backgroundDisabled,
+                                      maxRadius: 40.0,
+                                    );
+                                  }
+                                  if (profileProvider.profileStatus ==
+                                      ProfileStatus.error) {
+                                    return const CircleAvatar(
+                                      backgroundColor:
+                                          ColorResources.backgroundDisabled,
+                                      maxRadius: 40.0,
+                                    );
+                                  }
+                                  UserData? user = profileProvider.user;
+                                  return CachedNetworkImage(
+                                    fit: BoxFit.fill,
+                                    imageUrl: user?.avatar ??
+                                        AppConstants.avatarError,
+                                    imageBuilder: (BuildContext context,
+                                        ImageProvider<Object> imageProvider) {
+                                      return CircleAvatar(
+                                        backgroundColor: ColorResources.white,
+                                        backgroundImage: imageProvider,
+                                        maxRadius: 40.0,
+                                      );
+                                    },
+                                    errorWidget: (BuildContext context,
+                                        String url, dynamic error) {
+                                      return CircleAvatar(
+                                          backgroundColor:
+                                              ColorResources.greyDarkPrimary,
+                                          maxRadius: 40.0,
+                                          child: Image.asset(
+                                            "assets/images/icons/ic-person.png",
+                                          ));
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                            title: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  getTranslated("WELCOME", context),
+                                  style: poppinsRegular.copyWith(
+                                    color: ColorResources.white,
+                                    fontSize: Dimensions.fontSizeLarge,
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    const Icon(
+                                      Icons.shopping_bag,
+                                      size: Dimensions.iconSizeSmall,
+                                      color: ColorResources.white,
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      getTranslated('MY_BALANCE', context),
+                                      style: poppinsRegular.copyWith(
+                                          fontSize: Dimensions.fontSizeDefault,
+                                          color: ColorResources.white),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            subtitle: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    context
+                                                .watch<ProfileProvider>()
+                                                .profileStatus ==
+                                            ProfileStatus.loading
+                                        ? "..."
+                                        : context
+                                                    .watch<ProfileProvider>()
+                                                    .profileStatus ==
+                                                ProfileStatus.error
+                                            ? "-"
+                                            : 'Hi, ${context.read<ProfileProvider>().user?.fullname?.smallSentence() ?? "..."}',
+                                    maxLines: 1,
+                                    style: poppinsRegular.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: Dimensions.fontSizeExtraLarge,
+                                        color: ColorResources.white),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    Helper.formatCurrency(
+                                        context.read<PPOBProvider>().balance ??
+                                            0),
+                                    textAlign: TextAlign.right,
+                                    style: poppinsRegular.copyWith(
+                                      color: ColorResources.white,
+                                      fontSize: Dimensions.fontSizeDefault,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              const Icon(
-                                Icons.shopping_bag,
-                                size: Dimensions.iconSizeSmall,
-                                color: ColorResources.white,
-                              ),
-                              const SizedBox(width: 5,),
-                              Text(getTranslated('MY_BALANCE', context),
-                                style: poppinsRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeDefault,
-                                  color: ColorResources.white
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      subtitle: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading 
-                              ? "..." 
-                              : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error 
-                              ? "-" 
-                              : 'Hi, ${context.read<ProfileProvider>().user?.fullname?.smallSentence() ?? "..."}',
-                                maxLines: 1,
-                                style: poppinsRegular.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: Dimensions.fontSizeExtraLarge,
-                                  color: ColorResources.white
-                                ),
-                              ),
-                          ),
-                          Expanded(
-                            child: Text(Helper.formatCurrency(context.read<PPOBProvider>().balance ?? 0),
-                              textAlign: TextAlign.right,
-                              style: poppinsRegular.copyWith(
-                                color: ColorResources.white,
-                                fontSize: Dimensions.fontSizeDefault,
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ),
-        ),
       );
     }
   }
@@ -838,27 +1004,24 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget buildBannerCarousel() {
     return SliverToBoxAdapter(
       child: Consumer<BannerProvider>(
-        builder: (BuildContext context, BannerProvider bannerProvider, Widget? child) {
-          if(bannerProvider.bannerStatus == BannerStatus.loading) {
+        builder: (BuildContext context, BannerProvider bannerProvider,
+            Widget? child) {
+          if (bannerProvider.bannerStatus == BannerStatus.loading) {
             return Shimmer.fromColors(
               baseColor: Colors.grey[300]!,
               highlightColor: Colors.grey[200]!,
               child: Container(
                 height: 175.0,
                 margin: const EdgeInsets.only(
-                  top: 5.0,
-                  left: 25.0,
-                  right: 25.0,
-                  bottom: 20.0
-                ),
+                    top: 5.0, left: 25.0, right: 25.0, bottom: 20.0),
                 decoration: BoxDecoration(
                   color: ColorResources.white,
                   borderRadius: BorderRadius.circular(15.0),
                 ),
               ),
             );
-          }
-          else if(bannerProvider.bannerStatus == BannerStatus.empty || bannerProvider.bannerStatus == BannerStatus.error) {
+          } else if (bannerProvider.bannerStatus == BannerStatus.empty ||
+              bannerProvider.bannerStatus == BannerStatus.error) {
             return Container(
               height: 180.0,
               margin: const EdgeInsets.only(
@@ -867,98 +1030,95 @@ class _HomeScreenState extends State<HomeScreen> {
                 right: 25.0,
               ),
               child: Center(
-                child: Column(
-                  children: [
-                    Container(
-                      height: 150,
-                      decoration: BoxDecoration(
+                  child: Column(
+                children: [
+                  Container(
+                    height: 150,
+                    decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15.0),
                         color: ColorResources.backgroundDisabled,
                         image: const DecorationImage(
                           image: AssetImage('assets/images/icons/ic-empty.png'),
                           fit: BoxFit.fitHeight,
-                        )
-                      ),
+                        )),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    'Banner belum tersedia',
+                    style: robotoRegular.copyWith(
+                      color: ColorResources.white,
                     ),
-                    const SizedBox(height: 10,),
-                    Text('Banner belum tersedia',
-                      style: robotoRegular.copyWith(
-                        color: ColorResources.white,
-                      ),
-                    )
-                  ],
-                )
-              ),
+                  )
+                ],
+              )),
             );
           } else {
             return Container(
-            height: 175.0,
-            width: double.infinity,
-            margin: const EdgeInsets.only(
-              top: Dimensions.marginSizeExtraLarge,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15.0)
-            ),
-            child: CarouselSlider.builder(
-              carouselController: cc,
-              options: CarouselOptions(
-                height: 200.0,
-                autoPlay: true,
-                enlargeCenterPage: true,
-                viewportFraction: 0.9,
-                enlargeStrategy: CenterPageEnlargeStrategy.scale,
-                initialPage: currentIndex,
-                onPageChanged: (int i, CarouselPageChangedReason reason) {
-                  currentIndex = i;
-                  setState(() {});
-                }
+              height: 175.0,
+              width: double.infinity,
+              margin: const EdgeInsets.only(
+                top: Dimensions.marginSizeExtraLarge,
               ),
-              itemCount: bannerProvider.banners!.length,
-              itemBuilder: (BuildContext context, int i, int z){
-                return CachedNetworkImage(
-                  imageUrl: bannerProvider.banners![i].path!,
-                  imageBuilder: (BuildContext context, ImageProvider imageProvider) {
-                    return Card(
-                      margin: EdgeInsets.zero,
-                      color: ColorResources.transparent,
-                      elevation: 10.0,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15.0),
-                          image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image: imageProvider
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                  placeholder: (BuildContext context, String text) {
-                    return Shimmer.fromColors(
-                      baseColor: Colors.grey[300]!,
-                      highlightColor: Colors.grey[200]!,
-                      child: Card(
+              decoration:
+                  BoxDecoration(borderRadius: BorderRadius.circular(15.0)),
+              child: CarouselSlider.builder(
+                carouselController: cc,
+                options: CarouselOptions(
+                    height: 200.0,
+                    autoPlay: true,
+                    enlargeCenterPage: true,
+                    viewportFraction: 0.9,
+                    enlargeStrategy: CenterPageEnlargeStrategy.scale,
+                    initialPage: currentIndex,
+                    onPageChanged: (int i, CarouselPageChangedReason reason) {
+                      currentIndex = i;
+                      setState(() {});
+                    }),
+                itemCount: bannerProvider.banners!.length,
+                itemBuilder: (BuildContext context, int i, int z) {
+                  return CachedNetworkImage(
+                    imageUrl: bannerProvider.banners![i].path!,
+                    imageBuilder:
+                        (BuildContext context, ImageProvider imageProvider) {
+                      return Card(
                         margin: EdgeInsets.zero,
-                        color: ColorResources.white,
-                        elevation: 4.0,
+                        color: ColorResources.transparent,
+                        elevation: 10.0,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0)
-                        ),
+                            borderRadius: BorderRadius.circular(15.0)),
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15.0),
-                            color: ColorResources.white
+                            image: DecorationImage(
+                                fit: BoxFit.fill, image: imageProvider),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          );
+                      );
+                    },
+                    placeholder: (BuildContext context, String text) {
+                      return Shimmer.fromColors(
+                        baseColor: Colors.grey[300]!,
+                        highlightColor: Colors.grey[200]!,
+                        child: Card(
+                          margin: EdgeInsets.zero,
+                          color: ColorResources.white,
+                          elevation: 4.0,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0)),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15.0),
+                                color: ColorResources.white),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            );
           }
         },
       ),
@@ -966,282 +1126,323 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildNewsSection() {
-    return SliverToBoxAdapter(
-      child: Consumer<NewsProvider>(
-        builder: (BuildContext context, NewsProvider newsProvider, Widget? child) {
-
-          if(newsProvider.newsStatus == NewsStatus.loading) {
-            return Shimmer.fromColors(
-              baseColor: Colors.grey[300]!,
-              highlightColor: Colors.grey[200]!,
-              child: Container(
-                height: 250.0,
-                margin: const EdgeInsets.only(
-                  top: 5.0,
-                  left: 25.0,
-                  right: 25.0,
-                  bottom: 20.0
-                ),
+    return SliverToBoxAdapter(child: Consumer<NewsProvider>(builder:
+        (BuildContext context, NewsProvider newsProvider, Widget? child) {
+      if (newsProvider.newsStatus == NewsStatus.loading) {
+        return Shimmer.fromColors(
+          baseColor: Colors.grey[300]!,
+          highlightColor: Colors.grey[200]!,
+          child: Container(
+            height: 250.0,
+            margin: const EdgeInsets.only(
+                top: 5.0, left: 25.0, right: 25.0, bottom: 20.0),
+            decoration: BoxDecoration(
+              color: ColorResources.white,
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+          ),
+        );
+      } else if (newsProvider.newsStatus == NewsStatus.empty ||
+          newsProvider.newsStatus == NewsStatus.error) {
+        return Container(
+          height: 250.0,
+          margin: const EdgeInsets.only(
+            top: 15.0,
+            left: 25.0,
+            right: 25.0,
+          ),
+          child: Center(
+              child: Column(
+            children: [
+              Container(
+                height: 200,
+                width: double.infinity,
                 decoration: BoxDecoration(
-                  color: ColorResources.white,
                   borderRadius: BorderRadius.circular(15.0),
+                  color: ColorResources.backgroundDisabled,
+                ),
+                child: const Icon(
+                  Icons.newspaper_rounded,
+                  size: 80,
                 ),
               ),
-            );
-          }
-          else if(newsProvider.newsStatus == NewsStatus.empty || newsProvider.newsStatus == NewsStatus.error) {
-            return Container(
-              height: 250.0,
-              margin: const EdgeInsets.only(
-                top: 15.0,
-                left: 25.0,
-                right: 25.0,
+              const SizedBox(
+                height: 10,
               ),
-              child: Center(
-                child: Column(
-                  children: [
-                    Container(
-                      height: 200,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15.0),
-                        color: ColorResources.backgroundDisabled,
-                      ),
-                      child: const Icon(
-                        Icons.newspaper_rounded,
-                        size: 80,
-                      ),
-                    ),
-                    const SizedBox(height: 10,),
-                    Text('Berita belum tersedia',
-                      style: robotoRegular.copyWith(
-                        color: ColorResources.white,
-                      ),
-                    )
-                  ],
-                )
-              ),
-            );
-          }
-          else {
-            return Column(
+              Text(
+                'Berita belum tersedia',
+                style: robotoRegular.copyWith(
+                  color: ColorResources.white,
+                ),
+              )
+            ],
+          )),
+        );
+      } else {
+        return Column(children: [
+          Padding(
+            padding: const EdgeInsets.only(
+              left: Dimensions.marginSizeExtraLarge,
+              right: Dimensions.marginSizeExtraLarge,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: Dimensions.marginSizeExtraLarge,
-                    right: Dimensions.marginSizeExtraLarge,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Berita',
-                        style: poppinsRegular.copyWith(
-                          fontSize: Dimensions.fontSizeExtraLarge,
-                          fontWeight: FontWeight.w600,
-                          color: ColorResources.white,
-                          shadows: boxShadow
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () => NS.push(context, const NewsScreen()),
-                        child: Text('Lihat Semua',
-                          style: poppinsRegular.copyWith(
-                            color: ColorResources.yellowSecondaryV5,
-                            shadows: boxShadow
-                          ),
-                        ),
-                      ),
-                    ],
+                Text(
+                  'Berita',
+                  style: poppinsRegular.copyWith(
+                      fontSize: Dimensions.fontSizeExtraLarge,
+                      fontWeight: FontWeight.w600,
+                      color: ColorResources.white,
+                      shadows: boxShadow),
+                ),
+                GestureDetector(
+                  onTap: () => NS.push(context, const NewsScreen()),
+                  child: Text(
+                    'Lihat Semua',
+                    style: poppinsRegular.copyWith(
+                        color: ColorResources.yellowSecondaryV5,
+                        shadows: boxShadow),
                   ),
                 ),
-                const SizedBox(height: 10,),
-                SizedBox(
-                  height: 250,
-                  width: double.infinity,
-                  child: ListView.builder(
-                    padding: const EdgeInsets.only(
-                      left: Dimensions.marginSizeExtraLarge,
-                    ),
-                    physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: newsProvider.news?.length.clamp(0, 3),
-                    itemBuilder: (context, i) {
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 15.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            context.read<NewsProvider>().getNewsDetail(context, newsId: newsProvider.news![i].id!);
-                          },
-                          onDoubleTap: () { },
-                          child: Stack(
-                            children: [
-                              const SizedBox(height: 300, width: 300,),
-                              Positioned(
-                                top: 40.0,
-                                child: Material(
-                                  color: ColorResources.transparent,
-                                  child: InkWell(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    onTap: () {
-                                      context.read<NewsProvider>().getNewsDetail(context, newsId: newsProvider.news![i].id!);
-                                    },
-                                    child: Container(
-                                      height: 200.0,
-                                      width: 300.0,
-                                      decoration: BoxDecoration(
-                                        boxShadow: boxShadow,
-                                        borderRadius: BorderRadius.circular(30.0),
-                                        color: const Color.fromARGB(141, 68, 99, 158).withOpacity(0.7),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          SizedBox(
+            height: 250,
+            width: double.infinity,
+            child: ListView.builder(
+              padding: const EdgeInsets.only(
+                left: Dimensions.marginSizeExtraLarge,
+              ),
+              physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics()),
+              scrollDirection: Axis.horizontal,
+              itemCount: newsProvider.news?.length.clamp(0, 3),
+              itemBuilder: (context, i) {
+                return Padding(
+                  padding: const EdgeInsets.only(right: 15.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      context.read<NewsProvider>().getNewsDetail(context,
+                          newsId: newsProvider.news![i].id!);
+                    },
+                    onDoubleTap: () {},
+                    child: Stack(
+                      children: [
+                        const SizedBox(
+                          height: 300,
+                          width: 300,
+                        ),
+                        Positioned(
+                          top: 40.0,
+                          child: Material(
+                            color: ColorResources.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(30.0),
+                              onTap: () {
+                                context.read<NewsProvider>().getNewsDetail(
+                                    context,
+                                    newsId: newsProvider.news![i].id!);
+                              },
+                              child: Container(
+                                height: 200.0,
+                                width: 300.0,
+                                decoration: BoxDecoration(
+                                  boxShadow: boxShadow,
+                                  borderRadius: BorderRadius.circular(30.0),
+                                  color: const Color.fromARGB(141, 68, 99, 158)
+                                      .withOpacity(0.7),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    const SizedBox(
+                                      height: 60,
+                                    ),
+                                    Container(
+                                      margin: const EdgeInsets.only(
+                                        left: Dimensions.marginSizeExtraLarge,
+                                        right: Dimensions.marginSizeExtraLarge,
                                       ),
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                        mainAxisSize: MainAxisSize.max,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          const SizedBox(height: 60,),
-                                          Container(
-                                            margin: const EdgeInsets.only(
-                                              left: Dimensions.marginSizeExtraLarge,
-                                              right: Dimensions.marginSizeExtraLarge,
+                                          Text(
+                                            newsProvider.news![i].title
+                                                        .toString()
+                                                        .length >
+                                                    85
+                                                ? "${newsProvider.news![i].title.toString().substring(0, 85)}..."
+                                                : newsProvider.news![i].title
+                                                    .toString()
+                                                    .toTitleCase(),
+                                            style: robotoRegular.copyWith(
+                                              color: ColorResources.white
+                                                  .withOpacity(0.8),
+                                              fontSize:
+                                                  Dimensions.fontSizeDefault,
+                                              fontWeight: FontWeight.w400,
                                             ),
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text( newsProvider.news![i].title.toString().length > 85
-                                                  ? "${newsProvider.news![i].title.toString().substring(0, 85)}..."
-                                                  : newsProvider.news![i].title.toString().toTitleCase(),
-                                                    style: robotoRegular.copyWith(
-                                                      color: ColorResources.white.withOpacity(0.8),
-                                                      fontSize: Dimensions.fontSizeDefault,
-                                                      fontWeight: FontWeight.w400,
-                                                    ),
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                Helper.formatDate(
+                                                    DateTime.parse(
+                                                        Helper.getFormatedDate(
+                                                            newsProvider
+                                                                .news?[i]
+                                                                .createdAt))),
+                                                style: robotoRegular.copyWith(
+                                                  color:
+                                                      ColorResources.hintColor,
+                                                  fontSize:
+                                                      Dimensions.fontSizeSmall,
+                                                  fontWeight: FontWeight.w400,
                                                 ),
-                                                const SizedBox(height: 10,),
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Text(Helper.formatDate(DateTime.parse(Helper.getFormatedDate(newsProvider.news?[i].createdAt))),
-                                                      style: robotoRegular.copyWith(
-                                                        color: ColorResources.hintColor,
-                                                        fontSize: Dimensions.fontSizeSmall,
-                                                        fontWeight: FontWeight.w400,
-                                                      ),
-                                                    ),
-                                                    Text(getTranslated("READ_MORE", context),
-                                                      style: robotoRegular.copyWith(
-                                                        color: Colors.amberAccent,
-                                                        fontSize: Dimensions.fontSizeSmall,
-                                                        fontWeight: FontWeight.w400,
-                                                      ),
-                                                    ),
-                                                  ],
+                                              ),
+                                              Text(
+                                                getTranslated(
+                                                    "READ_MORE", context),
+                                                style: robotoRegular.copyWith(
+                                                  color: Colors.amberAccent,
+                                                  fontSize:
+                                                      Dimensions.fontSizeSmall,
+                                                  fontWeight: FontWeight.w400,
                                                 ),
-                                              ],
-                                            ),
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
                                     ),
-                                  ),
+                                  ],
                                 ),
                               ),
-                              Positioned(
-                                left: 25.0,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                  child: CachedNetworkImage(
-                                    imageUrl: newsProvider.news![i].image!,
-                                    imageBuilder: (BuildContext context, ImageProvider imageProvider) {
-                                      return Container(
-                                        width: 250.0,
-                                        height: 140.0,
-                                        decoration: BoxDecoration(
-                                          color: ColorResources.white,
-                                          image: DecorationImage(
-                                            image: imageProvider,
-                                            fit: BoxFit.fill,
-                                          )
-                                        ),
-                                      );
-                                    },
-                                    placeholder: (BuildContext context, String value) {
-                                      return Container(
-                                        width: 250.0,
-                                        height: 140.0,
-                                        decoration: BoxDecoration(
-                                          color: ColorResources.backgroundDisabled,
-                                          borderRadius: BorderRadius.circular(30.0),
-                                        ),
-                                      );  
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         ),
-                      );
-                    },
+                        Positioned(
+                          left: 25.0,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(30.0),
+                            child: CachedNetworkImage(
+                              imageUrl: newsProvider.news![i].image!,
+                              imageBuilder: (BuildContext context,
+                                  ImageProvider imageProvider) {
+                                return Container(
+                                  width: 250.0,
+                                  height: 140.0,
+                                  decoration: BoxDecoration(
+                                      color: ColorResources.white,
+                                      image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.fill,
+                                      )),
+                                );
+                              },
+                              placeholder:
+                                  (BuildContext context, String value) {
+                                return Container(
+                                  width: 250.0,
+                                  height: 140.0,
+                                  decoration: BoxDecoration(
+                                    color: ColorResources.backgroundDisabled,
+                                    borderRadius: BorderRadius.circular(30.0),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ]
-            );
-          }
-        }
-      )
-    );
+                );
+              },
+            ),
+          ),
+        ]);
+      }
+    }));
   }
 
   Widget buildProductsSection() {
-
     List products = [
       {
-        "name": "Velg Racing Mobil Pajero Sport Ring 20 HSR TSUYOI Velk Mobil Fortuner Triton Dmax R20",
-        "image": "https://s2.bukalapak.com/img/20200500103/large/data.jpeg.webp",
+        "name":
+            "Velg Racing Mobil Pajero Sport Ring 20 HSR TSUYOI Velk Mobil Fortuner Triton Dmax R20",
+        "image":
+            "https://s2.bukalapak.com/img/20200500103/large/data.jpeg.webp",
         "price": "12400000",
       },
       {
-        "name": "Velg Mobil Vellfire 18x7.5 Pcd 5x114.3 ET 40 Black Polish Alphard",
-        "image": "https://images.tokopedia.net/img/cache/900/VqbcmM/2021/7/7/a5f5d5ac-fcf1-409c-973c-53234a7a5a80.jpg",
+        "name":
+            "Velg Mobil Vellfire 18x7.5 Pcd 5x114.3 ET 40 Black Polish Alphard",
+        "image":
+            "https://images.tokopedia.net/img/cache/900/VqbcmM/2021/7/7/a5f5d5ac-fcf1-409c-973c-53234a7a5a80.jpg",
         "price": "7000000",
       },
       {
-        "name": "Aksesoris Variasi Stoplamp Taillamp LED Meteo Axis Alphard ANH30 15+",
-        "image": "https://images.tokopedia.net/img/cache/900/VqbcmM/2020/12/7/980d289a-93c0-4829-ab7d-2856850e43b0.jpg",
+        "name":
+            "Aksesoris Variasi Stoplamp Taillamp LED Meteo Axis Alphard ANH30 15+",
+        "image":
+            "https://images.tokopedia.net/img/cache/900/VqbcmM/2020/12/7/980d289a-93c0-4829-ab7d-2856850e43b0.jpg",
         "price": "8800000",
       },
       {
-        "name": "Toyota Vellfire Sarung Cover Mobil Durable Rubik | Guardian |Xtrem – Rubik",
-        "image": "https://images.tokopedia.net/img/cache/900/hDjmkQ/2023/4/27/8b6764ef-e2fd-463b-9198-ee41f398691f.jpg",
+        "name":
+            "Toyota Vellfire Sarung Cover Mobil Durable Rubik | Guardian |Xtrem – Rubik",
+        "image":
+            "https://images.tokopedia.net/img/cache/900/hDjmkQ/2023/4/27/8b6764ef-e2fd-463b-9198-ee41f398691f.jpg",
         "price": "870000",
       },
       {
         "name": "Tas Thule VNJ ",
-        "image": "https://images.tokopedia.net/img/cache/900/hDjmkQ/2021/1/11/bbabfbf8-3f75-4630-bb9b-fa0df0e063fc.jpg",
+        "image":
+            "https://images.tokopedia.net/img/cache/900/hDjmkQ/2021/1/11/bbabfbf8-3f75-4630-bb9b-fa0df0e063fc.jpg",
         "price": "3800000",
       },
       {
         "name": "SHOCKBREAKER DEPAN PAJERO SPORT ORIGINAL 4062A085",
-        "image": "https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full//88/MTA-12139144/mitsubishi_shockbreaker_pajero_sport_-_triton_depan_belakang_original_premium_hitam_full01_d42eef41.jpg",
+        "image":
+            "https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full//88/MTA-12139144/mitsubishi_shockbreaker_pajero_sport_-_triton_depan_belakang_original_premium_hitam_full01_d42eef41.jpg",
         "price": "1800000",
       },
       {
         "name": "Pac Makeup Kit New Edition",
-        "image": "https://images.tokopedia.net/img/cache/900/attachment/2019/9/14/156847459919831/156847459919831_fbd91887-c44f-41e0-8a9c-14e7153e85b8.png",
+        "image":
+            "https://images.tokopedia.net/img/cache/900/attachment/2019/9/14/156847459919831/156847459919831_fbd91887-c44f-41e0-8a9c-14e7153e85b8.png",
         "price": "3800000",
       },
       {
         "name": "Set Alat Rias 7-in-1 dengan Dompet Plastik",
-        "image": "https://images.tokopedia.net/img/cache/900/product-1/2013/9/30/2519619/2519619_06b76f48-29ae-11e3-b923-c35c2523fab8.jpg",
+        "image":
+            "https://images.tokopedia.net/img/cache/900/product-1/2013/9/30/2519619/2519619_06b76f48-29ae-11e3-b923-c35c2523fab8.jpg",
         "price": "29900",
       },
       {
         "name": "Sanggul Modern Variasi Terbaru Sanggul Bali Sanggul Batak",
-        "image": "https://s2.bukalapak.com/img/71414911003/large/data.jpeg.webp",
+        "image":
+            "https://s2.bukalapak.com/img/71414911003/large/data.jpeg.webp",
         "price": "40000",
       },
       {
         "name": "Lore Jewellery - Kinara Simple Moissanite Ring 0.01 Carat – 4",
-        "image": "https://images.tokopedia.net/img/cache/900/VqbcmM/2023/3/20/461ff11b-0d40-4ec8-b960-36ad7f2d7481.jpg",
+        "image":
+            "https://images.tokopedia.net/img/cache/900/VqbcmM/2023/3/20/461ff11b-0d40-4ec8-b960-36ad7f2d7481.jpg",
         "price": "548900",
       },
     ];
@@ -1249,7 +1450,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return SliverToBoxAdapter(
       child: Consumer<NewsProvider>(
         builder: (context, provider, _) {
-          if(provider.newsStatus == NewsStatus.loading){
+          if (provider.newsStatus == NewsStatus.loading) {
             return Container(
               margin: const EdgeInsets.only(
                 left: Dimensions.marginSizeLarge,
@@ -1260,159 +1461,176 @@ class _HomeScreenState extends State<HomeScreen> {
                 baseColor: Colors.grey[300]!,
                 child: Card(
                   margin: EdgeInsets.zero,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0)),
                   child: Container(
                     height: 400.0,
                     padding: const EdgeInsets.symmetric(
-                      horizontal: Dimensions.marginSizeExtraSmall,
-                      vertical: Dimensions.marginSizeSmall
-                    ),
+                        horizontal: Dimensions.marginSizeExtraSmall,
+                        vertical: Dimensions.marginSizeSmall),
                   ),
                 ),
               ),
             );
-          }
-          else {
-            return Column(
-              children: [
-                context.watch<ProfileProvider>().isActive != 1 
-                ? const SizedBox() 
-                : Padding(
-                  padding: const EdgeInsets.only(
-                    left: Dimensions.marginSizeExtraLarge,
-                    right: Dimensions.marginSizeExtraLarge,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Product Sample dari HP3KI Mart',
-                        style: poppinsRegular.copyWith(
-                          fontSize: Dimensions.fontSizeExtraLarge,
-                          fontWeight: FontWeight.w600,
-                          color: ColorResources.white,
-                          shadows: boxShadow
-                        ),
+          } else {
+            return Column(children: [
+              context.watch<ProfileProvider>().isActive != 1
+                  ? const SizedBox()
+                  : Padding(
+                      padding: const EdgeInsets.only(
+                        left: Dimensions.marginSizeExtraLarge,
+                        right: Dimensions.marginSizeExtraLarge,
                       ),
-                      GestureDetector(
-                        onTap: () => NS.push(context, const ComingSoonScreen(title: 'HP3KI Mart')),
-                        child: Text('Coming Soon',
-                          style: poppinsRegular.copyWith(
-                            color: ColorResources.yellowSecondaryV5,
-                            shadows: boxShadow
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Product Sample dari HP3KI Mart',
+                            style: poppinsRegular.copyWith(
+                                fontSize: Dimensions.fontSizeExtraLarge,
+                                fontWeight: FontWeight.w600,
+                                color: ColorResources.white,
+                                shadows: boxShadow),
                           ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 10),
-                context.watch<ProfileProvider>().isActive != 1 
-                ? const SizedBox() 
-                : SizedBox(
-                  height: 280,
-                  width: double.infinity,
-                  child: ListView.builder(
-                    padding: const EdgeInsets.only(
-                      left: Dimensions.marginSizeExtraLarge,
-                    ),
-                    physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-                    scrollDirection: Axis.horizontal,
-                    // itemCount: newsProvider.news.length,
-                    itemCount: products.length,
-                    itemBuilder: (context, i) {
-                      return SizedBox(
-                        width: 180.0,
-                        child: Card(
-                          elevation: 5.0,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-                          color: const Color.fromARGB(141, 68, 99, 158).withOpacity(0.7),
-                          child: InkWell(
-                            onTap: () async {
-                              // await context.read<StoreProvider>().getProductDetail(context, productId: storeProvider.elektronikProducts![index].uid!);
-                              NS.push(context, const ComingSoonScreen(title: 'Product Detail'));
-                            },
-                            borderRadius: BorderRadius.circular(15.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(10.0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15.0),
-                                  ),
-                                  child: CachedNetworkImage(
-                                    // imageUrl: storeProvider.elektronikProducts![index].medias!.images!.first.path!,
-                                    imageUrl: products[i]["image"] ?? AppConstants.avatarError,
-                                    imageBuilder: (BuildContext context, ImageProvider imageProvider) {
-                                      return Container(
-                                        height: 165.0,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(15.0),
-                                          image: DecorationImage(
-                                            image: imageProvider,
-                                            fit: BoxFit.fill
-                                          )
-                                        ),
-                                      );
-                                    },
-                                    placeholder: (context, url) {
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(15.0),
-                                          color: ColorResources.backgroundDisabled,
-                                        ),
-                                        height: 165.0,
-                                      );
-                                    },
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 2.0,
-                                    horizontal: 8.0,
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      // Text(storeProvider.elektronikProducts![index].title ?? "...",
-                                      Text(products[i]["name"],
-                                        style: interRegular.copyWith(
-                                          fontSize: Dimensions.fontSizeDefault,
-                                          color: ColorResources.white,
-                                        ),
-                                        maxLines: 2,
-                                        softWrap: true,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      const SizedBox(height: 10),
-                                      // Text(Helper.formatCurrency(double.parse(storeProvider.elektronikProducts![index].price.toString())),
-                                      Text(Helper.formatCurrency(double.parse(products[i]["price"])),
-                                        style: interRegular.copyWith(
-                                          color: ColorResources.white,
-                                          fontSize: Dimensions.fontSizeExtraLarge,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      const SizedBox(height: 5),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                          GestureDetector(
+                            onTap: () => NS.push(context,
+                                const ComingSoonScreen(title: 'HP3KI Mart')),
+                            child: Text(
+                              'Coming Soon',
+                              style: poppinsRegular.copyWith(
+                                  color: ColorResources.yellowSecondaryV5,
+                                  shadows: boxShadow),
                             ),
                           ),
+                        ],
+                      ),
+                    ),
+              const SizedBox(height: 10),
+              context.watch<ProfileProvider>().isActive != 1
+                  ? const SizedBox()
+                  : SizedBox(
+                      height: 280,
+                      width: double.infinity,
+                      child: ListView.builder(
+                        padding: const EdgeInsets.only(
+                          left: Dimensions.marginSizeExtraLarge,
                         ),
-                      );
-                    },
-                  ),
-                ),
-                //TO AVOID OVERLAPS WITH THE BOTTOM NAVBAR
-                //THE HEIGHT IS BASED ON (NAVBAR'S HEIGHT + 40)
-                const SizedBox(height: 130,)
-              ]
-            );
+                        physics: const BouncingScrollPhysics(
+                            parent: AlwaysScrollableScrollPhysics()),
+                        scrollDirection: Axis.horizontal,
+                        // itemCount: newsProvider.news.length,
+                        itemCount: products.length,
+                        itemBuilder: (context, i) {
+                          return SizedBox(
+                            width: 180.0,
+                            child: Card(
+                              elevation: 5.0,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0)),
+                              color: const Color.fromARGB(141, 68, 99, 158)
+                                  .withOpacity(0.7),
+                              child: InkWell(
+                                onTap: () async {
+                                  // await context.read<StoreProvider>().getProductDetail(context, productId: storeProvider.elektronikProducts![index].uid!);
+                                  NS.push(
+                                      context,
+                                      const ComingSoonScreen(
+                                          title: 'Product Detail'));
+                                },
+                                borderRadius: BorderRadius.circular(15.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(10.0),
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(15.0),
+                                      ),
+                                      child: CachedNetworkImage(
+                                        // imageUrl: storeProvider.elektronikProducts![index].medias!.images!.first.path!,
+                                        imageUrl: products[i]["image"] ??
+                                            AppConstants.avatarError,
+                                        imageBuilder: (BuildContext context,
+                                            ImageProvider imageProvider) {
+                                          return Container(
+                                            height: 165.0,
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(15.0),
+                                                image: DecorationImage(
+                                                    image: imageProvider,
+                                                    fit: BoxFit.fill)),
+                                          );
+                                        },
+                                        placeholder: (context, url) {
+                                          return Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(15.0),
+                                              color: ColorResources
+                                                  .backgroundDisabled,
+                                            ),
+                                            height: 165.0,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 2.0,
+                                        horizontal: 8.0,
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          // Text(storeProvider.elektronikProducts![index].title ?? "...",
+                                          Text(
+                                            products[i]["name"],
+                                            style: interRegular.copyWith(
+                                              fontSize:
+                                                  Dimensions.fontSizeDefault,
+                                              color: ColorResources.white,
+                                            ),
+                                            maxLines: 2,
+                                            softWrap: true,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          const SizedBox(height: 10),
+                                          // Text(Helper.formatCurrency(double.parse(storeProvider.elektronikProducts![index].price.toString())),
+                                          Text(
+                                            Helper.formatCurrency(double.parse(
+                                                products[i]["price"])),
+                                            style: interRegular.copyWith(
+                                              color: ColorResources.white,
+                                              fontSize:
+                                                  Dimensions.fontSizeExtraLarge,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          const SizedBox(height: 5),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+              //TO AVOID OVERLAPS WITH THE BOTTOM NAVBAR
+              //THE HEIGHT IS BASED ON (NAVBAR'S HEIGHT + 40)
+              const SizedBox(
+                height: 130,
+              )
+            ]);
           }
         },
       ),

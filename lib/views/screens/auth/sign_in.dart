@@ -20,16 +20,14 @@ import 'package:hp3ki/views/basewidgets/textfield/textfield.dart';
 import '../../basewidgets/snackbar/snackbar.dart';
 
 class SignInScreen extends StatefulWidget {
-  
-  const SignInScreen({ Key? key }) : super(key: key);
+  const SignInScreen({Key? key}) : super(key: key);
 
   @override
-  
   State<SignInScreen> createState() => _SignInScreenState();
 }
 
-
-class _SignInScreenState extends State<SignInScreen> with SingleTickerProviderStateMixin {
+class _SignInScreenState extends State<SignInScreen>
+    with SingleTickerProviderStateMixin {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   late ScrollController scrollC;
@@ -44,9 +42,11 @@ class _SignInScreenState extends State<SignInScreen> with SingleTickerProviderSt
 
   Future<bool> willPopScope() {
     DateTime now = DateTime.now();
-    if (currentBackPressTime == null || now.difference(currentBackPressTime) > const Duration(seconds: 2)) {
+    if (currentBackPressTime == null ||
+        now.difference(currentBackPressTime) > const Duration(seconds: 2)) {
       currentBackPressTime = now;
-      ShowSnackbar.snackbar(context, getTranslated("PRESS_TWICE_BACK", context), "", ColorResources.black);
+      ShowSnackbar.snackbar(context, getTranslated("PRESS_TWICE_BACK", context),
+          "", ColorResources.black);
       return Future.value(false);
     }
     SystemNavigator.pop();
@@ -56,13 +56,13 @@ class _SignInScreenState extends State<SignInScreen> with SingleTickerProviderSt
   Future<void> submit() async {
     String emailOrPhone = emailOrPhoneC.text.trim();
     String pass = passC.text.trim();
-    if(formKey.currentState!.validate()){
+    if (formKey.currentState!.validate()) {
       context.read<AuthProvider>().login(context, emailOrPhone, pass);
     }
   }
 
   Future<void> getData() async {
-    if(mounted) {
+    if (mounted) {
       await Permission.notification.request();
       await Permission.notification.isDenied.then((value) {
         if (value) {
@@ -86,13 +86,11 @@ class _SignInScreenState extends State<SignInScreen> with SingleTickerProviderSt
       getData();
     });
 
-
     super.initState();
   }
 
   @override
   void dispose() {
-
     scrollC.dispose();
 
     emailOrPhoneC.dispose();
@@ -110,19 +108,19 @@ class _SignInScreenState extends State<SignInScreen> with SingleTickerProviderSt
   }
 
   Widget buildUI() {
-    return Consumer<InternetProvider>(
-      builder: (BuildContext context, InternetProvider internetProvider, Widget? child) {
-        return WillPopScope(
-          onWillPop: willPopScope,
-          child: Scaffold(
-            backgroundColor: ColorResources.transparent,
-              body: internetProvider.internetStatus == InternetStatus.disconnected
-                ? const NoConnectionScreen()
-                :  buildConnectionAvailableContent(context),
-          ),
-        );
-      }
-    );    
+    return Consumer<InternetProvider>(builder: (BuildContext context,
+        InternetProvider internetProvider, Widget? child) {
+      // ignore: deprecated_member_use
+      return WillPopScope(
+        onWillPop: willPopScope,
+        child: Scaffold(
+          backgroundColor: ColorResources.transparent,
+          body: internetProvider.internetStatus == InternetStatus.disconnected
+              ? const NoConnectionScreen()
+              : buildConnectionAvailableContent(context),
+        ),
+      );
+    });
   }
 
   GestureDetector buildConnectionAvailableContent(BuildContext context) {
@@ -146,17 +144,12 @@ class _SignInScreenState extends State<SignInScreen> with SingleTickerProviderSt
     return const BoxDecoration(
       backgroundBlendMode: BlendMode.darken,
       gradient: LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [
-          ColorResources.black,
-          Color(0xff0B1741)
-        ]
-      ),
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [ColorResources.black, Color(0xff0B1741)]),
       image: DecorationImage(
-        fit: BoxFit.cover,
-        image: AssetImage('assets/images/background/bg.png')
-      ),
+          fit: BoxFit.cover,
+          image: AssetImage('assets/images/background/bg.png')),
     );
   }
 
@@ -167,7 +160,8 @@ class _SignInScreenState extends State<SignInScreen> with SingleTickerProviderSt
           padding: const EdgeInsets.all(45.0),
           child: Align(
             alignment: Alignment.topRight,
-            child: Image.asset('assets/images/logo/logo.png',
+            child: Image.asset(
+              'assets/images/logo/logo.png',
               height: 180,
               width: 180,
               fit: BoxFit.cover,
@@ -175,13 +169,13 @@ class _SignInScreenState extends State<SignInScreen> with SingleTickerProviderSt
           ),
         ),
         Positioned(
-          top: 150,
-          child: Image.asset('assets/images/auth/rectangle.png',
-            fit: BoxFit.cover,
-            height: MediaQuery.of(context).size.height * .70,
-            width: MediaQuery.sizeOf(context).width,
-          )
-        ),
+            top: 150,
+            child: Image.asset(
+              'assets/images/auth/rectangle.png',
+              fit: BoxFit.cover,
+              height: MediaQuery.of(context).size.height * .70,
+              width: MediaQuery.sizeOf(context).width,
+            )),
         Positioned(
           top: 300.0,
           left: 30.0,
@@ -190,12 +184,17 @@ class _SignInScreenState extends State<SignInScreen> with SingleTickerProviderSt
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               buildHeadingText(),
-              const SizedBox(height: 15,),
+              const SizedBox(
+                height: 15,
+              ),
               buildInputForm(),
-              const SizedBox(height: 15,),
-              if(Platform.isAndroid)
-                buildLoginSocialMediaButton(),
-              const SizedBox(height: 25,),
+              const SizedBox(
+                height: 15,
+              ),
+              if (Platform.isAndroid) buildLoginSocialMediaButton(),
+              const SizedBox(
+                height: 25,
+              ),
               buildTextOptions()
             ],
           ),
@@ -207,9 +206,7 @@ class _SignInScreenState extends State<SignInScreen> with SingleTickerProviderSt
             right: 130.0,
           ),
           child: Align(
-            alignment: Alignment.bottomCenter,
-            child: buildLoginButton()
-          ),
+              alignment: Alignment.bottomCenter, child: buildLoginButton()),
         ),
       ],
     );
@@ -219,7 +216,8 @@ class _SignInScreenState extends State<SignInScreen> with SingleTickerProviderSt
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Selamat Datang di',
+        Text(
+          'Selamat Datang di',
           style: poppinsRegular.copyWith(
             fontSize: Dimensions.fontSizeLarge,
             fontWeight: FontWeight.w600,
@@ -227,14 +225,18 @@ class _SignInScreenState extends State<SignInScreen> with SingleTickerProviderSt
         ),
         Row(
           children: [
-            Text('HP3KI',
+            Text(
+              'HP3KI',
               style: poppinsRegular.copyWith(
                 fontSize: Dimensions.fontSizeOverLarge,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(width: 10,),
-            Text('Mobile',
+            const SizedBox(
+              width: 10,
+            ),
+            Text(
+              'Mobile',
               style: poppinsRegular.copyWith(
                 fontSize: Dimensions.fontSizeOverLarge,
                 fontWeight: FontWeight.w600,
@@ -243,8 +245,11 @@ class _SignInScreenState extends State<SignInScreen> with SingleTickerProviderSt
             ),
           ],
         ),
-        const SizedBox(height: 15,),
-        Text('Login terlebih dahulu untuk masuk',
+        const SizedBox(
+          height: 15,
+        ),
+        Text(
+          'Login terlebih dahulu untuk masuk',
           style: poppinsRegular.copyWith(
             fontSize: Dimensions.fontSizeDefault,
           ),
@@ -263,12 +268,14 @@ class _SignInScreenState extends State<SignInScreen> with SingleTickerProviderSt
           },
           child: Row(
             children: [
-              Text('Belum punya akun ? ',
+              Text(
+                'Belum punya akun ? ',
                 style: poppinsRegular.copyWith(
                   color: ColorResources.hintColor,
                 ),
               ),
-              Text(' Daftar Disini',
+              Text(
+                ' Daftar Disini',
                 style: poppinsRegular.copyWith(
                   color: Colors.red,
                   fontWeight: FontWeight.w600,
@@ -277,12 +284,15 @@ class _SignInScreenState extends State<SignInScreen> with SingleTickerProviderSt
             ],
           ),
         ),
-        const SizedBox(height: 20,),
+        const SizedBox(
+          height: 20,
+        ),
         GestureDetector(
           onTap: () {
             NS.push(context, const ForgotPasswordScreen());
           },
-          child: Text('Lupa Password?',
+          child: Text(
+            'Lupa Password?',
             style: poppinsRegular.copyWith(
               fontWeight: FontWeight.w600,
             ),
@@ -297,10 +307,11 @@ class _SignInScreenState extends State<SignInScreen> with SingleTickerProviderSt
       width: 250,
       child: Column(
         children: [
-
           CustomButton(
-            isLoading: context.watch<AuthProvider>().loginGoogleStatus == LoginGoogleStatus.loading
-              ? true : false,
+            isLoading: context.watch<AuthProvider>().loginGoogleStatus ==
+                    LoginGoogleStatus.loading
+                ? true
+                : false,
             loadingColor: ColorResources.primary,
             onTap: () {
               context.read<AuthProvider>().loginWithGoogle(context);
@@ -312,13 +323,17 @@ class _SignInScreenState extends State<SignInScreen> with SingleTickerProviderSt
             customText: true,
             text: Row(
               children: [
-                Image.asset('assets/images/auth/icon-google.png',
+                Image.asset(
+                  'assets/images/auth/icon-google.png',
                   height: Dimensions.iconSizeDefault,
                   width: Dimensions.iconSizeDefault,
                   fit: BoxFit.fitWidth,
                 ),
-                const SizedBox(width: 10,),
-                Text('Masuk dengan Google',
+                const SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  'Masuk dengan Google',
                   style: robotoRegular.copyWith(
                     fontSize: Dimensions.fontSizeLarge,
                     color: ColorResources.greyDarkPrimary,
@@ -327,7 +342,6 @@ class _SignInScreenState extends State<SignInScreen> with SingleTickerProviderSt
               ],
             ),
           ),
-
         ],
       ),
     );
@@ -335,9 +349,10 @@ class _SignInScreenState extends State<SignInScreen> with SingleTickerProviderSt
 
   Widget buildLoginButton() {
     return CustomButton(
-      isLoading: context.watch<AuthProvider>().loginStatus == LoginStatus.loading
-        ? true 
-        : false,
+      isLoading:
+          context.watch<AuthProvider>().loginStatus == LoginStatus.loading
+              ? true
+              : false,
       onTap: () {
         submit();
       },
@@ -377,7 +392,8 @@ class _SignInScreenState extends State<SignInScreen> with SingleTickerProviderSt
             child: child,
           );
         },
-        child: const Icon(Icons.arrow_forward,
+        child: const Icon(
+          Icons.arrow_forward,
           color: ColorResources.white,
           size: Dimensions.iconSizeLarge,
         ),
@@ -402,7 +418,8 @@ class _SignInScreenState extends State<SignInScreen> with SingleTickerProviderSt
               textInputAction: TextInputAction.next,
               nextNode: passFn,
               isPrefixIcon: true,
-              prefixIcon: const Icon(Icons.person,
+              prefixIcon: const Icon(
+                Icons.person,
                 color: ColorResources.hintColor,
                 size: Dimensions.iconSizeDefault,
               ),
@@ -417,7 +434,8 @@ class _SignInScreenState extends State<SignInScreen> with SingleTickerProviderSt
               focusNode: passFn,
               textInputAction: TextInputAction.done,
               isPrefixIcon: true,
-              prefixIcon: const Icon(Icons.lock,
+              prefixIcon: const Icon(
+                Icons.lock,
                 color: ColorResources.hintColor,
                 size: Dimensions.iconSizeDefault,
               ),

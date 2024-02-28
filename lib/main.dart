@@ -2,10 +2,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+
 import 'package:hp3ki/data/models/language/language.dart';
 import 'package:hp3ki/providers/firebase/firebase.dart';
 import 'package:hp3ki/providers/internet/internet.dart';
+import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/shared_preferences.dart';
+
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -121,6 +124,22 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }
     return MaterialApp(
       title: 'HP3KI',
+      theme: ThemeData(
+        useMaterial3: false,
+        elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+          backgroundColor: ColorResources.primary,
+        )),
+        appBarTheme: const AppBarTheme(
+          iconTheme: IconThemeData(color: Colors.black),
+          backgroundColor: Colors.white,
+          titleTextStyle: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+        ),
+      ),
       debugShowCheckedModeBanner: false,
       locale: context.watch<LocalizationProvider>().locale,
       builder: (BuildContext context, Widget? child) {

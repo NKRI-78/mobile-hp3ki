@@ -13,11 +13,11 @@ import 'package:hp3ki/views/basewidgets/button/custom.dart';
 import 'package:hp3ki/views/screens/auth/form_personal.dart';
 
 class CustomDialog {
-
   static showFulfillData(BuildContext context) {
     showGeneralDialog(
       context: context,
       pageBuilder: (ctx, a1, a2) {
+        // ignore: deprecated_member_use
         return WillPopScope(
           onWillPop: () async => false,
           child: _buildFulfillDialog(context),
@@ -26,30 +26,31 @@ class CustomDialog {
       transitionDuration: const Duration(milliseconds: 300),
       transitionBuilder: (ctx, a1, a2, child) {
         return BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 4 * a1.value, sigmaY: 4 * a1.value),
-          child: FadeTransition(
-            opacity: a1,
-            child: child 
-          )
-        );
+            filter:
+                ImageFilter.blur(sigmaX: 4 * a1.value, sigmaY: 4 * a1.value),
+            child: FadeTransition(opacity: a1, child: child));
       },
     );
   }
 
-  static AwesomeDialog buildPaymentSuccessDialog(BuildContext context, [String? text]) {
+  static AwesomeDialog buildPaymentSuccessDialog(BuildContext context,
+      [String? text]) {
     return AwesomeDialog(
       context: context,
       animType: AnimType.scale,
       dismissOnTouchOutside: false,
       dismissOnBackKeyPress: false,
-      customHeader: Image.asset('assets/images/auth/Success.png',
+      customHeader: Image.asset(
+        'assets/images/auth/Success.png',
         height: 160.0,
         width: 160.0,
         fit: BoxFit.cover,
       ),
       body: Padding(
         padding: const EdgeInsets.all(15.0),
-        child: Text(text ?? "Terimakasih sudah melakukan transaksi di HP3KI Mobile Apps, detail pembayaranmu tersimpan di notifikasi.",
+        child: Text(
+          text ??
+              "Terimakasih sudah melakukan transaksi di HP3KI Mobile Apps, detail pembayaranmu tersimpan di notifikasi.",
           style: robotoRegular.copyWith(
             color: ColorResources.black,
             fontSize: Dimensions.fontSizeLarge,
@@ -65,291 +66,312 @@ class CustomDialog {
 
   static AlertDialog _buildFulfillDialog(BuildContext context) {
     return AlertDialog(
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(32.0))
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(32.0))),
+      title: Center(
+        child: Image.asset(
+          'assets/images/avatar/avatar-fulfill.png',
+          height: 80,
+          width: 80,
+          fit: BoxFit.fill,
         ),
-        title: Center(
-          child: Image.asset('assets/images/avatar/avatar-fulfill.png',
-            height: 80,
-            width: 80,
-            fit: BoxFit.fill,
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            'Lengkapi Data',
+            style: robotoRegular.copyWith(
+              fontSize: Dimensions.fontSizeExtraLarge,
+              color: ColorResources.white,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Lengkapi Data',
+          const SizedBox(
+            height: 15,
+          ),
+          Text(
+            'Anda diwajibkan untuk melengkapi data terlebih dahulu.',
+            style: robotoRegular.copyWith(
+              color: ColorResources.white,
+              fontSize: Dimensions.fontSizeLarge,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+      backgroundColor: ColorResources.black.withOpacity(0.5),
+      actionsAlignment: MainAxisAlignment.center,
+      actions: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: CustomButton(
+            onTap: () {
+              NS.pushReplacementUntil(context, const FormPersonalScreen());
+            },
+            btnColor: ColorResources.primary,
+            isBorderRadius: true,
+            sizeBorderRadius: 30.0,
+            customText: true,
+            text: Text(
+              'Ok',
               style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeExtraLarge,
+                fontSize: Dimensions.fontSizeLarge,
                 color: ColorResources.white,
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(height: 15,),
-            Text('Anda diwajibkan untuk melengkapi data terlebih dahulu.',
-              style: robotoRegular.copyWith(
-                color: ColorResources.white,
-                fontSize: Dimensions.fontSizeLarge,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
+          ),
         ),
-        backgroundColor: ColorResources.black.withOpacity(0.5),
-        actionsAlignment: MainAxisAlignment.center,
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: CustomButton(
-              onTap: () {
-                NS.pushReplacementUntil(context, const FormPersonalScreen());
-              },
-              btnColor: ColorResources.primary,
-              isBorderRadius: true,
-              sizeBorderRadius: 30.0,
-              customText: true,
-              text: Text('Ok',
+      ],
+    );
+  }
+
+  static AwesomeDialog showWarning(BuildContext context,
+      {required String warning}) {
+    return AwesomeDialog(
+        autoHide: const Duration(seconds: 5),
+        context: context,
+        animType: AnimType.scale,
+        dialogType: DialogType.warning,
+        btnOkText: "Ok",
+        btnOkColor: ColorResources.secondary,
+        btnOkOnPress: () {},
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Peringatan',
+                style: robotoRegular.copyWith(
+                    fontSize: Dimensions.fontSizeExtraLarge,
+                    fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Text(
+                warning,
                 style: robotoRegular.copyWith(
                   fontSize: Dimensions.fontSizeLarge,
-                  color: ColorResources.white,
-                  fontWeight: FontWeight.w600,
                 ),
+                textAlign: TextAlign.center,
               ),
-            ),
+            ],
           ),
-        ],
-      );
+        ))
+      ..show();
   }
 
-  static AwesomeDialog showWarning(BuildContext context, {required String warning}) {
+  static AwesomeDialog showError(BuildContext context,
+      {required String error}) {
     return AwesomeDialog(
-      autoHide: const Duration(seconds: 5),
-      context: context,
-      animType: AnimType.scale,
-      dialogType: DialogType.warning,
-      btnOkText: "Ok",
-      btnOkColor: ColorResources.secondary,
-      btnOkOnPress: () { 
-
-      },
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Peringatan',
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeExtraLarge,
-                fontWeight: FontWeight.w600
+        autoHide: const Duration(seconds: 5),
+        context: context,
+        animType: AnimType.scale,
+        dialogType: DialogType.error,
+        btnOkText: "Ok",
+        btnOkColor: ColorResources.secondary,
+        btnOkOnPress: () {},
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Ada Kesalahan',
+                style: robotoRegular.copyWith(
+                    fontSize: Dimensions.fontSizeExtraLarge,
+                    fontWeight: FontWeight.w600),
               ),
-            ),
-            const SizedBox(height: 15,),
-            Text(warning,
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeLarge,
+              const SizedBox(
+                height: 15,
               ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      )
-    )..show();
+              Text(
+                error,
+                style: robotoRegular.copyWith(
+                  fontSize: Dimensions.fontSizeLarge,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ))
+      ..show();
   }
 
-  static AwesomeDialog showError(BuildContext context, {required String error}) {
+  static AwesomeDialog showForceLogoutError(BuildContext context,
+      {required String error}) {
     return AwesomeDialog(
-      autoHide: const Duration(seconds: 5),
-      context: context,
-      animType: AnimType.scale,
-      dialogType: DialogType.error,
-      btnOkText: "Ok",
-      btnOkColor: ColorResources.secondary,
-      btnOkOnPress: () { 
-
-      },
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Ada Kesalahan',
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeExtraLarge,
-                fontWeight: FontWeight.w600
+        context: context,
+        dismissOnBackKeyPress: false,
+        dismissOnTouchOutside: false,
+        animType: AnimType.scale,
+        dialogType: DialogType.error,
+        btnOkText: "Ok",
+        btnOkColor: ColorResources.secondary,
+        btnOkOnPress: () {
+          context.read<AuthProvider>().logout(context);
+        },
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Mohon Maaf',
+                style: robotoRegular.copyWith(
+                    fontSize: Dimensions.fontSizeExtraLarge,
+                    fontWeight: FontWeight.w600),
               ),
-            ),
-            const SizedBox(height: 15,),
-            Text(error,
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeLarge,
+              const SizedBox(
+                height: 15,
               ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      )
-    )..show();
+              Text(
+                error,
+                style: robotoRegular.copyWith(
+                  fontSize: Dimensions.fontSizeLarge,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ))
+      ..show();
   }
 
-  static AwesomeDialog showForceLogoutError(BuildContext context, {required String error}) {
+  static AwesomeDialog showSuccess(BuildContext context,
+      {required String msg}) {
     return AwesomeDialog(
-      context: context,
-      dismissOnBackKeyPress: false,
-      dismissOnTouchOutside: false,
-      animType: AnimType.scale,
-      dialogType: DialogType.error,
-      btnOkText: "Ok",
-      btnOkColor: ColorResources.secondary,
-      btnOkOnPress: () { 
-        context.read<AuthProvider>().logout(context);
-      },
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Mohon Maaf',
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeExtraLarge,
-                fontWeight: FontWeight.w600
+        autoHide: const Duration(seconds: 5),
+        context: context,
+        animType: AnimType.scale,
+        dialogType: DialogType.success,
+        btnOkText: "Ok",
+        btnOkColor: ColorResources.secondary,
+        btnOkOnPress: () {},
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Berhasil!',
+                style: robotoRegular.copyWith(
+                    fontSize: Dimensions.fontSizeExtraLarge,
+                    fontWeight: FontWeight.w600),
               ),
-            ),
-            const SizedBox(height: 15,),
-            Text(error,
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeLarge,
+              const SizedBox(
+                height: 15,
               ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      )
-    )..show();
+              Text(
+                msg,
+                style: robotoRegular.copyWith(
+                  fontSize: Dimensions.fontSizeLarge,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ))
+      ..show();
   }
 
-  static AwesomeDialog showSuccess(BuildContext context, {required String msg}) {
+  static AwesomeDialog showUnexpectedError(BuildContext context,
+      {required String errorCode}) {
     return AwesomeDialog(
-      autoHide: const Duration(seconds: 5),
-      context: context,
-      animType: AnimType.scale,
-      dialogType: DialogType.success,
-      btnOkText: "Ok",
-      btnOkColor: ColorResources.secondary,
-      btnOkOnPress: () { 
-
-      },
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Berhasil!',
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeExtraLarge,
-                fontWeight: FontWeight.w600
+        autoHide: const Duration(seconds: 5),
+        context: context,
+        animType: AnimType.scale,
+        dialogType: DialogType.error,
+        btnOkText: "Ok",
+        btnOkColor: ColorResources.secondary,
+        btnOkOnPress: () {},
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Ada Kesalahan',
+                style: robotoRegular.copyWith(
+                    fontSize: Dimensions.fontSizeExtraLarge,
+                    fontWeight: FontWeight.w600),
               ),
-            ),
-            const SizedBox(height: 15,),
-            Text(msg,
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeLarge,
+              const SizedBox(
+                height: 15,
               ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      )
-    )..show();
-  }
-
-  static AwesomeDialog showUnexpectedError(BuildContext context, {required String errorCode}) {
-    return AwesomeDialog(
-      autoHide: const Duration(seconds: 5),
-      context: context,
-      animType: AnimType.scale,
-      dialogType: DialogType.error,
-      btnOkText: "Ok",
-      btnOkColor: ColorResources.secondary,
-      btnOkOnPress: () { 
-
-      },
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Ada Kesalahan',
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeExtraLarge,
-                fontWeight: FontWeight.w600
+              Text(
+                'Error tidak terduga dalam aplikasi.\n(Kode Error: $errorCode)',
+                style: robotoRegular.copyWith(
+                  fontSize: Dimensions.fontSizeLarge,
+                ),
+                textAlign: TextAlign.center,
               ),
-            ),
-            const SizedBox(height: 15,),
-            Text('Error tidak terduga dalam aplikasi.\n(Kode Error: $errorCode)',
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeLarge,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      )
-    )..show();
+            ],
+          ),
+        ))
+      ..show();
   }
 
   static AwesomeDialog askLogout(BuildContext context) {
     return AwesomeDialog(
-      context: context,
-      animType: AnimType.scale,
-      btnOkText: "Log Out",
-      btnOkColor: Colors.red,
-      btnOkOnPress: () { 
-        context.read<AuthProvider>().logout(context);
-      },
-      btnCancelText: "Batal",
-      btnCancelColor: ColorResources.blueDrawerPrimary,
-      btnCancelOnPress: () { 
-
-      },
-      customHeader: Image.asset('assets/images/avatar/avatar-logout.png',
-        height: 80.0,
-        width: 80.0,
-        fit: BoxFit.fitWidth,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Apakah anda yakin ingin melakukan Log Out?',
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeLarge,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
+        context: context,
+        animType: AnimType.scale,
+        btnOkText: "Log Out",
+        btnOkColor: Colors.red,
+        btnOkOnPress: () {
+          context.read<AuthProvider>().logout(context);
+        },
+        btnCancelText: "Batal",
+        btnCancelColor: ColorResources.blueDrawerPrimary,
+        btnCancelOnPress: () {},
+        customHeader: Image.asset(
+          'assets/images/avatar/avatar-logout.png',
+          height: 80.0,
+          width: 80.0,
+          fit: BoxFit.fitWidth,
         ),
-      )
-    )..show();
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Apakah anda yakin ingin melakukan Log Out?',
+                style: robotoRegular.copyWith(
+                  fontSize: Dimensions.fontSizeLarge,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ))
+      ..show();
   }
 
-  static showLoaderDialog(BuildContext context){
-    AlertDialog alert=AlertDialog(
+  static showLoaderDialog(BuildContext context) {
+    AlertDialog alert = AlertDialog(
       content: Row(
         children: [
           const CircularProgressIndicator(),
-          Container(margin: const EdgeInsets.only(left: 15),child: const Text("Loading..." )),
-        ],),
+          Container(
+              margin: const EdgeInsets.only(left: 15),
+              child: const Text("Loading...")),
+        ],
+      ),
     );
-    showDialog(barrierDismissible: false,
-      context:context,
-      builder:(BuildContext context){
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
         return alert;
       },
     );

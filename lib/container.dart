@@ -36,6 +36,10 @@ import 'package:hp3ki/providers/region_dropdown/region_dropdown.dart';
 import 'package:hp3ki/providers/sos/sos.dart';
 import 'package:hp3ki/providers/splash/splash.dart';
 import 'package:hp3ki/providers/upgrade_member/upgrade_member.dart';
+import 'package:hp3ki/views/screens/shipping_address/domain/shipping_address_repository.dart';
+import 'package:hp3ki/views/screens/shipping_address/persentation/providers/shipping_address_provider.dart';
+import 'package:hp3ki/views/screens/shop_cart/domain/shop_cart_repository.dart';
+import 'package:hp3ki/views/screens/shop_cart/persentation/providers/shop_cart_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:hp3ki/services/location.dart';
@@ -47,118 +51,120 @@ Future<void> init() async {
 
   //Api
   getIt.registerLazySingleton(() => NewsRepo(
-    dioClient: null,
-  ));
+        dioClient: null,
+      ));
   getIt.registerLazySingleton(() => MembernearRepo(
-    dioClient: null,
-  ));
+        dioClient: null,
+      ));
   getIt.registerLazySingleton(() => SosRepo(
-    dioClient: null,
-  ));
+        dioClient: null,
+      ));
   getIt.registerLazySingleton(() => InboxRepo(
-    dioClient: null,
-  ));
+        dioClient: null,
+      ));
   getIt.registerLazySingleton(() => FeedRepo(
-    dioClient: null,
-  ));
+        dioClient: null,
+      ));
   getIt.registerLazySingleton(() => CheckInRepo(
-    dioClient: null,
-  ));
+        dioClient: null,
+      ));
   getIt.registerLazySingleton(() => EventRepo(
-    dioClient: null,
-  ));
+        dioClient: null,
+      ));
   getIt.registerLazySingleton(() => FirebaseRepo(
-    dioClient: null,
-  ));
+        dioClient: null,
+      ));
   getIt.registerLazySingleton(() => ProfileRepo(
-    dioClient: null,
-  ));
+        dioClient: null,
+      ));
   getIt.registerLazySingleton(() => AuthRepo(
-    dioClient: null,
-  ));
+        dioClient: null,
+      ));
   getIt.registerLazySingleton(() => MediaRepo(
-    dioClient: null,
-  ));
+        dioClient: null,
+      ));
   getIt.registerLazySingleton(() => MaintenanceRepo(
-    dioClient: null,
-  ));
+        dioClient: null,
+      ));
   getIt.registerLazySingleton(() => RegionDropdownRepo(
-    dioClient: null,
-  ));
+        dioClient: null,
+      ));
   getIt.registerLazySingleton(() => BannerRepo(
-    dioClient: null,
-  ));
+        dioClient: null,
+      ));
   getIt.registerLazySingleton(() => UpgradeMemberRepo(
-    dioClient: null,
-  ));
+        dioClient: null,
+      ));
   getIt.registerLazySingleton(() => PPOBRepo(
-    dioClient: null,
-  ));
-
+        dioClient: null,
+      ));
 
   //Provider
   getIt.registerFactory(() => FirebaseProvider(
-    fr: getIt(),
-  ));
+        fr: getIt(),
+      ));
   getIt.registerFactory(() => SplashProvider(
-    mr: getIt(),
-  ));
-  getIt.registerFactory(() => InternetProvider(
-  ));
-  getIt.registerFactory(() => LocalizationProvider( ));
+        mr: getIt(),
+      ));
+  getIt.registerFactory(() => InternetProvider());
+  getIt.registerFactory(() => LocalizationProvider());
   getIt.registerFactory(() => AuthProvider(
-    ar: getIt(),
-  ));
+        ar: getIt(),
+      ));
   getIt.registerFactory(() => NewsProvider(
-    nr: getIt(),
-  ));
+        nr: getIt(),
+      ));
   getIt.registerFactory(() => PPOBProvider(
-    pr: getIt(),
-  ));
-  getIt.registerFactory(() => LocationProvider( ));
+        pr: getIt(),
+      ));
+  getIt.registerFactory(() => LocationProvider());
   getIt.registerFactory(() => MembernearProvider(
-    lp: getIt(),
-    nr: getIt(),
-  ));
+        lp: getIt(),
+        nr: getIt(),
+      ));
   getIt.registerFactory(() => SosProvider(
-    sr: getIt(),
-    lp: getIt(),
-  ));
+        sr: getIt(),
+        lp: getIt(),
+      ));
   getIt.registerFactory(() => InboxProvider(
-    ir: getIt(),
-  ));
+        ir: getIt(),
+      ));
   getIt.registerFactory(() => FeedProvider(
-    fr: getIt(),
-  ));
+        fr: getIt(),
+      ));
   getIt.registerFactory(() => CheckInProvider(
-    cr: getIt(),
-    lp: getIt(),
-  ));
+        cr: getIt(),
+        lp: getIt(),
+      ));
   getIt.registerFactory(() => EventProvider(
-    er: getIt(),
-  ));
+        er: getIt(),
+      ));
   getIt.registerFactory(() => ProfileProvider(
-    ap: getIt(),
-    pr: getIt(),
-  ));
+        ap: getIt(),
+        pr: getIt(),
+      ));
   getIt.registerLazySingleton(() => MediaProvider(
-    mr: getIt(),
-  ));
+        mr: getIt(),
+      ));
   getIt.registerLazySingleton(() => MaintenanceProvider(
-    mr: getIt(),
-  ));
+        mr: getIt(),
+      ));
   getIt.registerLazySingleton(() => RegionDropdownProvider(
-    rr: getIt(),
-  ));
+        rr: getIt(),
+      ));
   getIt.registerLazySingleton(() => BannerProvider(
-    br: getIt(),
-  ));
+        br: getIt(),
+      ));
   getIt.registerLazySingleton(() => UpgradeMemberProvider(
-    umr: getIt(),
-  ));
-  
+        umr: getIt(),
+      ));
+
   //External
   SharedPreferences sp = await SharedPreferences.getInstance();
   getIt.registerLazySingleton(() => sp);
   getIt.registerLazySingleton(() => Dio());
+  getIt.registerLazySingleton<ShopCartProvider>(
+      () => ShopCartProvider(repo: ShopCartRepository()));
+  getIt.registerLazySingleton<ShippingAddressProvider>(
+      () => ShippingAddressProvider(repo: ShippingAddressRepository()));
 }

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:chewie/chewie.dart';
 import 'package:hp3ki/data/models/feed/feedmedia.dart';
@@ -10,13 +9,12 @@ import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 
-
 class PostVideo extends StatefulWidget {
   final FeedMedia media;
   final String caption;
 
   const PostVideo({
-    Key? key, 
+    Key? key,
     required this.media,
     required this.caption,
   }) : super(key: key);
@@ -26,27 +24,27 @@ class PostVideo extends StatefulWidget {
 }
 
 class _PostVideoState extends State<PostVideo> {
-
   VideoPlayerController? videoPlayerC;
   ChewieController? chewieC;
 
   Future<void> getData() async {
-      videoPlayerC = VideoPlayerController.network(widget.media.path!)
-      ..setLooping(false)
-      ..initialize().then((_) {
-        setState(() { });
-      });
-      chewieC = ChewieController(
-        videoPlayerController: videoPlayerC!,
-        aspectRatio: videoPlayerC!.value.aspectRatio,
-        autoPlay: false,
-        looping: false,
-      );
+    videoPlayerC =
+        VideoPlayerController.networkUrl(Uri.parse(widget.media.path ?? "-"))
+          ..setLooping(false)
+          ..initialize().then((_) {
+            setState(() {});
+          });
+    chewieC = ChewieController(
+      videoPlayerController: videoPlayerC!,
+      aspectRatio: videoPlayerC!.value.aspectRatio,
+      autoPlay: false,
+      looping: false,
+    );
   }
 
   @override
   void initState() {
-    super.initState(); 
+    super.initState();
 
     getData();
   }
@@ -55,7 +53,7 @@ class _PostVideoState extends State<PostVideo> {
   void dispose() {
     videoPlayerC?.dispose();
     chewieC?.dispose();
-    
+
     super.dispose();
   }
 
@@ -65,15 +63,14 @@ class _PostVideoState extends State<PostVideo> {
   }
 
   Widget buildUI() {
-    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-
         Container(
           margin: const EdgeInsets.all(Dimensions.marginSizeDefault),
-          child: ReadMoreText(widget.caption,
+          child: ReadMoreText(
+            widget.caption,
             style: poppinsRegular.copyWith(
               fontSize: Dimensions.fontSizeDefault,
             ),
@@ -83,73 +80,66 @@ class _PostVideoState extends State<PostVideo> {
             trimCollapsedText: getTranslated("READ_MORE", context),
             trimExpandedText: '\n${getTranslated("LESS_MORE", context)}',
             moreStyle: poppinsRegular.copyWith(
-              fontSize: Dimensions.fontSizeDefault,
-              fontWeight: FontWeight.w600
-            ),
+                fontSize: Dimensions.fontSizeDefault,
+                fontWeight: FontWeight.w600),
             lessStyle: poppinsRegular.copyWith(
-              fontSize: Dimensions.fontSizeDefault,
-              fontWeight: FontWeight.w600
-            ),
+                fontSize: Dimensions.fontSizeDefault,
+                fontWeight: FontWeight.w600),
           ),
         ),
-
         videoPlayerC != null
-        ? Container(
-            margin: const EdgeInsets.only(
-              top: 30.0,
-              bottom: 30.0
-            ),
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                AspectRatio(
-                  aspectRatio: 1.0,
-                  child: Chewie(
-                    controller: chewieC!,
-                  )
+            ? Container(
+                margin: const EdgeInsets.only(top: 30.0, bottom: 30.0),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    AspectRatio(
+                        aspectRatio: 1.0,
+                        child: Chewie(
+                          controller: chewieC!,
+                        )),
+                    // Positioned.fill(
+                    //   child: GestureDetector(
+                    //     behavior: HitTestBehavior.opaque,
+                    //     onTap: () => videoPlayerC!.value.isPlaying
+                    //     ? videoPlayerC!.pause()
+                    //     : videoPlayerC!.play(),
+                    //     child: Stack(
+                    //       clipBehavior: Clip.none,
+                    //       children: [
+                    //         videoPlayerC!.value.isPlaying
+                    //         ? Container()
+                    //         : Container(
+                    //             alignment: Alignment.center,
+                    //             child: const Icon(
+                    //               Icons.play_arrow,
+                    //               color: ColorResources.white,
+                    //               size: 80.0
+                    //             ),
+                    //           ),
+                    //         Positioned(
+                    //           bottom: 0.0,
+                    //           left: 0.0,
+                    //           right: 0.0,
+                    //           child: VideoProgressIndicator(
+                    //             videoPlayerC!,
+                    //             allowScrubbing: true,
+                    //           )
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   )
+                    // )
+                  ],
                 ),
-                // Positioned.fill(
-                //   child: GestureDetector(
-                //     behavior: HitTestBehavior.opaque,
-                //     onTap: () => videoPlayerC!.value.isPlaying 
-                //     ? videoPlayerC!.pause() 
-                //     : videoPlayerC!.play(),
-                //     child: Stack(
-                //       clipBehavior: Clip.none,
-                //       children: [
-                //         videoPlayerC!.value.isPlaying 
-                //         ? Container() 
-                //         : Container(
-                //             alignment: Alignment.center,
-                //             child: const Icon(
-                //               Icons.play_arrow,
-                //               color: ColorResources.white,
-                //               size: 80.0
-                //             ),
-                //           ),
-                //         Positioned(
-                //           bottom: 0.0,
-                //           left: 0.0,
-                //           right: 0.0,
-                //           child: VideoProgressIndicator(
-                //             videoPlayerC!,
-                //             allowScrubbing: true,
-                //           )
-                //         ),
-                //       ],
-                //     ),
-                //   )
-                // )
-              ],
-            ),
-          )  
-        : const SizedBox(
-          height: 200,
-          child: SpinKitThreeBounce(
-            size: 20.0,
-            color: ColorResources.primary,
-          ),
-        )
+              )
+            : const SizedBox(
+                height: 200,
+                child: SpinKitThreeBounce(
+                  size: 20.0,
+                  color: ColorResources.primary,
+                ),
+              )
       ],
     );
   }

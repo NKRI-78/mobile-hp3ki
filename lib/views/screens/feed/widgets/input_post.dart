@@ -1,9 +1,9 @@
-
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:hp3ki/utils/shared_preferences.dart';
+import 'package:multi_image_picker_plus/multi_image_picker_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:hp3ki/providers/profile/profile.dart';
 import 'package:hp3ki/services/navigation.dart';
@@ -11,7 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:lecle_flutter_absolute_path/lecle_flutter_absolute_path.dart';
 import 'package:sn_progress_dialog/progress_dialog.dart';
-import 'package:multi_image_picker2/multi_image_picker2.dart';
+
 import 'package:video_compress/video_compress.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
@@ -29,7 +29,7 @@ import 'package:hp3ki/utils/custom_themes.dart';
 
 class InputPostComponent extends StatefulWidget {
   const InputPostComponent({
-    Key? key, 
+    Key? key,
   }) : super(key: key);
   @override
   _InputPostComponentState createState() => _InputPostComponentState();
@@ -38,88 +38,87 @@ class InputPostComponent extends StatefulWidget {
 class _InputPostComponentState extends State<InputPostComponent> {
   ImageSource? imageSource;
   File? fileVideo;
-  Uint8List? thumbnail; 
+  Uint8List? thumbnail;
   int? videoSize;
   List<Asset> images = [];
   List<Asset> resultList = [];
   List<File> files = [];
-  final String membershipStatus = SharedPrefs.getUserMemberType().trim(); 
-
+  final String membershipStatus = SharedPrefs.getUserMemberType().trim();
 
   void uploadPic() async {
-    if(membershipStatus != "PLATINUM" || membershipStatus == "-"){
+    if (membershipStatus != "PLATINUM" || membershipStatus == "-") {
       context.read<ProfileProvider>().showNonPlatinumLimit(context);
     } else {
-      imageSource = await showDialog<ImageSource>(context: context, builder: (context) => 
-        AlertDialog(
-          title: Text(getTranslated("SOURCE_IMAGE", context),
-          style: poppinsRegular.copyWith(
-            fontSize: Dimensions.fontSizeDefault,
-            color: ColorResources.primary,
-            fontWeight: FontWeight.w600, 
-          ),
-        ),
-        actions: [
-          MaterialButton(
-            child: Text(getTranslated("CAMERA", context),
-              style: poppinsRegular.copyWith(
-                fontSize: Dimensions.fontSizeDefault,
-                color: ColorResources.black
-              )
-            ),
-            onPressed: () => Navigator.pop(context, ImageSource.camera),
-          ),
-          MaterialButton(
-            child: Text(getTranslated("GALLERY", context),
-              style: poppinsRegular.copyWith(
-                fontSize: Dimensions.fontSizeDefault,
-                color: ColorResources.black
-              ),
-            ),
-            onPressed: () => Navigator.pop(context, ImageSource.gallery)
-            )
-          ],
-        )
-      );
-      if(imageSource == ImageSource.camera) {
+      imageSource = await showDialog<ImageSource>(
+          context: context,
+          builder: (context) => AlertDialog(
+                title: Text(
+                  getTranslated("SOURCE_IMAGE", context),
+                  style: poppinsRegular.copyWith(
+                    fontSize: Dimensions.fontSizeDefault,
+                    color: ColorResources.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                actions: [
+                  MaterialButton(
+                    child: Text(getTranslated("CAMERA", context),
+                        style: poppinsRegular.copyWith(
+                            fontSize: Dimensions.fontSizeDefault,
+                            color: ColorResources.black)),
+                    onPressed: () => Navigator.pop(context, ImageSource.camera),
+                  ),
+                  MaterialButton(
+                      child: Text(
+                        getTranslated("GALLERY", context),
+                        style: poppinsRegular.copyWith(
+                            fontSize: Dimensions.fontSizeDefault,
+                            color: ColorResources.black),
+                      ),
+                      onPressed: () =>
+                          Navigator.pop(context, ImageSource.gallery))
+                ],
+              ));
+      if (imageSource == ImageSource.camera) {
         XFile? pickedFile = await ImagePicker().pickImage(
-          source: ImageSource.camera,
-          maxHeight: 480.0, 
-          maxWidth: 640.0,
-          imageQuality: 70
-        );
-        if(pickedFile != null) {
-          NS.push(context,  CreatePostImageCameraScreen(
-            pickedFile
-          ));
+            source: ImageSource.camera,
+            maxHeight: 480.0,
+            maxWidth: 640.0,
+            imageQuality: 70);
+        if (pickedFile != null) {
+          NS.push(context, CreatePostImageCameraScreen(pickedFile));
         }
       }
-      if(imageSource == ImageSource.gallery) {
+      if (imageSource == ImageSource.gallery) {
         files = [];
         resultList = await MultiImagePicker.pickImages(
-          maxImages: 5,
-          enableCamera: false, 
+          iosOptions: const IOSOptions(
+              settings: CupertinoSettings(selection: SelectionSetting(max: 5))),
+          androidOptions: const AndroidOptions(maxImages: 5),
           selectedAssets: images,
         );
         for (var imageAsset in resultList) {
-          String? filePath = await LecleFlutterAbsolutePath.getAbsolutePath(uri: imageAsset.identifier!);
-          File compressedFile = await FlutterNativeImage.compressImage(filePath!,
-            quality: 70, 
-            percentage: 70
-          );
-          setState(() => files.add(File(compressedFile.path))); 
+          String? filePath = await LecleFlutterAbsolutePath.getAbsolutePath(
+              uri: imageAsset.identifier);
+          File compressedFile = await FlutterNativeImage.compressImage(
+              filePath!,
+              quality: 70,
+              percentage: 70);
+          setState(() => files.add(File(compressedFile.path)));
         }
         Future.delayed(const Duration(seconds: 1), () {
-          NS.push(context, CreatePostImageScreen(
-            files: files,
-          ));
+          NS.push(
+              context,
+              CreatePostImageScreen(
+                files: files,
+              ));
         });
       }
     }
   }
 
   void postLink() {
-    if(membershipStatus != "PLATINUM" || membershipStatus == "-"){
+    if (membershipStatus != "PLATINUM" || membershipStatus == "-") {
       context.read<ProfileProvider>().showNonPlatinumLimit(context);
     } else {
       NS.push(context, const CreatePostLink());
@@ -127,54 +126,52 @@ class _InputPostComponentState extends State<InputPostComponent> {
   }
 
   Future<void> uploadVid() async {
-    if(membershipStatus != "PLATINUM" || membershipStatus == "-"){
+    if (membershipStatus != "PLATINUM" || membershipStatus == "-") {
       context.read<ProfileProvider>().showNonPlatinumLimit(context);
     } else {
       ProgressDialog pr = ProgressDialog(context: context);
       FilePickerResult? result = await FilePicker.platform.pickFiles(
-        type: FileType.video,
-        allowMultiple: false,
-        allowCompression: true,
-        withData: false,
-        withReadStream: true,
-        onFileLoading: (FilePickerStatus filePickerStatus) {
-          if(filePickerStatus == FilePickerStatus.picking) {
-            pr.show(
-              max: 2,
-              msg: "${getTranslated("PLEASE_WAIT", context)}...",
-              borderRadius: 10.0,
-              backgroundColor: ColorResources.white,
-              progressBgColor: ColorResources.primary,
-              progressValueColor: ColorResources.white
-            ); 
-          }
-          if(filePickerStatus == FilePickerStatus.done) {
-            pr.close();
-          }
-        }
-      );
-      if(result != null) {
+          type: FileType.video,
+          allowMultiple: false,
+          allowCompression: true,
+          withData: false,
+          withReadStream: true,
+          onFileLoading: (FilePickerStatus filePickerStatus) {
+            if (filePickerStatus == FilePickerStatus.picking) {
+              pr.show(
+                  max: 2,
+                  msg: "${getTranslated("PLEASE_WAIT", context)}...",
+                  borderRadius: 10.0,
+                  backgroundColor: ColorResources.white,
+                  progressBgColor: ColorResources.primary,
+                  progressValueColor: ColorResources.white);
+            }
+            if (filePickerStatus == FilePickerStatus.done) {
+              pr.close();
+            }
+          });
+      if (result != null) {
         File file = File(result.files.single.path!);
         int sizeInBytes = file.lengthSync();
         double sizeInMb = sizeInBytes / (1024 * 1024);
-        if(sizeInMb > 200) {
-          ShowSnackbar.snackbar(context, getTranslated("SIZE_MAXIMUM", context), "", ColorResources.error);
+        if (sizeInMb > 200) {
+          ShowSnackbar.snackbar(context, getTranslated("SIZE_MAXIMUM", context),
+              "", ColorResources.error);
           return;
         }
         setState(() {
           fileVideo = file;
         });
-        await Future.wait([
-          generateThumbnail(fileVideo!),
-          getVideoSize(fileVideo!)
-        ]);
+        await Future.wait(
+            [generateThumbnail(fileVideo!), getVideoSize(fileVideo!)]);
         Future.delayed(const Duration(seconds: 1), () {
-          NS.push(context, CreatePostVideoScreen(
-            file: file,
-            thumbnail: thumbnail,
-            videoSize: videoSize! / 1000
-          ));
-        }); 
+          NS.push(
+              context,
+              CreatePostVideoScreen(
+                  file: file,
+                  thumbnail: thumbnail,
+                  videoSize: videoSize! / 1000));
+        });
       }
     }
   }
@@ -187,38 +184,50 @@ class _InputPostComponentState extends State<InputPostComponent> {
   }
 
   Future<void> getVideoSize(File file) async {
-    final size = await file.length(); 
+    final size = await file.length();
     setState(() {
       videoSize = size;
     });
   }
 
   void uploadDoc() async {
-    if(membershipStatus != "PLATINUM" || membershipStatus == "-"){
+    if (membershipStatus != "PLATINUM" || membershipStatus == "-") {
       context.read<ProfileProvider>().showNonPlatinumLimit(context);
     } else {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
-        allowedExtensions: ["pdf","doc","docx","xls","xlsx","ppt","ppt","pptx","txt"],
+        allowedExtensions: [
+          "pdf",
+          "doc",
+          "docx",
+          "xls",
+          "xlsx",
+          "ppt",
+          "ppt",
+          "pptx",
+          "txt"
+        ],
         allowCompression: true,
       );
-      if(result != null) {
+      if (result != null) {
         for (int i = 0; i < result.files.length; i++) {
-          if(result.files[i].size > 50000000) {
-            ShowSnackbar.snackbar(context, getTranslated("SIZE_MAXIMUM", context), "", ColorResources.error);
+          if (result.files[i].size > 50000000) {
+            ShowSnackbar.snackbar(
+                context,
+                getTranslated("SIZE_MAXIMUM", context),
+                "",
+                ColorResources.error);
             return;
-          } 
+          }
         }
-        NS.push(context,  CreatePostDocScreen(
-          files: result
-        ));    
+        NS.push(context, CreatePostDocScreen(files: result));
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return buildUI(); 
+    return buildUI();
   }
 
   Widget buildUI() {
@@ -228,74 +237,68 @@ class _InputPostComponentState extends State<InputPostComponent> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [ 
-                Consumer<ProfileProvider>(
-                  builder: (BuildContext context, ProfileProvider profileProvider, Widget? child) {
-                    return CachedNetworkImage( 
-                      imageUrl: profileProvider.user?.avatar ?? "https://p7.hiclipart.com/preview/92/319/609/computer-icons-person-clip-art-name.jpg",
-                      imageBuilder: (BuildContext context, ImageProvider imageProvider) {
-                        return CircleAvatar(
-                          backgroundColor: ColorResources.transparent,
-                          backgroundImage: imageProvider,
-                          radius: 20.0,
-                        );
-                      },
-                      placeholder: (BuildContext context, _) {
-                        return const CircleAvatar(
-                          backgroundColor: ColorResources.black,
-                          backgroundImage: AssetImage('assets/images/icons/ic-person.png'),
-                          radius: 20.0,
-                        );
-                      },
-                      errorWidget: (BuildContext context, _, dynamic data) {
-                        return const CircleAvatar(
-                          backgroundColor: ColorResources.black,
-                          backgroundImage: AssetImage('assets/images/icons/ic-person.png'),
-                          radius: 20.0,
-                        ); 
-                      },
+            Row(mainAxisSize: MainAxisSize.max, children: [
+              Consumer<ProfileProvider>(builder: (BuildContext context,
+                  ProfileProvider profileProvider, Widget? child) {
+                return CachedNetworkImage(
+                  imageUrl: profileProvider.user?.avatar ??
+                      "https://p7.hiclipart.com/preview/92/319/609/computer-icons-person-clip-art-name.jpg",
+                  imageBuilder:
+                      (BuildContext context, ImageProvider imageProvider) {
+                    return CircleAvatar(
+                      backgroundColor: ColorResources.transparent,
+                      backgroundImage: imageProvider,
+                      radius: 20.0,
                     );
-                  }
-                ),
-                const SizedBox(width: 8.0),
-                Expanded(
-                  child: TextField(
-                    readOnly: true,
-                    style: poppinsRegular.copyWith(
-                      fontSize: Dimensions.fontSizeDefault
-                    ),
-                    maxLines: 1,
-                    decoration: InputDecoration(
+                  },
+                  placeholder: (BuildContext context, _) {
+                    return const CircleAvatar(
+                      backgroundColor: ColorResources.black,
+                      backgroundImage:
+                          AssetImage('assets/images/icons/ic-person.png'),
+                      radius: 20.0,
+                    );
+                  },
+                  errorWidget: (BuildContext context, _, dynamic data) {
+                    return const CircleAvatar(
+                      backgroundColor: ColorResources.black,
+                      backgroundImage:
+                          AssetImage('assets/images/icons/ic-person.png'),
+                      radius: 20.0,
+                    );
+                  },
+                );
+              }),
+              const SizedBox(width: 8.0),
+              Expanded(
+                child: TextField(
+                  readOnly: true,
+                  style: poppinsRegular.copyWith(
+                      fontSize: Dimensions.fontSizeDefault),
+                  maxLines: 1,
+                  decoration: InputDecoration(
                       focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.grey, 
-                          width: 1.0
-                        ),
+                        borderSide: BorderSide(color: Colors.grey, width: 1.0),
                       ),
                       enabledBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.grey,
-                          width: 1.0
-                        ),
+                        borderSide: BorderSide(color: Colors.grey, width: 1.0),
                       ),
                       hintText: getTranslated("WRITE_POST", context),
                       hintStyle: poppinsRegular.copyWith(
-                        fontSize: Dimensions.fontSizeDefault
-                      )
-                    ),
-                    onTap: () {
-                      if(membershipStatus != "PLATINUM" || membershipStatus == "-"){
-                        context.read<ProfileProvider>().showNonPlatinumLimit(context);
-                      } else {
-                        NS.push(context, const CreatePostText());
-                      }
-                    },
-                  ),
-                )
-              ]
-            ),
+                          fontSize: Dimensions.fontSizeDefault)),
+                  onTap: () {
+                    if (membershipStatus != "PLATINUM" ||
+                        membershipStatus == "-") {
+                      context
+                          .read<ProfileProvider>()
+                          .showNonPlatinumLimit(context);
+                    } else {
+                      NS.push(context, const CreatePostText());
+                    }
+                  },
+                ),
+              )
+            ]),
             SizedBox(
               height: 56.0,
               child: Row(
@@ -304,10 +307,8 @@ class _InputPostComponentState extends State<InputPostComponent> {
                 children: [
                   IconButton(
                     onPressed: uploadPic,
-                    icon: const Icon(
-                      Icons.image,
-                      color: ColorResources.primary
-                    ),
+                    icon:
+                        const Icon(Icons.image, color: ColorResources.primary),
                   ),
                   IconButton(
                     onPressed: uploadVid,
@@ -317,12 +318,11 @@ class _InputPostComponentState extends State<InputPostComponent> {
                     ),
                   ),
                   IconButton(
-                    onPressed: postLink, 
+                    onPressed: postLink,
                     icon: const Icon(
                       Icons.attach_file,
                       color: ColorResources.primary,
                     ),
-                    
                   ),
                   IconButton(
                     onPressed: uploadDoc,

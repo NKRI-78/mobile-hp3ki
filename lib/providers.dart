@@ -18,11 +18,12 @@ import 'package:hp3ki/providers/region_dropdown/region_dropdown.dart';
 import 'package:hp3ki/providers/sos/sos.dart';
 import 'package:hp3ki/providers/splash/splash.dart';
 import 'package:hp3ki/providers/upgrade_member/upgrade_member.dart';
+import 'package:hp3ki/views/screens/shipping_address/persentation/providers/shipping_address_provider.dart';
+import 'package:hp3ki/views/screens/shop_cart/persentation/providers/shop_cart_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 import 'package:hp3ki/services/location.dart';
-
 
 import 'container.dart' as c;
 
@@ -51,10 +52,14 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider(create: (_) => c.getIt<RegionDropdownProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<BannerProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<UpgradeMemberProvider>()),
+  ChangeNotifierProvider(
+      create: (_) => c.getIt<ShopCartProvider>()..fetchCarts()),
+  ChangeNotifierProvider(
+      create: (_) =>
+          c.getIt<ShippingAddressProvider>()..fetchAllShippingAddress()),
   StreamProvider<UserLocation>(
     initialData: UserLocation(latitude: 0.0, longitude: 0.0),
     create: (_) => LocationService().locationStream,
   ),
-
   Provider.value(value: const <String, dynamic>{})
 ];
