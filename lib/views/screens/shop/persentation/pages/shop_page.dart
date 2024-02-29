@@ -1,8 +1,13 @@
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:hp3ki/providers/ppob/ppob.dart';
+import 'package:hp3ki/providers/profile/profile.dart';
+import 'package:hp3ki/services/navigation.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/dio.dart';
+import 'package:hp3ki/views/screens/my_store/persentation/pages/my_store_page.dart';
+import 'package:hp3ki/views/screens/my_store_create/persentation/pages/store_open_page.dart';
 import 'package:hp3ki/views/screens/shop/data/models/shop.dart';
 import 'package:hp3ki/views/screens/shop/domain/shop_repository.dart';
 import 'package:hp3ki/views/screens/shop/persentation/providers/shop_provider.dart';
@@ -38,6 +43,7 @@ class ShopView extends StatelessWidget {
     return Consumer<ShopProvider>(builder: (context, provider, child) {
       return Scaffold(
           appBar: AppBar(
+            title: const Text('Market'),
             actions: [
               IconButton(
                 onPressed: () {
@@ -46,7 +52,45 @@ class ShopView extends StatelessWidget {
                 icon: const Icon(
                   Icons.shopping_cart_outlined,
                 ),
-              )
+              ),
+              Consumer<PPOBProvider>(builder: (context, ppob, child) {
+                return Consumer<ProfileProvider>(
+                    builder: (context, notifier, child) {
+                  bool hasStore = notifier.user?.storeId != null;
+                  return IconButton(
+                    onPressed: () {
+                      if (!hasStore) {
+                        // if ((ppob.balance ?? 0) <= 20000) {
+                        //   GeneralModal.error(context,
+                        //       msg: getTranslated(
+                        //           "TXT_OPEN_STORE_MINIM_WALLET", context),
+                        //       onOk: () {
+                        //     Navigator.pop(context);
+                        //     NS.push(
+                        //         context,
+                        //         ConfirmPaymentV2(
+                        //           accountNumber: SharedPrefs.getUserPhone(),
+                        //           description: 'Isi Saldo sebesar Rp 20.000',
+                        //           price: 20000,
+                        //           adminFee: 6500,
+                        //           productId:
+                        //               "17805178-2f32-48a3-aab3-ce7a55eb3227",
+                        //           provider: 'asdasd',
+                        //           productName: 'Saldo',
+                        //           type: "topup",
+                        //         ));
+                        //   });
+                        //   return;
+                        // }
+                        NS.push(context, const StoreOpenPage());
+                      } else {
+                        NS.push(context, const MyStorePage());
+                      }
+                    },
+                    icon: const Icon(Icons.store),
+                  );
+                });
+              })
             ],
           ),
           body: SizedBox.expand(
