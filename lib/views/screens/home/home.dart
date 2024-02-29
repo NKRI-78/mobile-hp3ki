@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/widgets.dart';
 
 import 'package:hp3ki/data/models/user/user.dart';
 import 'package:hp3ki/providers/banner/banner.dart';
@@ -182,11 +185,11 @@ class _DashboardScreenState extends State<DashboardScreen>
         "icon": "logo/logo.png",
         "screen": const AboutMenuScreen(),
       },
-      {
-        "name": "Mart",
-        "icon": "bottomsheet/icon-mart.png",
-        "screen": const ComingSoonScreen(title: 'HP3KI Mart'),
-      },
+      // {
+      //   "name": "Mart",
+      //   "icon": "bottomsheet/icon-mart.png",
+      //   "screen": const ComingSoonScreen(title: 'HP3KI Mart'),
+      // },
       {
         "name": "PPOB",
         "icon": "bottomsheet/icon-ppob.png",
@@ -224,19 +227,19 @@ class _DashboardScreenState extends State<DashboardScreen>
       },
       {
         "name": "Market",
-        "icon": "bottomsheet/icon-membernear.png",
+        "icon": "bottomsheet/icon-mart.png",
         "screen": const ShopPage(),
       },
-      {
-        "name": "Mart",
-        "icon": "bottomsheet/icon-mart.png",
-        "screen": const ComingSoonScreen(title: 'HP3KI Mart'),
-      },
-      {
-        "name": "SHOP",
-        "icon": "bottomsheet/icon-membernear.png",
-        "screen": const MembernearScreen(),
-      },
+      // {
+      //   "name": "Mart",
+      //   "icon": "bottomsheet/icon-mart.png",
+      //   "screen": const ComingSoonScreen(title: 'HP3KI Mart'),
+      // },
+      // {
+      //   "name": "SHOP",
+      //   "icon": "bottomsheet/icon-membernear.png",
+      //   "screen": const MembernearScreen(),
+      // },
     ];
 
     return Stack(
@@ -252,7 +255,8 @@ class _DashboardScreenState extends State<DashboardScreen>
             fit: BoxFit.fill,
           ),
         ),
-        Center(
+        Align(
+          alignment: const Alignment(0, 0.3),
           child: AlignedGridView.count(
             physics: const BouncingScrollPhysics(
                 parent: AlwaysScrollableScrollPhysics()),
@@ -334,111 +338,111 @@ class _DashboardScreenState extends State<DashboardScreen>
                   });
                 });
               }
-              return menu[index]["name"] == "Mart" ||
-                      menu[index]["name"] == "SOS" ||
-                      menu[index]["name"] == "Calender"
-                  ? context.watch<ProfileProvider>().isActive != 1
-                      ? const SizedBox()
-                      : Column(
-                          children: [
-                            Bouncing(
-                              onPress: () {
-                                final String membershipStatus =
-                                    SharedPrefs.getUserMemberType().trim();
-                                final selectedMenu = menu[index];
-                                final String selectedMenuName =
-                                    selectedMenu["name"];
-                                final selectedMenuScreen =
-                                    selectedMenu["screen"];
-                                if (membershipStatus != "PLATINUM" ||
-                                    membershipStatus == "-") {
-                                  if (selectedMenuName.contains("Member") ||
-                                      selectedMenuName.contains('Check') ||
-                                      selectedMenuName.contains('SOS')) {
-                                    context
-                                        .read<ProfileProvider>()
-                                        .showNonPlatinumLimit(context);
-                                  } else {
-                                    NS.push(context, selectedMenuScreen);
-                                  }
-                                } else {
-                                  NS.push(context, selectedMenuScreen);
-                                }
-                              },
-                              child: Container(
-                                height: 80.0,
-                                width: 80.0,
-                                padding: const EdgeInsets.all(10.0),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(25.0),
-                                  boxShadow: kElevationToShadow[2],
-                                  color: const Color(0xffE7E4F5),
-                                ),
-                                child: Image.asset(
-                                    'assets/images/${menu[index]["icon"]}'),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              menu[index]["name"],
-                              style: poppinsRegular.copyWith(
-                                color: const Color(0xff101660),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            )
-                          ],
-                        )
-                  : Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Bouncing(
-                          onPress: () {
-                            final String membershipStatus =
-                                SharedPrefs.getUserMemberType().trim();
-                            final selectedMenu = menu[index];
-                            final String selectedMenuName =
-                                selectedMenu["name"];
-                            final selectedMenuScreen = selectedMenu["screen"];
-                            if (membershipStatus != "PLATINUM" ||
-                                membershipStatus == "-") {
-                              if (selectedMenuName.contains("Member") ||
-                                  selectedMenuName.contains('Check') ||
-                                  selectedMenuName.contains('SOS')) {
-                                context
-                                    .read<ProfileProvider>()
-                                    .showNonPlatinumLimit(context);
-                              } else {
-                                NS.push(context, selectedMenuScreen);
-                              }
-                            } else {
-                              NS.push(context, selectedMenuScreen);
-                            }
-                          },
-                          child: Container(
-                            height: 80.0,
-                            width: 80.0,
-                            padding: const EdgeInsets.all(10.0),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25.0),
-                              boxShadow: kElevationToShadow[2],
-                              color: const Color(0xffE7E4F5),
-                            ),
-                            child: Image.asset(
-                                'assets/images/${menu[index]["icon"]}'),
-                          ),
-                        ),
-                        const SizedBox(height: 10.0),
-                        Text(
-                          menu[index]["name"],
-                          style: poppinsRegular.copyWith(
-                            color: const Color(0xff101660),
-                            fontWeight: FontWeight.w600,
-                          ),
-                        )
-                      ],
-                    );
+              // return menu[index]["name"] == "Mart" ||
+              //         menu[index]["name"] == "SOS" ||
+              //         menu[index]["name"] == "Calender"
+              //     ? context.watch<ProfileProvider>().isActive != 1
+              //         ? const SizedBox()
+              //         : Column(
+              //             children: [
+              //               Bouncing(
+              //                 onPress: () {
+              //                   final String membershipStatus =
+              //                       SharedPrefs.getUserMemberType().trim();
+              //                   final selectedMenu = menu[index];
+              //                   final String selectedMenuName =
+              //                       selectedMenu["name"];
+              //                   final selectedMenuScreen =
+              //                       selectedMenu["screen"];
+              //                   if (membershipStatus != "PLATINUM" ||
+              //                       membershipStatus == "-") {
+              //                     if (selectedMenuName.contains("Member") ||
+              //                         selectedMenuName.contains('Check') ||
+              //                         selectedMenuName.contains('SOS')) {
+              //                       context
+              //                           .read<ProfileProvider>()
+              //                           .showNonPlatinumLimit(context);
+              //                     } else {
+              //                       NS.push(context, selectedMenuScreen);
+              //                     }
+              //                   } else {
+              //                     NS.push(context, selectedMenuScreen);
+              //                   }
+              //                 },
+              //                 child: Container(
+              //                   height: 80.0,
+              //                   width: 80.0,
+              //                   padding: const EdgeInsets.all(10.0),
+              //                   decoration: BoxDecoration(
+              //                     borderRadius: BorderRadius.circular(25.0),
+              //                     boxShadow: kElevationToShadow[2],
+              //                     color: const Color(0xffE7E4F5),
+              //                   ),
+              //                   child: Image.asset(
+              //                       'assets/images/${menu[index]["icon"]}'),
+              //                 ),
+              //               ),
+              //               const SizedBox(
+              //                 height: 10,
+              //               ),
+              //               Text(
+              //                 menu[index]["name"],
+              //                 style: poppinsRegular.copyWith(
+              //                   color: const Color(0xff101660),
+              //                   fontWeight: FontWeight.w600,
+              //                 ),
+              //               )
+              //             ],
+              //           )
+              //     :
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Bouncing(
+                    onPress: () {
+                      final String membershipStatus =
+                          SharedPrefs.getUserMemberType().trim();
+                      final selectedMenu = menu[index];
+                      final String selectedMenuName = selectedMenu["name"];
+                      final selectedMenuScreen = selectedMenu["screen"];
+                      if (membershipStatus != "PLATINUM" ||
+                          membershipStatus == "-") {
+                        if (selectedMenuName.contains("Member") ||
+                            selectedMenuName.contains('Check') ||
+                            selectedMenuName.contains('SOS')) {
+                          context
+                              .read<ProfileProvider>()
+                              .showNonPlatinumLimit(context);
+                        } else {
+                          NS.push(context, selectedMenuScreen);
+                        }
+                      } else {
+                        NS.push(context, selectedMenuScreen);
+                      }
+                    },
+                    child: Container(
+                      height: 80.0,
+                      width: 80.0,
+                      padding: const EdgeInsets.all(10.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25.0),
+                        boxShadow: kElevationToShadow[2],
+                        color: const Color(0xffE7E4F5),
+                      ),
+                      child:
+                          Image.asset('assets/images/${menu[index]["icon"]}'),
+                    ),
+                  ),
+                  const SizedBox(height: 10.0),
+                  Text(
+                    menu[index]["name"],
+                    style: poppinsRegular.copyWith(
+                      color: const Color(0xff101660),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  )
+                ],
+              );
             },
           ),
         ),
@@ -489,19 +493,29 @@ class _DashboardScreenState extends State<DashboardScreen>
     );
 
     return BottomAppBar(
-      color: Colors.transparent,
-      height: 120,
+      color: ColorResources.transparent,
+      height: 90,
       notchMargin: 12,
       child: SizedBox(
+          // height: 120,
           width: double.infinity,
           child: Consumer<ProfileProvider>(
             builder: (__, profile, _) {
               return Stack(
+                clipBehavior: Clip.none,
                 children: [
-                  Image.asset(
-                    'assets/images/home/navbar.png',
-                    fit: BoxFit.fitWidth,
-                    width: double.infinity,
+                  Positioned(
+                    bottom: -(MediaQuery.of(context).padding.bottom),
+                    left: 0,
+                    right: 0,
+                    child: Image.asset(
+                      'assets/images/home/navbar.png',
+                      fit: BoxFit.fill,
+                      // height: 200,
+                      width: double.infinity,
+                      height: Platform.isAndroid ? 100 : 150,
+                      // height: 400,
+                    ),
                   ),
                   profile.isActive == 0
                       ? Padding(
@@ -1211,169 +1225,79 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(
             height: 10,
           ),
-          SizedBox(
-            height: 250,
-            width: double.infinity,
-            child: ListView.builder(
-              padding: const EdgeInsets.only(
-                left: Dimensions.marginSizeExtraLarge,
+          ...List.generate(newsProvider.news?.length.clamp(0, 3) ?? 0, (i) {
+            return Container(
+              // height: 200.0,
+              // width: 300.0,
+              margin: const EdgeInsets.all(30),
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                boxShadow: boxShadow,
+                borderRadius: BorderRadius.circular(30.0),
+                color: const Color.fromARGB(141, 68, 99, 158).withOpacity(0.7),
               ),
-              physics: const BouncingScrollPhysics(
-                  parent: AlwaysScrollableScrollPhysics()),
-              scrollDirection: Axis.horizontal,
-              itemCount: newsProvider.news?.length.clamp(0, 3),
-              itemBuilder: (context, i) {
-                return Padding(
-                  padding: const EdgeInsets.only(right: 15.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      context.read<NewsProvider>().getNewsDetail(context,
-                          newsId: newsProvider.news![i].id!);
-                    },
-                    onDoubleTap: () {},
-                    child: Stack(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Image.network(
+                    newsProvider.news![i].image!,
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(
+                      left: Dimensions.marginSizeExtraLarge,
+                      right: Dimensions.marginSizeExtraLarge,
+                      bottom: Dimensions.marginSizeExtraLarge,
+                      top: Dimensions.marginSizeExtraLarge,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(
-                          height: 300,
-                          width: 300,
+                        Text(
+                          newsProvider.news![i].title.toString().length > 85
+                              ? "${newsProvider.news![i].title.toString().substring(0, 85)}..."
+                              : newsProvider.news![i].title
+                                  .toString()
+                                  .toTitleCase(),
+                          style: robotoRegular.copyWith(
+                            color: ColorResources.white.withOpacity(0.8),
+                            fontSize: Dimensions.fontSizeDefault,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
-                        Positioned(
-                          top: 40.0,
-                          child: Material(
-                            color: ColorResources.transparent,
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(30.0),
-                              onTap: () {
-                                context.read<NewsProvider>().getNewsDetail(
-                                    context,
-                                    newsId: newsProvider.news![i].id!);
-                              },
-                              child: Container(
-                                height: 200.0,
-                                width: 300.0,
-                                decoration: BoxDecoration(
-                                  boxShadow: boxShadow,
-                                  borderRadius: BorderRadius.circular(30.0),
-                                  color: const Color.fromARGB(141, 68, 99, 158)
-                                      .withOpacity(0.7),
-                                ),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    const SizedBox(
-                                      height: 60,
-                                    ),
-                                    Container(
-                                      margin: const EdgeInsets.only(
-                                        left: Dimensions.marginSizeExtraLarge,
-                                        right: Dimensions.marginSizeExtraLarge,
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            newsProvider.news![i].title
-                                                        .toString()
-                                                        .length >
-                                                    85
-                                                ? "${newsProvider.news![i].title.toString().substring(0, 85)}..."
-                                                : newsProvider.news![i].title
-                                                    .toString()
-                                                    .toTitleCase(),
-                                            style: robotoRegular.copyWith(
-                                              color: ColorResources.white
-                                                  .withOpacity(0.8),
-                                              fontSize:
-                                                  Dimensions.fontSizeDefault,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                Helper.formatDate(
-                                                    DateTime.parse(
-                                                        Helper.getFormatedDate(
-                                                            newsProvider
-                                                                .news?[i]
-                                                                .createdAt))),
-                                                style: robotoRegular.copyWith(
-                                                  color:
-                                                      ColorResources.hintColor,
-                                                  fontSize:
-                                                      Dimensions.fontSizeSmall,
-                                                  fontWeight: FontWeight.w400,
-                                                ),
-                                              ),
-                                              Text(
-                                                getTranslated(
-                                                    "READ_MORE", context),
-                                                style: robotoRegular.copyWith(
-                                                  color: Colors.amberAccent,
-                                                  fontSize:
-                                                      Dimensions.fontSizeSmall,
-                                                  fontWeight: FontWeight.w400,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              Helper.formatDate(DateTime.parse(
+                                  Helper.getFormatedDate(
+                                      newsProvider.news?[i].createdAt))),
+                              style: robotoRegular.copyWith(
+                                color: ColorResources.hintColor,
+                                fontSize: Dimensions.fontSizeSmall,
+                                fontWeight: FontWeight.w400,
                               ),
                             ),
-                          ),
-                        ),
-                        Positioned(
-                          left: 25.0,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(30.0),
-                            child: CachedNetworkImage(
-                              imageUrl: newsProvider.news![i].image!,
-                              imageBuilder: (BuildContext context,
-                                  ImageProvider imageProvider) {
-                                return Container(
-                                  width: 250.0,
-                                  height: 140.0,
-                                  decoration: BoxDecoration(
-                                      color: ColorResources.white,
-                                      image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.fill,
-                                      )),
-                                );
-                              },
-                              placeholder:
-                                  (BuildContext context, String value) {
-                                return Container(
-                                  width: 250.0,
-                                  height: 140.0,
-                                  decoration: BoxDecoration(
-                                    color: ColorResources.backgroundDisabled,
-                                    borderRadius: BorderRadius.circular(30.0),
-                                  ),
-                                );
-                              },
+                            Text(
+                              getTranslated("READ_MORE", context),
+                              style: robotoRegular.copyWith(
+                                color: Colors.amberAccent,
+                                fontSize: Dimensions.fontSizeSmall,
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
-                          ),
+                          ],
                         ),
                       ],
                     ),
                   ),
-                );
-              },
-            ),
-          ),
+                ],
+              ),
+            );
+          }),
         ]);
       }
     }));
