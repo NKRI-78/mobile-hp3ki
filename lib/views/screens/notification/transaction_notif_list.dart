@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hp3ki/utils/constant.dart';
 import 'package:hp3ki/utils/dio.dart';
 import 'package:hp3ki/utils/helper.dart';
+import 'package:hp3ki/views/screens/order_detail/data/order_waiting_payment_model.dart';
 import 'package:hp3ki/views/screens/order_detail/data/orders_model.dart';
 import 'package:hp3ki/views/screens/order_detail/persentation/pages/order_detail_page.dart';
 import 'package:hp3ki/views/screens/shop_payment/persentation/pages/shop_payment_page.dart';
@@ -22,7 +23,7 @@ class _TransactionNotifListState extends State<TransactionNotifList> {
   int limit = 10;
 
   List<OrderData> listPaid = [];
-  List<OrderData> listUnpaid = [];
+  List<OrderWaitingPayment> listUnpaid = [];
 
   @override
   void initState() {
@@ -36,11 +37,13 @@ class _TransactionNotifListState extends State<TransactionNotifList> {
 
   void fetchWaitingPayment() async {
     try {
-      final res = await client.get(
-          "${AppConstants.baseUrl}/api/v1/order/all?page=$page&status=WAITING_FOR_PAYMENT&search&limit=25");
+      final res = await client
+          .get("${AppConstants.baseUrl}/api/v1/order/waiting-payment");
 
-      final orders = OrdersModel.fromJson(res.data['data']);
-      listUnpaid = orders.data;
+      listUnpaid = (res.data['data'] as List)
+          .map((e) => OrderWaitingPayment.fromJson(e))
+          .toList();
+
       setState(() {});
     } catch (e) {
       //
@@ -71,6 +74,9 @@ class _TransactionNotifListState extends State<TransactionNotifList> {
               child: ListView(
             padding: EdgeInsets.zero,
             children: [
+              const SizedBox(
+                height: 16,
+              ),
               if (listUnpaid.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(
@@ -237,9 +243,7 @@ class _TransactionNotifListState extends State<TransactionNotifList> {
                                     ),
                                     Text(
                                       Helper.formatCurrency(
-                                        (order.amount +
-                                                order.shippingAmount +
-                                                order.paymentFee)
+                                        (order.amount + order.shippingAmount)
                                             .toDouble(),
                                       ),
                                       style: const TextStyle(
@@ -309,9 +313,9 @@ Color orderStatusColor(String status, BuildContext context) {
 
 class TransactionWaitingPayment extends StatelessWidget {
   const TransactionWaitingPayment({super.key, this.orders = const []});
-  final List<OrderData> orders;
+  final List<OrderWaitingPayment> orders;
 
-  static void show(BuildContext context, List<OrderData> orders) {
+  static void show(BuildContext context, List<OrderWaitingPayment> orders) {
     showModalBottomSheet(
       useSafeArea: true,
       isScrollControlled: true,
@@ -438,10 +442,7 @@ class TransactionWaitingPayment extends StatelessWidget {
                             ),
                             Text(
                               Helper.formatCurrency(
-                                (order.amount +
-                                        order.shippingAmount +
-                                        order.paymentFee)
-                                    .toDouble(),
+                                (order.amount + order.paymentFee).toDouble(),
                               ),
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,

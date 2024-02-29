@@ -6,6 +6,7 @@ import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/constant.dart';
 import 'package:hp3ki/utils/dio.dart';
 import 'package:hp3ki/utils/helper.dart';
+import 'package:intl/intl.dart';
 import 'package:hp3ki/views/screens/shop_checkout/data/checkout_response_model.dart';
 
 class ShopPaymentPage extends StatelessWidget {
@@ -141,7 +142,7 @@ class _ShopPaymentViewState extends State<ShopPaymentView> {
                       ),
                     ),
                     Text(
-                      Helper.formatDate(date1),
+                      DateFormat().format(date1),
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 14,

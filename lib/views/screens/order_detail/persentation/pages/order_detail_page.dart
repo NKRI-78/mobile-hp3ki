@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hp3ki/utils/dio.dart';
 import 'package:hp3ki/utils/helper.dart';
 import 'package:hp3ki/views/screens/order_detail/domain/order_detail_repository.dart';
@@ -336,25 +337,40 @@ class OrderDetailView extends StatelessWidget {
                         color: Colors.grey.shade600,
                       ),
                     ),
-                    Row(
-                      children: [
-                        Text(
-                          detail.order.shippingTracking ?? '-',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.primary,
+                    InkWell(
+                      onTap: () async {
+                        await Clipboard.setData(
+                          ClipboardData(
+                              text: detail.order.shippingTracking ?? '-'),
+                        );
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Nomor resi telah di copy"),
+                            behavior: SnackBarBehavior.floating,
                           ),
-                        ),
-                        const SizedBox(
-                          width: 4,
-                        ),
-                        const Icon(
-                          Icons.copy,
-                          size: 16,
-                          color: Colors.grey,
-                        )
-                      ],
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          Text(
+                            detail.order.shippingTracking ?? '-',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 4,
+                          ),
+                          const Icon(
+                            Icons.copy,
+                            size: 16,
+                            color: Colors.grey,
+                          )
+                        ],
+                      ),
                     )
                   ],
                 ),

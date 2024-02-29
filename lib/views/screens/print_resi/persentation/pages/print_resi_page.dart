@@ -41,7 +41,7 @@ class PrintResiPage extends StatelessWidget {
               // var bs64 = base64Encode(pngBytes);
 
               String dir = (await getTemporaryDirectory()).path;
-              File file = File("$dir/${detail.order.buyerName}-sma4medan.png");
+              File file = File("$dir/${detail.order.buyerName}-hp3ki.png");
               await file.writeAsBytes(
                 pngBytes,
               );
@@ -114,7 +114,7 @@ class PrintResiPage extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Image.asset(
-                            'assets/image/logo/jne.png',
+                            'assets/images/logo/jne.png',
                             height: 50,
                             width: 80,
                           ),
