@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
 
+import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:hp3ki/localization/language_constraints.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -54,7 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (mounted) {
       file = null;
     }
-    if(mounted) {
+    if (mounted) {
       context.read<ProfileProvider>().remote();
     }
     if (mounted) {
@@ -203,6 +204,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 slivers: [
                   buildUserKTA(),
                   buildUserDetails(),
+                  buildNoReferral(),
                   buildChangePassword(),
                   buildPrivacy(),
                   buildLogout(),
@@ -652,15 +654,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
           isPlatinum
               ? hasRemainder
                   ? context.read<ProfileProvider>().isActive == 0
-                  ? const SizedBox()
-                  : buildExtendPremiumButton(label: 'Perpanjang Membership')
+                      ? const SizedBox()
+                      : buildExtendPremiumButton(label: 'Perpanjang Membership')
                   : Container()
-              : context.read<ProfileProvider>().isActive == 0 
-              ? const SizedBox()
-              : Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 100.0),
-                  child: buildActionPremiumButton(label: 'UPGRADE MEMBERSHIP'),
-                )
+              : context.read<ProfileProvider>().isActive == 0
+                  ? const SizedBox()
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 100.0),
+                      child:
+                          buildActionPremiumButton(label: 'UPGRADE MEMBERSHIP'),
+                    )
         ],
       ),
     );
@@ -698,8 +701,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   )),
             ),
             Container(
-                alignment: Alignment.topLeft,
-                child: SizedBox(
+              alignment: Alignment.topLeft,
+              child: SizedBox(
                 width: screenWidth * 0.5,
                 child: buildActionPremiumButton(label: 'Perpanjang Membership'),
               ),
@@ -726,6 +729,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
           color: ColorResources.primary,
           fontWeight: FontWeight.w600,
           fontSize: Dimensions.fontSizeLarge,
+        ),
+      ),
+    );
+  }
+
+  SliverToBoxAdapter buildNoReferral() {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 15.0),
+        child: buildOptionReferral(
+          color: Colors.white,
+          label: 'Kode referral',
+          onTap: () async {
+            await Clipboard.setData(
+              ClipboardData(
+                  text: context.read<ProfileProvider>().user?.noReferral ?? ''),
+            );
+            if (!context.mounted) return;
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Nomor referral telah di copy"),
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+          },
         ),
       ),
     );
@@ -815,6 +843,72 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   transform: Matrix4.rotationY(math.pi),
                   child: Icon(
                     Icons.arrow_back_ios_new,
+                    color: ColorResources.white.withOpacity(0.5),
+                    size: Dimensions.iconSizeDefault,
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Container buildOptionReferral(
+      {required String label,
+      required Color color,
+      required void Function() onTap}) {
+    return Container(
+      margin: const EdgeInsets.only(
+        left: Dimensions.marginSizeExtraLarge,
+        right: Dimensions.marginSizeExtraLarge,
+        bottom: Dimensions.marginSizeExtraLarge,
+      ),
+      decoration: BoxDecoration(
+          color: const Color.fromARGB(141, 68, 99, 158).withOpacity(0.7),
+          borderRadius: BorderRadius.circular(30.0),
+          boxShadow: kElevationToShadow[2]),
+      child: Material(
+        color: ColorResources.transparent,
+        child: InkWell(
+          onDoubleTap: () {},
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(30.0),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    label,
+                    style: poppinsRegular.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: color,
+                      fontSize: Dimensions.fontSizeExtraLarge,
+                      shadows: kElevationToShadow[1],
+                    ),
+                  ),
+                ),
+                Consumer<ProfileProvider>(builder: (context, notif, child) {
+                  return Text(
+                    notif.user?.noReferral ?? '-',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  );
+                }),
+                const SizedBox(
+                  width: 6,
+                ),
+                Transform(
+                  alignment: Alignment.center,
+                  transform: Matrix4.rotationY(math.pi),
+                  child: Icon(
+                    Icons.copy,
                     color: ColorResources.white.withOpacity(0.5),
                     size: Dimensions.iconSizeDefault,
                   ),

@@ -15,8 +15,8 @@ import '../../basewidgets/snackbar/snackbar.dart';
 class SignUpScreen extends StatefulWidget {
   final String? email;
   final String? name;
-  
-  const SignUpScreen({ Key? key, this.email, this.name}) : super(key: key);
+
+  const SignUpScreen({Key? key, this.email, this.name}) : super(key: key);
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -37,6 +37,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   late TextEditingController emailC;
   late FocusNode emailFn;
 
+  late TextEditingController referralC;
+  late FocusNode referralFn;
+
   late TextEditingController passC;
   late FocusNode passFn;
 
@@ -53,24 +56,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
     String profesi = profesiC.text.trim();
     String pass = passC.text.trim();
     String passConfirm = passConfirmC.text.trim();
-    bool emailValid = RegExp(r"[a-zA-Z0-9_]+@[a-zA-Z]+\.(com|net|org)$").hasMatch(email.trim()); 
+    bool emailValid = RegExp(r"[a-zA-Z0-9_]+@[a-zA-Z]+\.(com|net|org)$")
+        .hasMatch(email.trim());
 
     if (formKey.currentState!.validate()) {
-      if(!emailValid) {
-        ShowSnackbar.snackbar(context, getTranslated("INVALID_FORMAT_EMAIL", context), "", ColorResources.error);
+      if (!emailValid) {
+        ShowSnackbar.snackbar(
+            context,
+            getTranslated("INVALID_FORMAT_EMAIL", context),
+            "",
+            ColorResources.error);
         emailFn.requestFocus();
         return;
       }
-      if(organisasi == "" || organisasi.isEmpty) {
-        ShowSnackbar.snackbar(context, 'Pilih Organisasi Terlebih Dahulu', "", ColorResources.error);
+      if (organisasi == "" || organisasi.isEmpty) {
+        ShowSnackbar.snackbar(context, 'Pilih Organisasi Terlebih Dahulu', "",
+            ColorResources.error);
         return;
       }
-      if(profesi == "" || profesi.isEmpty) {
-        ShowSnackbar.snackbar(context, 'Pilih Profesi Terlebih Dahulu', "", ColorResources.error);
+      if (profesi == "" || profesi.isEmpty) {
+        ShowSnackbar.snackbar(
+            context, 'Pilih Profesi Terlebih Dahulu', "", ColorResources.error);
         return;
       }
-      if(passConfirm.trim() != pass.trim()) {
-        ShowSnackbar.snackbar(context, getTranslated('PASSWORD_CONFIRM_DOES_NOT_MATCH', context), "", ColorResources.error);
+      if (passConfirm.trim() != pass.trim()) {
+        ShowSnackbar.snackbar(
+            context,
+            getTranslated('PASSWORD_CONFIRM_DOES_NOT_MATCH', context),
+            "",
+            ColorResources.error);
         passConfirmFn.requestFocus();
         return;
       }
@@ -82,37 +96,43 @@ class _SignUpScreenState extends State<SignUpScreen> {
         phone: phoneNumber,
         organization: organisasi,
         job: profesi,
+        referral: referralC.text,
       );
-      
+
       await context.read<AuthProvider>().register(context);
     }
   }
 
   void getData() {
+    referralC = TextEditingController();
+    referralFn = FocusNode();
+
     organisasiC = TextEditingController();
     profesiC = TextEditingController();
-    
+
     nameC = TextEditingController();
     nameFn = FocusNode();
-    
+
     phoneNumberC = TextEditingController();
     phoneNumberFn = FocusNode();
-    
+
     emailC = TextEditingController();
     emailFn = FocusNode();
-    
+
     passC = TextEditingController();
     passFn = FocusNode();
-    
+
     passConfirmC = TextEditingController();
     passConfirmFn = FocusNode();
-    
+
     Future.delayed(Duration.zero, () async {
-      if(!mounted) return;
-      if(mounted) {
-        nameC = TextEditingController( text: SharedPrefs.getRegFullname() ?? widget.name);
+      if (!mounted) return;
+      if (mounted) {
+        nameC = TextEditingController(
+            text: SharedPrefs.getRegFullname() ?? widget.name);
         phoneNumberC = TextEditingController(text: SharedPrefs.getRegPhone());
-        emailC = TextEditingController(text: SharedPrefs.getRegEmail() ?? widget.email);
+        emailC = TextEditingController(
+            text: SharedPrefs.getRegEmail() ?? widget.email);
         passC = TextEditingController(text: SharedPrefs.getRegPassword());
         setState(() {});
       }
@@ -121,17 +141,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Future<void> fetchJobsAndOrganizations() async {
     debugPrint('fetched!');
-    if(mounted) {
+    if (mounted) {
       context.read<AuthProvider>().getJobs(context);
     }
-    if(mounted) {
+    if (mounted) {
       context.read<AuthProvider>().getOrganizations(context);
     }
   }
 
   @override
   void initState() {
-    Future.wait([fetchJobsAndOrganizations(),]);
+    Future.wait([
+      fetchJobsAndOrganizations(),
+    ]);
     getData();
 
     super.initState();
@@ -144,19 +166,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     nameC.dispose();
     nameFn.dispose();
-    
+
     phoneNumberC.dispose();
     phoneNumberFn.dispose();
 
     emailC.dispose();
     emailFn.dispose();
-    
+
     passC.dispose();
     passFn.dispose();
-    
+
     passConfirmC.dispose();
     passConfirmFn.dispose();
-    
+
     super.dispose();
   }
 
@@ -175,11 +197,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
             FocusScope.of(context).unfocus();
           },
           child: CustomScrollView(
-            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+            physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics()),
             slivers: [
               buildAppBar(),
               buildBodyContent(),
-            ], 
+            ],
           ),
         ),
       ),
@@ -191,9 +214,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   BoxDecoration buildBackground() {
-    return const BoxDecoration(
-      color: ColorResources.white
-    );
+    return const BoxDecoration(color: ColorResources.white);
   }
 
   Widget buildAppBar() {
@@ -204,19 +225,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   CustomButton buildRegisterButton() {
     return CustomButton(
-      isLoading: context.watch<AuthProvider>().registerStatus == RegisterStatus.loading
-        ? true 
-        : false,
+      isLoading:
+          context.watch<AuthProvider>().registerStatus == RegisterStatus.loading
+              ? true
+              : false,
       onTap: register,
       customText: true,
       text: Text(
         getTranslated('NEXT', context),
         style: robotoRegular.copyWith(
-          fontSize: Dimensions.fontSizeLarge,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 1.5,
-          color: ColorResources.white
-        ),
+            fontSize: Dimensions.fontSizeLarge,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.5,
+            color: ColorResources.white),
       ),
       isBoxShadow: true,
       btnColor: ColorResources.primary,
@@ -225,16 +246,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-
   Widget buildBodyContent() {
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.all(Dimensions.marginSizeLarge),
         child: Card(
           elevation: 0.0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
           child: Container(
-            padding: const EdgeInsets.all(30.0,),
+            padding: const EdgeInsets.all(
+              30.0,
+            ),
             child: Column(
               children: [
                 Form(
@@ -242,7 +265,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: Column(
                     children: [
                       buildTextFields(),
-                      const SizedBox(height: 35,),
+                      const SizedBox(
+                        height: 35,
+                      ),
                     ],
                   ),
                 ),
@@ -261,79 +286,107 @@ class _SignUpScreenState extends State<SignUpScreen> {
           emptyWarning: "Isi nama",
           controller: nameC,
           hintText: getTranslated('NAME', context),
-          textInputType: TextInputType.text, 
-          focusNode: nameFn, 
+          textInputType: TextInputType.text,
+          focusNode: nameFn,
           textInputAction: TextInputAction.next,
           nextNode: emailFn,
           isBorderRadius: true,
         ),
-        const SizedBox(height: 15.0,),
+        const SizedBox(
+          height: 15.0,
+        ),
         CustomTextFieldV2(
           emptyWarning: "Isi email",
           controller: emailC,
           isEmail: true,
           hintText: "E-mail",
-          textInputType: TextInputType.emailAddress, 
-          focusNode: emailFn, 
+          textInputType: TextInputType.emailAddress,
+          focusNode: emailFn,
           textInputAction: TextInputAction.next,
           nextNode: phoneNumberFn,
           isBorderRadius: true,
         ),
-        const SizedBox(height: 15.0,),
+        const SizedBox(
+          height: 15.0,
+        ),
         CustomTextFieldV2(
           emptyWarning: "Isi nomor telepon",
           controller: phoneNumberC,
           maxLength: 13,
           hintText: getTranslated('PHONE_NUMBER', context),
-          textInputType: TextInputType.phone, 
-          focusNode: phoneNumberFn, 
+          textInputType: TextInputType.phone,
+          focusNode: phoneNumberFn,
           textInputAction: TextInputAction.next,
           isPhoneNumber: true,
           nextNode: passFn,
           isBorderRadius: true,
         ),
-        const SizedBox(height: 15.0,),
+        const SizedBox(
+          height: 15.0,
+        ),
+        CustomTextFieldV2(
+          emptyWarning: "Masukan referral (Opsional)",
+          controller: referralC,
+          isEmail: true,
+          hintText: "Referral (Opsional)",
+          textInputType: TextInputType.text,
+          focusNode: referralFn,
+          textInputAction: TextInputAction.next,
+          nextNode: phoneNumberFn,
+          isBorderRadius: true,
+        ),
+        const SizedBox(
+          height: 15.0,
+        ),
         CustomDropdown.buildDropdownSearchOrganization(
           dropdownC: organisasiC,
           searchHint: 'Cari Organisasi',
           label: 'Organisasi',
           options: context.read<AuthProvider>().organizations ?? [],
         ),
-        const SizedBox(height: 15.0,),
+        const SizedBox(
+          height: 15.0,
+        ),
         CustomDropdown.buildDropdownSearchJob(
           dropdownC: profesiC,
           searchHint: 'Cari Profesi',
           label: 'Profesi',
           options: context.read<AuthProvider>().jobs ?? [],
         ),
-        const SizedBox(height: 15.0,),
+        const SizedBox(
+          height: 15.0,
+        ),
         CustomTextFieldV2(
           emptyWarning: "Isi password",
           maxLength: 8,
           controller: passC,
           hintText: getTranslated('PASSWORD', context),
-          textInputType: TextInputType.text, 
-          focusNode: passFn, 
+          textInputType: TextInputType.text,
+          focusNode: passFn,
           textInputAction: TextInputAction.next,
           nextNode: passConfirmFn,
           isBorderRadius: true,
           isPassword: true,
           isSuffixIcon: true,
         ),
-        const SizedBox(height: 15.0,),
+        const SizedBox(
+          height: 15.0,
+        ),
         CustomTextFieldV2(
           emptyWarning: "Isi konfirmasi password",
           maxLength: 8,
           controller: passConfirmC,
           hintText: getTranslated('PASSWORD_CONFIRM', context),
-          textInputType: TextInputType.text, 
-          focusNode: passConfirmFn, 
+          textInputType: TextInputType.text,
+          focusNode: passConfirmFn,
           textInputAction: TextInputAction.done,
           isBorderRadius: true,
           isPassword: true,
           isSuffixIcon: true,
         ),
-        const SizedBox(height: 15.0,),
+        const SizedBox(
+          height: 15.0,
+        ),
       ],
     );
   }

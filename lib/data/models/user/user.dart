@@ -42,6 +42,7 @@ class UserData extends Equatable {
   final int? remainingDays;
   final bool? fulfilledUserData;
   final String? storeId;
+  final String? noReferral;
 
   const UserData({
     this.id,
@@ -64,30 +65,31 @@ class UserData extends Equatable {
     this.remainingDays,
     this.fulfilledUserData,
     this.storeId,
+    this.noReferral,
   });
 
   factory UserData.fromJson(Map<String, dynamic> json) => UserData(
-        id: json["id"],
-        avatar: json["avatar"],
-        fullname: json["fullname"],
-        email: json["email"],
-        phone: json["phone"],
-        role: json["role"],
-        picKtp: json["pic_ktp"],
-        addressKtp: json["address_ktp"],
-        noKtp: json["no_ktp"],
-        noMember: json["no_member"],
-        job: json["job"],
-        jobId: json["job_id"],
-        organization: json["organization"],
-        organizationPath: json["organization_path"],
-        organizationBahasa: json["organization_bahasa_name"],
-        organizationEnglish: json["organization_english_name"],
-        memberType: json["member_type"],
-        remainingDays: json["remaining_days"],
-        fulfilledUserData: json["fulfilledData"],
-        storeId: json['store_id'],
-      );
+      id: json["id"],
+      avatar: json["avatar"],
+      fullname: json["fullname"],
+      email: json["email"],
+      phone: json["phone"],
+      role: json["role"],
+      picKtp: json["pic_ktp"],
+      addressKtp: json["address_ktp"],
+      noKtp: json["no_ktp"],
+      noMember: json["no_member"],
+      job: json["job"],
+      jobId: json["job_id"],
+      organization: json["organization"],
+      organizationPath: json["organization_path"],
+      organizationBahasa: json["organization_bahasa_name"],
+      organizationEnglish: json["organization_english_name"],
+      memberType: json["member_type"],
+      remainingDays: json["remaining_days"],
+      fulfilledUserData: json["fulfilledData"],
+      storeId: json['store_id'],
+      noReferral: json['no_referral']);
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -110,6 +112,7 @@ class UserData extends Equatable {
         "remaining_days": remainingDays,
         "fulfilledData": fulfilledUserData,
         "store_id": storeId,
+        "no_referral": noReferral
       };
 
   @override
@@ -134,5 +137,6 @@ class UserData extends Equatable {
         remainingDays,
         fulfilledUserData,
         storeId,
+        noReferral,
       ];
 }

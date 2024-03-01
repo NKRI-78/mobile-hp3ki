@@ -20,22 +20,33 @@ import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
 import 'package:hp3ki/views/screens/auth/sign_in.dart';
 
 enum RegisterStatus { loading, loaded, error, idle }
+
 enum FulfillStatus { loading, loaded, error, idle }
+
 enum ForgetPasswordStatus { loading, loaded, error, idle }
+
 enum ChangePasswordStatus { loading, loaded, error, idle }
+
 enum LoginStatus { loading, loaded, error, idle }
+
 enum LoginGoogleStatus { loading, loaded, error, idle }
+
 enum LoginFacebookStatus { loading, loaded, error, idle }
+
 enum JobStatus { loading, loaded, error, empty }
+
 enum OrganizationStatus { loading, loaded, error, empty }
-enum ResendOtpStatus { idle, loading, loaded, error, empty } 
+
+enum ResendOtpStatus { idle, loading, loaded, error, empty }
+
 enum VerifyOtpStatus { idle, loading, loaded, error, empty }
+
 enum ApplyChangeEmailOtpStatus { idle, loading, loaded, error, empty }
 
-class AuthProvider with ChangeNotifier{
+class AuthProvider with ChangeNotifier {
   final AuthRepo ar;
 
-  AuthProvider({ required this.ar});
+  AuthProvider({required this.ar});
 
   bool changeEmail = true;
   String? otp;
@@ -70,8 +81,10 @@ class AuthProvider with ChangeNotifier{
   VerifyOtpStatus _verifyOtpStatus = VerifyOtpStatus.idle;
   VerifyOtpStatus get verifyOtpStatus => _verifyOtpStatus;
 
-  ApplyChangeEmailOtpStatus _applyChangeEmailOtpStatus = ApplyChangeEmailOtpStatus.idle;
-  ApplyChangeEmailOtpStatus get applyChangeEmailOtpStatus => _applyChangeEmailOtpStatus;
+  ApplyChangeEmailOtpStatus _applyChangeEmailOtpStatus =
+      ApplyChangeEmailOtpStatus.idle;
+  ApplyChangeEmailOtpStatus get applyChangeEmailOtpStatus =>
+      _applyChangeEmailOtpStatus;
 
   RegisterStatus _registerStatus = RegisterStatus.idle;
   RegisterStatus get registerStatus => _registerStatus;
@@ -96,17 +109,17 @@ class AuthProvider with ChangeNotifier{
 
   void setStateLoginStatus(LoginStatus loginStatus) {
     _loginStatus = loginStatus;
-    Future.delayed(Duration.zero, () =>  notifyListeners());
+    Future.delayed(Duration.zero, () => notifyListeners());
   }
 
   void setStateLoginGoogleStatus(LoginGoogleStatus loginGoogleStatus) {
     _loginGoogleStatus = loginGoogleStatus;
-    Future.delayed(Duration.zero, () =>  notifyListeners());
+    Future.delayed(Duration.zero, () => notifyListeners());
   }
 
   void setStateLoginFacebookStatus(LoginFacebookStatus loginFacebookStatus) {
     _loginFacebookStatus = loginFacebookStatus;
-    Future.delayed(Duration.zero, () =>  notifyListeners());
+    Future.delayed(Duration.zero, () => notifyListeners());
   }
 
   void setStateFulfillStatus(FulfillStatus fulfillStatus) {
@@ -129,7 +142,8 @@ class AuthProvider with ChangeNotifier{
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  void setApplyChangeEmailOtpStatus(ApplyChangeEmailOtpStatus applyChangeEmailOtpStatus) {
+  void setApplyChangeEmailOtpStatus(
+      ApplyChangeEmailOtpStatus applyChangeEmailOtpStatus) {
     _applyChangeEmailOtpStatus = applyChangeEmailOtpStatus;
     Future.delayed(Duration.zero, () => notifyListeners());
   }
@@ -154,7 +168,8 @@ class AuthProvider with ChangeNotifier{
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  Future<void> login(BuildContext context, String emailOrPhone ,String password) async {
+  Future<void> login(
+      BuildContext context, String emailOrPhone, String password) async {
     setStateLoginStatus(LoginStatus.loading);
     try {
       AuthModel auth = await ar.login(
@@ -164,21 +179,25 @@ class AuthProvider with ChangeNotifier{
       AuthUser user = auth.data!.user!;
       SharedPrefs.writeAuthData(auth.data!);
       SharedPrefs.writeLoginTemp(user);
-      if(user.emailActivated == true) {
+      if (user.emailActivated == true) {
         SharedPrefs.deleteIfUserRegistered();
         SharedPrefs.writeAuthToken();
         NS.pushReplacement(context, const DashboardScreen());
       } else {
         NS.pushReplacement(context, const OtpScreen());
       }
-      Future.delayed(const Duration(seconds: 1), () {
-        setStateLoginStatus(LoginStatus.loaded);
-      },);
-    } on CustomException catch (e){
+      Future.delayed(
+        const Duration(seconds: 1),
+        () {
+          setStateLoginStatus(LoginStatus.loaded);
+        },
+      );
+    } on CustomException catch (e) {
       debugPrint(e.toString());
-      ShowSnackbar.snackbar(context, '${e.toString()}\n(Error Kode: AR01)', '', ColorResources.error);
+      ShowSnackbar.snackbar(context, '${e.toString()}\n(Error Kode: AR01)', '',
+          ColorResources.error);
       setStateLoginStatus(LoginStatus.error);
-    }catch (e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(e.toString());
       debugPrint(stacktrace.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'AP01');
@@ -186,7 +205,7 @@ class AuthProvider with ChangeNotifier{
     }
   }
 
-  Future<void> register(BuildContext context) async {    
+  Future<void> register(BuildContext context) async {
     setStateRegisterStatus(RegisterStatus.loading);
     Object data = SharedPrefs.getRegisterObject();
 
@@ -195,21 +214,25 @@ class AuthProvider with ChangeNotifier{
       SharedPrefs.writeEmailOTP(auth.data!.user!);
       SharedPrefs.writeAuthData(auth.data!);
       NS.pushReplacement(context, const OtpScreen());
-      Future.delayed(const Duration(seconds: 1), () async {
-        setStateRegisterStatus(RegisterStatus.loaded);
-      },);
-    } on CustomException catch (e){
+      Future.delayed(
+        const Duration(seconds: 1),
+        () async {
+          setStateRegisterStatus(RegisterStatus.loaded);
+        },
+      );
+    } on CustomException catch (e) {
       debugPrint(e.toString());
       ShowSnackbar.snackbar(context, e.toString(), '', ColorResources.error);
       setStateRegisterStatus(RegisterStatus.error);
-    }catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'AP02');
       setStateRegisterStatus(RegisterStatus.error);
     }
   }
 
-  Future<void> changePassword(BuildContext context, String oldPassword, String newPassword) async {
+  Future<void> changePassword(
+      BuildContext context, String oldPassword, String newPassword) async {
     setStateChangePasswordStatus(ChangePasswordStatus.loading);
     try {
       await ar.changePassword(
@@ -217,36 +240,42 @@ class AuthProvider with ChangeNotifier{
         oldPassword,
         newPassword,
       );
-      ShowSnackbar.snackbar(context, getTranslated("UPDATE_PASSWORD_SUCCESS", context), "", ColorResources.success);
+      ShowSnackbar.snackbar(
+          context,
+          getTranslated("UPDATE_PASSWORD_SUCCESS", context),
+          "",
+          ColorResources.success);
       NS.pop(context);
       setStateChangePasswordStatus(ChangePasswordStatus.loaded);
-    } on CustomException catch (e){
+    } on CustomException catch (e) {
       debugPrint(e.toString());
       CustomDialog.showError(context, error: e.toString());
       setStateChangePasswordStatus(ChangePasswordStatus.error);
-    }catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'AP03');
       setStateChangePasswordStatus(ChangePasswordStatus.error);
     }
   }
 
-  Future<void> setNewPassword(BuildContext context, String oldPassword, String newPassword) async {
+  Future<void> setNewPassword(
+      BuildContext context, String oldPassword, String newPassword) async {
     setStateChangePasswordStatus(ChangePasswordStatus.loading);
     try {
       await ar.setNewPassword(
-        SharedPrefs.getForgetEmail(),
-        oldPassword,
-        newPassword
-      );
-      ShowSnackbar.snackbar(context, getTranslated("UPDATE_PASSWORD_SUCCESS", context), "", ColorResources.success);
+          SharedPrefs.getForgetEmail(), oldPassword, newPassword);
+      ShowSnackbar.snackbar(
+          context,
+          getTranslated("UPDATE_PASSWORD_SUCCESS", context),
+          "",
+          ColorResources.success);
       NS.pushReplacement(context, const SignInScreen());
       setStateChangePasswordStatus(ChangePasswordStatus.loaded);
-    } on CustomException catch (e){
+    } on CustomException catch (e) {
       debugPrint(e.toString());
       CustomDialog.showError(context, error: e.toString());
       setStateChangePasswordStatus(ChangePasswordStatus.error);
-    }catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'AP04');
       setStateChangePasswordStatus(ChangePasswordStatus.error);
@@ -255,21 +284,31 @@ class AuthProvider with ChangeNotifier{
 
   Future<void> forgetPassword(BuildContext context, String email) async {
     setStateForgetPasswordStatus(ForgetPasswordStatus.loading);
-    try { 
+    try {
       await ar.forgetPassword(email);
-      ShowSnackbar.snackbar(context, 'Silahkan cek email Anda untuk mendapatkan kode verifikasi', "", ColorResources.success, const Duration(seconds: 2));
+      ShowSnackbar.snackbar(
+          context,
+          'Silahkan cek email Anda untuk mendapatkan kode verifikasi',
+          "",
+          ColorResources.success,
+          const Duration(seconds: 2));
       SharedPrefs.writeForgetEmail(email);
-      NS.pushReplacement(context, const ChangePasswordScreen(isFromForget: true));
+      NS.pushReplacement(
+          context, const ChangePasswordScreen(isFromForget: true));
       setStateForgetPasswordStatus(ForgetPasswordStatus.loaded);
-    } on CustomException catch (e){
+    } on CustomException catch (e) {
       debugPrint(e.toString());
       CustomDialog.showError(context, error: e.toString());
       setStateForgetPasswordStatus(ForgetPasswordStatus.error);
-    }catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'AP05');
       setStateForgetPasswordStatus(ForgetPasswordStatus.error);
-      ShowSnackbar.snackbar(context, getTranslated("THERE_WAS_PROBLEM", context), "", ColorResources.error);
+      ShowSnackbar.snackbar(
+          context,
+          getTranslated("THERE_WAS_PROBLEM", context),
+          "",
+          ColorResources.error);
     }
   }
 
@@ -278,20 +317,23 @@ class AuthProvider with ChangeNotifier{
       whenCompleteCountdown = "start";
       Future.delayed(Duration.zero, () => notifyListeners());
       await resendOtp(context, changeEmailName);
-    } catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
     }
   }
 
   Future<void> applyChangeEmailOtp(BuildContext context) async {
     changeEmailName = SharedPrefs.getEmailOTP();
-    bool emailValid = RegExp(r"[a-zA-Z0-9_]+@[a-zA-Z]+\.(com|net|org)$").hasMatch(changeEmailName); 
-    bool newEmailValid = RegExp(r"[a-zA-Z0-9_]+@[a-zA-Z]+\.(com|net|org)$").hasMatch(emailCustom); 
-    if(!emailValid || !newEmailValid) {
-      CustomDialog.showError(context, error: getTranslated("INVALID_FORMAT_EMAIL", context));
+    bool emailValid = RegExp(r"[a-zA-Z0-9_]+@[a-zA-Z]+\.(com|net|org)$")
+        .hasMatch(changeEmailName);
+    bool newEmailValid = RegExp(r"[a-zA-Z0-9_]+@[a-zA-Z]+\.(com|net|org)$")
+        .hasMatch(emailCustom);
+    if (!emailValid || !newEmailValid) {
+      CustomDialog.showError(context,
+          error: getTranslated("INVALID_FORMAT_EMAIL", context));
       return;
     } else {
-      if(emailCustom.trim().isNotEmpty) {
+      if (emailCustom.trim().isNotEmpty) {
         changeEmailName = emailCustom;
       }
       Future.delayed(Duration.zero, () => notifyListeners());
@@ -304,14 +346,18 @@ class AuthProvider with ChangeNotifier{
       );
       changeEmail = true;
       SharedPrefs.writeChangeEmailData(changeEmailName);
-      ShowSnackbar.snackbar(context, "Silahkan cek kembali email anda, $changeEmailName", "", ColorResources.success);
+      ShowSnackbar.snackbar(
+          context,
+          "Silahkan cek kembali email anda, $changeEmailName",
+          "",
+          ColorResources.success);
       setApplyChangeEmailOtpStatus(ApplyChangeEmailOtpStatus.loaded);
-    } on CustomException catch (e){
+    } on CustomException catch (e) {
       changeEmailName = SharedPrefs.getEmailOTP();
       changeEmail = false;
       ShowSnackbar.snackbar(context, e.toString(), '', ColorResources.error);
       setApplyChangeEmailOtpStatus(ApplyChangeEmailOtpStatus.error);
-    } catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'AP06');
       setApplyChangeEmailOtpStatus(ApplyChangeEmailOtpStatus.error);
@@ -336,7 +382,7 @@ class AuthProvider with ChangeNotifier{
   void emailCustomChange(String val) {
     emailCustom = val;
     Future.delayed(Duration.zero, () => notifyListeners());
-  } 
+  }
 
   void completeCountDown() {
     whenCompleteCountdown = "completed";
@@ -346,13 +392,14 @@ class AuthProvider with ChangeNotifier{
   void otpCompleted(v) {
     otp = v;
     Future.delayed(Duration.zero, () => notifyListeners());
-  } 
+  }
 
   Future<void> verifyOtp(BuildContext context) async {
     setVerifyOtpStatus(VerifyOtpStatus.loading);
     try {
-      if(otp!.isEmpty || otp == "") {
-        ShowSnackbar.snackbar(context, 'Isi OTP terlebih dahulu!', '', ColorResources.error);
+      if (otp!.isEmpty || otp == "") {
+        ShowSnackbar.snackbar(
+            context, 'Isi OTP terlebih dahulu!', '', ColorResources.error);
         return;
       }
       AuthModel auth = await ar.verifyOtp(changeEmailName, otp!);
@@ -362,11 +409,11 @@ class AuthProvider with ChangeNotifier{
       Future.delayed(const Duration(seconds: 1), () async {
         setVerifyOtpStatus(VerifyOtpStatus.loaded);
       });
-    } on CustomException catch (e){
+    } on CustomException catch (e) {
       debugPrint(e.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'AR07');
       setVerifyOtpStatus(VerifyOtpStatus.error);
-    }catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'AP07');
       setVerifyOtpStatus(VerifyOtpStatus.error);
@@ -376,14 +423,20 @@ class AuthProvider with ChangeNotifier{
   Future<void> resendOtp(BuildContext context, String email) async {
     setResendOtpStatus(ResendOtpStatus.loading);
     try {
-      await ar.resendOtp(email,);
-      ShowSnackbar.snackbar(context, "${getTranslated('CHECK_YOUR_EMAIL', context)} $email, ${getTranslated('TO_SEE_THE_OTP', context)}", "", ColorResources.success);
+      await ar.resendOtp(
+        email,
+      );
+      ShowSnackbar.snackbar(
+          context,
+          "${getTranslated('CHECK_YOUR_EMAIL', context)} $email, ${getTranslated('TO_SEE_THE_OTP', context)}",
+          "",
+          ColorResources.success);
       setResendOtpStatus(ResendOtpStatus.loaded);
-    } on CustomException catch (e){
+    } on CustomException catch (e) {
       debugPrint(e.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'AR08');
       setResendOtpStatus(ResendOtpStatus.error);
-    }catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'AP08');
       setResendOtpStatus(ResendOtpStatus.error);
@@ -392,21 +445,21 @@ class AuthProvider with ChangeNotifier{
 
   Future<List<JobData>> getJobs(BuildContext context) async {
     setStateJobStatus(JobStatus.loading);
-    try {   
+    try {
       _jobs = [];
       JobModel? jm = await ar.getJobs();
       List<JobData>? jobData = jm!.data!;
-      if(jobData.isNotEmpty) {
+      if (jobData.isNotEmpty) {
         _jobs!.addAll(jobData);
         setStateJobStatus(JobStatus.loaded);
       } else {
         setStateJobStatus(JobStatus.empty);
       }
-    } on CustomException catch (e){
+    } on CustomException catch (e) {
       debugPrint(e.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'AR09');
       setStateJobStatus(JobStatus.error);
-    }catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(e.toString());
       debugPrint(stacktrace.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'AP09');
@@ -417,21 +470,21 @@ class AuthProvider with ChangeNotifier{
 
   Future<List<OrganizationData>> getOrganizations(BuildContext context) async {
     setStateOrganizationStatus(OrganizationStatus.loading);
-    try {   
+    try {
       _organizations = [];
       OrganizationModel? om = await ar.getOrganizations();
       List<OrganizationData>? organizationData = om!.data!;
-      if(organizationData.isNotEmpty) {
+      if (organizationData.isNotEmpty) {
         _organizations!.addAll(organizationData);
         setStateOrganizationStatus(OrganizationStatus.loaded);
       } else {
         setStateOrganizationStatus(OrganizationStatus.empty);
       }
-    } on CustomException catch (e){
+    } on CustomException catch (e) {
       debugPrint(e.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'AR10');
       setStateOrganizationStatus(OrganizationStatus.error);
-    }catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(e.toString());
       debugPrint(stacktrace.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'AP10');
@@ -461,32 +514,38 @@ class AuthProvider with ChangeNotifier{
       await firebaseInstance.signInWithCredential(credential);
 
       AuthModel auth = await ar.loginSocialMedia(
-        email: firebaseInstance.currentUser!.email!,
-        name: firebaseInstance.currentUser!.displayName!
-      );
+          email: firebaseInstance.currentUser!.email!,
+          name: firebaseInstance.currentUser!.displayName!);
 
-      SharedPrefs.writeAuthData(auth.data!,);
+      SharedPrefs.writeAuthData(
+        auth.data!,
+      );
       SharedPrefs.writeAuthToken();
       NS.pushReplacement(context, const DashboardScreen());
 
-      Future.delayed(const Duration(seconds: 2), () {
-        googleSignIn.disconnect();
-        firebaseInstance.signOut();
-        setStateLoginGoogleStatus(LoginGoogleStatus.loaded);
-      },);
-    } on CustomException catch (e){
-      if(e.toString().contains("Pengguna")) {
-        NS.push(context, SignUpScreen(
-          email: firebaseInstance.currentUser!.email!,
-          name: firebaseInstance.currentUser!.displayName!,
-        ));
+      Future.delayed(
+        const Duration(seconds: 2),
+        () {
+          googleSignIn.disconnect();
+          firebaseInstance.signOut();
+          setStateLoginGoogleStatus(LoginGoogleStatus.loaded);
+        },
+      );
+    } on CustomException catch (e) {
+      if (e.toString().contains("Pengguna")) {
+        NS.push(
+            context,
+            SignUpScreen(
+              email: firebaseInstance.currentUser!.email!,
+              name: firebaseInstance.currentUser!.displayName!,
+            ));
       } else {
         CustomDialog.showUnexpectedError(context, errorCode: 'AR11');
       }
       googleSignIn.disconnect();
       FirebaseAuth.instance.signOut();
       setStateLoginGoogleStatus(LoginGoogleStatus.error);
-    }catch (e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(e.toString());
       debugPrint(stacktrace.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'AP11');

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -8,14 +7,16 @@ import 'package:hp3ki/utils/dimensions.dart';
 
 extension EmailValidator on String {
   bool isValidEmail() {
-    return RegExp(r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$').hasMatch(this);
+    return RegExp(
+            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+        .hasMatch(this);
   }
 }
 
 class CustomTextFieldV2 extends StatefulWidget {
   final TextEditingController controller;
   final String hintText;
-  final bool isPrefixIcon; 
+  final bool isPrefixIcon;
   final Widget? prefixIcon;
   final bool isSuffixIcon;
   final Widget? suffixIcon;
@@ -51,7 +52,7 @@ class CustomTextFieldV2 extends StatefulWidget {
   final int? maxLength;
 
   const CustomTextFieldV2({
-    Key? key, 
+    Key? key,
     required this.controller,
     required this.emptyWarning,
     this.isPriceInputBank = false,
@@ -115,19 +116,17 @@ class _CustomTextFieldV2State extends State<CustomTextFieldV2> {
         keyboardType: widget.textInputType,
         maxLength: widget.maxLength,
         readOnly: widget.readOnly,
-        onChanged: (val) { 
-          widget.onChange!(val);
+        onChanged: (val) {
+          widget.onChange?.call(val);
         },
-        onTap: () {
-          
-        },
+        onTap: () {},
         validator: (value) {
           if (value == null || value.isEmpty) {
             widget.focusNode.requestFocus();
             return widget.emptyWarning;
           }
-          if(widget.isNumber) {
-            if(value.length < widget.maxLength!) {
+          if (widget.isNumber) {
+            if (value.length < widget.maxLength!) {
               widget.focusNode.requestFocus();
               return "${widget.hintText} minimal ${widget.maxLength} digit.";
             }
@@ -159,17 +158,15 @@ class _CustomTextFieldV2State extends State<CustomTextFieldV2> {
           }
           return null;
         },
-        textCapitalization: widget.isEmail == true || widget.isPassword == true 
-          ? TextCapitalization.none
-          : widget.isBloodType == true
-            ? TextCapitalization.characters
-            : TextCapitalization.sentences,
-        enableInteractiveSelection: true,        
+        textCapitalization: widget.isEmail == true || widget.isPassword == true
+            ? TextCapitalization.none
+            : widget.isBloodType == true
+                ? TextCapitalization.characters
+                : TextCapitalization.sentences,
+        enableInteractiveSelection: true,
         enabled: widget.isEnabled,
         textInputAction: widget.textInputAction,
-        obscureText: widget.isPassword 
-        ? obscureText 
-        : false,
+        obscureText: widget.isPassword ? obscureText : false,
         style: robotoRegular.copyWith(
           fontSize: Dimensions.fontSizeLarge,
           color: ColorResources.black,
@@ -177,66 +174,62 @@ class _CustomTextFieldV2State extends State<CustomTextFieldV2> {
         onFieldSubmitted: (String v) {
           setState(() {
             widget.textInputAction == TextInputAction.done
-              ? FocusScope.of(context).consumeKeyboardToken()
-              : FocusScope.of(context).requestFocus(widget.nextNode);
+                ? FocusScope.of(context).consumeKeyboardToken()
+                : FocusScope.of(context).requestFocus(widget.nextNode);
           });
         },
-        inputFormatters: widget.isDecimalNumber == true 
-          ? [
-              LengthLimitingTextInputFormatter(widget.maxLength),
-              FilteringTextInputFormatter.singleLineFormatter,
-              FilteringTextInputFormatter.digitsOnly,
-              DecimalFormatter()
-            ]
-          : widget.hintText == "Nama"
-              ? [
-                  FilteringTextInputFormatter.singleLineFormatter,
-                  FilteringTextInputFormatter.allow(RegExp('[a-zA-Z ]')),
-                ]
-              : widget.hintText == "E-mail" || widget.isEmail
+        inputFormatters: widget.isDecimalNumber == true
+            ? [
+                LengthLimitingTextInputFormatter(widget.maxLength),
+                FilteringTextInputFormatter.singleLineFormatter,
+                FilteringTextInputFormatter.digitsOnly,
+                DecimalFormatter()
+              ]
+            : widget.hintText == "Nama"
                 ? [
                     FilteringTextInputFormatter.singleLineFormatter,
+                    FilteringTextInputFormatter.allow(RegExp('[a-zA-Z ]')),
                   ]
-                : widget.isNumber || widget.isPhoneNumber
-                  ? [
-                      FilteringTextInputFormatter.singleLineFormatter,
-                      FilteringTextInputFormatter.digitsOnly,
-                    ]
-                  : [
-                    FilteringTextInputFormatter.singleLineFormatter,
-                    FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9 ]')),
-                  ]
-          ,
+                : widget.hintText == "E-mail" || widget.isEmail
+                    ? [
+                        FilteringTextInputFormatter.singleLineFormatter,
+                      ]
+                    : widget.isNumber || widget.isPhoneNumber
+                        ? [
+                            FilteringTextInputFormatter.singleLineFormatter,
+                            FilteringTextInputFormatter.digitsOnly,
+                          ]
+                        : [
+                            FilteringTextInputFormatter.singleLineFormatter,
+                            FilteringTextInputFormatter.allow(
+                                RegExp('[a-zA-Z0-9 ]')),
+                          ],
         decoration: InputDecoration(
           alignLabelWithHint: widget.alignLabelWithHint,
-          fillColor:  const Color(0xffFBFBFB),
+          fillColor: const Color(0xffFBFBFB),
           filled: true,
           isDense: true,
-          prefixIcon: widget.isPrefixIcon 
-          ? widget.prefixIcon 
-          : null,
+          prefixIcon: widget.isPrefixIcon ? widget.prefixIcon : null,
           suffixIcon: widget.isSuffixIcon
-          ? widget.isPassword 
-            ? IconButton(
-                onPressed: toggle,
-                icon: Icon(obscureText
-                  ? Icons.visibility_off
-                  : Icons.visibility,
-                  color: ColorResources.grey,
-                  size: 18.0,
-                ),
-              )
-            : widget.suffixIcon
-          : null,
+              ? widget.isPassword
+                  ? IconButton(
+                      onPressed: toggle,
+                      icon: Icon(
+                        obscureText ? Icons.visibility_off : Icons.visibility,
+                        color: ColorResources.grey,
+                        size: 18.0,
+                      ),
+                    )
+                  : widget.suffixIcon
+              : null,
           counterStyle: robotoRegular.copyWith(
-            color: ColorResources.grey,
-            fontSize: Dimensions.fontSizeLarge
-          ),
+              color: ColorResources.grey, fontSize: Dimensions.fontSizeLarge),
           floatingLabelBehavior: widget.floatingLabelBehavior,
-          contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 15.0),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 15.0, horizontal: 15.0),
           hintText: widget.hintText,
           hintStyle: robotoRegular.copyWith(
-            color: Colors.grey, 
+            color: Colors.grey,
             fontSize: Dimensions.fontSizeLarge,
             fontWeight: FontWeight.w500,
           ),
@@ -245,26 +238,23 @@ class _CustomTextFieldV2State extends State<CustomTextFieldV2> {
             color: Colors.grey,
           ),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
-            borderSide: const BorderSide(
-              color: Color(0xffE2E2E2),
-              width: 1.0,
-            )
-          ),
+              borderRadius: BorderRadius.circular(10.0),
+              borderSide: const BorderSide(
+                color: Color(0xffE2E2E2),
+                width: 1.0,
+              )),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
-            borderSide: const BorderSide(
-              color: Color(0xffE2E2E2),
-              width: 1.0,
-            )
-          ),
+              borderRadius: BorderRadius.circular(10.0),
+              borderSide: const BorderSide(
+                color: Color(0xffE2E2E2),
+                width: 1.0,
+              )),
           errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
-            borderSide: const BorderSide(
-              color: ColorResources.error,
-              width: 2.0,
-            )
-          ),
+              borderRadius: BorderRadius.circular(10.0),
+              borderSide: const BorderSide(
+                color: ColorResources.error,
+                width: 2.0,
+              )),
         ),
       ),
     );
@@ -273,7 +263,8 @@ class _CustomTextFieldV2State extends State<CustomTextFieldV2> {
 
 class UpperCaseTextFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
     return TextEditingValue(
       text: newValue.text.toUpperCase(),
       selection: newValue.selection,
@@ -287,58 +278,54 @@ class DecimalFormatter extends TextInputFormatter {
   DecimalFormatter({this.decimalDigits = 2}) : assert(decimalDigits >= 0);
 
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, 
-    TextEditingValue newValue,) {
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    String newText;
 
-      String newText;
+    if (decimalDigits == 0) {
+      newText = newValue.text.replaceAll(RegExp('[^0-9]'), '');
+    } else {
+      newText = newValue.text.replaceAll(RegExp('[^0-9.]'), '');
+    }
 
-      if (decimalDigits == 0) {
-        newText = newValue.text.replaceAll(RegExp('[^0-9]'), '');
+    if (newText.contains('.')) {
+      //in case if user's first input is "."
+      if (newText.trim() == '.') {
+        return newValue.copyWith(
+          text: '0.',
+          selection: const TextSelection.collapsed(offset: 2),
+        );
       }
-      else {
-        newText = newValue.text.replaceAll(RegExp('[^0-9.]'), '');
+      //in case if user tries to input multiple "."s or tries to input
+      //more than the decimal place
+      else if ((newText.split(".").length > 2) ||
+          (newText.split(".")[1].length > decimalDigits)) {
+        return oldValue;
+      } else {
+        return newValue;
       }
+    }
 
-      if(newText.contains('.')) {
-        //in case if user's first input is "."
-        if (newText.trim() == '.') {
-          return newValue.copyWith(
-            text: '0.',
-            selection: const TextSelection.collapsed(offset: 2),
-          );
-        }
-        //in case if user tries to input multiple "."s or tries to input 
-        //more than the decimal place
-        else if (
-          (newText.split(".").length > 2) 
-          || (newText.split(".")[1].length > decimalDigits)
-        ) {
-          return oldValue;
-        }
-        else {
-          return newValue;
-        }
-      }
+    //in case if input is empty or zero
+    if (newText.trim() == '' || newText.trim() == '0') {
+      return newValue.copyWith(text: '');
+    } else if (int.parse(newText) < 1) {
+      return newValue.copyWith(text: '');
+    }
 
-      //in case if input is empty or zero
-      if (newText.trim() == '' || newText.trim() == '0') {
-        return newValue.copyWith(text: '');
-      } 
-      else if (int.parse(newText) < 1) {
-        return newValue.copyWith(text: '');
-      }
-
-      double newDouble = double.parse(newText);
-      var selectionIndexFromTheRight =
+    double newDouble = double.parse(newText);
+    var selectionIndexFromTheRight =
         newValue.text.length - newValue.selection.end;
 
-      String newString = NumberFormat("#,##0.##").format(newDouble);
+    String newString = NumberFormat("#,##0.##").format(newDouble);
 
-      return TextEditingValue(
-        text: newString,
-        selection: TextSelection.collapsed(
-          offset: newString.length - selectionIndexFromTheRight,
-        ),
-      );
-    }
+    return TextEditingValue(
+      text: newString,
+      selection: TextSelection.collapsed(
+        offset: newString.length - selectionIndexFromTheRight,
+      ),
+    );
+  }
 }
