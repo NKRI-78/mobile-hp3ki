@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:hp3ki/services/navigation.dart';
 import 'package:hp3ki/utils/modal.dart';
 import 'package:hp3ki/views/screens/home/home.dart';
 import 'package:hp3ki/views/screens/shop_checkout/persentation/providers/shop_checkout_provider.dart';
@@ -43,11 +44,8 @@ class ButtonCheckout extends StatelessWidget {
                               .read<ShopCheckoutProvider>()
                               .checkout();
                           if (context.mounted) {
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const HomeScreen()),
-                                (route) => false);
+                            NS.pushReplacement(
+                                context, const DashboardScreen());
                             Navigator.push(context,
                                 ShopPaymentPage.go(payment: payment.payments));
                           }
