@@ -94,27 +94,55 @@ class ShippingAddressView extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(snapshot.data ?? '-'),
-                                    if (sa.defaultLocation)
-                                      Container(
-                                        margin: const EdgeInsets.only(top: 6),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(
-                                            6,
+                                    Row(
+                                      children: [
+                                        if (sa.label.isNotEmpty)
+                                          Container(
+                                            margin: const EdgeInsets.only(
+                                                top: 6, right: 6),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                6,
+                                              ),
+                                              border: Border.all(
+                                                  color: Colors.green),
+                                            ),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 12, vertical: 6),
+                                            child: Text(
+                                              sa.label,
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                              ),
+                                            ),
                                           ),
-                                          border: Border.all(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary),
-                                        ),
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 12, vertical: 6),
-                                        child: Text(
-                                          getTranslated('TXT_DEFAULT', context),
-                                          style: const TextStyle(
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                      )
+                                        if (sa.defaultLocation)
+                                          Container(
+                                            margin:
+                                                const EdgeInsets.only(top: 6),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                6,
+                                              ),
+                                              border: Border.all(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .primary),
+                                            ),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 12, vertical: 6),
+                                            child: Text(
+                                              getTranslated(
+                                                  'TXT_DEFAULT', context),
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          )
+                                      ],
+                                    ),
                                   ],
                                 );
                               }

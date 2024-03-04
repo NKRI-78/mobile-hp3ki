@@ -21,6 +21,7 @@ class ShippingAddressModel {
   String name;
   String lat;
   String lng;
+  String label;
   bool defaultLocation;
 
   ShippingAddressModel({
@@ -35,22 +36,23 @@ class ShippingAddressModel {
     required this.lat,
     required this.lng,
     required this.defaultLocation,
+    required this.label,
   });
 
   factory ShippingAddressModel.fromJson(Map<String, dynamic> json) =>
       ShippingAddressModel(
-        id: json["id"],
-        shippingAddressId: json["shipping_address_id"],
-        address: json["address"],
-        postalCode: json["postal_code"],
-        province: json["province"],
-        city: json["city"],
-        subdistrict: json["subdistrict"],
-        name: json["name"],
-        lat: json["lat"],
-        lng: json["lng"],
-        defaultLocation: json["default_location"],
-      );
+          id: json["id"],
+          shippingAddressId: json["shipping_address_id"],
+          address: json["address"],
+          postalCode: json["postal_code"],
+          province: json["province"],
+          city: json["city"],
+          subdistrict: json["subdistrict"],
+          name: json["name"],
+          lat: json["lat"],
+          lng: json["lng"],
+          defaultLocation: json["default_location"],
+          label: json["label"] ?? "");
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -64,5 +66,6 @@ class ShippingAddressModel {
         "lat": lat,
         "lng": lng,
         "default_location": defaultLocation,
+        "label": label,
       };
 }

@@ -19,6 +19,7 @@ class ShippingAddressAddRepository {
     required double lng,
     String defaultLocation = "0",
     required String phoneNumber,
+    required String label,
   }) async {
     try {
       await client
@@ -33,6 +34,7 @@ class ShippingAddressAddRepository {
         "name": name,
         "lat": lat,
         "lng": lng,
+        "label": label,
         "default_location": defaultLocation,
         "phone_number": phoneNumber,
       });

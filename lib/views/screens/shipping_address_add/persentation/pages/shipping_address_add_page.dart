@@ -44,6 +44,7 @@ class _ShippingAddressAddViewState extends State<ShippingAddressAddView> {
   TextEditingController pinAddressController = TextEditingController();
   TextEditingController detailAddressController = TextEditingController();
   TextEditingController nameAddressController = TextEditingController();
+  TextEditingController labelAddressController = TextEditingController();
   TextEditingController administrationController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   SelectedAdministration? administration;
@@ -214,6 +215,26 @@ class _ShippingAddressAddViewState extends State<ShippingAddressAddView> {
                         ),
                       ),
                       _divider,
+                      TextFormFieldStoreCstm(
+                        controller: labelAddressController,
+                        validator: (value) {
+                          if (value?.isEmpty ?? true) {
+                            return 'Label ${getTranslated(
+                              "ADDRESS",
+                              context,
+                            )} ${getTranslated(
+                              "TXT_REQUIRED",
+                              context,
+                            )}';
+                          }
+                          return null;
+                        },
+                        label: "Label ${getTranslated(
+                          "ADDRESS",
+                          context,
+                        )} (Rumah, Kantor, etc)",
+                      ),
+                      _divider,
                       Container(
                         width: double.infinity,
                         margin: const EdgeInsets.all(16),
@@ -235,8 +256,8 @@ class _ShippingAddressAddViewState extends State<ShippingAddressAddView> {
                                       await context
                                           .read<ShippingAddressAddProvider>()
                                           .addAddress(
-                                              address: detailAddressController
-                                                  .text,
+                                              address:
+                                                  detailAddressController.text,
                                               postalCode: administration!
                                                   .postalCode.name,
                                               province:
@@ -249,6 +270,8 @@ class _ShippingAddressAddViewState extends State<ShippingAddressAddView> {
                                               name: nameAddressController.text,
                                               lat: latLng?.latitude ?? 0,
                                               lng: latLng?.longitude ?? 0,
+                                              label:
+                                                  labelAddressController.text,
                                               phoneNumber:
                                                   phoneNumberController.text);
                                       shippingAddress.fetchAllShippingAddress();

@@ -19,6 +19,7 @@ class ShippingAddressAddProvider with ChangeNotifier {
     required double lat,
     required double lng,
     required String phoneNumber,
+    required String label,
   }) async {
     try {
       final uid = const Uuid().v4();
@@ -33,6 +34,7 @@ class ShippingAddressAddProvider with ChangeNotifier {
         name: name,
         lat: lat,
         lng: lng,
+        label: label,
         phoneNumber: phoneNumber,
       );
     } catch (e) {
