@@ -10,6 +10,7 @@ import 'package:hp3ki/providers/location/location.dart';
 import 'package:hp3ki/providers/news/news.dart';
 import 'package:hp3ki/providers/ppob/ppob.dart';
 import 'package:hp3ki/providers/profile/profile.dart';
+import 'package:hp3ki/utils/dio.dart';
 import 'package:hp3ki/utils/modal.dart';
 import 'package:hp3ki/utils/shared_preferences.dart';
 import 'package:hp3ki/views/basewidgets/button/bounce.dart';
@@ -28,7 +29,9 @@ import 'package:hp3ki/views/screens/ppob/confirm_paymentv2.dart';
 import 'package:hp3ki/views/screens/ppob/ppobv2.dart';
 import 'package:hp3ki/views/screens/ppob/topup/topup.dart';
 import 'package:hp3ki/views/screens/profile/profile.dart';
+import 'package:hp3ki/views/screens/shop/data/models/shop.dart';
 import 'package:hp3ki/views/screens/shop/persentation/pages/shop_page.dart';
+import 'package:hp3ki/views/screens/shop_detail/persentation/pages/shop_detail_page.dart';
 import 'package:hp3ki/views/screens/sos/indexv2.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -655,6 +658,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int currentIndex = 0;
 
+  ShopModel? shops;
+  Future<void> initShop() async {
+    try {
+      final client = DioManager.shared.getClient();
+      final res = await client
+          .get("${AppConstants.baseUrl}/api/v1/product/list?page=1&cat=");
+      shops = ShopModel.fromJson(res.data["data"]);
+    } catch (e) {
+      ///
+    }
+  }
+
   Future<void> getData() async {
     if (mounted) {
       await Geolocator.requestPermission();
@@ -712,6 +727,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     Future.wait([
       getData(),
+      initShop(),
     ]);
 
     super.initState();
@@ -1224,151 +1240,241 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(
             height: 10,
           ),
-          ...List.generate(newsProvider.news?.length.clamp(0, 3) ?? 0, (i) {
-            return Container(
-              // height: 200.0,
-              // width: 300.0,
-              margin: const EdgeInsets.all(30),
-              clipBehavior: Clip.antiAlias,
-              decoration: BoxDecoration(
-                boxShadow: boxShadow,
-                borderRadius: BorderRadius.circular(30.0),
-                color: const Color.fromARGB(141, 68, 99, 158).withOpacity(0.7),
+          SizedBox(
+            height: 250,
+            width: double.infinity,
+            child: ListView.builder(
+              padding: const EdgeInsets.only(
+                left: Dimensions.marginSizeExtraLarge,
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Image.network(
-                    newsProvider.news![i].image!,
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(
-                      left: Dimensions.marginSizeExtraLarge,
-                      right: Dimensions.marginSizeExtraLarge,
-                      bottom: Dimensions.marginSizeExtraLarge,
-                      top: Dimensions.marginSizeExtraLarge,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics()),
+              scrollDirection: Axis.horizontal,
+              itemCount: newsProvider.news?.length.clamp(0, 3),
+              itemBuilder: (context, i) {
+                return Padding(
+                  padding: const EdgeInsets.only(right: 15.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      context.read<NewsProvider>().getNewsDetail(context,
+                          newsId: newsProvider.news![i].id!);
+                    },
+                    onDoubleTap: () {},
+                    child: Stack(
                       children: [
-                        Text(
-                          newsProvider.news![i].title.toString().length > 85
-                              ? "${newsProvider.news![i].title.toString().substring(0, 85)}..."
-                              : newsProvider.news![i].title
-                                  .toString()
-                                  .toTitleCase(),
-                          style: robotoRegular.copyWith(
-                            color: ColorResources.white.withOpacity(0.8),
-                            fontSize: Dimensions.fontSizeDefault,
-                            fontWeight: FontWeight.w400,
+                        const SizedBox(
+                          height: 300,
+                          width: 300,
+                        ),
+                        Positioned(
+                          top: 40.0,
+                          child: Material(
+                            color: ColorResources.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(30.0),
+                              onTap: () {
+                                context.read<NewsProvider>().getNewsDetail(
+                                    context,
+                                    newsId: newsProvider.news![i].id!);
+                              },
+                              child: Container(
+                                height: 200.0,
+                                width: 300.0,
+                                decoration: BoxDecoration(
+                                  boxShadow: boxShadow,
+                                  borderRadius: BorderRadius.circular(30.0),
+                                  color: const Color.fromARGB(141, 68, 99, 158)
+                                      .withOpacity(0.7),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    const SizedBox(
+                                      height: 60,
+                                    ),
+                                    Container(
+                                      margin: const EdgeInsets.only(
+                                        left: Dimensions.marginSizeExtraLarge,
+                                        right: Dimensions.marginSizeExtraLarge,
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            newsProvider.news![i].title
+                                                        .toString()
+                                                        .length >
+                                                    85
+                                                ? "${newsProvider.news![i].title.toString().substring(0, 85)}..."
+                                                : newsProvider.news![i].title
+                                                    .toString()
+                                                    .toTitleCase(),
+                                            style: robotoRegular.copyWith(
+                                              color: ColorResources.white
+                                                  .withOpacity(0.8),
+                                              fontSize:
+                                                  Dimensions.fontSizeDefault,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                Helper.formatDate(
+                                                    DateTime.parse(
+                                                        Helper.getFormatedDate(
+                                                            newsProvider
+                                                                .news?[i]
+                                                                .createdAt))),
+                                                style: robotoRegular.copyWith(
+                                                  color:
+                                                      ColorResources.hintColor,
+                                                  fontSize:
+                                                      Dimensions.fontSizeSmall,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                              Text(
+                                                getTranslated(
+                                                    "READ_MORE", context),
+                                                style: robotoRegular.copyWith(
+                                                  color: Colors.amberAccent,
+                                                  fontSize:
+                                                      Dimensions.fontSizeSmall,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              Helper.formatDate(DateTime.parse(
-                                  Helper.getFormatedDate(
-                                      newsProvider.news?[i].createdAt))),
-                              style: robotoRegular.copyWith(
-                                color: ColorResources.hintColor,
-                                fontSize: Dimensions.fontSizeSmall,
-                                fontWeight: FontWeight.w400,
-                              ),
+                        Positioned(
+                          left: 25.0,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(30.0),
+                            child: CachedNetworkImage(
+                              imageUrl: newsProvider.news![i].image!,
+                              imageBuilder: (BuildContext context,
+                                  ImageProvider imageProvider) {
+                                return Container(
+                                  width: 250.0,
+                                  height: 140.0,
+                                  decoration: BoxDecoration(
+                                      color: ColorResources.white,
+                                      image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.fill,
+                                      )),
+                                );
+                              },
+                              placeholder:
+                                  (BuildContext context, String value) {
+                                return Container(
+                                  width: 250.0,
+                                  height: 140.0,
+                                  decoration: BoxDecoration(
+                                    color: ColorResources.backgroundDisabled,
+                                    borderRadius: BorderRadius.circular(30.0),
+                                  ),
+                                );
+                              },
                             ),
-                            Text(
-                              getTranslated("READ_MORE", context),
-                              style: robotoRegular.copyWith(
-                                color: Colors.amberAccent,
-                                fontSize: Dimensions.fontSizeSmall,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       ],
                     ),
                   ),
-                ],
-              ),
-            );
-          }),
+                );
+              },
+            ),
+          ),
         ]);
       }
     }));
   }
 
   Widget buildProductsSection() {
-    List products = [
-      {
-        "name":
-            "Velg Racing Mobil Pajero Sport Ring 20 HSR TSUYOI Velk Mobil Fortuner Triton Dmax R20",
-        "image":
-            "https://s2.bukalapak.com/img/20200500103/large/data.jpeg.webp",
-        "price": "12400000",
-      },
-      {
-        "name":
-            "Velg Mobil Vellfire 18x7.5 Pcd 5x114.3 ET 40 Black Polish Alphard",
-        "image":
-            "https://images.tokopedia.net/img/cache/900/VqbcmM/2021/7/7/a5f5d5ac-fcf1-409c-973c-53234a7a5a80.jpg",
-        "price": "7000000",
-      },
-      {
-        "name":
-            "Aksesoris Variasi Stoplamp Taillamp LED Meteo Axis Alphard ANH30 15+",
-        "image":
-            "https://images.tokopedia.net/img/cache/900/VqbcmM/2020/12/7/980d289a-93c0-4829-ab7d-2856850e43b0.jpg",
-        "price": "8800000",
-      },
-      {
-        "name":
-            "Toyota Vellfire Sarung Cover Mobil Durable Rubik | Guardian |Xtrem – Rubik",
-        "image":
-            "https://images.tokopedia.net/img/cache/900/hDjmkQ/2023/4/27/8b6764ef-e2fd-463b-9198-ee41f398691f.jpg",
-        "price": "870000",
-      },
-      {
-        "name": "Tas Thule VNJ ",
-        "image":
-            "https://images.tokopedia.net/img/cache/900/hDjmkQ/2021/1/11/bbabfbf8-3f75-4630-bb9b-fa0df0e063fc.jpg",
-        "price": "3800000",
-      },
-      {
-        "name": "SHOCKBREAKER DEPAN PAJERO SPORT ORIGINAL 4062A085",
-        "image":
-            "https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full//88/MTA-12139144/mitsubishi_shockbreaker_pajero_sport_-_triton_depan_belakang_original_premium_hitam_full01_d42eef41.jpg",
-        "price": "1800000",
-      },
-      {
-        "name": "Pac Makeup Kit New Edition",
-        "image":
-            "https://images.tokopedia.net/img/cache/900/attachment/2019/9/14/156847459919831/156847459919831_fbd91887-c44f-41e0-8a9c-14e7153e85b8.png",
-        "price": "3800000",
-      },
-      {
-        "name": "Set Alat Rias 7-in-1 dengan Dompet Plastik",
-        "image":
-            "https://images.tokopedia.net/img/cache/900/product-1/2013/9/30/2519619/2519619_06b76f48-29ae-11e3-b923-c35c2523fab8.jpg",
-        "price": "29900",
-      },
-      {
-        "name": "Sanggul Modern Variasi Terbaru Sanggul Bali Sanggul Batak",
-        "image":
-            "https://s2.bukalapak.com/img/71414911003/large/data.jpeg.webp",
-        "price": "40000",
-      },
-      {
-        "name": "Lore Jewellery - Kinara Simple Moissanite Ring 0.01 Carat – 4",
-        "image":
-            "https://images.tokopedia.net/img/cache/900/VqbcmM/2023/3/20/461ff11b-0d40-4ec8-b960-36ad7f2d7481.jpg",
-        "price": "548900",
-      },
-    ];
+    // List products = [
+    //   {
+    //     "name":
+    //         "Velg Racing Mobil Pajero Sport Ring 20 HSR TSUYOI Velk Mobil Fortuner Triton Dmax R20",
+    //     "image":
+    //         "https://s2.bukalapak.com/img/20200500103/large/data.jpeg.webp",
+    //     "price": "12400000",
+    //   },
+    //   {
+    //     "name":
+    //         "Velg Mobil Vellfire 18x7.5 Pcd 5x114.3 ET 40 Black Polish Alphard",
+    //     "image":
+    //         "https://images.tokopedia.net/img/cache/900/VqbcmM/2021/7/7/a5f5d5ac-fcf1-409c-973c-53234a7a5a80.jpg",
+    //     "price": "7000000",
+    //   },
+    //   {
+    //     "name":
+    //         "Aksesoris Variasi Stoplamp Taillamp LED Meteo Axis Alphard ANH30 15+",
+    //     "image":
+    //         "https://images.tokopedia.net/img/cache/900/VqbcmM/2020/12/7/980d289a-93c0-4829-ab7d-2856850e43b0.jpg",
+    //     "price": "8800000",
+    //   },
+    //   {
+    //     "name":
+    //         "Toyota Vellfire Sarung Cover Mobil Durable Rubik | Guardian |Xtrem – Rubik",
+    //     "image":
+    //         "https://images.tokopedia.net/img/cache/900/hDjmkQ/2023/4/27/8b6764ef-e2fd-463b-9198-ee41f398691f.jpg",
+    //     "price": "870000",
+    //   },
+    //   {
+    //     "name": "Tas Thule VNJ ",
+    //     "image":
+    //         "https://images.tokopedia.net/img/cache/900/hDjmkQ/2021/1/11/bbabfbf8-3f75-4630-bb9b-fa0df0e063fc.jpg",
+    //     "price": "3800000",
+    //   },
+    //   {
+    //     "name": "SHOCKBREAKER DEPAN PAJERO SPORT ORIGINAL 4062A085",
+    //     "image":
+    //         "https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full//88/MTA-12139144/mitsubishi_shockbreaker_pajero_sport_-_triton_depan_belakang_original_premium_hitam_full01_d42eef41.jpg",
+    //     "price": "1800000",
+    //   },
+    //   {
+    //     "name": "Pac Makeup Kit New Edition",
+    //     "image":
+    //         "https://images.tokopedia.net/img/cache/900/attachment/2019/9/14/156847459919831/156847459919831_fbd91887-c44f-41e0-8a9c-14e7153e85b8.png",
+    //     "price": "3800000",
+    //   },
+    //   {
+    //     "name": "Set Alat Rias 7-in-1 dengan Dompet Plastik",
+    //     "image":
+    //         "https://images.tokopedia.net/img/cache/900/product-1/2013/9/30/2519619/2519619_06b76f48-29ae-11e3-b923-c35c2523fab8.jpg",
+    //     "price": "29900",
+    //   },
+    //   {
+    //     "name": "Sanggul Modern Variasi Terbaru Sanggul Bali Sanggul Batak",
+    //     "image":
+    //         "https://s2.bukalapak.com/img/71414911003/large/data.jpeg.webp",
+    //     "price": "40000",
+    //   },
+    //   {
+    //     "name": "Lore Jewellery - Kinara Simple Moissanite Ring 0.01 Carat – 4",
+    //     "image":
+    //         "https://images.tokopedia.net/img/cache/900/VqbcmM/2023/3/20/461ff11b-0d40-4ec8-b960-36ad7f2d7481.jpg",
+    //     "price": "548900",
+    //   },
+    // ];
 
     return SliverToBoxAdapter(
       child: Consumer<NewsProvider>(
@@ -1408,7 +1514,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Product Sample dari HP3KI Mart',
+                            'Mart',
                             style: poppinsRegular.copyWith(
                                 fontSize: Dimensions.fontSizeExtraLarge,
                                 fontWeight: FontWeight.w600,
@@ -1416,10 +1522,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 shadows: boxShadow),
                           ),
                           GestureDetector(
-                            onTap: () => NS.push(context,
-                                const ComingSoonScreen(title: 'HP3KI Mart')),
+                            onTap: () => NS.push(context, const ShopPage()),
                             child: Text(
-                              'Coming Soon',
+                              'Liat selengkapnya',
                               style: poppinsRegular.copyWith(
                                   color: ColorResources.yellowSecondaryV5,
                                   shadows: boxShadow),
@@ -1442,8 +1547,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             parent: AlwaysScrollableScrollPhysics()),
                         scrollDirection: Axis.horizontal,
                         // itemCount: newsProvider.news.length,
-                        itemCount: products.length,
+                        itemCount: shops?.data.take(4).length ?? 0,
                         itemBuilder: (context, i) {
+                          final product = shops!.data[i];
                           return SizedBox(
                             width: 180.0,
                             child: Card(
@@ -1455,10 +1561,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: InkWell(
                                 onTap: () async {
                                   // await context.read<StoreProvider>().getProductDetail(context, productId: storeProvider.elektronikProducts![index].uid!);
-                                  NS.push(
-                                      context,
-                                      const ComingSoonScreen(
-                                          title: 'Product Detail'));
+                                  Navigator.push(context,
+                                      ShopDetailPage.route(product.id));
                                 },
                                 borderRadius: BorderRadius.circular(15.0),
                                 child: Column(
@@ -1471,9 +1575,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                             BorderRadius.circular(15.0),
                                       ),
                                       child: CachedNetworkImage(
+                                        fit: BoxFit.cover,
                                         // imageUrl: storeProvider.elektronikProducts![index].medias!.images!.first.path!,
-                                        imageUrl: products[i]["image"] ??
-                                            AppConstants.avatarError,
+                                        imageUrl: product.picture == '-'
+                                            ? AppConstants.avatarError
+                                            : product.picture,
                                         imageBuilder: (BuildContext context,
                                             ImageProvider imageProvider) {
                                           return Container(
@@ -1483,7 +1589,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     BorderRadius.circular(15.0),
                                                 image: DecorationImage(
                                                     image: imageProvider,
-                                                    fit: BoxFit.fill)),
+                                                    fit: BoxFit.cover)),
                                           );
                                         },
                                         placeholder: (context, url) {
@@ -1512,7 +1618,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         children: [
                                           // Text(storeProvider.elektronikProducts![index].title ?? "...",
                                           Text(
-                                            products[i]["name"],
+                                            product.name,
                                             style: interRegular.copyWith(
                                               fontSize:
                                                   Dimensions.fontSizeDefault,
@@ -1526,7 +1632,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                           // Text(Helper.formatCurrency(double.parse(storeProvider.elektronikProducts![index].price.toString())),
                                           Text(
                                             Helper.formatCurrency(double.parse(
-                                                products[i]["price"])),
+                                              product.price.toString(),
+                                            )),
                                             style: interRegular.copyWith(
                                               color: ColorResources.white,
                                               fontSize:
