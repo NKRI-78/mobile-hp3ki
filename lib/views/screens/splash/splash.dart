@@ -2,6 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:hp3ki/providers/maintenance/maintenance.dart';
+import 'package:hp3ki/utils/constant.dart';
+import 'package:hp3ki/utils/dio.dart';
+import 'package:hp3ki/utils/shared_preferences.dart';
+import 'package:hp3ki/views/screens/auth/sign_in.dart';
 import 'package:hp3ki/views/screens/comingsoon/comingsoon.dart';
 import 'package:hp3ki/views/screens/home/home.dart';
 import 'package:hp3ki/views/screens/onboarding/onboarding.dart';
@@ -61,7 +65,22 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
-  void navigateScreen() {
+  Future<bool> checkIsAppleReview() async {
+    try {
+      final res = await DioManager.shared
+          .getClient()
+          .get("${AppConstants.baseUrl}/api/v1/dev/apple-review");
+
+      bool data = res.data['is_review'] ?? false;
+      return data;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  void navigateScreen() async {
+    final bool isAppleReview = await checkIsAppleReview();
+
     Future.delayed(Duration.zero, () {
       if (mounted) {
         context.read<SplashProvider>().initConfig().then((_) {
@@ -74,11 +93,15 @@ class _SplashScreenState extends State<SplashScreen> {
                   isNavbarItem: true,
                 ));
           } else if (context.read<SplashProvider>().isSkipOnboarding()) {
-            // if (SharedPrefs.isLoggedIn()) {
-            NS.pushReplacement(context, const DashboardScreen());
-            // } else {
-            //   NS.pushReplacement(context, const SignInScreen());
-            // }
+            if (isAppleReview) {
+              NS.pushReplacement(context, const DashboardScreen());
+              return;
+            }
+            if (SharedPrefs.isLoggedIn()) {
+              NS.pushReplacement(context, const DashboardScreen());
+            } else {
+              NS.pushReplacement(context, const SignInScreen());
+            }
           } else {
             NS.pushReplacement(context, const OnboardingScreen());
           }
