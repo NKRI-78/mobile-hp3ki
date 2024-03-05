@@ -325,14 +325,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
           height: 15.0,
         ),
         CustomTextFieldV2(
-          emptyWarning: "Masukan referral (Opsional)",
+          emptyWarning: null,
           controller: referralC,
-          isEmail: true,
           hintText: "Referral (Opsional)",
           textInputType: TextInputType.text,
           focusNode: referralFn,
           textInputAction: TextInputAction.next,
-          nextNode: phoneNumberFn,
           isBorderRadius: true,
         ),
         const SizedBox(
