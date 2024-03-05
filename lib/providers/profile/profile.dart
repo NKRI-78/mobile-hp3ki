@@ -16,11 +16,17 @@ import 'package:hp3ki/views/screens/auth/form_wirausaha.dart';
 import 'package:hp3ki/views/screens/home/home.dart';
 
 enum FulfillPersonalDataStatus { loading, loaded, error, idle }
+
 enum FulfillJobDataStatus { loading, loaded, error, idle }
+
 enum ProfileStatus { loading, loaded, error, empty }
+
 enum ProfilePictureStatus { loading, loaded, error, empty }
+
 enum UpdateProfileStatus { loading, loaded, error, empty }
+
 enum BusinessStatus { loading, loaded, error, empty }
+
 enum ClassificationStatus { loading, loaded, error, empty }
 
 class ProfileProvider with ChangeNotifier {
@@ -45,8 +51,10 @@ class ProfileProvider with ChangeNotifier {
   List<ClassificationData>? _classificationList;
   List<ClassificationData>? get classificationList => _classificationList;
 
-  FulfillPersonalDataStatus _fulfillPersonalDataStatus = FulfillPersonalDataStatus.idle;
-  FulfillPersonalDataStatus get fulfillPersonalDataStatus => _fulfillPersonalDataStatus;
+  FulfillPersonalDataStatus _fulfillPersonalDataStatus =
+      FulfillPersonalDataStatus.idle;
+  FulfillPersonalDataStatus get fulfillPersonalDataStatus =>
+      _fulfillPersonalDataStatus;
 
   FulfillJobDataStatus _fulfillJobDataStatus = FulfillJobDataStatus.idle;
   FulfillJobDataStatus get fulfillJobDataStatus => _fulfillJobDataStatus;
@@ -71,7 +79,8 @@ class ProfileProvider with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  void setStateFulfillPersonalDataStatus(FulfillPersonalDataStatus fulfillPersonalDataStatus) {
+  void setStateFulfillPersonalDataStatus(
+      FulfillPersonalDataStatus fulfillPersonalDataStatus) {
     _fulfillPersonalDataStatus = fulfillPersonalDataStatus;
     Future.delayed(Duration.zero, () => notifyListeners());
   }
@@ -101,7 +110,7 @@ class ProfileProvider with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  void showFullFillDataDialog(context){
+  void showFullFillDataDialog(context) {
     CustomDialog.showFulfillData(context);
   }
 
@@ -114,10 +123,10 @@ class ProfileProvider with ChangeNotifier {
 
   Future<void> getProfile(BuildContext context) async {
     setStateProfileStatus(ProfileStatus.loading);
-    try {   
+    try {
       UserModel? um = await pr.getProfile(SharedPrefs.getUserId());
       UserData user = um!.data!;
-      if(user.id!.isNotEmpty) {
+      if (user.id!.isNotEmpty) {
         _user = user;
         SharedPrefs.writeUserData(user);
         setStateProfileStatus(ProfileStatus.loaded);
@@ -128,7 +137,7 @@ class ProfileProvider with ChangeNotifier {
       debugPrint(e.toString());
       CustomDialog.showForceLogoutError(context, error: e.toString());
       setStateProfileStatus(ProfileStatus.error);
-    } catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(e.toString());
       debugPrint(stacktrace.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'PP01');
@@ -138,11 +147,11 @@ class ProfileProvider with ChangeNotifier {
 
   Future<void> getBusinessList(BuildContext context) async {
     setStateBusinessStatus(BusinessStatus.loading);
-    try {   
+    try {
       _businessList = [];
       BusinessModel? um = await pr.getBusinessList();
       List<BusinessData> business = um!.data!;
-      if(business.isNotEmpty) {
+      if (business.isNotEmpty) {
         _businessList!.addAll(business);
         setStateBusinessStatus(BusinessStatus.loaded);
       } else {
@@ -152,7 +161,7 @@ class ProfileProvider with ChangeNotifier {
       debugPrint(e.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'PR02');
       setStateBusinessStatus(BusinessStatus.error);
-    }catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(e.toString());
       debugPrint(stacktrace.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'PP02');
@@ -162,11 +171,11 @@ class ProfileProvider with ChangeNotifier {
 
   Future<void> getClassificationList(BuildContext context) async {
     setStateClassificationStatus(ClassificationStatus.loading);
-    try {   
+    try {
       _classificationList = [];
       ClassificationModel? um = await pr.getClassificationList();
       List<ClassificationData> classification = um!.data!;
-      if(classification.isNotEmpty) {
+      if (classification.isNotEmpty) {
         _classificationList!.addAll(classification);
         setStateClassificationStatus(ClassificationStatus.loaded);
       } else {
@@ -176,7 +185,7 @@ class ProfileProvider with ChangeNotifier {
       debugPrint(e.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'PR03');
       setStateClassificationStatus(ClassificationStatus.error);
-    }catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(e.toString());
       debugPrint(stacktrace.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'PP03');
@@ -184,7 +193,7 @@ class ProfileProvider with ChangeNotifier {
     }
   }
 
-  Future<void> setPersonalData(BuildContext context) async {    
+  Future<void> setPersonalData(BuildContext context) async {
     setStateFulfillPersonalDataStatus(FulfillPersonalDataStatus.loading);
     try {
       String jobTypeId = SharedPrefs.getRegJob() ?? user!.jobId!;
@@ -206,17 +215,21 @@ class ProfileProvider with ChangeNotifier {
           NS.push(context, const FormWirausahaScreen());
           break;
         default:
-          CustomDialog.showError(context, error: 'Form untuk profesi anda tidak ditemukan');
+          CustomDialog.showError(context,
+              error: 'Form untuk profesi anda tidak ditemukan');
       }
 
-      Future.delayed(const Duration(seconds: 1), () async {
-        setStateFulfillPersonalDataStatus(FulfillPersonalDataStatus.loaded);
-      },);
+      Future.delayed(
+        const Duration(seconds: 1),
+        () async {
+          setStateFulfillPersonalDataStatus(FulfillPersonalDataStatus.loaded);
+        },
+      );
     } on CustomException catch (e) {
       debugPrint(e.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'PR04');
       setStateFulfillPersonalDataStatus(FulfillPersonalDataStatus.error);
-    }catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(e.toString());
       debugPrint(stacktrace.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'PP04');
@@ -224,11 +237,11 @@ class ProfileProvider with ChangeNotifier {
     }
   }
 
-  Future<void> fulfillJobData(BuildContext context) async {    
+  Future<void> fulfillJobData(BuildContext context) async {
     setStateFulfillJobDataStatus(FulfillJobDataStatus.loading);
     Object data = formJobType == "enterpreneurs"
-      ? SharedPrefs.getEnterpreneursData()
-      : SharedPrefs.getOtherJobData();
+        ? SharedPrefs.getEnterpreneursData()
+        : SharedPrefs.getOtherJobData();
     Object personalData = SharedPrefs.getPersonalDataObject();
     try {
       Future.wait([
@@ -240,14 +253,17 @@ class ProfileProvider with ChangeNotifier {
       SharedPrefs.deleteJobDataForm();
       SharedPrefs.deletePersonalDataForm();
       NS.pushReplacement(context, const DashboardScreen());
-      Future.delayed(const Duration(seconds: 1), () async {
-        setStateFulfillJobDataStatus(FulfillJobDataStatus.loaded);
-      },);
+      Future.delayed(
+        const Duration(seconds: 1),
+        () async {
+          setStateFulfillJobDataStatus(FulfillJobDataStatus.loaded);
+        },
+      );
     } on CustomException catch (e) {
       debugPrint(e.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'PR05');
       setStateFulfillJobDataStatus(FulfillJobDataStatus.error);
-    }catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(e.toString());
       debugPrint(stacktrace.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'P505');
@@ -255,7 +271,8 @@ class ProfileProvider with ChangeNotifier {
     }
   }
 
-  Future<void> updateProfilePicture(BuildContext context, {required String pfpPath}) async {    
+  Future<void> updateProfilePicture(BuildContext context,
+      {required String pfpPath}) async {
     setStateProfilePictureStatus(ProfilePictureStatus.loading);
     try {
       await pr.updateProfilePicture(
@@ -268,7 +285,7 @@ class ProfileProvider with ChangeNotifier {
       debugPrint(e.toString());
       CustomDialog.showError(context, error: e.toString());
       setStateProfilePictureStatus(ProfilePictureStatus.error);
-    }catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(e.toString());
       debugPrint(stacktrace.toString());
       CustomDialog.showError(context, error: e.toString());
@@ -276,7 +293,8 @@ class ProfileProvider with ChangeNotifier {
     }
   }
 
-  Future<void> updateProfileNameOrAddress(BuildContext context, {required String? name, required String? address}) async {    
+  Future<void> updateProfileNameOrAddress(BuildContext context,
+      {required String? name, required String? address}) async {
     setStateUpdateProfileStatus(UpdateProfileStatus.loading);
     try {
       await pr.updateProfileNameOrAddress(
@@ -291,7 +309,7 @@ class ProfileProvider with ChangeNotifier {
       debugPrint(e.toString());
       CustomDialog.showError(context, error: e.toString());
       setStateUpdateProfileStatus(UpdateProfileStatus.error);
-    }catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(e.toString());
       debugPrint(stacktrace.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'PP07');
@@ -300,7 +318,8 @@ class ProfileProvider with ChangeNotifier {
   }
 
   AwesomeDialog showNonPlatinumLimit(context) {
-    return CustomDialog.showWarning(context, warning: "Fitur ini dibatasi karena anda belum menjadi member platinum, silahkan upgrade member terlebih dahulu.");
+    return CustomDialog.showWarning(context,
+        warning:
+            "Fitur ini dibatasi karena anda belum menjadi member platinum, silahkan upgrade member terlebih dahulu.");
   }
-
 }
