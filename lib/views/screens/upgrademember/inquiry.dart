@@ -16,16 +16,17 @@ class UpgradeMemberInquiryScreen extends StatefulWidget {
   const UpgradeMemberInquiryScreen({super.key});
 
   @override
-  State<UpgradeMemberInquiryScreen> createState() => _UpgradeMemberInquiryScreenState();
+  State<UpgradeMemberInquiryScreen> createState() =>
+      _UpgradeMemberInquiryScreenState();
 }
 
-class _UpgradeMemberInquiryScreenState extends State<UpgradeMemberInquiryScreen> {
-
+class _UpgradeMemberInquiryScreenState
+    extends State<UpgradeMemberInquiryScreen> {
   @override
   void initState() {
     super.initState();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return buildUI();
@@ -34,17 +35,15 @@ class _UpgradeMemberInquiryScreenState extends State<UpgradeMemberInquiryScreen>
   Scaffold buildUI() {
     return Scaffold(
       backgroundColor: const Color(0xffD9D9D9),
-      body: Stack(
-        children: [
-          CustomScrollView(
-            slivers: [
-              buildAppBar(),
-              buildItems(),
-            ],
-          ),
-          buildNavbar(),
-        ]
-      ),
+      body: Stack(children: [
+        CustomScrollView(
+          slivers: [
+            buildAppBar(),
+            buildItems(),
+          ],
+        ),
+        buildNavbar(),
+      ]),
     );
   }
 
@@ -54,101 +53,102 @@ class _UpgradeMemberInquiryScreenState extends State<UpgradeMemberInquiryScreen>
 
   SliverToBoxAdapter buildItems() {
     return SliverToBoxAdapter(
-      child: Consumer<UpgradeMemberProvider>(
-        builder: (BuildContext context, UpgradeMemberProvider upgradeMemberProvider, Widget? child) {
-          PaymentListData data = upgradeMemberProvider.selectedPaymentChannel!;
-          final double adminFee = data.totalAdminFee!.toDouble();
-          const double basePrice = 100000;
-          return Wrap(
-            children: [
-              Container(
-                width: double.infinity,
-                color: ColorResources.white,
-                padding: const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0),
-                child: Text('Metode Pembayaran',
-                  style: robotoRegular.copyWith(
-                    color: ColorResources.black,
-                    fontSize: Dimensions.fontSizeLarge,
-                    fontWeight: FontWeight.w600,
+      child: Consumer<UpgradeMemberProvider>(builder: (BuildContext context,
+          UpgradeMemberProvider upgradeMemberProvider, Widget? child) {
+        PaymentListData data = upgradeMemberProvider.selectedPaymentChannel!;
+        final double adminFee = data.totalAdminFee!.toDouble();
+        const double basePrice = 100000;
+        return Wrap(children: [
+          Container(
+            width: double.infinity,
+            color: ColorResources.white,
+            padding: const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0),
+            child: Text(
+              'Metode Pembayaran',
+              style: robotoRegular.copyWith(
+                color: ColorResources.black,
+                fontSize: Dimensions.fontSizeLarge,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          ListTile(
+            tileColor: ColorResources.white,
+            leading: CircleAvatar(
+              backgroundColor: ColorResources.transparent,
+              maxRadius: 40.0,
+              child: SizedBox.expand(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: CachedNetworkImage(
+                    imageUrl: data.paymentLogo!,
+                    placeholder: (context, url) {
+                      return const CircleAvatar(
+                        backgroundColor: ColorResources.backgroundDisabled,
+                      );
+                    },
+                    errorWidget: (context, url, error) {
+                      return const CircleAvatar(
+                          backgroundColor: ColorResources.transparent,
+                          backgroundImage:
+                              AssetImage("assets/images/icons/ic-empty.png"));
+                    },
                   ),
                 ),
               ),
-              ListTile(
-                tileColor: ColorResources.white,
-                leading: CircleAvatar(
-                  backgroundColor: ColorResources.transparent,
-                  maxRadius: 40.0,
-                  child: SizedBox.expand(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
-                      child: CachedNetworkImage(
-                        imageUrl: data.paymentLogo!,
-                        placeholder: (context, url) {
-                          return const CircleAvatar(
-                            backgroundColor: ColorResources.backgroundDisabled,
-                          );
-                        },
-                        errorWidget: (context, url, error) {
-                          return const CircleAvatar(
-                            backgroundColor: ColorResources.transparent,
-                            backgroundImage: AssetImage("assets/images/icons/ic-empty.png")
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                ),
-                title: Text(data.paymentName ?? "...",
-                  style: poppinsRegular.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                subtitle: Text("Biaya admin: "+ Helper.formatCurrency(data.totalAdminFee?.toDouble() ?? 0),
-                  style: poppinsRegular,
-                ),
+            ),
+            title: Text(
+              data.paymentName ?? "...",
+              style: poppinsRegular.copyWith(
+                fontWeight: FontWeight.w600,
               ),
-              Container(
-                color: ColorResources.white,
-                child: Column(
+            ),
+            subtitle: Text(
+              "Biaya admin: " +
+                  Helper.formatCurrency(data.totalAdminFee?.toDouble() ?? 0),
+              style: poppinsRegular,
+            ),
+          ),
+          Container(
+            color: ColorResources.white,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 10,
+                  color: const Color(0xffD9D9D9),
+                ),
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      height: 10,
-                      color: const Color(0xffD9D9D9),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Ringkasan Harga',
+                        style: robotoRegular.copyWith(
+                            fontWeight: FontWeight.w600,
+                            fontSize: Dimensions.fontSizeLarge),
+                      ),
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('Ringkasan Harga',
-                            style: robotoRegular.copyWith(
-                              fontWeight: FontWeight.w600,
-                              fontSize: Dimensions.fontSizeLarge
-                            ),
-                          ),
-                        ),
-                        const InfoTile(
-                          label: 'Biaya Upgrade Member',
-                          price: basePrice,
-                        ),
-                        InfoTile(
-                          label: 'Biaya Admin',
-                          price: adminFee,
-                        ),
-                        InfoTile(
-                          label: 'Total Harga',
-                          price: basePrice+adminFee,
-                        ),
-                      ],
+                    const InfoTile(
+                      label: 'Biaya Upgrade Member',
+                      price: basePrice,
+                    ),
+                    InfoTile(
+                      label: 'Biaya Admin',
+                      price: adminFee,
+                    ),
+                    InfoTile(
+                      label: 'Total Harga',
+                      price: basePrice + adminFee,
                     ),
                   ],
                 ),
-              )
-            ]
-          );
-        }
-      ),
+              ],
+            ),
+          )
+        ]);
+      }),
     );
   }
 
@@ -162,11 +162,15 @@ class _UpgradeMemberInquiryScreenState extends State<UpgradeMemberInquiryScreen>
           onTap: () {
             buildAskDialog(context);
           },
-          isLoading: context.watch<UpgradeMemberProvider>().inquiryStatus == InquiryStatus.loading ? true : false,
+          isLoading: context.watch<UpgradeMemberProvider>().inquiryStatus ==
+                  InquiryStatus.loading
+              ? true
+              : false,
           btnColor: ColorResources.secondary,
           customText: true,
           isBorderRadius: true,
-          text: Text('Bayar',
+          text: Text(
+            'Bayar',
             style: poppinsRegular.copyWith(
               fontSize: Dimensions.fontSizeLarge,
               color: ColorResources.white,
@@ -185,7 +189,8 @@ class _UpgradeMemberInquiryScreenState extends State<UpgradeMemberInquiryScreen>
       dialogType: DialogType.question,
       body: Padding(
         padding: const EdgeInsets.all(15.0),
-        child: Text("Apakah anda sudah yakin ingin melakukan transaksi ini?",
+        child: Text(
+          "Apakah anda sudah yakin ingin melakukan transaksi ini?",
           style: robotoRegular.copyWith(
             color: ColorResources.black,
             fontSize: Dimensions.fontSizeLarge,
@@ -197,10 +202,13 @@ class _UpgradeMemberInquiryScreenState extends State<UpgradeMemberInquiryScreen>
       btnOkColor: ColorResources.secondary,
       btnOkOnPress: () async {
         context.read<UpgradeMemberProvider>().sendPaymentInquiry(
-          context,
-          userId: SharedPrefs.getUserId(),
-          paymentCode: context.read<UpgradeMemberProvider>().selectedPaymentChannel!.paymentCode!,
-        );
+              context,
+              userId: SharedPrefs.getUserId(),
+              paymentCode: context
+                  .read<UpgradeMemberProvider>()
+                  .selectedPaymentChannel!
+                  .paymentCode!,
+            );
       },
       btnCancelText: "Tidak",
       btnCancelColor: Colors.red,
@@ -224,12 +232,14 @@ class InfoTile extends StatelessWidget {
     return ListTile(
       minVerticalPadding: 0,
       visualDensity: VisualDensity.compact,
-      leading: Text(label,
+      leading: Text(
+        label,
         style: robotoRegular.copyWith(
           fontWeight: FontWeight.w600,
         ),
       ),
-      title: Text(Helper.formatCurrency(price),
+      title: Text(
+        Helper.formatCurrency(price),
         style: robotoRegular,
         textAlign: TextAlign.end,
       ),

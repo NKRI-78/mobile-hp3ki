@@ -136,13 +136,15 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     panelC = PanelController();
 
-    Future.delayed(const Duration(seconds: 1), () => getDataRemote());
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Future.delayed(const Duration(seconds: 1), () => getDataRemote());
 
-    if (context.read<ProfileProvider>().isActive == 1) {
-      getData1();
-    } else {
-      getData2();
-    }
+      if (context.read<ProfileProvider>().isActive == 1) {
+        getData1();
+      } else {
+        getData2();
+      }
+    });
   }
 
   @override
