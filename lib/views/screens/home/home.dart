@@ -557,8 +557,8 @@ class _DashboardScreenState extends State<DashboardScreen>
                                   label: "HOME"),
                               buildNavbarItem(
                                   index: 1,
-                                  image: "navbar-donate",
-                                  label: "DONATE"),
+                                  image: "navbar-news",
+                                  label: "NEWS"),
                               placeholder,
                               buildNavbarItem(
                                   index: 2,
@@ -1530,7 +1530,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           GestureDetector(
                             onTap: () => NS.push(context, const ShopPage()),
                             child: Text(
-                              'Liat selengkapnya',
+                              'Liat Semua',
                               style: poppinsRegular.copyWith(
                                   color: ColorResources.yellowSecondaryV5,
                                   shadows: boxShadow),

@@ -9,7 +9,6 @@ import 'package:hp3ki/providers/profile/profile.dart';
 import 'package:hp3ki/services/navigation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:lecle_flutter_absolute_path/lecle_flutter_absolute_path.dart';
 import 'package:sn_progress_dialog/progress_dialog.dart';
 
 import 'package:video_compress/video_compress.dart';
@@ -91,17 +90,12 @@ class _InputPostComponentState extends State<InputPostComponent> {
       }
       if (imageSource == ImageSource.gallery) {
         files = [];
-        resultList = await MultiImagePicker.pickImages(
-          iosOptions: const IOSOptions(
-              settings: CupertinoSettings(selection: SelectionSetting(max: 5))),
-          androidOptions: const AndroidOptions(maxImages: 5),
-          selectedAssets: images,
-        );
-        for (var imageAsset in resultList) {
-          String? filePath = await LecleFlutterAbsolutePath.getAbsolutePath(
-              uri: imageAsset.identifier);
+
+        var pickerFiles = await ImagePicker().pickMultiImage(
+            maxHeight: 480.0, maxWidth: 640.0, imageQuality: 70);
+        for (var imageAsset in pickerFiles) {
           File compressedFile = await FlutterNativeImage.compressImage(
-              filePath!,
+              imageAsset.path,
               quality: 70,
               percentage: 70);
           setState(() => files.add(File(compressedFile.path)));

@@ -19,13 +19,12 @@ import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 
-
 class PostDoc extends StatefulWidget {
   final List<FeedMedia> medias;
   final String caption;
 
   const PostDoc({
-    Key? key, 
+    Key? key,
     required this.medias,
     required this.caption,
   }) : super(key: key);
@@ -35,69 +34,69 @@ class PostDoc extends StatefulWidget {
 }
 
 class _PostDocState extends State<PostDoc> {
-
   String? type = "";
   Color? color;
 
   @override
   Widget build(BuildContext context) {
-
     switch (b.basename(widget.medias[0].path!).split('.').last) {
       case "pdf":
         setState(() {
           type = "PDF";
           color = Colors.red[300];
         });
-      break;
+        break;
       case "ppt":
         setState(() {
           type = "PPT";
           color = Colors.red[300];
         });
-      break;
+        break;
       case "pptx":
         setState(() {
           type = "PPTX";
           color = Colors.red[300];
         });
-      break;
+        break;
       case "txt":
         setState(() {
           type = "TXT";
           color = Colors.blueGrey[300];
         });
-      break;
-      case "xls": 
+        break;
+      case "xls":
         setState(() {
           type = "XLS";
           color = Colors.green[300];
         });
-      break;
-      case "xlsx": 
+        break;
+      case "xlsx":
         setState(() {
           type = "XLSX";
           color = Colors.green[300];
         });
-      break;
+        break;
       case "doc":
         setState(() {
           type = "DOC";
           color = ColorResources.primary;
         });
-      break;
+        break;
       case "docx":
         setState(() {
           type = "DOCX";
           color = ColorResources.primary;
         });
-      break;
+        break;
       default:
-        setState(() {
-          type = "link";
-          color = ColorResources.blueDrawerPrimary;
-        },);
+        setState(
+          () {
+            type = "link";
+            color = ColorResources.blueDrawerPrimary;
+          },
+        );
     }
-    return buildUI();   
+    return buildUI();
   }
 
   Widget buildUI() {
@@ -109,57 +108,51 @@ class _PostDocState extends State<PostDoc> {
           children: [
             Container(
               margin: const EdgeInsets.only(left: 16.0, right: 16.0),
-              child: Text(widget.caption,
+              child: Text(
+                widget.caption,
                 style: poppinsRegular.copyWith(
-                  fontSize: Dimensions.fontSizeDefault
-                ),
+                    fontSize: Dimensions.fontSizeDefault),
               ),
             ),
             const SizedBox(height: 12.0),
             Container(
-              height: 56.0,
-              margin: const EdgeInsets.only(left: 16.0, right: 16.0),
-              decoration: BoxDecoration(
-                color: color,
-                borderRadius: BorderRadius.circular(8.0)
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                children: [ 
-                  Expanded(
-                    child: Container(
+                height: 56.0,
+                margin: const EdgeInsets.only(left: 16.0, right: 16.0),
+                decoration: BoxDecoration(
+                    color: color, borderRadius: BorderRadius.circular(8.0)),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Expanded(
+                        child: Container(
                       margin: const EdgeInsets.only(left: 12.0),
-                      child: Text(type!,
+                      child: Text(
+                        type!,
                         style: poppinsRegular.copyWith(
-                          fontSize: Dimensions.fontSizeDefault,
-                          fontWeight: FontWeight.w600,
-                          color: ColorResources.white
-                        ),
+                            fontSize: Dimensions.fontSizeDefault,
+                            fontWeight: FontWeight.w600,
+                            color: ColorResources.white),
+                      ),
+                    )),
+                    Expanded(
+                      child: Text(widget.medias[0].path!.split('/').last,
+                          style: poppinsRegular.copyWith(
+                              fontSize: Dimensions.fontSizeDefault,
+                              color: ColorResources.white)),
+                    ),
+                    Expanded(
+                      child: IconButton(
+                        onPressed: () async {
+                          buildAskDialog(context);
+                        },
+                        color: ColorResources.white,
+                        icon: type == "link"
+                            ? const Icon(Icons.read_more)
+                            : const Icon(Icons.arrow_circle_down),
                       ),
                     )
-                  ),
-                  Expanded(
-                    child: Text(widget.medias[0].path!.split('/').last,
-                      style: poppinsRegular.copyWith(
-                        fontSize: Dimensions.fontSizeDefault,
-                        color: ColorResources.white
-                      )
-                    ),
-                  ),
-                  Expanded(
-                    child: IconButton(
-                      onPressed: () async {
-                        buildAskDialog(context);
-                      },
-                      color: ColorResources.white,
-                      icon: type == "link"
-                        ? const Icon(Icons.read_more)
-                        : const Icon(Icons.arrow_circle_down) ,
-                    ),
-                  )
-                ],
-              )
-            )
+                  ],
+                ))
           ],
         );
       },
@@ -175,85 +168,89 @@ class _PostDocState extends State<PostDoc> {
       transitionDuration: const Duration(milliseconds: 700),
       pageBuilder: (BuildContext context, Animation<double> double, _) {
         return Center(
-          child: Material(
-            color: ColorResources.transparent,
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20.0),
-              height: 250,
-              decoration: BoxDecoration(
-                color: ColorResources.white, 
-                borderRadius: BorderRadius.circular(20.0)
-              ),
-              child: Column(
-                children: [
-                  Container(
+            child: Material(
+          color: ColorResources.transparent,
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20.0),
+            height: 250,
+            decoration: BoxDecoration(
+                color: ColorResources.white,
+                borderRadius: BorderRadius.circular(20.0)),
+            child: Column(
+              children: [
+                Container(
                     margin: const EdgeInsets.only(top: 20.0, bottom: 20.0),
-                    child:  Image.asset("assets/images/auth/Success.png",
+                    child: Image.asset(
+                      "assets/images/auth/Success.png",
                       width: 90.0,
                       height: 90.0,
-                    )
-                  ),
-                  Text(type == "link" 
-                    ? "Kunjungi situs ini?"
-                    : getTranslated("SAVE_DOCUMENT", context),
-                    style: poppinsRegular.copyWith(
+                    )),
+                Text(
+                  type == "link"
+                      ? "Kunjungi situs ini?"
+                      : getTranslated("SAVE_DOCUMENT", context),
+                  style: poppinsRegular.copyWith(
                       fontSize: Dimensions.fontSizeDefault,
                       fontWeight: FontWeight.w600,
-                      color: ColorResources.black
-                    ),
-                  ),
-                  const SizedBox(height: 20,),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(bottom: 30.0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Expanded(child: Container()),
-                            Expanded(
-                              flex: 5,
-                              child: CustomButton(
+                      color: ColorResources.black),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 30.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Expanded(child: Container()),
+                          Expanded(
+                            flex: 5,
+                            child: CustomButton(
                                 isBorderRadius: true,
                                 btnColor: ColorResources.white,
                                 btnTextColor: ColorResources.primary,
                                 onTap: () {
                                   NS.pop(context);
-                                }, 
-                                btnTxt: getTranslated("CANCEL", context)
-                              ),
-                            ),
-                            Expanded(child: Container()),
-                            Expanded(
-                              flex: 5,
-                              child: CustomButton(
+                                },
+                                btnTxt: getTranslated("CANCEL", context)),
+                          ),
+                          Expanded(child: Container()),
+                          Expanded(
+                            flex: 5,
+                            child: CustomButton(
                                 isBorderRadius: true,
                                 btnColor: ColorResources.primary,
                                 btnTextColor: ColorResources.white,
                                 onTap: () async {
-                                  final url = widget.medias[0].path!.split('/').last;
+                                  final url = widget.medias[0].path ?? '';
+                                  // print(url);
                                   type == "link"
-                                    ? NS.push(context, WebViewScreen(
-                                      url: url,
-                                      title: url))
-                                    : await downloadDocument(context);
-                                }, 
-                                btnTxt: "OK"
-                              ),
-                            ),
-                            Expanded(child: Container()),
-                          ],
-                        ),
-                      )
-                    ],
-                  )
-                ],
-              ),
+                                      ? NS.push(
+                                          context,
+                                          WebViewScreen(
+                                              url: url,
+                                              title: widget.medias[0].path
+                                                      ?.split('/')
+                                                      .last ??
+                                                  '-'))
+                                      : await downloadDocument(context);
+                                },
+                                btnTxt: "OK"),
+                          ),
+                          Expanded(child: Container()),
+                        ],
+                      ),
+                    )
+                  ],
+                )
+              ],
             ),
-          )
-        );
+          ),
+        ));
       },
       transitionBuilder: (_, anim, __, child) {
         Tween<Offset> tween;
@@ -278,25 +275,33 @@ class _PostDocState extends State<PostDoc> {
     try {
       Dio dio = Dio();
       Directory documentsIos = await getApplicationDocumentsDirectory();
-      String? saveDir = Platform.isIOS 
-      ? documentsIos.path 
-      : await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOCUMENTS);
-      String url = widget.medias[0].path!; 
+      String? saveDir = Platform.isIOS
+          ? documentsIos.path
+          : await ExternalPath.getExternalStoragePublicDirectory(
+              ExternalPath.DIRECTORY_DOCUMENTS);
+      String url = widget.medias[0].path!;
       pr.show(
-        max: 2,
-        msg: getTranslated("PLEASE_WAIT", context),
-        progressBgColor: ColorResources.primary
-      );
-      await dio.download(url, "$saveDir/${b.basename(widget.medias[0].path!)}");  
+          max: 2,
+          msg: getTranslated("PLEASE_WAIT", context),
+          progressBgColor: ColorResources.primary);
+      await dio.download(url, "$saveDir/${b.basename(widget.medias[0].path!)}");
       pr.close();
-      ShowSnackbar.snackbar(context,"${getTranslated("DOCUMENT_SAVED", context)} $saveDir", "", ColorResources.success);
+      ShowSnackbar.snackbar(
+          context,
+          "${getTranslated("DOCUMENT_SAVED", context)} $saveDir",
+          "",
+          ColorResources.success);
       Navigator.of(context, rootNavigator: true).pop();
-    } on DioError catch(_) {
+    } on DioError catch (_) {
       Navigator.of(context, rootNavigator: true).pop();
-    } catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
       Navigator.of(context, rootNavigator: true).pop();
-      ShowSnackbar.snackbar(context, getTranslated("THERE_WAS_PROBLEM", context), "", ColorResources.error);
+      ShowSnackbar.snackbar(
+          context,
+          getTranslated("THERE_WAS_PROBLEM", context),
+          "",
+          ColorResources.error);
     }
   }
 }
