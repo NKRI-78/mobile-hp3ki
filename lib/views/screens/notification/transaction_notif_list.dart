@@ -21,6 +21,7 @@ class _TransactionNotifListState extends State<TransactionNotifList> {
   String status = 'PAID';
   int page = 1;
   int limit = 10;
+  bool loading = true;
 
   List<OrderData> listPaid = [];
   List<OrderWaitingPayment> listUnpaid = [];
@@ -61,6 +62,8 @@ class _TransactionNotifListState extends State<TransactionNotifList> {
       setState(() {});
     } catch (e) {
       ///
+    } finally {
+      loading = false;
     }
   }
 
@@ -263,7 +266,18 @@ class _TransactionNotifListState extends State<TransactionNotifList> {
                 );
               })
             ],
-          ))
+          )),
+          if (listPaid.isEmpty && listUnpaid.isEmpty && !loading)
+            const Expanded(
+              flex: 2,
+              child: SizedBox(
+                width: double.infinity,
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Text('Belum ada transaksi'),
+                ),
+              ),
+            )
         ],
       ),
     );
