@@ -10,11 +10,17 @@ import 'package:hp3ki/data/models/checkin/checkin.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 
 enum CheckInStatus { idle, refetch, loading, loaded, error, empty }
+
 enum CheckInStatusLoadMore { idle, loading, loaded, error, empty }
+
 enum CheckInStatusCreate { idle, loading, loaded, error }
+
 enum CheckInStatusJoin { idle, loading, loaded, error }
+
 enum CheckInStatusDelete { idle, loading, loaded, error }
+
 enum CheckInStatusDetail { idle, loading, loaded, error, empty }
+
 enum CheckInGalleryStatus { idle, loading, loaded, error, empty }
 
 class CheckInProvider extends ChangeNotifier {
@@ -52,16 +58,17 @@ class CheckInProvider extends ChangeNotifier {
 
   int _checkInDetailTotalUser = 0;
   int get checkInDetailTotalUser => _checkInDetailTotalUser;
-  
+
   List<User> _checkInDetail = [];
   List<User> get checkInDetail => [..._checkInDetail];
-  
+
   void setStateCheckInStatus(CheckInStatus checkInStatus) {
     _checkInStatus = checkInStatus;
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  void setStateCheckInStatusLoadMore(CheckInStatusLoadMore checkInStatusLoadMore) {
+  void setStateCheckInStatusLoadMore(
+      CheckInStatusLoadMore checkInStatusLoadMore) {
     _checkInStatusLoadMore = checkInStatusLoadMore;
     Future.delayed(Duration.zero, () => notifyListeners());
   }
@@ -97,18 +104,18 @@ class CheckInProvider extends ChangeNotifier {
       _checkInData = [];
       CheckInModel cim = await cr.getCheckIn(SharedPrefs.getUserId());
       List<CheckInData>? data = cim.data;
-      if(data!.isEmpty == true) {
+      if (data!.isEmpty == true) {
         setStateCheckInStatus(CheckInStatus.empty);
       } else {
-      _checkInData.addAll(data);
-      setStateCheckInStatus(CheckInStatus.loaded);
+        _checkInData.addAll(data);
+        setStateCheckInStatus(CheckInStatus.loaded);
       }
       notifyListeners();
     } on CustomException catch (e) {
       //CR01
       debugPrint(e.toString());
       setStateCheckInStatus(CheckInStatus.error);
-    } catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
       setStateCheckInStatus(CheckInStatus.error);
     }
@@ -121,7 +128,7 @@ class CheckInProvider extends ChangeNotifier {
       _checkInDetailTotalUser = 0;
       List<User>? data = checkInData[i].joined?.user;
       _checkInDetailTotalUser = data!.length;
-      if(data.isEmpty) {
+      if (data.isEmpty) {
         setStateCheckInStatusDetail(CheckInStatusDetail.empty);
       } else {
         debugPrint('loaded');
@@ -132,23 +139,28 @@ class CheckInProvider extends ChangeNotifier {
       //CR02
       debugPrint(e.toString());
       setStateCheckInStatusDetail(CheckInStatusDetail.error);
-    } catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
       setStateCheckInStatusDetail(CheckInStatusDetail.error);
     }
   }
 
-  Future<void> checkInSavePostId(BuildContext context, int checkInId, String postId) async {
+  Future<void> checkInSavePostId(
+      BuildContext context, int checkInId, String postId) async {
     try {
       await cr.checkInSavePostId(context, checkInId, postId);
-    } catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
     }
   }
 
-  Future<void> createCheckIn(BuildContext context, 
-    String caption, String date, 
-    String start, String end, String desc,
+  Future<void> createCheckIn(
+    BuildContext context,
+    String caption,
+    String date,
+    String start,
+    String end,
+    String desc,
   ) async {
     setStateCheckInStatusCreate(CheckInStatusCreate.loading);
     try {
@@ -168,7 +180,7 @@ class CheckInProvider extends ChangeNotifier {
       debugPrint(e.toString());
       ShowSnackbar.snackbar(context, e.toString(), '', ColorResources.error);
       setStateCheckInStatusCreate(CheckInStatusCreate.error);
-    }catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
       ShowSnackbar.snackbar(context, e.toString(), '', ColorResources.error);
       setStateCheckInStatusCreate(CheckInStatusCreate.error);
@@ -179,14 +191,15 @@ class CheckInProvider extends ChangeNotifier {
     setStateCheckInStatusJoin(CheckInStatusJoin.loading);
     try {
       await cr.joinCheckIn(checkInId, SharedPrefs.getUserId());
-      ShowSnackbar.snackbar(context, getTranslated('JOINED', context), '', ColorResources.green);
+      ShowSnackbar.snackbar(
+          context, getTranslated('JOINED', context), '', ColorResources.green);
       getCheckIn(context);
       setStateCheckInStatusJoin(CheckInStatusJoin.loaded);
     } on CustomException catch (e) {
       debugPrint(e.toString());
       ShowSnackbar.snackbar(context, e.toString(), '', ColorResources.error);
       setStateCheckInStatusJoin(CheckInStatusJoin.error);
-    }catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
       ShowSnackbar.snackbar(context, e.toString(), '', ColorResources.error);
       setStateCheckInStatusJoin(CheckInStatusJoin.error);
@@ -203,11 +216,10 @@ class CheckInProvider extends ChangeNotifier {
       debugPrint(e.toString());
       ShowSnackbar.snackbar(context, e.toString(), '', ColorResources.error);
       setStateCheckInStatusDelete(CheckInStatusDelete.error);
-    }catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
-      ShowSnackbar.snackbar(context, "${e.toString()}\n(Kode Error: CP05)", '', ColorResources.error);
+      ShowSnackbar.snackbar(context, e.toString(), '', ColorResources.error);
       setStateCheckInStatusDelete(CheckInStatusDelete.error);
     }
   }
-
 }

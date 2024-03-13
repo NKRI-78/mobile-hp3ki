@@ -194,8 +194,7 @@ class AuthProvider with ChangeNotifier {
       );
     } on CustomException catch (e) {
       debugPrint(e.toString());
-      ShowSnackbar.snackbar(context, '${e.toString()}\n(Error Kode: AR01)', '',
-          ColorResources.error);
+      ShowSnackbar.snackbar(context, e.toString(), '', ColorResources.error);
       setStateLoginStatus(LoginStatus.error);
     } catch (e, stacktrace) {
       debugPrint(e.toString());

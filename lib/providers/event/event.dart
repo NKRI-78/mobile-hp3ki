@@ -8,20 +8,21 @@ import 'package:hp3ki/utils/shared_preferences.dart';
 import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
 
 enum EventStatus { idle, loading, loaded, error, empty }
+
 enum EventJoinStatus { idle, loading, loaded, error, empty }
+
 enum EventPresentStatus { idle, loading, loaded, error, empty }
+
 enum EventDetailStatus { idle, loading, loaded, error, empty }
 
 class EventProvider with ChangeNotifier {
   final EventRepo er;
 
-  EventProvider({
-    required this.er
-  });
+  EventProvider({required this.er});
 
   List<EventData> _events = [];
   List<EventData> get events => [..._events];
-  
+
   EventStatus _eventStatus = EventStatus.loading;
   EventStatus get eventStatus => _eventStatus;
 
@@ -57,8 +58,9 @@ class EventProvider with ChangeNotifier {
   Future<void> getEvent(BuildContext context) async {
     try {
       _events = [];
-      List<EventData>? data = await er.getEvent(userId: SharedPrefs.getUserId());
-      if(data!.isEmpty) {
+      List<EventData>? data =
+          await er.getEvent(userId: SharedPrefs.getUserId());
+      if (data!.isEmpty) {
         setStateEventStatus(EventStatus.empty);
       } else {
         _events.addAll(data);
@@ -68,39 +70,42 @@ class EventProvider with ChangeNotifier {
       //ER01
       debugPrint(e.toString());
       setStateEventStatus(EventStatus.error);
-    }catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       //EP01
       debugPrint(stacktrace.toString());
       setStateEventStatus(EventStatus.error);
     }
   }
 
-  Future<void> joinEvent(BuildContext context, {required String eventId}) async {
+  Future<void> joinEvent(BuildContext context,
+      {required String eventId}) async {
     setStateJoinEventStatus(EventJoinStatus.loading);
     try {
       await er.joinEvent(eventId: eventId, userId: SharedPrefs.getUserId());
       NS.pop(context);
-      ShowSnackbar.snackbar(context, 'Anda berhasil bergabung!', '', ColorResources.success);
+      ShowSnackbar.snackbar(
+          context, 'Anda berhasil bergabung!', '', ColorResources.success);
       setStateJoinEventStatus(EventJoinStatus.loaded);
     } on CustomException catch (e) {
       ShowSnackbar.snackbar(context, e.toString(), '', ColorResources.error);
       setStateJoinEventStatus(EventJoinStatus.error);
-    }catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
-      ShowSnackbar.snackbar(context, 'Ada sesuatu yang bermasalah.\n(Kode Error: EP04)', '', ColorResources.error);
+      ShowSnackbar.snackbar(
+          context, 'Ada sesuatu yang bermasalah.', '', ColorResources.error);
       setStateJoinEventStatus(EventJoinStatus.error);
     }
   }
 
-  Future<void> presentEvent(BuildContext context, {required String eventId}) async {
+  Future<void> presentEvent(BuildContext context,
+      {required String eventId}) async {
     setStatePresentEventStatus(EventPresentStatus.loading);
     try {
       await er.presentEvent(context, eventId: eventId);
       setStatePresentEventStatus(EventPresentStatus.loaded);
-    } catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
       setStatePresentEventStatus(EventPresentStatus.error);
     }
   }
-
 }

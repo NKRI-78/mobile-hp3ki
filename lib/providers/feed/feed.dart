@@ -13,35 +13,48 @@ import 'package:hp3ki/utils/shared_preferences.dart';
 import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
 
 enum AllMemberStatus { idle, loading, loaded, empty }
+
 enum NotificationStatus { idle, loading, loaded, empty }
+
 enum PostStatus { idle, loading, loaded, empty }
+
 enum WritePostStatus { idle, loading, loaded, empty }
 
 enum ForumDetailStatus { idle, loading, loaded, error, empty }
+
 enum CommentMostPopularStatus { idle, loading, loaded, error, empty }
+
 enum CommentSelfStatus { idle, loading, loaded, error, empty }
 
-enum SingleReplyStatus { idle, loading, loaded, error, empty } 
-enum SingleCommentStatus { idle, loading, loaded, error, empty }
-enum SingleFeedtatus { idle, loading, loaded, error, empty }
-enum ReplyStatus { idle, loading, loaded, error, empty }  
+enum SingleReplyStatus { idle, loading, loaded, error, empty }
 
-enum StickerStatus { idle, loading, loaded, empty } 
+enum SingleCommentStatus { idle, loading, loaded, error, empty }
+
+enum SingleFeedtatus { idle, loading, loaded, error, empty }
+
+enum ReplyStatus { idle, loading, loaded, error, empty }
+
+enum StickerStatus { idle, loading, loaded, empty }
 
 enum FeedMostRecentStatus { idle, loading, loaded, error, empty }
+
 enum FeedMostPopularStatus { idle, loading, loaded, error, empty }
+
 enum FeedSelfStatus { idle, loading, loaded, error, empty }
 
 enum FeedMostRecentStatusC { idle, loading, loaded, empty }
+
 enum FeedMostPopularStatusC { idle, loading, loaded, empty }
+
 enum FeedSelfStatusC { idle, loading, loaded, empty }
 
 enum FeedMemberStatus { idle, loading, loaded, empty }
+
 enum FeedMetaDataStatus { idle, loading, loaded, empty }
 
 class FeedProvider with ChangeNotifier {
   final FeedRepo fr;
-  FeedProvider({ required this.fr });
+  FeedProvider({required this.fr});
 
   int pageRecent = 0;
   int pagePopular = 0;
@@ -101,7 +114,8 @@ class FeedProvider with ChangeNotifier {
   FeedMostRecentStatusC _feedMostRecentStatusC = FeedMostRecentStatusC.loading;
   FeedMostRecentStatusC get feedMostRecentStatusC => _feedMostRecentStatusC;
 
-  FeedMostPopularStatusC _feedMostPopularStatusC = FeedMostPopularStatusC.loading;
+  FeedMostPopularStatusC _feedMostPopularStatusC =
+      FeedMostPopularStatusC.loading;
   FeedMostPopularStatusC get feedMostPopularStatusC => _feedMostPopularStatusC;
 
   FeedSelfStatusC _feedSelfStatusC = FeedSelfStatusC.loading;
@@ -120,9 +134,9 @@ class FeedProvider with ChangeNotifier {
 
   void setStateMemberStatus(AllMemberStatus allMemberStatus) {
     _allMemberStatus = allMemberStatus;
-    Future.delayed(Duration.zero, ()=> notifyListeners());
+    Future.delayed(Duration.zero, () => notifyListeners());
   }
-  
+
   void setStateNotificationStatus(NotificationStatus notificationStatus) {
     _notificationStatus = notificationStatus;
     Future.delayed(Duration.zero, () => notifyListeners());
@@ -136,7 +150,7 @@ class FeedProvider with ChangeNotifier {
   void setStateForumDetailStatus(ForumDetailStatus forumDetailStatus) {
     _forumDetailStatus = forumDetailStatus;
     Future.delayed(Duration.zero, () => notifyListeners());
-  } 
+  }
 
   void setStateStickerStatus(StickerStatus stickerStatus) {
     _stickerStatus = stickerStatus;
@@ -163,7 +177,8 @@ class FeedProvider with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  void setStateFeedMostPopularStatus(FeedMostPopularStatus feedMostPopularStatus) {
+  void setStateFeedMostPopularStatus(
+      FeedMostPopularStatus feedMostPopularStatus) {
     _feedMostPopularStatus = feedMostPopularStatus;
     Future.delayed(Duration.zero, () => notifyListeners());
   }
@@ -173,12 +188,14 @@ class FeedProvider with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  void setStateFeedMostRecentStatusC(FeedMostRecentStatusC feedMostRecentStatusC) {
+  void setStateFeedMostRecentStatusC(
+      FeedMostRecentStatusC feedMostRecentStatusC) {
     _feedMostRecentStatusC = feedMostRecentStatusC;
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  void setStateFeedMostPopularStatusC(FeedMostPopularStatusC feedMostPopularStatusC) {
+  void setStateFeedMostPopularStatusC(
+      FeedMostPopularStatusC feedMostPopularStatusC) {
     _feedMostPopularStatusC = feedMostPopularStatusC;
     Future.delayed(Duration.zero, () => notifyListeners());
   }
@@ -205,7 +222,7 @@ class FeedProvider with ChangeNotifier {
   FeedModel get g1 => _g1!;
 
   FeedModel? _g2;
-  FeedModel get g2 => _g2!; 
+  FeedModel get g2 => _g2!;
 
   FeedModel? _g3;
   FeedModel get g3 => _g3!;
@@ -214,7 +231,7 @@ class FeedProvider with ChangeNotifier {
   ForumDetailBody? get forumDetailData => _forumDetailData!;
 
   List<CommentElement> _commentList = [];
-  List<CommentElement> get commentList => [..._commentList]; 
+  List<CommentElement> get commentList => [..._commentList];
 
   List<FeedData> _g1List = [];
   List<FeedData> get g1List => [..._g1List];
@@ -234,7 +251,7 @@ class FeedProvider with ChangeNotifier {
     pagePopular++;
     Future.delayed(Duration.zero, () => notifyListeners());
   }
-  
+
   void nextPageSelf() {
     pageSelf++;
     Future.delayed(Duration.zero, () => notifyListeners());
@@ -300,7 +317,11 @@ class FeedProvider with ChangeNotifier {
       ShowSnackbar.snackbar(context, '${e.cause}', '', ColorResources.error);
     } catch (e) {
       debugPrint(e.toString());
-      ShowSnackbar.snackbar(context, 'Terjadi error tidak terduga pada aplikasi.\n(Kode Error: FEP01)', '', ColorResources.error);
+      ShowSnackbar.snackbar(
+          context,
+          'Terjadi error tidak terduga pada aplikasi.',
+          '',
+          ColorResources.error);
     }
   }
 
@@ -320,20 +341,24 @@ class FeedProvider with ChangeNotifier {
       ShowSnackbar.snackbar(context, '${e.cause}', '', ColorResources.error);
     } catch (e) {
       debugPrint(e.toString());
-      ShowSnackbar.snackbar(context, 'Terjadi error tidak terduga pada aplikasi.\n(Kode Error: FEP02)', '', ColorResources.error);
+      ShowSnackbar.snackbar(
+          context,
+          'Terjadi error tidak terduga pada aplikasi.',
+          '',
+          ColorResources.error);
     }
   }
 
   Future<void> fetchForumDetail(BuildContext context, String targetId) async {
     setStateForumDetailStatus(ForumDetailStatus.loading);
     try {
-      loadMoreComment = true;   
+      loadMoreComment = true;
       nullMoreComment = false;
       commentPage = 1;
       ForumDetail? fd = await fr.fetchForumDetail(targetId);
       _forumDetail = fd;
       currentPostId = targetId;
-      if(fd!.forumDetailPaginate!.total != 0) {
+      if (fd!.forumDetailPaginate!.total != 0) {
         _forumDetailData = fd.data;
         _commentList = [];
         _commentList.addAll(fd.data!.forumComments!.comments!);
@@ -346,7 +371,11 @@ class FeedProvider with ChangeNotifier {
       setStateForumDetailStatus(ForumDetailStatus.error);
     } catch (e) {
       debugPrint(e.toString());
-      ShowSnackbar.snackbar(context, 'Terjadi error tidak terduga pada aplikasi.\n(Kode Error: FEP03)', '', ColorResources.error);
+      ShowSnackbar.snackbar(
+          context,
+          'Terjadi error tidak terduga pada aplikasi.',
+          '',
+          ColorResources.error);
       setStateForumDetailStatus(ForumDetailStatus.error);
     }
   }
@@ -356,7 +385,8 @@ class FeedProvider with ChangeNotifier {
       if (nullMoreComment == false) {
         if (loadMoreComment == true) {
           nextCommentPage();
-          ForumDetail? fd = await fr.fetchMoreComment(currentPostId!, commentPage);
+          ForumDetail? fd =
+              await fr.fetchMoreComment(currentPostId!, commentPage);
           if (fd!.forumDetailPaginate!.total == 0) {
             emptyMoreComment();
           }
@@ -368,31 +398,39 @@ class FeedProvider with ChangeNotifier {
       ShowSnackbar.snackbar(context, '${e.cause}', '', ColorResources.error);
     } catch (e) {
       debugPrint(e.toString());
-      ShowSnackbar.snackbar(context, 'Terjadi error tidak terduga pada aplikasi.\n(Kode Error: FEP04)', '', ColorResources.error);
+      ShowSnackbar.snackbar(
+          context,
+          'Terjadi error tidak terduga pada aplikasi.',
+          '',
+          ColorResources.error);
     }
   }
 
   Future<void> fetchFeedMostRecent(BuildContext context) async {
     setStateFeedMostRecentStatus(FeedMostRecentStatus.loading);
     try {
-      loadPageRecent = true;   
+      loadPageRecent = true;
       nullPageRecent = false;
-      pageRecent = 1;   
+      pageRecent = 1;
       FeedModel? g = await fr.fetchFeedMostRecent(pageRecent);
       _g1 = g;
       if (g?.data?.isNotEmpty == true) {
         _g1List = [];
-        _g1List.addAll(g!.data!);     
+        _g1List.addAll(g!.data!);
         setStateFeedMostRecentStatus(FeedMostRecentStatus.loaded);
       } else {
         setStateFeedMostRecentStatus(FeedMostRecentStatus.empty);
-      } 
+      }
     } on CustomException catch (e) {
       ShowSnackbar.snackbar(context, '${e.cause}', '', ColorResources.error);
       setStateFeedMostRecentStatus(FeedMostRecentStatus.error);
     } catch (e) {
       debugPrint(e.toString());
-      ShowSnackbar.snackbar(context, 'Terjadi error tidak terduga pada aplikasi.\n(Kode Error: FEP05)', '', ColorResources.error);
+      ShowSnackbar.snackbar(
+          context,
+          'Terjadi error tidak terduga pada aplikasi.',
+          '',
+          ColorResources.error);
       setStateFeedMostRecentStatus(FeedMostRecentStatus.error);
     }
   }
@@ -400,50 +438,58 @@ class FeedProvider with ChangeNotifier {
   Future<void> fetchFeedMostPopular(BuildContext context) async {
     setStateFeedMostPopularStatus(FeedMostPopularStatus.loading);
     try {
-      loadPagePopular = true;   
+      loadPagePopular = true;
       nullPagePopular = false;
-      pagePopular = 1;   
+      pagePopular = 1;
       FeedModel? g = await fr.fetchFeedMostPopular(pagePopular);
       _g2 = g;
       if (g?.data?.isNotEmpty == true) {
         _g2List = [];
-        _g2List.addAll(g!.data!);     
+        _g2List.addAll(g!.data!);
         setStateFeedMostPopularStatus(FeedMostPopularStatus.loaded);
       } else {
         setStateFeedMostPopularStatus(FeedMostPopularStatus.empty);
-      } 
+      }
     } on CustomException catch (e) {
       ShowSnackbar.snackbar(context, '${e.cause}', '', ColorResources.error);
       setStateFeedMostPopularStatus(FeedMostPopularStatus.error);
     } catch (e) {
       debugPrint(e.toString());
       setStateFeedMostPopularStatus(FeedMostPopularStatus.error);
-      ShowSnackbar.snackbar(context, 'Terjadi error tidak terduga pada aplikasi.\n(Kode Error: FEP06)', '', ColorResources.error);
+      ShowSnackbar.snackbar(
+          context,
+          'Terjadi error tidak terduga pada aplikasi.',
+          '',
+          ColorResources.error);
     }
   }
 
   Future<void> fetchFeedSelf(BuildContext context) async {
     setStateFeedSelfStatus(FeedSelfStatus.loading);
     try {
-      loadPageSelf = true;   
+      loadPageSelf = true;
       nullPageSelf = false;
-      pageSelf = 1;   
+      pageSelf = 1;
       FeedModel? g = await fr.fetchFeedSelf(pageSelf, SharedPrefs.getUserId());
       _g3 = g;
       if (g?.data?.isNotEmpty == true) {
         _g3List = [];
-        _g3List.addAll(g!.data!);     
+        _g3List.addAll(g!.data!);
         setStateFeedSelfStatus(FeedSelfStatus.loaded);
       } else {
         setStateFeedSelfStatus(FeedSelfStatus.empty);
-      } 
+      }
     } on CustomException catch (e) {
       ShowSnackbar.snackbar(context, '${e.cause}', '', ColorResources.error);
       setStateFeedSelfStatus(FeedSelfStatus.error);
     } catch (e) {
       debugPrint(e.toString());
       setStateFeedSelfStatus(FeedSelfStatus.error);
-      ShowSnackbar.snackbar(context, 'Terjadi error tidak terduga pada aplikasi.\n(Kode Error: FEP07)', '', ColorResources.error);
+      ShowSnackbar.snackbar(
+          context,
+          'Terjadi error tidak terduga pada aplikasi',
+          '',
+          ColorResources.error);
     }
   }
 
@@ -453,7 +499,7 @@ class FeedProvider with ChangeNotifier {
         if (loadPageRecent == true) {
           nextPageRecent();
           FeedModel? g = await fr.fetchFeedMostRecent(pageRecent);
-          if ( g!.pageDetail!.total! == 0) {
+          if (g!.pageDetail!.total! == 0) {
             emptyPageRecent();
           }
           _g1 = g;
@@ -467,7 +513,11 @@ class FeedProvider with ChangeNotifier {
     } catch (e) {
       debugPrint(e.toString());
       setStateFeedMostRecentStatus(FeedMostRecentStatus.error);
-      ShowSnackbar.snackbar(context, 'Terjadi error tidak terduga pada aplikasi.\n(Kode Error: FEP08)', '', ColorResources.error);
+      ShowSnackbar.snackbar(
+          context,
+          'Terjadi error tidak terduga pada aplikasi.',
+          '',
+          ColorResources.error);
     }
   }
 
@@ -477,7 +527,7 @@ class FeedProvider with ChangeNotifier {
         if (loadPagePopular == true) {
           nextPagePopular();
           FeedModel? g = await fr.fetchFeedMostPopular(pagePopular);
-          if ( g!.pageDetail!.total! == 0) {
+          if (g!.pageDetail!.total! == 0) {
             emptyPagePopular();
           }
           _g2 = g;
@@ -491,7 +541,11 @@ class FeedProvider with ChangeNotifier {
     } catch (e) {
       debugPrint(e.toString());
       setStateFeedMostPopularStatus(FeedMostPopularStatus.error);
-      ShowSnackbar.snackbar(context, 'Terjadi error tidak terduga pada aplikasi.\n(Kode Error: FEP09)', '', ColorResources.error);
+      ShowSnackbar.snackbar(
+          context,
+          'Terjadi error tidak terduga pada aplikasi.',
+          '',
+          ColorResources.error);
     }
   }
 
@@ -500,8 +554,9 @@ class FeedProvider with ChangeNotifier {
       if (nullPageSelf == false) {
         if (loadPageSelf == true) {
           nextPageSelf();
-          FeedModel? g = await fr.fetchFeedSelf(pageSelf, SharedPrefs.getUserId());
-          if ( g!.pageDetail!.total! == 0) {
+          FeedModel? g =
+              await fr.fetchFeedSelf(pageSelf, SharedPrefs.getUserId());
+          if (g!.pageDetail!.total! == 0) {
             emptyPageSelf();
           }
           _g3 = g;
@@ -515,14 +570,19 @@ class FeedProvider with ChangeNotifier {
     } catch (e) {
       debugPrint(e.toString());
       setStateFeedSelfStatus(FeedSelfStatus.error);
-      ShowSnackbar.snackbar(context, 'Terjadi error tidak terduga pada aplikasi.\n(Kode Error: FEP10)', '', ColorResources.error);
+      ShowSnackbar.snackbar(
+          context,
+          'Terjadi error tidak terduga pada aplikasi.',
+          '',
+          ColorResources.error);
     }
   }
 
   Future<void> sendPostText(BuildContext context, String text) async {
     setStateWritePost(WritePostStatus.loading);
     try {
-      await fr.sendPostText(text, SharedPrefs.getUserId(), Helper.createUniqueV4Id());
+      await fr.sendPostText(
+          text, SharedPrefs.getUserId(), Helper.createUniqueV4Id());
       setStateWritePost(WritePostStatus.loaded);
       Future.sync(() {
         fetchFeedMostRecent(context);
@@ -535,11 +595,16 @@ class FeedProvider with ChangeNotifier {
     } catch (e) {
       debugPrint(e.toString());
       setStateWritePost(WritePostStatus.empty);
-      ShowSnackbar.snackbar(context, 'Terjadi error tidak terduga pada aplikasi.\n(Kode Error: FEP11)', '', ColorResources.error);
+      ShowSnackbar.snackbar(
+          context,
+          'Terjadi error tidak terduga pada aplikasi.',
+          '',
+          ColorResources.error);
     }
   }
 
-  Future<void> sendComment(BuildContext context, String text, String postId) async {
+  Future<void> sendComment(
+      BuildContext context, String text, String postId) async {
     try {
       await fr.sendComment(text, postId, SharedPrefs.getUserId());
       Future.sync(() {
@@ -549,11 +614,16 @@ class FeedProvider with ChangeNotifier {
       ShowSnackbar.snackbar(context, '${e.cause}', '', ColorResources.error);
     } catch (e) {
       debugPrint(e.toString());
-      ShowSnackbar.snackbar(context, 'Terjadi error tidak terduga pada aplikasi.\n(Kode Error: FEP12)', '', ColorResources.error);
+      ShowSnackbar.snackbar(
+          context,
+          'Terjadi error tidak terduga pada aplikasi.',
+          '',
+          ColorResources.error);
     }
   }
 
-  Future<void> likeComment(BuildContext context, {required String postId, required String commentId}) async {
+  Future<void> likeComment(BuildContext context,
+      {required String postId, required String commentId}) async {
     try {
       await fr.likeComment(postId, commentId, SharedPrefs.getUserId());
       Future.sync(() {
@@ -563,11 +633,16 @@ class FeedProvider with ChangeNotifier {
       ShowSnackbar.snackbar(context, '${e.cause}', '', ColorResources.error);
     } catch (e) {
       debugPrint(e.toString());
-      ShowSnackbar.snackbar(context, 'Terjadi error tidak terduga pada aplikasi.\n(Kode Error: FEP13)', '', ColorResources.error);
+      ShowSnackbar.snackbar(
+          context,
+          'Terjadi error tidak terduga pada aplikasi.',
+          '',
+          ColorResources.error);
     }
   }
 
-  Future<void> deleteComment(BuildContext context, {required String postId, required String commentId}) async {
+  Future<void> deleteComment(BuildContext context,
+      {required String postId, required String commentId}) async {
     try {
       await fr.deleteComment(commentId);
       Future.sync(() {
@@ -577,11 +652,18 @@ class FeedProvider with ChangeNotifier {
       ShowSnackbar.snackbar(context, '${e.cause}', '', ColorResources.error);
     } catch (e) {
       debugPrint(e.toString());
-      ShowSnackbar.snackbar(context, 'Terjadi error tidak terduga pada aplikasi.\n(Kode Error: FEP14)', '', ColorResources.error);
+      ShowSnackbar.snackbar(
+          context,
+          'Terjadi error tidak terduga pada aplikasi.',
+          '',
+          ColorResources.error);
     }
   }
 
-  Future<void> sendReply(BuildContext context, {required String text, required String commentId, required String postId}) async {
+  Future<void> sendReply(BuildContext context,
+      {required String text,
+      required String commentId,
+      required String postId}) async {
     try {
       await fr.sendReply(postId, commentId, SharedPrefs.getUserId(), text);
       Future.sync(() {
@@ -591,11 +673,16 @@ class FeedProvider with ChangeNotifier {
       ShowSnackbar.snackbar(context, '${e.cause}', '', ColorResources.error);
     } catch (e) {
       debugPrint(e.toString());
-      ShowSnackbar.snackbar(context, 'Terjadi error tidak terduga pada aplikasi.\n(Kode Error: FEP15)', '', ColorResources.error);
+      ShowSnackbar.snackbar(
+          context,
+          'Terjadi error tidak terduga pada aplikasi.',
+          '',
+          ColorResources.error);
     }
   }
 
-  Future<void> deleteReply(BuildContext context, {required String replyId, required String postId}) async {
+  Future<void> deleteReply(BuildContext context,
+      {required String replyId, required String postId}) async {
     try {
       await fr.deleteReply(replyId);
       Future.sync(() {
@@ -605,11 +692,16 @@ class FeedProvider with ChangeNotifier {
       ShowSnackbar.snackbar(context, '${e.cause}', '', ColorResources.error);
     } catch (e) {
       debugPrint(e.toString());
-      ShowSnackbar.snackbar(context, 'Terjadi error tidak terduga pada aplikasi.\n(Kode Error: FEP16)', '', ColorResources.error);
+      ShowSnackbar.snackbar(
+          context,
+          'Terjadi error tidak terduga pada aplikasi.',
+          '',
+          ColorResources.error);
     }
   }
 
-  Future<void> sendPostLink(BuildContext context, String caption, String url) async {
+  Future<void> sendPostLink(
+      BuildContext context, String caption, String url) async {
     setStateWritePost(WritePostStatus.loading);
     try {
       final String forumId = Helper.createUniqueV4Id();
@@ -629,15 +721,20 @@ class FeedProvider with ChangeNotifier {
     } catch (e) {
       debugPrint(e.toString());
       setStateWritePost(WritePostStatus.empty);
-      ShowSnackbar.snackbar(context, 'Terjadi error tidak terduga pada aplikasi.\n(Kode Error: FEP17)', '', ColorResources.error);
+      ShowSnackbar.snackbar(
+          context,
+          'Terjadi error tidak terduga pada aplikasi.',
+          '',
+          ColorResources.error);
     }
   }
 
-  Future<void> sendPostImage(BuildContext context, String caption, List<File> files) async {
+  Future<void> sendPostImage(
+      BuildContext context, String caption, List<File> files) async {
     try {
       String forumId = Helper.createUniqueV4Id();
       String path = "-";
-      if(files.length > 1) {
+      if (files.length > 1) {
         for (int i = 0; i < files.length; i++) {
           Response? resPath = await fr.uploadMedia("images", files[i]);
           path = resPath!.data!["data"]["path"];
@@ -658,11 +755,16 @@ class FeedProvider with ChangeNotifier {
       ShowSnackbar.snackbar(context, '${e.cause}', '', ColorResources.error);
     } catch (e) {
       debugPrint(e.toString());
-      ShowSnackbar.snackbar(context, 'Terjadi error tidak terduga pada aplikasi.\n(Kode Error: FEP18)', '', ColorResources.error);
+      ShowSnackbar.snackbar(
+          context,
+          'Terjadi error tidak terduga pada aplikasi.',
+          '',
+          ColorResources.error);
     }
   }
 
-  Future<void> sendPostImageCamera(BuildContext context, String caption, File file) async {
+  Future<void> sendPostImageCamera(
+      BuildContext context, String caption, File file) async {
     setStateWritePost(WritePostStatus.loading);
     try {
       String forumId = Helper.createUniqueV4Id();
@@ -685,11 +787,16 @@ class FeedProvider with ChangeNotifier {
     } catch (e) {
       debugPrint(e.toString());
       setStateWritePost(WritePostStatus.empty);
-      ShowSnackbar.snackbar(context, 'Terjadi error tidak terduga pada aplikasi.\n(Kode Error: FEP19)', '', ColorResources.error);
+      ShowSnackbar.snackbar(
+          context,
+          'Terjadi error tidak terduga pada aplikasi.',
+          '',
+          ColorResources.error);
     }
   }
 
-  Future<void> sendPostDoc(BuildContext context, String caption, FilePickerResult files) async {
+  Future<void> sendPostDoc(
+      BuildContext context, String caption, FilePickerResult files) async {
     try {
       final String forumId = Helper.createUniqueV4Id();
       Response? resPath = await fr.uploadMediaFilePicker("documents", files);
@@ -708,11 +815,16 @@ class FeedProvider with ChangeNotifier {
       ShowSnackbar.snackbar(context, '${e.cause}', '', ColorResources.error);
     } catch (e) {
       debugPrint(e.toString());
-      ShowSnackbar.snackbar(context, 'Terjadi error tidak terduga pada aplikasi.\n(Kode Error: FEP20)', '', ColorResources.error);
+      ShowSnackbar.snackbar(
+          context,
+          'Terjadi error tidak terduga pada aplikasi.',
+          '',
+          ColorResources.error);
     }
   }
 
-  Future<void> sendPostVideo(BuildContext context, String caption, File? file) async {
+  Future<void> sendPostVideo(
+      BuildContext context, String caption, File? file) async {
     try {
       String forumId = Helper.createUniqueV4Id();
       Response? resPath = await fr.uploadMedia("videos", file!);
@@ -731,7 +843,11 @@ class FeedProvider with ChangeNotifier {
       ShowSnackbar.snackbar(context, '${e.cause}', '', ColorResources.error);
     } catch (e) {
       debugPrint(e.toString());
-      ShowSnackbar.snackbar(context, 'Terjadi error tidak terduga pada aplikasi.\n(Kode Error: FEP21)', '', ColorResources.error);
+      ShowSnackbar.snackbar(
+          context,
+          'Terjadi error tidak terduga pada aplikasi.',
+          '',
+          ColorResources.error);
     }
   }
 }

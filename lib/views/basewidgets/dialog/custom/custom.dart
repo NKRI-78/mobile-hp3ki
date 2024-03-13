@@ -308,7 +308,7 @@ class CustomDialog {
                 height: 15,
               ),
               Text(
-                'Error tidak terduga dalam aplikasi.\n(Kode Error: $errorCode)',
+                'Error tidak terduga dalam aplikasi.',
                 style: robotoRegular.copyWith(
                   fontSize: Dimensions.fontSizeLarge,
                 ),
