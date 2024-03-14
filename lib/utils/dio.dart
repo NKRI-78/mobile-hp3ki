@@ -24,7 +24,7 @@ class DioManager {
           (RequestOptions options, RequestInterceptorHandler handler) {
         String token = SharedPrefs.getUserToken();
         if (token != "-") {
-          // debugPrint(token);
+          // print(token);
           options.headers["Authorization"] = "Bearer $token";
           String userId = SharedPrefs.getUserId();
           if (userId != "-") {

@@ -1,8 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
+import 'package:flutter_file_dialog/flutter_file_dialog.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:hp3ki/localization/language_constraints.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -26,6 +31,8 @@ import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/views/screens/profile/edit.dart';
+
+final GlobalKey ktaImageKey = GlobalKey();
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -235,284 +242,400 @@ class _ProfileScreenState extends State<ProfileScreen> {
             fit: BoxFit.cover));
   }
 
-  SliverToBoxAdapter buildUserKTA() {
+  SliverPadding buildUserKTA() {
     final height = MediaQuery.sizeOf(context).height;
     final isSmall = height < 1000 ? true : false;
-    return SliverToBoxAdapter(
-      child: Column(
-        children: [
-          Stack(
-            children: [
-              Container(
-                height: height * 0.3,
-                width: double.infinity,
-                margin: const EdgeInsets.only(
-                  top: Dimensions.marginSizeExtraLarge,
-                  left: Dimensions.marginSizeExtraLarge,
-                  right: Dimensions.marginSizeExtraLarge,
-                ),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15.0),
-                    image: DecorationImage(
-                      fit: BoxFit.fitWidth,
-                      image: AssetImage(isPlatinum
-                          ? "assets/images/profile/kta-premium.png"
-                          : "assets/images/profile/kta-free.png"),
-                    )),
-              ),
-              Positioned(
-                top: isSmall ? 100 : 127,
-                left: 50,
-                child: file != null
-                    ? Container(
-                        height: 130.0,
-                        width: 120.0,
+    return SliverPadding(
+      padding: const EdgeInsets.only(top: 30),
+      sliver: SliverToBoxAdapter(
+        child: Column(
+          children: [
+            RepaintBoundary(
+              key: ktaImageKey,
+              child: Column(
+                children: [
+                  Stack(
+                    children: [
+                      Container(
+                        height: height * 0.3,
+                        width: double.infinity,
+                        margin: const EdgeInsets.only(
+                          top: Dimensions.marginSizeExtraLarge,
+                          left: Dimensions.marginSizeExtraLarge,
+                          right: Dimensions.marginSizeExtraLarge,
+                        ),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15.0),
                           image: DecorationImage(
-                            image: FileImage(file!),
-                            fit: BoxFit.fill,
+                            fit: BoxFit.fitWidth,
+                            image: AssetImage(isPlatinum
+                                ? "assets/images/profile/kta-premium.png"
+                                : "assets/images/profile/kta-free.png"),
                           ),
+                        ),
+                        padding:
+                            const EdgeInsets.only(left: 60, top: 30, right: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            FittedBox(
+                              child: Text(
+                                context
+                                        .read<ProfileProvider>()
+                                        .user
+                                        ?.organizationBahasa
+                                        ?.trim() ??
+                                    "...",
+                                style: poppinsRegular.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 12,
+                                  color: ColorResources.black,
+                                ),
+                                maxLines: 1,
+                              ),
+                            ),
+                            FittedBox(
+                              child: Text(
+                                context
+                                        .read<ProfileProvider>()
+                                        .user
+                                        ?.organizationEnglish
+                                        ?.trim() ??
+                                    "...",
+                                style: poppinsRegular.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 12,
+                                  color: ColorResources.black,
+                                ),
+                                maxLines: 1,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        top: isSmall ? 100 : 127,
+                        left: 50,
+                        child: file != null
+                            ? Container(
+                                height: 130.0,
+                                width: 120.0,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  image: DecorationImage(
+                                    image: FileImage(file!),
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                              )
+                            : CachedNetworkImage(
+                                fit: BoxFit.fill,
+                                imageUrl: context
+                                        .read<ProfileProvider>()
+                                        .user
+                                        ?.avatar ??
+                                    AppConstants.avatarError,
+                                imageBuilder: (BuildContext context,
+                                    ImageProvider<Object> imageProvider) {
+                                  return Container(
+                                    height: 130.0,
+                                    width: 120.0,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                errorWidget: (BuildContext context, String url,
+                                    dynamic error) {
+                                  return Container(
+                                    height: 130.0,
+                                    width: 120.0,
+                                    decoration: BoxDecoration(
+                                      color: ColorResources.greyDarkPrimary,
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      image: const DecorationImage(
+                                        image: AssetImage(
+                                            'assets/images/icons/ic-person.png'),
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                      ),
+                      Positioned(
+                        bottom: 65,
+                        left: 140,
+                        child: Container(
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50.0),
+                              color: file != null
+                                  ? ColorResources.error
+                                  : ColorResources.primary),
+                          child: InkWell(
+                            onTap: file != null
+                                ? () {
+                                    setState(() {
+                                      file = null;
+                                    });
+                                  }
+                                : chooseFile,
+                            child: Padding(
+                              padding: const EdgeInsets.all(
+                                  Dimensions.paddingSizeExtraSmall),
+                              child: file != null
+                                  ? const Icon(
+                                      Icons.close,
+                                      color: ColorResources.white,
+                                      size: Dimensions.iconSizeDefault,
+                                    )
+                                  : const Icon(
+                                      Icons.camera_alt,
+                                      color: ColorResources.white,
+                                      size: Dimensions.iconSizeDefault,
+                                    ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 155,
+                        left: 190,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            buildOutlineText(
+                              label: context
+                                          .watch<ProfileProvider>()
+                                          .profileStatus ==
+                                      ProfileStatus.loading
+                                  ? "..."
+                                  : context
+                                              .watch<ProfileProvider>()
+                                              .profileStatus ==
+                                          ProfileStatus.error
+                                      ? "-"
+                                      : context
+                                          .read<ProfileProvider>()
+                                          .user!
+                                          .noMember!
+                                          .toUpperCase(),
+                              color: ColorResources.white,
+                              fontSize: Dimensions.fontSizeDefault,
+                              fontWeight: FontWeight.w600,
+                              outlineColor: ColorResources.black,
+                            ),
+                            buildOutlineText(
+                              label: context
+                                          .watch<ProfileProvider>()
+                                          .profileStatus ==
+                                      ProfileStatus.loading
+                                  ? "..."
+                                  : context
+                                              .watch<ProfileProvider>()
+                                              .profileStatus ==
+                                          ProfileStatus.error
+                                      ? "-"
+                                      : context
+                                          .read<ProfileProvider>()
+                                          .user!
+                                          .fullname!
+                                          .toUpperCase()
+                                          .firstFewWords(),
+                              color: ColorResources.white,
+                              fontSize: Dimensions.fontSizeOverLarge,
+                              fontWeight: FontWeight.w600,
+                              outlineColor: ColorResources.black,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        top: isSmall ? 25 : 47,
+                        left: 50,
+                        child: Row(
+                          children: [
+                            CachedNetworkImage(
+                              fit: BoxFit.fill,
+                              imageUrl: context
+                                      .read<ProfileProvider>()
+                                      .user
+                                      ?.organizationPath ??
+                                  AppConstants.avatarError,
+                              imageBuilder: (BuildContext context,
+                                  ImageProvider<Object> imageProvider) {
+                                return Container(
+                                  height: 30.0,
+                                  width: 30.0,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                    image: DecorationImage(
+                                      image: imageProvider,
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
+                                );
+                              },
+                              errorWidget: (BuildContext context, String url,
+                                  dynamic error) {
+                                return Container(
+                                  height: 30.0,
+                                  width: 30.0,
+                                  decoration: BoxDecoration(
+                                    color: ColorResources.transparent,
+                                    borderRadius: BorderRadius.circular(15.0),
+                                    image: const DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/logo/logo.png'),
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            const SizedBox(
+                              width: 15,
+                            ),
+                            // Column(
+                            //   crossAxisAlignment: CrossAxisAlignment.start,
+                            //   children: [
+                            //     Text(
+                            //       context
+                            //               .read<ProfileProvider>()
+                            //               .user
+                            //               ?.organizationBahasa
+                            //               ?.trim() ??
+                            //           "...",
+                            //       style: poppinsRegular.copyWith(
+                            //         fontWeight: FontWeight.w600,
+                            //         fontSize: Dimensions.fontSizeSmall,
+                            //         color: ColorResources.black,
+                            //       ),
+                            //     ),
+                            //     Text(
+                            //       context
+                            //               .read<ProfileProvider>()
+                            //               .user
+                            //               ?.organizationEnglish
+                            //               ?.trim() ??
+                            //           "...",
+                            //       style: poppinsRegular.copyWith(
+                            //         fontWeight: FontWeight.w600,
+                            //         fontSize: Dimensions.fontSizeSmall,
+                            //         color: ColorResources.black,
+                            //       ),
+                            //     ),
+                            //   ],
+                            // ),
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        top: height * 0.25,
+                        right: 40,
+                        child: QrImageView(
+                          data:
+                              context.read<ProfileProvider>().user?.noMember ??
+                                  "-",
+                          size: 60.0,
                         ),
                       )
-                    : CachedNetworkImage(
-                        fit: BoxFit.fill,
-                        imageUrl:
-                            context.read<ProfileProvider>().user?.avatar ??
-                                AppConstants.avatarError,
-                        imageBuilder: (BuildContext context,
-                            ImageProvider<Object> imageProvider) {
-                          return Container(
-                            height: 130.0,
-                            width: 120.0,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15.0),
-                              image: DecorationImage(
-                                image: imageProvider,
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                          );
-                        },
-                        errorWidget:
-                            (BuildContext context, String url, dynamic error) {
-                          return Container(
-                            height: 130.0,
-                            width: 120.0,
-                            decoration: BoxDecoration(
-                              color: ColorResources.greyDarkPrimary,
-                              borderRadius: BorderRadius.circular(15.0),
-                              image: const DecorationImage(
-                                image: AssetImage(
-                                    'assets/images/icons/ic-person.png'),
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-              ),
-              Positioned(
-                bottom: 65,
-                left: 140,
-                child: Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50.0),
-                      color: file != null
-                          ? ColorResources.error
-                          : ColorResources.primary),
-                  child: InkWell(
-                    onTap: file != null
-                        ? () {
-                            setState(() {
-                              file = null;
-                            });
-                          }
-                        : chooseFile,
-                    child: Padding(
-                      padding: const EdgeInsets.all(
-                          Dimensions.paddingSizeExtraSmall),
-                      child: file != null
-                          ? const Icon(
-                              Icons.close,
-                              color: ColorResources.white,
-                              size: Dimensions.iconSizeDefault,
-                            )
-                          : const Icon(
-                              Icons.camera_alt,
-                              color: ColorResources.white,
-                              size: Dimensions.iconSizeDefault,
-                            ),
-                    ),
+                    ],
                   ),
-                ),
-              ),
-              Positioned(
-                top: 155,
-                left: 190,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    buildOutlineText(
-                      label: context.watch<ProfileProvider>().profileStatus ==
-                              ProfileStatus.loading
-                          ? "..."
-                          : context.watch<ProfileProvider>().profileStatus ==
-                                  ProfileStatus.error
-                              ? "-"
-                              : context
-                                  .read<ProfileProvider>()
-                                  .user!
-                                  .noMember!
-                                  .toUpperCase(),
-                      color: ColorResources.white,
-                      fontSize: Dimensions.fontSizeDefault,
-                      fontWeight: FontWeight.w600,
-                      outlineColor: ColorResources.black,
-                    ),
-                    buildOutlineText(
-                      label: context.watch<ProfileProvider>().profileStatus ==
-                              ProfileStatus.loading
-                          ? "..."
-                          : context.watch<ProfileProvider>().profileStatus ==
-                                  ProfileStatus.error
-                              ? "-"
-                              : context
-                                  .read<ProfileProvider>()
-                                  .user!
-                                  .fullname!
-                                  .toUpperCase()
-                                  .firstFewWords(),
-                      color: ColorResources.white,
-                      fontSize: Dimensions.fontSizeOverLarge,
-                      fontWeight: FontWeight.w600,
-                      outlineColor: ColorResources.black,
-                    ),
-                  ],
-                ),
-              ),
-              Positioned(
-                top: isSmall ? 25 : 47,
-                left: 50,
-                child: Row(
-                  children: [
-                    CachedNetworkImage(
-                      fit: BoxFit.fill,
-                      imageUrl: context
-                              .read<ProfileProvider>()
-                              .user
-                              ?.organizationPath ??
-                          AppConstants.avatarError,
-                      imageBuilder: (BuildContext context,
-                          ImageProvider<Object> imageProvider) {
-                        return Container(
-                          height: 30.0,
-                          width: 30.0,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15.0),
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.fill,
+                  file != null
+                      ? Container(
+                          margin: const EdgeInsets.only(
+                            left: Dimensions.marginSizeExtraLarge,
+                            right: Dimensions.marginSizeExtraLarge,
+                            bottom: Dimensions.marginSizeSmall,
+                          ),
+                          child: CustomButton(
+                            isLoading: context
+                                        .watch<MediaProvider>()
+                                        .uploadPictureStatus ==
+                                    UploadPictureStatus.loading
+                                ? true
+                                : false,
+                            customText: true,
+                            text: Text(
+                              'Ubah Foto Profil',
+                              style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeLarge,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1.5,
+                                  color: ColorResources.white),
                             ),
-                          ),
-                        );
-                      },
-                      errorWidget:
-                          (BuildContext context, String url, dynamic error) {
-                        return Container(
-                          height: 30.0,
-                          width: 30.0,
-                          decoration: BoxDecoration(
-                            color: ColorResources.transparent,
-                            borderRadius: BorderRadius.circular(15.0),
-                            image: const DecorationImage(
-                              image: AssetImage('assets/images/logo/logo.png'),
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          context
-                                  .read<ProfileProvider>()
-                                  .user
-                                  ?.organizationBahasa
-                                  ?.trim() ??
-                              "...",
-                          style: poppinsRegular.copyWith(
-                            fontWeight: FontWeight.w600,
-                            fontSize: Dimensions.fontSizeSmall,
-                            color: ColorResources.black,
-                          ),
-                        ),
-                        Text(
-                          context
-                                  .read<ProfileProvider>()
-                                  .user
-                                  ?.organizationEnglish
-                                  ?.trim() ??
-                              "...",
-                          style: poppinsRegular.copyWith(
-                            fontWeight: FontWeight.w600,
-                            fontSize: Dimensions.fontSizeSmall,
-                            color: ColorResources.black,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                            btnColor: ColorResources.success,
+                            isBorderRadius: true,
+                            sizeBorderRadius: 10.0,
+                            isBoxShadow: true,
+                            onTap: () async {
+                              editPicture();
+                            },
+                          ))
+                      : const SizedBox(),
+                ],
               ),
-              Positioned(
-                top: height * 0.25,
-                right: 40,
-                child: QrImageView(
-                  data: context.read<ProfileProvider>().user?.noMember ?? "-",
-                  size: 60.0,
-                ),
-              )
-            ],
-          ),
-          file != null
-              ? Container(
-                  margin: const EdgeInsets.only(
-                    left: Dimensions.marginSizeExtraLarge,
-                    right: Dimensions.marginSizeExtraLarge,
-                    bottom: Dimensions.marginSizeSmall,
-                  ),
-                  child: CustomButton(
-                    isLoading:
-                        context.watch<MediaProvider>().uploadPictureStatus ==
-                                UploadPictureStatus.loading
-                            ? true
-                            : false,
-                    customText: true,
-                    text: Text(
-                      'Ubah Foto Profil',
-                      style: robotoRegular.copyWith(
-                          fontSize: Dimensions.fontSizeLarge,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.5,
-                          color: ColorResources.white),
-                    ),
-                    btnColor: ColorResources.success,
-                    isBorderRadius: true,
-                    sizeBorderRadius: 10.0,
-                    isBoxShadow: true,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 32.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  InkWell(
                     onTap: () async {
-                      editPicture();
+                      final RenderRepaintBoundary boundary =
+                          ktaImageKey.currentContext!.findRenderObject()
+                              as RenderRepaintBoundary;
+                      final ui.Image image = await boundary.toImage();
+                      ByteData? byteData = await image.toByteData(
+                          format: ui.ImageByteFormat.png);
+                      var pngBytes = byteData!.buffer.asUint8List();
+                      // var bs64 = base64Encode(pngBytes);
+
+                      String dir = (await getTemporaryDirectory()).path;
+                      File file = File("$dir/kta-hp3ki.png");
+                      await file.writeAsBytes(
+                        pngBytes,
+                      );
+                      final params =
+                          SaveFileDialogParams(sourceFilePath: file.path);
+                      final finalPath =
+                          await FlutterFileDialog.saveFile(params: params);
+
+                      debugPrint(finalPath ?? 'Cannot save');
                     },
-                  ))
-              : const SizedBox(),
-        ],
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      child: const Row(
+                        children: [
+                          Text('Download'),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          Icon(Icons.download_outlined),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 32,
+            )
+          ],
+        ),
       ),
     );
   }
