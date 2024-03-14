@@ -257,7 +257,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Stack(
                     children: [
                       Container(
-                        height: height * 0.3,
+                        height: 310,
                         width: double.infinity,
                         margin: const EdgeInsets.only(
                           top: Dimensions.marginSizeExtraLarge,
@@ -368,7 +368,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                       ),
                       Positioned(
-                        bottom: 65,
+                        bottom: 75,
                         left: 140,
                         child: Container(
                           alignment: Alignment.center,
