@@ -39,55 +39,66 @@ class ShippingAddressView extends StatelessWidget {
               fontSize: 18,
             ),
           ),
+          actions: [
+            if (notifier.list.isEmpty)
+              IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      ShippingAddressAddPage.go(),
+                    );
+                  },
+                  icon: const Icon(Icons.add))
+          ],
         ),
         body: SizedBox.expand(
           child: notifier.list.isEmpty
-              ? Column(
+              ? const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Padding(
+                    Padding(
                       padding: EdgeInsets.only(top: 16.0),
                       child: Align(
                         alignment: Alignment.center,
                         child: Text(
-                          "Belum ada alamat",
+                          "Belum Ada Alamat.",
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 16),
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            ShippingAddressAddPage.go(),
-                          );
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          height: 50,
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 2,
-                                color: Colors.grey,
-                              ),
-                              borderRadius: BorderRadius.circular(
-                                6,
-                              )),
-                          child: Center(
-                            child: Text(
-                              '${getTranslated("TXT_ADD", context)} ${getTranslated("ADDRESS", context)}',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
+                    // Padding(
+                    //   padding: const EdgeInsets.all(16.0),
+                    //   child: InkWell(
+                    //     onTap: () {
+                    // Navigator.push(
+                    //   context,
+                    //   ShippingAddressAddPage.go(),
+                    // );
+                    //     },
+                    //     child: Container(
+                    //       width: double.infinity,
+                    //       height: 50,
+                    //       decoration: BoxDecoration(
+                    //           border: Border.all(
+                    //             width: 2,
+                    //             color: Colors.grey,
+                    //           ),
+                    //           borderRadius: BorderRadius.circular(
+                    //             6,
+                    //           )),
+                    //       child: Center(
+                    //         child: Text(
+                    //           '${getTranslated("TXT_ADD", context)} ${getTranslated("ADDRESS", context)}',
+                    //           style: const TextStyle(
+                    //             fontWeight: FontWeight.w500,
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // )
                   ],
                 )
               : SingleChildScrollView(

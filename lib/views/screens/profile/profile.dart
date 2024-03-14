@@ -274,40 +274,70 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ),
                         padding:
-                            const EdgeInsets.only(left: 60, top: 30, right: 16),
-                        child: Column(
+                            const EdgeInsets.only(left: 16, top: 30, right: 16),
+                        child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            FittedBox(
-                              child: Text(
-                                context
-                                        .read<ProfileProvider>()
-                                        .user
-                                        ?.organizationBahasa
-                                        ?.trim() ??
-                                    "...",
-                                style: poppinsRegular.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 12,
-                                  color: ColorResources.black,
-                                ),
-                                maxLines: 1,
-                              ),
+                            Image.network(
+                              context
+                                      .read<ProfileProvider>()
+                                      .user
+                                      ?.organizationPath ??
+                                  AppConstants.avatarError,
+                              width: 30,
+                              height: 30,
                             ),
-                            FittedBox(
-                              child: Text(
-                                context
-                                        .read<ProfileProvider>()
-                                        .user
-                                        ?.organizationEnglish
-                                        ?.trim() ??
-                                    "...",
-                                style: poppinsRegular.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 12,
-                                  color: ColorResources.black,
-                                ),
-                                maxLines: 1,
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (context
+                                          .read<ProfileProvider>()
+                                          .user
+                                          ?.organizationBahasa
+                                          ?.isNotEmpty ??
+                                      false)
+                                    FittedBox(
+                                      child: Text(
+                                        context
+                                                .read<ProfileProvider>()
+                                                .user
+                                                ?.organizationBahasa ??
+                                            "...",
+                                        style: poppinsRegular.copyWith(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 12,
+                                          color: ColorResources.black,
+                                        ),
+                                        maxLines: 1,
+                                      ),
+                                    ),
+                                  if (context
+                                          .read<ProfileProvider>()
+                                          .user
+                                          ?.organizationEnglish
+                                          ?.isNotEmpty ??
+                                      false)
+                                    FittedBox(
+                                      child: Text(
+                                        context
+                                                .read<ProfileProvider>()
+                                                .user
+                                                ?.organizationEnglish
+                                                ?.trim() ??
+                                            "...",
+                                        style: poppinsRegular.copyWith(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 12,
+                                          color: ColorResources.black,
+                                        ),
+                                        maxLines: 1,
+                                      ),
+                                    ),
+                                ],
                               ),
                             ),
                           ],
@@ -317,92 +347,100 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         top: isSmall ? 100 : 127,
                         left: 50,
                         child: file != null
-                            ? Container(
-                                height: 130.0,
-                                width: 120.0,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                  image: DecorationImage(
-                                    image: FileImage(file!),
-                                    fit: BoxFit.fill,
+                            ? InkWell(
+                                onTap: chooseFile,
+                                child: Container(
+                                  height: 130.0,
+                                  width: 120.0,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                    image: DecorationImage(
+                                      image: FileImage(file!),
+                                      fit: BoxFit.fill,
+                                    ),
                                   ),
                                 ),
                               )
-                            : CachedNetworkImage(
-                                fit: BoxFit.fill,
-                                imageUrl: context
-                                        .read<ProfileProvider>()
-                                        .user
-                                        ?.avatar ??
-                                    AppConstants.avatarError,
-                                imageBuilder: (BuildContext context,
-                                    ImageProvider<Object> imageProvider) {
-                                  return Container(
-                                    height: 130.0,
-                                    width: 120.0,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.fill,
+                            : InkWell(
+                                onTap: chooseFile,
+                                child: CachedNetworkImage(
+                                  fit: BoxFit.fill,
+                                  imageUrl: context
+                                          .read<ProfileProvider>()
+                                          .user
+                                          ?.avatar ??
+                                      AppConstants.avatarError,
+                                  imageBuilder: (BuildContext context,
+                                      ImageProvider<Object> imageProvider) {
+                                    return Container(
+                                      height: 130.0,
+                                      width: 120.0,
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(15.0),
+                                        image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.fill,
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                },
-                                errorWidget: (BuildContext context, String url,
-                                    dynamic error) {
-                                  return Container(
-                                    height: 130.0,
-                                    width: 120.0,
-                                    decoration: BoxDecoration(
-                                      color: ColorResources.greyDarkPrimary,
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      image: const DecorationImage(
-                                        image: AssetImage(
-                                            'assets/images/icons/ic-person.png'),
-                                        fit: BoxFit.fill,
+                                    );
+                                  },
+                                  errorWidget: (BuildContext context,
+                                      String url, dynamic error) {
+                                    return Container(
+                                      height: 130.0,
+                                      width: 120.0,
+                                      decoration: BoxDecoration(
+                                        color: ColorResources.greyDarkPrimary,
+                                        borderRadius:
+                                            BorderRadius.circular(15.0),
+                                        image: const DecorationImage(
+                                          image: AssetImage(
+                                              'assets/images/icons/ic-person.png'),
+                                          fit: BoxFit.fill,
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                },
+                                    );
+                                  },
+                                ),
                               ),
                       ),
-                      Positioned(
-                        bottom: 75,
-                        left: 140,
-                        child: Container(
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50.0),
-                              color: file != null
-                                  ? ColorResources.error
-                                  : ColorResources.primary),
-                          child: InkWell(
-                            onTap: file != null
-                                ? () {
-                                    setState(() {
-                                      file = null;
-                                    });
-                                  }
-                                : chooseFile,
-                            child: Padding(
-                              padding: const EdgeInsets.all(
-                                  Dimensions.paddingSizeExtraSmall),
-                              child: file != null
-                                  ? const Icon(
-                                      Icons.close,
-                                      color: ColorResources.white,
-                                      size: Dimensions.iconSizeDefault,
-                                    )
-                                  : const Icon(
-                                      Icons.camera_alt,
-                                      color: ColorResources.white,
-                                      size: Dimensions.iconSizeDefault,
-                                    ),
-                            ),
-                          ),
-                        ),
-                      ),
+                      // Positioned(
+                      //   bottom: 75,
+                      //   left: 140,
+                      //   child: Container(
+                      //     alignment: Alignment.center,
+                      //     decoration: BoxDecoration(
+                      //         borderRadius: BorderRadius.circular(50.0),
+                      //         color: file != null
+                      //             ? ColorResources.error
+                      //             : ColorResources.primary),
+                      //     child: InkWell(
+                      //       onTap: file != null
+                      //           ? () {
+                      //               setState(() {
+                      //                 file = null;
+                      //               });
+                      //             }
+                      //           : chooseFile,
+                      //       child: Padding(
+                      //         padding: const EdgeInsets.all(
+                      //             Dimensions.paddingSizeExtraSmall),
+                      //         child: file != null
+                      //             ? const Icon(
+                      //                 Icons.close,
+                      //                 color: ColorResources.white,
+                      //                 size: Dimensions.iconSizeDefault,
+                      //               )
+                      //             : const Icon(
+                      //                 Icons.camera_alt,
+                      //                 color: ColorResources.white,
+                      //                 size: Dimensions.iconSizeDefault,
+                      //               ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
                       Positioned(
                         top: 155,
                         left: 190,
@@ -455,86 +493,86 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ],
                         ),
                       ),
-                      Positioned(
-                        top: isSmall ? 25 : 47,
-                        left: 50,
-                        child: Row(
-                          children: [
-                            CachedNetworkImage(
-                              fit: BoxFit.fill,
-                              imageUrl: context
-                                      .read<ProfileProvider>()
-                                      .user
-                                      ?.organizationPath ??
-                                  AppConstants.avatarError,
-                              imageBuilder: (BuildContext context,
-                                  ImageProvider<Object> imageProvider) {
-                                return Container(
-                                  height: 30.0,
-                                  width: 30.0,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15.0),
-                                    image: DecorationImage(
-                                      image: imageProvider,
-                                      fit: BoxFit.fill,
-                                    ),
-                                  ),
-                                );
-                              },
-                              errorWidget: (BuildContext context, String url,
-                                  dynamic error) {
-                                return Container(
-                                  height: 30.0,
-                                  width: 30.0,
-                                  decoration: BoxDecoration(
-                                    color: ColorResources.transparent,
-                                    borderRadius: BorderRadius.circular(15.0),
-                                    image: const DecorationImage(
-                                      image: AssetImage(
-                                          'assets/images/logo/logo.png'),
-                                      fit: BoxFit.fill,
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                            const SizedBox(
-                              width: 15,
-                            ),
-                            // Column(
-                            //   crossAxisAlignment: CrossAxisAlignment.start,
-                            //   children: [
-                            //     Text(
-                            //       context
-                            //               .read<ProfileProvider>()
-                            //               .user
-                            //               ?.organizationBahasa
-                            //               ?.trim() ??
-                            //           "...",
-                            //       style: poppinsRegular.copyWith(
-                            //         fontWeight: FontWeight.w600,
-                            //         fontSize: Dimensions.fontSizeSmall,
-                            //         color: ColorResources.black,
-                            //       ),
-                            //     ),
-                            //     Text(
-                            //       context
-                            //               .read<ProfileProvider>()
-                            //               .user
-                            //               ?.organizationEnglish
-                            //               ?.trim() ??
-                            //           "...",
-                            //       style: poppinsRegular.copyWith(
-                            //         fontWeight: FontWeight.w600,
-                            //         fontSize: Dimensions.fontSizeSmall,
-                            //         color: ColorResources.black,
-                            //       ),
-                            //     ),
-                            //   ],
-                            // ),
-                          ],
-                        ),
-                      ),
+                      // Positioned(
+                      //   top: isSmall ? 25 : 47,
+                      //   left: 50,
+                      //   child: Row(
+                      //     children: [
+                      //       CachedNetworkImage(
+                      //         fit: BoxFit.fill,
+                      //         imageUrl: context
+                      //                 .read<ProfileProvider>()
+                      //                 .user
+                      //                 ?.organizationPath ??
+                      //             AppConstants.avatarError,
+                      //         imageBuilder: (BuildContext context,
+                      //             ImageProvider<Object> imageProvider) {
+                      //           return Container(
+                      //             height: 30.0,
+                      //             width: 30.0,
+                      //             decoration: BoxDecoration(
+                      //               borderRadius: BorderRadius.circular(15.0),
+                      //               image: DecorationImage(
+                      //                 image: imageProvider,
+                      //                 fit: BoxFit.fill,
+                      //               ),
+                      //             ),
+                      //           );
+                      //         },
+                      //         errorWidget: (BuildContext context, String url,
+                      //             dynamic error) {
+                      //           return Container(
+                      //             height: 30.0,
+                      //             width: 30.0,
+                      //             decoration: BoxDecoration(
+                      //               color: ColorResources.transparent,
+                      //               borderRadius: BorderRadius.circular(15.0),
+                      //               image: const DecorationImage(
+                      //                 image: AssetImage(
+                      //                     'assets/images/logo/logo.png'),
+                      //                 fit: BoxFit.fill,
+                      //               ),
+                      //             ),
+                      //           );
+                      //         },
+                      //       ),
+                      //       const SizedBox(
+                      //         width: 15,
+                      //       ),
+                      //       // Column(
+                      //       //   crossAxisAlignment: CrossAxisAlignment.start,
+                      //       //   children: [
+                      //       //     Text(
+                      //       //       context
+                      //       //               .read<ProfileProvider>()
+                      //       //               .user
+                      //       //               ?.organizationBahasa
+                      //       //               ?.trim() ??
+                      //       //           "...",
+                      //       //       style: poppinsRegular.copyWith(
+                      //       //         fontWeight: FontWeight.w600,
+                      //       //         fontSize: Dimensions.fontSizeSmall,
+                      //       //         color: ColorResources.black,
+                      //       //       ),
+                      //       //     ),
+                      //       //     Text(
+                      //       //       context
+                      //       //               .read<ProfileProvider>()
+                      //       //               .user
+                      //       //               ?.organizationEnglish
+                      //       //               ?.trim() ??
+                      //       //           "...",
+                      //       //       style: poppinsRegular.copyWith(
+                      //       //         fontWeight: FontWeight.w600,
+                      //       //         fontSize: Dimensions.fontSizeSmall,
+                      //       //         color: ColorResources.black,
+                      //       //       ),
+                      //       //     ),
+                      //       //   ],
+                      //       // ),
+                      //     ],
+                      //   ),
+                      // ),
                       Positioned(
                         top: height * 0.25,
                         right: 40,
@@ -592,7 +630,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       final RenderRepaintBoundary boundary =
                           ktaImageKey.currentContext!.findRenderObject()
                               as RenderRepaintBoundary;
-                      final ui.Image image = await boundary.toImage();
+                      final ui.Image image =
+                          await boundary.toImage(pixelRatio: 10);
                       ByteData? byteData = await image.toByteData(
                           format: ui.ImageByteFormat.png);
                       var pngBytes = byteData!.buffer.asUint8List();

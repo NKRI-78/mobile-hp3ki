@@ -1531,7 +1531,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           GestureDetector(
                             onTap: () => NS.push(context, const ShopPage()),
                             child: Text(
-                              'Liat Semua',
+                              'Lihat Semua',
                               style: poppinsRegular.copyWith(
                                   color: ColorResources.yellowSecondaryV5,
                                   shadows: boxShadow),

@@ -22,8 +22,7 @@ import '../../../utils/shared_preferences.dart';
 import '../../basewidgets/snackbar/snackbar.dart';
 
 class FormPersonalScreen extends StatefulWidget {
-  
-  const FormPersonalScreen({ Key? key}) : super(key: key);
+  const FormPersonalScreen({Key? key}) : super(key: key);
 
   @override
   State<FormPersonalScreen> createState() => _FormPersonalScreenState();
@@ -33,7 +32,7 @@ class _FormPersonalScreenState extends State<FormPersonalScreen> {
   File? selfiePhoto;
   File? ktpPhoto;
   ImageSource? imageSource;
-  
+
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   late TextEditingController provinsiC;
@@ -75,35 +74,43 @@ class _FormPersonalScreenState extends State<FormPersonalScreen> {
     String kabupaten = kabupatenC.text.trim();
     String desa = desaC.text.trim();
 
-    if(provinsi == "" || provinsi.isEmpty) {
-      ShowSnackbar.snackbar(context, 'Pilih Provinsi Terlebih Dahulu', "", ColorResources.error);
+    if (provinsi == "" || provinsi.isEmpty) {
+      ShowSnackbar.snackbar(
+          context, 'Pilih Provinsi Terlebih Dahulu', "", ColorResources.error);
       return;
     }
-    if(kabupaten == "" || kabupaten.isEmpty) {
-      ShowSnackbar.snackbar(context, 'Pilih Kabupaten Terlebih Dahulu', "", ColorResources.error);
+    if (kabupaten == "" || kabupaten.isEmpty) {
+      ShowSnackbar.snackbar(
+          context, 'Pilih Kabupaten Terlebih Dahulu', "", ColorResources.error);
       return;
     }
-    if(kecamatan == "" || kecamatan.isEmpty) {
-      ShowSnackbar.snackbar(context, 'Pilih Kecamatan Terlebih Dahulu', "", ColorResources.error);
+    if (kecamatan == "" || kecamatan.isEmpty) {
+      ShowSnackbar.snackbar(
+          context, 'Pilih Kecamatan Terlebih Dahulu', "", ColorResources.error);
       return;
     }
-    if(desa == "" || desa.isEmpty) {
-      ShowSnackbar.snackbar(context, 'Pilih Desa Terlebih Dahulu', "", ColorResources.error);
+    if (desa == "" || desa.isEmpty) {
+      ShowSnackbar.snackbar(
+          context, 'Pilih Desa Terlebih Dahulu', "", ColorResources.error);
       return;
     }
-    if(ktpPhoto == null) {
-      ShowSnackbar.snackbar(context, 'Upload Foto KTP', "", ColorResources.error);
+    if (ktpPhoto == null) {
+      ShowSnackbar.snackbar(
+          context, 'Upload Foto KTP', "", ColorResources.error);
       return;
     }
-    if(selfiePhoto == null) {
-      ShowSnackbar.snackbar(context, 'Upload Foto Selfie', "", ColorResources.error);
+    if (selfiePhoto == null) {
+      ShowSnackbar.snackbar(
+          context, 'Upload Foto Selfie', "", ColorResources.error);
       return;
     }
 
     if (formKey.currentState!.validate()) {
-
-      selfiePhotoPath = await context.read<MediaProvider>().uploadPicture(context, selfiePhoto!);
-      ktpPhotoPath = await context.read<MediaProvider>().uploadPicture(context, ktpPhoto!);
+      selfiePhotoPath = await context
+          .read<MediaProvider>()
+          .uploadPicture(context, selfiePhoto!);
+      ktpPhotoPath =
+          await context.read<MediaProvider>().uploadPicture(context, ktpPhoto!);
 
       SharedPrefs.writePersonalData(
         fullname: name,
@@ -121,8 +128,11 @@ class _FormPersonalScreenState extends State<FormPersonalScreen> {
         subdistrict: context.read<RegionDropdownProvider>().currentSubdistrict!,
       );
 
-      if (selfiePhotoPath.isEmpty && ktpPhotoPath.isEmpty || selfiePhotoPath.isEmpty || ktpPhotoPath.isEmpty) {
-        ShowSnackbar.snackbar(context, 'Foto Selfie dan KTP terlebih dahulu', "", ColorResources.error);
+      if (selfiePhotoPath.isEmpty && ktpPhotoPath.isEmpty ||
+          selfiePhotoPath.isEmpty ||
+          ktpPhotoPath.isEmpty) {
+        ShowSnackbar.snackbar(context, 'Foto Selfie dan KTP terlebih dahulu',
+            "", ColorResources.error);
       } else {
         await context.read<ProfileProvider>().setPersonalData(context);
       }
@@ -130,61 +140,56 @@ class _FormPersonalScreenState extends State<FormPersonalScreen> {
   }
 
   Future<void> chooseFileSelfie() async {
-    imageSource = await showDialog<ImageSource>(context: context, builder: (BuildContext context) => 
-      AlertDialog(
-        title: Text('Sumber Gambar Selfie',
-        style: robotoRegular.copyWith(
-          fontSize: Dimensions.fontSizeDefault,
-          color: ColorResources.primary
-        ),
-      ),
-      actions: [
-        MaterialButton(
-          child: Text(getTranslated("CAMERA", context),
-            style: robotoRegular.copyWith(
-              fontSize: Dimensions.fontSizeDefault,
-              color: ColorResources.primary
-            )
-          ),
-          onPressed: () async {
-            Navigator.pop(context, ImageSource.camera);
-          },
-        ),
-        MaterialButton(
-          child: Text(getTranslated("GALLERY", context),
-            style: robotoRegular.copyWith(
-              fontSize: Dimensions.fontSizeDefault,
-              color: ColorResources.primary
-            ),
-          ),
-          onPressed: () => Navigator.pop(context, ImageSource.gallery)
-          )
-        ],
-      )
-    );
-    if(imageSource != null) {
-      if(imageSource == ImageSource.gallery) {
+    imageSource = await showDialog<ImageSource>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text(
+                'Sumber Gambar Selfie',
+                style: robotoRegular.copyWith(
+                    fontSize: Dimensions.fontSizeDefault,
+                    color: ColorResources.primary),
+              ),
+              actions: [
+                MaterialButton(
+                  child: Text(getTranslated("CAMERA", context),
+                      style: robotoRegular.copyWith(
+                          fontSize: Dimensions.fontSizeDefault,
+                          color: ColorResources.primary)),
+                  onPressed: () async {
+                    Navigator.pop(context, ImageSource.camera);
+                  },
+                ),
+                MaterialButton(
+                    child: Text(
+                      getTranslated("GALLERY", context),
+                      style: robotoRegular.copyWith(
+                          fontSize: Dimensions.fontSizeDefault,
+                          color: ColorResources.primary),
+                    ),
+                    onPressed: () =>
+                        Navigator.pop(context, ImageSource.gallery))
+              ],
+            ));
+    if (imageSource != null) {
+      if (imageSource == ImageSource.gallery) {
         XFile? pickedFile = await ImagePicker().pickImage(
-          source: ImageSource.gallery, 
+          source: ImageSource.gallery,
         );
         File? cropped = await ImageCropper().cropImage(
-          sourcePath: pickedFile!.path,
-          androidUiSettings: AndroidUiSettings(
-            toolbarTitle: getTranslated("CROP_IT", context),
-            toolbarColor: Colors.blueGrey[900],
-            toolbarWidgetColor: ColorResources.white,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false
-          ),
-          iosUiSettings: const IOSUiSettings(
-            minimumAspectRatio: 1.0,
-          )
-        );  
-        if(cropped != null) {
+            sourcePath: pickedFile!.path,
+            androidUiSettings: AndroidUiSettings(
+                toolbarTitle: getTranslated("CROP_IT", context),
+                toolbarColor: Colors.blueGrey[900],
+                toolbarWidgetColor: ColorResources.white,
+                initAspectRatio: CropAspectRatioPreset.original,
+                lockAspectRatio: false),
+            iosUiSettings: const IOSUiSettings(
+              minimumAspectRatio: 1.0,
+            ));
+        if (cropped != null) {
           setState(() {
             selfiePhoto = cropped;
-          }
-          );
+          });
         } else {
           setState(() {
             selfiePhoto = null;
@@ -199,19 +204,17 @@ class _FormPersonalScreenState extends State<FormPersonalScreen> {
           selfiePhoto = File(pickedFile!.path);
         });
         File? cropped = await ImageCropper().cropImage(
-          sourcePath:  pickedFile!.path,
-          androidUiSettings: AndroidUiSettings(
-            toolbarTitle: getTranslated("CROP_IT", context),
-            toolbarColor: Colors.blueGrey[900],
-            toolbarWidgetColor: ColorResources.white,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false
-          ),
-          iosUiSettings: const IOSUiSettings(
-            minimumAspectRatio: 1.0,
-          )
-        );  
-        if(cropped != null) {
+            sourcePath: pickedFile!.path,
+            androidUiSettings: AndroidUiSettings(
+                toolbarTitle: getTranslated("CROP_IT", context),
+                toolbarColor: Colors.blueGrey[900],
+                toolbarWidgetColor: ColorResources.white,
+                initAspectRatio: CropAspectRatioPreset.original,
+                lockAspectRatio: false),
+            iosUiSettings: const IOSUiSettings(
+              minimumAspectRatio: 1.0,
+            ));
+        if (cropped != null) {
           setState(() {
             selfiePhoto = cropped;
           });
@@ -225,59 +228,54 @@ class _FormPersonalScreenState extends State<FormPersonalScreen> {
   }
 
   Future<void> chooseFileKTP() async {
-    imageSource = await showDialog<ImageSource>(context: context, builder: (BuildContext context) => 
-      AlertDialog(
-        title: Text('Sumber Gambar KTP',
-        style: robotoRegular.copyWith(
-          fontSize: Dimensions.fontSizeDefault,
-          color: ColorResources.primary
-        ),
-      ),
-      actions: [
-        MaterialButton(
-          child: Text(getTranslated("CAMERA", context),
-            style: robotoRegular.copyWith(
-              fontSize: Dimensions.fontSizeDefault,
-              color: ColorResources.primary
-            )
-          ),
-          onPressed: () => Navigator.pop(context, ImageSource.camera),
-        ),
-        MaterialButton(
-          child: Text(getTranslated("GALLERY", context),
-            style: robotoRegular.copyWith(
-              fontSize: Dimensions.fontSizeDefault,
-              color: ColorResources.primary
-            ),
-          ),
-          onPressed: () => Navigator.pop(context, ImageSource.gallery)
-          )
-        ],
-      )
-    );
-    if(imageSource != null) {
-      if(imageSource == ImageSource.gallery) {
+    imageSource = await showDialog<ImageSource>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text(
+                'Sumber Gambar KTP',
+                style: robotoRegular.copyWith(
+                    fontSize: Dimensions.fontSizeDefault,
+                    color: ColorResources.primary),
+              ),
+              actions: [
+                MaterialButton(
+                  child: Text(getTranslated("CAMERA", context),
+                      style: robotoRegular.copyWith(
+                          fontSize: Dimensions.fontSizeDefault,
+                          color: ColorResources.primary)),
+                  onPressed: () => Navigator.pop(context, ImageSource.camera),
+                ),
+                MaterialButton(
+                    child: Text(
+                      getTranslated("GALLERY", context),
+                      style: robotoRegular.copyWith(
+                          fontSize: Dimensions.fontSizeDefault,
+                          color: ColorResources.primary),
+                    ),
+                    onPressed: () =>
+                        Navigator.pop(context, ImageSource.gallery))
+              ],
+            ));
+    if (imageSource != null) {
+      if (imageSource == ImageSource.gallery) {
         XFile? pickedFile = await ImagePicker().pickImage(
-          source: ImageSource.gallery, 
+          source: ImageSource.gallery,
         );
         File? cropped = await ImageCropper().cropImage(
-          sourcePath: pickedFile!.path,
-          androidUiSettings: AndroidUiSettings(
-            toolbarTitle: getTranslated("CROP_IT", context),
-            toolbarColor: Colors.blueGrey[900],
-            toolbarWidgetColor: ColorResources.white,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false
-          ),
-          iosUiSettings: const IOSUiSettings(
-            minimumAspectRatio: 1.0,
-          )
-        );  
-        if(cropped != null) {
+            sourcePath: pickedFile!.path,
+            androidUiSettings: AndroidUiSettings(
+                toolbarTitle: getTranslated("CROP_IT", context),
+                toolbarColor: Colors.blueGrey[900],
+                toolbarWidgetColor: ColorResources.white,
+                initAspectRatio: CropAspectRatioPreset.original,
+                lockAspectRatio: false),
+            iosUiSettings: const IOSUiSettings(
+              minimumAspectRatio: 1.0,
+            ));
+        if (cropped != null) {
           setState(() {
             ktpPhoto = cropped;
-          }
-          );
+          });
         } else {
           setState(() {
             ktpPhoto = null;
@@ -291,19 +289,17 @@ class _FormPersonalScreenState extends State<FormPersonalScreen> {
           ktpPhoto = File(pickedFile!.path);
         });
         File? cropped = await ImageCropper().cropImage(
-          sourcePath:  pickedFile!.path,
-          androidUiSettings: AndroidUiSettings(
-            toolbarTitle: getTranslated("CROP_IT", context),
-            toolbarColor: Colors.blueGrey[900],
-            toolbarWidgetColor: ColorResources.white,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false
-          ),
-          iosUiSettings: const IOSUiSettings(
-            minimumAspectRatio: 1.0,
-          )
-        );  
-        if(cropped != null) {
+            sourcePath: pickedFile!.path,
+            androidUiSettings: AndroidUiSettings(
+                toolbarTitle: getTranslated("CROP_IT", context),
+                toolbarColor: Colors.blueGrey[900],
+                toolbarWidgetColor: ColorResources.white,
+                initAspectRatio: CropAspectRatioPreset.original,
+                lockAspectRatio: false),
+            iosUiSettings: const IOSUiSettings(
+              minimumAspectRatio: 1.0,
+            ));
+        if (cropped != null) {
           setState(() {
             ktpPhoto = cropped;
           });
@@ -321,40 +317,45 @@ class _FormPersonalScreenState extends State<FormPersonalScreen> {
     kabupatenC = context.read<RegionDropdownProvider>().currentCityIdC;
     kecamatanC = context.read<RegionDropdownProvider>().currentDistrictIdC;
     desaC = context.read<RegionDropdownProvider>().currentSubdistrictIdC;
-    
+
     nameC = TextEditingController();
     nameFn = FocusNode();
-    
+
     phoneNumberC = TextEditingController();
     phoneNumberFn = FocusNode();
-    
+
     emailC = TextEditingController();
     emailFn = FocusNode();
-    
+
     ktpC = TextEditingController();
     ktpFn = FocusNode();
-    
+
     organisasiC = TextEditingController();
     organisasiFn = FocusNode();
-    
+
     profesiC = TextEditingController();
     profesiFn = FocusNode();
-    
+
     alamatKTPC = TextEditingController();
     alamatKTPFn = FocusNode();
-    
+
     Future.delayed(Duration.zero, () async {
-      if(!mounted) return;
-      if(mounted) {
+      if (!mounted) return;
+      if (mounted) {
         UserData user = context.read<ProfileProvider>().user!;
-        nameC = TextEditingController( text: SharedPrefs.getRegFullname() ?? user.fullname);
-        phoneNumberC = TextEditingController(text: SharedPrefs.getRegPhone() ?? user.phone);
-        emailC = TextEditingController(text: SharedPrefs.getRegEmail() ?? user.email);
-        organisasiC = TextEditingController(text: SharedPrefs.getRegOrgName() ?? user.organization);
-        profesiC = TextEditingController(text: SharedPrefs.getRegJobName() ?? user.job);
+        nameC = TextEditingController(
+            text: SharedPrefs.getRegFullname() ?? user.fullname);
+        phoneNumberC = TextEditingController(
+            text: SharedPrefs.getRegPhone() ?? user.phone);
+        emailC = TextEditingController(
+            text: SharedPrefs.getRegEmail() ?? user.email);
+        organisasiC = TextEditingController(
+            text: SharedPrefs.getRegOrgName() ?? user.organization);
+        profesiC = TextEditingController(
+            text: SharedPrefs.getRegJobName() ?? user.job);
         setState(() {});
       }
-      if(mounted) {
+      if (mounted) {
         await Permission.storage.request();
         Permission.storage.isDenied.then((value) async {
           await Permission.storage.request();
@@ -364,7 +365,7 @@ class _FormPersonalScreenState extends State<FormPersonalScreen> {
   }
 
   Future<void> initRegionProviderData() async {
-    if(mounted) {
+    if (mounted) {
       context.read<RegionDropdownProvider>().initRegion(context);
     }
   }
@@ -388,13 +389,13 @@ class _FormPersonalScreenState extends State<FormPersonalScreen> {
 
     nameC.dispose();
     nameFn.dispose();
-    
+
     phoneNumberC.dispose();
     phoneNumberFn.dispose();
 
     emailC.dispose();
     emailFn.dispose();
-    
+
     ktpC.dispose();
     ktpFn.dispose();
 
@@ -403,10 +404,10 @@ class _FormPersonalScreenState extends State<FormPersonalScreen> {
 
     profesiC.dispose();
     profesiFn.dispose();
-    
+
     alamatKTPC.dispose();
     alamatKTPFn.dispose();
-    
+
     super.dispose();
   }
 
@@ -425,11 +426,12 @@ class _FormPersonalScreenState extends State<FormPersonalScreen> {
             FocusScope.of(context).unfocus();
           },
           child: CustomScrollView(
-            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+            physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics()),
             slivers: [
               buildAppBar(),
               buildBodyContent(),
-            ], 
+            ],
           ),
         ),
       ),
@@ -444,11 +446,8 @@ class _FormPersonalScreenState extends State<FormPersonalScreen> {
     );
   }
 
-
   BoxDecoration buildBackground() {
-    return const BoxDecoration(
-      color: ColorResources.white
-    );
+    return const BoxDecoration(color: ColorResources.white);
   }
 
   Widget buildAppBar() {
@@ -460,19 +459,19 @@ class _FormPersonalScreenState extends State<FormPersonalScreen> {
 
   CustomButton buildSubmitButton() {
     return CustomButton(
-      isLoading: context.watch<MediaProvider>().uploadPictureStatus == UploadPictureStatus.loading
-        ? true
-        : false,
+      isLoading: context.watch<MediaProvider>().uploadPictureStatus ==
+              UploadPictureStatus.loading
+          ? true
+          : false,
       onTap: submit,
       customText: true,
       text: Text(
         getTranslated('NEXT', context),
         style: robotoRegular.copyWith(
-          fontSize: Dimensions.fontSizeLarge,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 1.5,
-          color: ColorResources.white
-        ),
+            fontSize: Dimensions.fontSizeLarge,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.5,
+            color: ColorResources.white),
       ),
       isBoxShadow: true,
       btnColor: ColorResources.primary,
@@ -481,16 +480,18 @@ class _FormPersonalScreenState extends State<FormPersonalScreen> {
     );
   }
 
-
   Widget buildBodyContent() {
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.all(Dimensions.marginSizeLarge),
         child: Card(
           elevation: 0.0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
           child: Container(
-            padding: const EdgeInsets.all(30.0,),
+            padding: const EdgeInsets.all(
+              30.0,
+            ),
             child: Column(
               children: [
                 Form(
@@ -498,7 +499,9 @@ class _FormPersonalScreenState extends State<FormPersonalScreen> {
                   child: Column(
                     children: [
                       buildTextFields(),
-                      const SizedBox(height: 35,),
+                      const SizedBox(
+                        height: 35,
+                      ),
                     ],
                   ),
                 ),
@@ -517,67 +520,77 @@ class _FormPersonalScreenState extends State<FormPersonalScreen> {
           emptyWarning: "Isi nama",
           controller: nameC,
           hintText: getTranslated('NAME', context),
-          textInputType: TextInputType.text, 
-          focusNode: nameFn, 
+          textInputType: TextInputType.text,
+          focusNode: nameFn,
           textInputAction: TextInputAction.next,
           nextNode: emailFn,
           isBorderRadius: true,
           isEnabled: nameC.text.trim().isEmpty,
         ),
-        const SizedBox(height: 15.0,),
+        const SizedBox(
+          height: 15.0,
+        ),
         CustomTextFieldV2(
           emptyWarning: "Isi email",
           controller: emailC,
           isEmail: true,
           hintText: "E-mail",
-          textInputType: TextInputType.emailAddress, 
-          focusNode: emailFn, 
+          textInputType: TextInputType.emailAddress,
+          focusNode: emailFn,
           textInputAction: TextInputAction.next,
           nextNode: phoneNumberFn,
           isBorderRadius: true,
           isEnabled: emailC.text.trim().isEmpty,
         ),
-        const SizedBox(height: 15.0,),
+        const SizedBox(
+          height: 15.0,
+        ),
         CustomTextFieldV2(
           emptyWarning: "Isi nomor telepon",
           controller: phoneNumberC,
           maxLength: 13,
           hintText: getTranslated('PHONE_NUMBER', context),
-          textInputType: TextInputType.phone, 
-          focusNode: phoneNumberFn, 
+          textInputType: TextInputType.phone,
+          focusNode: phoneNumberFn,
           textInputAction: TextInputAction.next,
           isPhoneNumber: true,
           nextNode: ktpFn,
           isBorderRadius: true,
           isEnabled: phoneNumberC.text.trim().isEmpty,
         ),
-        const SizedBox(height: 15.0,),
+        const SizedBox(
+          height: 15.0,
+        ),
         CustomTextFieldV2(
           emptyWarning: "Isi No KTP",
           maxLength: 16,
           controller: ktpC,
           hintText: 'No KTP',
           isNumber: true,
-          textInputType: TextInputType.number, 
-          focusNode: ktpFn, 
+          textInputType: TextInputType.number,
+          focusNode: ktpFn,
           textInputAction: TextInputAction.next,
           nextNode: alamatKTPFn,
           isBorderRadius: true,
           isSuffixIcon: true,
         ),
-        const SizedBox(height: 15.0,),
+        const SizedBox(
+          height: 15.0,
+        ),
         CustomTextFieldV2(
           maxLines: 5,
           emptyWarning: "Isi Alamat KTP",
           controller: alamatKTPC,
           hintText: 'Alamat KTP',
-          textInputType: TextInputType.text, 
-          focusNode: alamatKTPFn, 
+          textInputType: TextInputType.text,
+          focusNode: alamatKTPFn,
           textInputAction: TextInputAction.done,
           isBorderRadius: true,
           isSuffixIcon: true,
         ),
-        const SizedBox(height: 15.0,),
+        const SizedBox(
+          height: 15.0,
+        ),
         RegionDropdown.buildDropdownSection(
           context,
           provinsiC: provinsiC,
@@ -585,31 +598,37 @@ class _FormPersonalScreenState extends State<FormPersonalScreen> {
           kecamatanC: kecamatanC,
           desaC: desaC,
         ),
-        const SizedBox(height: 15.0,),
+        const SizedBox(
+          height: 15.0,
+        ),
         CustomTextFieldV2(
           emptyWarning: "Isi Organisasi",
           controller: organisasiC,
           hintText: 'Organisasi',
-          textInputType: TextInputType.text, 
-          focusNode: organisasiFn, 
+          textInputType: TextInputType.text,
+          focusNode: organisasiFn,
           textInputAction: TextInputAction.done,
           isBorderRadius: true,
           isSuffixIcon: true,
           isEnabled: organisasiC.text.trim().isEmpty,
         ),
-        const SizedBox(height: 15.0,),
+        const SizedBox(
+          height: 15.0,
+        ),
         CustomTextFieldV2(
           emptyWarning: "Isi Profesi",
           controller: profesiC,
           hintText: 'Profesi',
-          textInputType: TextInputType.text, 
-          focusNode: profesiFn, 
+          textInputType: TextInputType.text,
+          focusNode: profesiFn,
           textInputAction: TextInputAction.done,
           isBorderRadius: true,
           isSuffixIcon: true,
           isEnabled: profesiC.text.trim().isEmpty,
         ),
-        const SizedBox(height: 30.0,),
+        const SizedBox(
+          height: 30.0,
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -620,165 +639,168 @@ class _FormPersonalScreenState extends State<FormPersonalScreen> {
       ],
     );
   }
+
   Column buildUploadKTPPhoto() {
     return Column(
       children: [
         InkWell(
-          onTap: ktpPhoto != null 
-            ? () {
-                setState(() {
-                  ktpPhoto = null;
-                });
-              } 
-            : () {
-              chooseFileKTP();
-            },
-          child: ktpPhoto != null 
-          ? Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    width: 150.0,
-                    height: 150.0,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
-                      image: DecorationImage(
-                        fit: BoxFit.fitWidth,
-                        image: FileImage(
-                          ktpPhoto!,
-                          scale: 1.0,
+          onTap: ktpPhoto != null
+              ? () {
+                  setState(() {
+                    ktpPhoto = null;
+                  });
+                }
+              : () {
+                  chooseFileKTP();
+                },
+          child: ktpPhoto != null
+              ? Stack(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        width: 150.0,
+                        height: 150.0,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.0),
+                            image: DecorationImage(
+                              fit: BoxFit.fitWidth,
+                              image: FileImage(
+                                ktpPhoto!,
+                                scale: 1.0,
+                              ),
+                            )),
+                      ),
+                    ),
+                    Positioned(
+                      right: 0.0,
+                      bottom: 0.0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: ColorResources.error,
+                            borderRadius: BorderRadius.circular(50.0)),
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.close,
+                            color: ColorResources.white,
+                            size: Dimensions.iconSizeDefault,
+                          ),
                         ),
-                      )
-                    ),
-                  ),
-                ),
-                Positioned(
-                  right: 0.0,
-                  bottom: 0.0,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: ColorResources.error,
-                      borderRadius: BorderRadius.circular(50.0)
-                    ),
-                    child: const Padding(
-                      padding: EdgeInsets.all(8.0),
+                      ),
+                    )
+                  ],
+                )
+              : DottedBorder(
+                  strokeWidth: 2.0,
+                  dashPattern: const [10, 5],
+                  borderType: BorderType.RRect,
+                  radius: const Radius.circular(10.0),
+                  color: ColorResources.hintColor,
+                  child: const SizedBox(
+                    height: 120.0,
+                    width: 120.0,
+                    child: Center(
                       child: Icon(
-                        Icons.close,
-                        color: ColorResources.white,
-                        size: Dimensions.iconSizeDefault,
+                        Icons.add,
+                        size: Dimensions.iconSizeLarge,
+                        color: ColorResources.hintColor,
                       ),
                     ),
                   ),
-                ) 
-              ],
-            )
-          : DottedBorder(
-              strokeWidth: 2.0,
-              dashPattern: const [10,5],
-              borderType: BorderType.RRect,
-              radius: const Radius.circular(10.0),
-              color: ColorResources.hintColor,
-              child: const SizedBox(
-                height: 120.0,
-                width: 120.0,
-                child: Center(
-                  child: Icon(Icons.add,
-                      size: Dimensions.iconSizeLarge,
-                      color: ColorResources.hintColor,
-                    ),
                 ),
-              ),
-            ),
         ),
-        const SizedBox(height: 10.0,),
-        Text("Upload Foto KTP",
+        const SizedBox(
+          height: 10.0,
+        ),
+        Text(
+          "Upload Foto KTP",
           style: robotoRegular.copyWith(
-            color: ColorResources.hintColor,
-            fontSize: Dimensions.fontSizeLarge
-          ),
+              color: ColorResources.hintColor,
+              fontSize: Dimensions.fontSizeLarge),
         ),
       ],
     );
   }
-  
+
   Column buildUploadSelfiePhoto() {
     return Column(
       children: [
         InkWell(
-          onTap: selfiePhoto != null 
-            ? () {
-                setState(() {
-                  selfiePhoto = null;
-                });
-              } 
-            : () {
-              chooseFileSelfie();
-            },
-          child: selfiePhoto != null 
-          ? Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    width: 150.0,
-                    height: 150.0,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
-                      image: DecorationImage(
-                        fit: BoxFit.fitWidth,
-                        image: FileImage(
-                          selfiePhoto!,
-                          scale: 1.0,
+          onTap: selfiePhoto != null
+              ? () {
+                  setState(() {
+                    selfiePhoto = null;
+                  });
+                }
+              : () {
+                  chooseFileSelfie();
+                },
+          child: selfiePhoto != null
+              ? Stack(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        width: 150.0,
+                        height: 150.0,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.0),
+                            image: DecorationImage(
+                              fit: BoxFit.fitWidth,
+                              image: FileImage(
+                                selfiePhoto!,
+                                scale: 1.0,
+                              ),
+                            )),
+                      ),
+                    ),
+                    Positioned(
+                      right: 0.0,
+                      bottom: 0.0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: ColorResources.error,
+                            borderRadius: BorderRadius.circular(50.0)),
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.close,
+                            color: ColorResources.white,
+                            size: Dimensions.iconSizeDefault,
+                          ),
                         ),
-                      )
-                    ),
-                  ),
-                ),
-                Positioned(
-                  right: 0.0,
-                  bottom: 0.0,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: ColorResources.error,
-                      borderRadius: BorderRadius.circular(50.0)
-                    ),
-                    child: const Padding(
-                      padding: EdgeInsets.all(8.0),
+                      ),
+                    )
+                  ],
+                )
+              : DottedBorder(
+                  strokeWidth: 2.0,
+                  dashPattern: const [10, 5],
+                  borderType: BorderType.RRect,
+                  radius: const Radius.circular(10.0),
+                  color: ColorResources.hintColor,
+                  child: const SizedBox(
+                    height: 120.0,
+                    width: 120.0,
+                    child: Center(
                       child: Icon(
-                        Icons.close,
-                        color: ColorResources.white,
-                        size: Dimensions.iconSizeDefault,
+                        Icons.add,
+                        size: Dimensions.iconSizeLarge,
+                        color: ColorResources.hintColor,
                       ),
                     ),
                   ),
-                ) 
-              ],
-            )
-          : DottedBorder(
-              strokeWidth: 2.0,
-              dashPattern: const [10,5],
-              borderType: BorderType.RRect,
-              radius: const Radius.circular(10.0),
-              color: ColorResources.hintColor,
-              child: const SizedBox(
-                height: 120.0,
-                width: 120.0,
-                child: Center(
-                  child: Icon(Icons.add,
-                      size: Dimensions.iconSizeLarge,
-                      color: ColorResources.hintColor,
-                    ),
                 ),
-              ),
-            ),
         ),
-        const SizedBox(height: 10.0,),
-        Text("Upload Foto Selfie",
+        const SizedBox(
+          height: 10.0,
+        ),
+        Text(
+          "Upload Foto Selfie",
           style: robotoRegular.copyWith(
-            color: ColorResources.hintColor,
-            fontSize: Dimensions.fontSizeLarge
-          ),
+              color: ColorResources.hintColor,
+              fontSize: Dimensions.fontSizeLarge),
         ),
       ],
     );

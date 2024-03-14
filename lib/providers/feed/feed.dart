@@ -362,8 +362,10 @@ class FeedProvider with ChangeNotifier {
         _forumDetailData = fd.data;
         _commentList = [];
         _commentList.addAll(fd.data!.forumComments!.comments!);
+        loadMoreComment = false;
         setStateForumDetailStatus(ForumDetailStatus.loaded);
       } else {
+        loadMoreComment = false;
         setStateForumDetailStatus(ForumDetailStatus.empty);
       }
     } on CustomException catch (e) {

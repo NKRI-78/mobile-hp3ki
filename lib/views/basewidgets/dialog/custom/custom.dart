@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:hp3ki/views/screens/home/home.dart';
-import 'package:hp3ki/views/screens/upgrademember/index.dart';
+import 'package:hp3ki/views/screens/upgrademember/inquiry_v2.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hp3ki/providers/auth/auth.dart';
@@ -176,7 +176,7 @@ class CustomDialog {
         btnOkText: "Ok",
         btnOkColor: ColorResources.secondary,
         btnOkOnPress: () {
-          NS.push(context, const UpgradeMemberIndexScreen());
+          NS.push(context, const UpgradeMemberInquiryV2Screen());
         },
         body: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -233,6 +233,45 @@ class CustomDialog {
               ),
               Text(
                 error,
+                style: robotoRegular.copyWith(
+                  fontSize: Dimensions.fontSizeLarge,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ))
+      ..show();
+  }
+
+  static AwesomeDialog showErrorCustom(BuildContext context,
+      {String title = '', String message = ''}) {
+    return AwesomeDialog(
+        autoHide: const Duration(seconds: 5),
+        context: context,
+        animType: AnimType.scale,
+        dialogType: DialogType.error,
+        btnOkText: "Ok",
+        btnOkColor: ColorResources.secondary,
+        btnOkOnPress: () {},
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (title.isNotEmpty)
+                Text(
+                  title,
+                  style: robotoRegular.copyWith(
+                      fontSize: Dimensions.fontSizeExtraLarge,
+                      fontWeight: FontWeight.w600),
+                ),
+              const SizedBox(
+                height: 15,
+              ),
+              Text(
+                message,
                 style: robotoRegular.copyWith(
                   fontSize: Dimensions.fontSizeLarge,
                 ),

@@ -410,7 +410,8 @@ class AuthProvider with ChangeNotifier {
       });
     } on CustomException catch (e) {
       debugPrint(e.toString());
-      CustomDialog.showUnexpectedError(context, errorCode: 'AR07');
+      CustomDialog.showErrorCustom(context,
+          title: '', message: "Kode OTP yang anda masukkan salah");
       setVerifyOtpStatus(VerifyOtpStatus.error);
     } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
