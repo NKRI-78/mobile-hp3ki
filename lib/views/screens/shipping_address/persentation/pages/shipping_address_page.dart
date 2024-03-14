@@ -41,158 +41,212 @@ class ShippingAddressView extends StatelessWidget {
           ),
         ),
         body: SizedBox.expand(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 8,
-                ),
-                if (notifier.list.isEmpty)
-                  const Padding(
-                    padding: EdgeInsets.only(top: 16.0),
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        "Belum ada alamat",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 16),
+          child: notifier.list.isEmpty
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(top: 16.0),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          "Belum ada alamat",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 16),
+                        ),
                       ),
                     ),
-                  )
-                else
-                  ...List.generate(notifier.list.length, (index) {
-                    final sa = notifier.list[index];
-                    return Column(
-                      children: [
-                        ListTile(
-                          title: Text(
-                            sa.name,
-                            style: const TextStyle(
-                              fontSize: 16,
-                            ),
-                          ),
-                          trailing: IconButton(
-                            onPressed: () {
-                              showModalBottomSheet(
-                                context: context,
-                                builder: (_) =>
-                                    ShowShippingAddressOptions(data: sa),
-                              );
-                            },
-                            icon: const Icon(Icons.more_vert),
-                          ),
-                          subtitle: FutureBuilder(
-                            future: geocodeParsing(
-                              LatLng(
-                                double.parse(sa.lat),
-                                double.parse(sa.lng),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            ShippingAddressAddPage.go(),
+                          );
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          height: 50,
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                width: 2,
+                                color: Colors.grey,
+                              ),
+                              borderRadius: BorderRadius.circular(
+                                6,
+                              )),
+                          child: Center(
+                            child: Text(
+                              '${getTranslated("TXT_ADD", context)} ${getTranslated("ADDRESS", context)}',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
-                            builder: (_, snapshot) {
-                              if (snapshot.hasData) {
-                                return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(snapshot.data ?? '-'),
-                                    Row(
-                                      children: [
-                                        if (sa.label.isNotEmpty)
-                                          Container(
-                                            margin: const EdgeInsets.only(
-                                                top: 6, right: 6),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                6,
-                                              ),
-                                              border: Border.all(
-                                                  color: Colors.green),
-                                            ),
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 12, vertical: 6),
-                                            child: Text(
-                                              sa.label,
-                                              style: const TextStyle(
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                          ),
-                                        if (sa.defaultLocation)
-                                          Container(
-                                            margin:
-                                                const EdgeInsets.only(top: 6),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                6,
-                                              ),
-                                              border: Border.all(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .primary),
-                                            ),
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 12, vertical: 6),
-                                            child: Text(
-                                              getTranslated(
-                                                  'TXT_DEFAULT', context),
-                                              style: const TextStyle(
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                          )
-                                      ],
-                                    ),
-                                  ],
-                                );
-                              }
-                              return const SizedBox.shrink();
-                            },
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 4,
-                        ),
-                        const Divider(
-                          height: 1,
-                        ),
-                      ],
-                    );
-                  }),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        ShippingAddressAddPage.go(),
-                      );
-                    },
-                    child: Container(
-                      width: double.infinity,
-                      height: 50,
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 2,
-                            color: Colors.grey,
-                          ),
-                          borderRadius: BorderRadius.circular(
-                            6,
-                          )),
-                      child: Center(
-                        child: Text(
-                          '${getTranslated("TXT_ADD", context)} ${getTranslated("ADDRESS", context)}',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
-                    ),
-                  ),
+                    )
+                  ],
                 )
-              ],
-            ),
-          ),
+              : SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      if (notifier.list.isEmpty)
+                        const Padding(
+                          padding: EdgeInsets.only(top: 16.0),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              "Belum ada alamat",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        )
+                      else
+                        ...List.generate(notifier.list.length, (index) {
+                          final sa = notifier.list[index];
+                          return Column(
+                            children: [
+                              ListTile(
+                                title: Text(
+                                  sa.name,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                trailing: IconButton(
+                                  onPressed: () {
+                                    showModalBottomSheet(
+                                      context: context,
+                                      builder: (_) =>
+                                          ShowShippingAddressOptions(data: sa),
+                                    );
+                                  },
+                                  icon: const Icon(Icons.more_vert),
+                                ),
+                                subtitle: FutureBuilder(
+                                  future: geocodeParsing(
+                                    LatLng(
+                                      double.parse(sa.lat),
+                                      double.parse(sa.lng),
+                                    ),
+                                  ),
+                                  builder: (_, snapshot) {
+                                    if (snapshot.hasData) {
+                                      return Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(snapshot.data ?? '-'),
+                                          Row(
+                                            children: [
+                                              if (sa.label.isNotEmpty)
+                                                Container(
+                                                  margin: const EdgeInsets.only(
+                                                      top: 6, right: 6),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                      6,
+                                                    ),
+                                                    border: Border.all(
+                                                        color: Colors.green),
+                                                  ),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 6),
+                                                  child: Text(
+                                                    sa.label,
+                                                    style: const TextStyle(
+                                                      fontSize: 12,
+                                                    ),
+                                                  ),
+                                                ),
+                                              if (sa.defaultLocation)
+                                                Container(
+                                                  margin: const EdgeInsets.only(
+                                                      top: 6),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                      6,
+                                                    ),
+                                                    border: Border.all(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .primary),
+                                                  ),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 6),
+                                                  child: Text(
+                                                    getTranslated(
+                                                        'TXT_DEFAULT', context),
+                                                    style: const TextStyle(
+                                                      fontSize: 12,
+                                                    ),
+                                                  ),
+                                                )
+                                            ],
+                                          ),
+                                        ],
+                                      );
+                                    }
+                                    return const SizedBox.shrink();
+                                  },
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 4,
+                              ),
+                              const Divider(
+                                height: 1,
+                              ),
+                            ],
+                          );
+                        }),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              ShippingAddressAddPage.go(),
+                            );
+                          },
+                          child: Container(
+                            width: double.infinity,
+                            height: 50,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 2,
+                                  color: Colors.grey,
+                                ),
+                                borderRadius: BorderRadius.circular(
+                                  6,
+                                )),
+                            child: Center(
+                              child: Text(
+                                '${getTranslated("TXT_ADD", context)} ${getTranslated("ADDRESS", context)}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
         ),
       );
     });

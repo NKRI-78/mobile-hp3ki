@@ -142,7 +142,7 @@ class _ShopPaymentViewState extends State<ShopPaymentView> {
                       ),
                     ),
                     Text(
-                      DateFormat().format(date1),
+                      DateFormat(null, 'id').format(date1),
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 14,

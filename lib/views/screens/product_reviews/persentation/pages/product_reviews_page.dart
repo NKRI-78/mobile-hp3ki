@@ -100,7 +100,8 @@ class ProductReviewsView extends StatelessWidget {
                                     ),
                                   ),
                                   Text(
-                                    DateFormat().format(review.createdAt),
+                                    DateFormat(null, 'id')
+                                        .format(review.createdAt),
                                     style: const TextStyle(
                                       fontSize: 12,
                                       color: Colors.grey,

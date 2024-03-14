@@ -18,7 +18,7 @@ import 'package:hp3ki/views/screens/about/about_menu.dart';
 import 'package:hp3ki/views/screens/auth/sign_in.dart';
 import 'package:hp3ki/views/screens/calender/calender.dart';
 import 'package:hp3ki/views/screens/checkin/checkin.dart';
-import 'package:hp3ki/views/screens/comingsoon/comingsoon.dart';
+// import 'package:hp3ki/views/screens/comingsoon/comingsoon.dart';
 import 'package:hp3ki/views/screens/feed/index.dart';
 import 'package:hp3ki/views/screens/media/media.dart';
 import 'package:hp3ki/views/screens/membernear/membernear.dart';
@@ -102,8 +102,9 @@ class _DashboardScreenState extends State<DashboardScreen>
       setState(() {
         widgetOptions = [
           const HomeScreen(),
-          ComingSoonScreen(
-              title: getTranslated('DONATE', context), isNavbarItem: true),
+          const NewsScreen(fromHome: true),
+          // ComingSoonScreen(
+          //     title: getTranslated('DONATE', context), isNavbarItem: true),
           const FeedIndex(),
           const NotificationScreen(),
         ];

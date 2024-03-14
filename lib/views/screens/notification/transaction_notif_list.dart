@@ -73,200 +73,292 @@ class _TransactionNotifListState extends State<TransactionNotifList> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-              child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              const SizedBox(
-                height: 16,
-              ),
-              if (listUnpaid.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 16,
-                    right: 16,
-                    bottom: 16,
-                    top: 16,
-                  ),
-                  child: InkWell(
-                    onTap: () {
-                      TransactionWaitingPayment.show(context, listUnpaid);
-                    },
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(
-                          6,
-                        ),
-                        border: Border.all(
-                          color: Colors.grey.shade300,
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.payment),
-                          const SizedBox(
-                            width: 6,
-                          ),
-                          const Expanded(
-                            child: Text(
-                              "Menuggu pembayaran ",
-                              style: TextStyle(
-                                fontSize: 12,
-                              ),
-                            ),
-                          ),
-                          Text(
-                            listUnpaid.length.toString(),
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+          if (listUnpaid.isEmpty && listPaid.isEmpty)
+            const Expanded(
+              child: Center(
+                child: Text(
+                  'Belum ada transaksi',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
-              ...List.generate(listPaid.length, (index) {
-                final order = listPaid[index];
-                return Padding(
-                  padding: const EdgeInsets.only(
-                    left: 16,
-                    right: 16,
-                    bottom: 16,
-                  ),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
+              ),
+            )
+          else
+            Expanded(
+                child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                const SizedBox(
+                  height: 16,
+                ),
+                ...List.generate(listUnpaid.length, (index) {
+                  final order = listUnpaid[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(
+                      left: 16,
+                      right: 16,
+                      bottom: 16,
+                    ),
+                    child: InkWell(
+                      onTap: () async {
+                        Navigator.push(
                           context,
-                          OrderDetailPage.go(
-                            order.orderId,
-                          ));
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            offset: const Offset(1, 1),
-                            color: Colors.black.withOpacity(.2),
-                            blurRadius: 3,
-                          )
-                        ],
-                        borderRadius: BorderRadius.circular(
-                          6,
+                          ShopPaymentPage.go(paymentId: order.paymentId),
+                        );
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              offset: const Offset(1, 1),
+                              color: Colors.black.withOpacity(.2),
+                              blurRadius: 3,
+                            )
+                          ],
+                          borderRadius: BorderRadius.circular(
+                            6,
+                          ),
                         ),
-                      ),
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.shopify_outlined,
-                              ),
-                              const SizedBox(
-                                width: 6,
-                              ),
-                              const Expanded(
-                                child: Text(
-                                  'Belanja',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.shopify_outlined,
+                                ),
+                                const SizedBox(
+                                  width: 6,
+                                ),
+                                const Expanded(
+                                  child: Text(
+                                    'Belanja',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Text(
-                                orderStatusFormat(order.status),
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color:
-                                      orderStatusColor(order.status, context),
-                                  fontWeight: FontWeight.bold,
+                                Text(
+                                  "Menunggu pembayaran",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            const Divider(
+                              height: 1,
+                              thickness: 2,
+                            ),
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  height: 50,
+                                  width: 50,
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey.shade200,
+                                      borderRadius: BorderRadius.circular(6)),
+                                  clipBehavior: Clip.antiAlias,
+                                  child: order.productPicture == null
+                                      ? const Icon(
+                                          Icons.image,
+                                        )
+                                      : Image.network(
+                                          order.productPicture!,
+                                          fit: BoxFit.cover,
+                                        ),
                                 ),
-                              )
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 12,
-                          ),
-                          const Divider(
-                            height: 1,
-                            thickness: 2,
-                          ),
-                          const SizedBox(
-                            height: 12,
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                height: 50,
-                                width: 50,
-                                decoration: BoxDecoration(
-                                    color: Colors.grey.shade200,
-                                    borderRadius: BorderRadius.circular(6)),
-                                clipBehavior: Clip.antiAlias,
-                                child: order.productPicture == null
-                                    ? const Icon(
-                                        Icons.image,
-                                      )
-                                    : Image.network(
-                                        order.productPicture!,
-                                        fit: BoxFit.cover,
-                                      ),
-                              ),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      order.productName,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                    Text(
-                                      "${order.productCount} Barang",
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.grey.shade600,
-                                      ),
-                                    ),
-                                    Text(
-                                      Helper.formatCurrency(
-                                        (order.amount + order.shippingAmount)
-                                            .toDouble(),
-                                      ),
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ],
+                                const SizedBox(
+                                  width: 8,
                                 ),
-                              )
-                            ],
-                          )
-                        ],
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        order.productName,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      Text(
+                                        "${order.productCount} Barang",
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey.shade600,
+                                        ),
+                                      ),
+                                      Text(
+                                        Helper.formatCurrency(
+                                          (order.amount + order.paymentFee)
+                                              .toDouble(),
+                                        ),
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              })
-            ],
-          )),
+                  );
+                }),
+                ...List.generate(listPaid.length, (index) {
+                  final order = listPaid[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(
+                      left: 16,
+                      right: 16,
+                      bottom: 16,
+                    ),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            OrderDetailPage.go(
+                              order.orderId,
+                            ));
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              offset: const Offset(1, 1),
+                              color: Colors.black.withOpacity(.2),
+                              blurRadius: 3,
+                            )
+                          ],
+                          borderRadius: BorderRadius.circular(
+                            6,
+                          ),
+                        ),
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.shopify_outlined,
+                                ),
+                                const SizedBox(
+                                  width: 6,
+                                ),
+                                const Expanded(
+                                  child: Text(
+                                    'Belanja',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  orderStatusFormat(order.status),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color:
+                                        orderStatusColor(order.status, context),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            const Divider(
+                              height: 1,
+                              thickness: 2,
+                            ),
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  height: 50,
+                                  width: 50,
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey.shade200,
+                                      borderRadius: BorderRadius.circular(6)),
+                                  clipBehavior: Clip.antiAlias,
+                                  child: order.productPicture == null
+                                      ? const Icon(
+                                          Icons.image,
+                                        )
+                                      : Image.network(
+                                          order.productPicture!,
+                                          fit: BoxFit.cover,
+                                        ),
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        order.productName,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      Text(
+                                        "${order.productCount} Barang",
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey.shade600,
+                                        ),
+                                      ),
+                                      Text(
+                                        Helper.formatCurrency(
+                                          (order.amount + order.shippingAmount)
+                                              .toDouble(),
+                                        ),
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                })
+              ],
+            )),
           if (listPaid.isEmpty && listUnpaid.isEmpty && !loading)
             const Expanded(
               flex: 2,

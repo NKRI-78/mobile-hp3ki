@@ -47,22 +47,22 @@ class _NotificationScreenState extends State<NotificationScreen>
               icon: context.read<InboxProvider>().inboxPaymentStatus ==
                       InboxPaymentStatus.loading
                   ? Image.asset(
-                      "assets/images/icons/ic-inbox.png",
-                      width: 20.0,
-                      height: 20.0,
-                      color: index == 0
-                          ? ColorResources.primary
-                          : ColorResources.grey,
+                      "assets/images/icons/pembayaran.png",
+                      width: 40.0,
+                      height: 40.0,
+                      // color: index == 0
+                      //     ? ColorResources.primary
+                      //     : ColorResources.grey,
                     )
                   : context.read<InboxProvider>().inboxPaymentStatus ==
                           InboxPaymentStatus.error
                       ? Image.asset(
-                          "assets/images/icons/ic-inbox.png",
-                          width: 20.0,
-                          height: 20.0,
-                          color: index == 0
-                              ? ColorResources.primary
-                              : ColorResources.grey,
+                          "assets/images/icons/pembayaran.png",
+                          width: 40.0,
+                          height: 40.0,
+                          // color: index == 0
+                          //     ? ColorResources.primary
+                          //     : ColorResources.grey,
                         )
                       : context.read<InboxProvider>().inboxPaymentStatus ==
                                   InboxPaymentStatus.loaded &&
@@ -79,27 +79,27 @@ class _NotificationScreenState extends State<NotificationScreen>
                                       .read<InboxProvider>()
                                       .inboxPaymentCount
                                       .toString(),
-                                  style: robotoRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeSmall,
-                                      color: ColorResources.white),
+                                  // style: robotoRegular.copyWith(
+                                  //     fontSize: Dimensions.fontSizeSmall,
+                                  //     color: ColorResources.white),
                                 ),
                               ),
                               child: Image.asset(
-                                "assets/images/icons/ic-inbox.png",
-                                width: 20.0,
-                                height: 20.0,
-                                color: index == 0
-                                    ? ColorResources.primary
-                                    : ColorResources.grey,
+                                "assets/images/icons/pembayaran.png",
+                                width: 40.0,
+                                height: 40.0,
+                                // color: index == 0
+                                //     ? ColorResources.primary
+                                //     : ColorResources.grey,
                               ),
                             )
                           : Image.asset(
-                              "assets/images/icons/ic-inbox.png",
-                              width: 20.0,
-                              height: 20.0,
-                              color: index == 0
-                                  ? ColorResources.primary
-                                  : ColorResources.grey,
+                              "assets/images/icons/pembayaran.png",
+                              width: 40.0,
+                              height: 40.0,
+                              // color: index == 0
+                              //     ? ColorResources.primary
+                              //     : ColorResources.grey,
                             ),
               child: Text(
                 "Pembayaran",
@@ -115,22 +115,22 @@ class _NotificationScreenState extends State<NotificationScreen>
               icon: context.read<InboxProvider>().inboxPanicStatus ==
                       InboxPanicStatus.loading
                   ? Image.asset(
-                      "assets/images/icons/ic-inbox.png",
-                      width: 20.0,
-                      height: 20.0,
-                      color: index == 1
-                          ? ColorResources.primary
-                          : ColorResources.grey,
+                      "assets/images/icons/sos.png",
+                      width: 40.0,
+                      height: 40.0,
+                      // color: index == 1
+                      //     ? ColorResources.primary
+                      //     : ColorResources.grey,
                     )
                   : context.read<InboxProvider>().inboxPanicStatus ==
                           InboxPanicStatus.error
                       ? Image.asset(
-                          "assets/images/icons/ic-inbox.png",
-                          width: 20.0,
-                          height: 20.0,
-                          color: index == 1
-                              ? ColorResources.primary
-                              : ColorResources.grey,
+                          "assets/images/icons/sos.png",
+                          width: 40.0,
+                          height: 40.0,
+                          // color: index == 1
+                          //     ? ColorResources.primary
+                          //     : ColorResources.grey,
                         )
                       : context.read<InboxProvider>().inboxPanicStatus ==
                                   InboxPanicStatus.loaded &&
@@ -152,21 +152,21 @@ class _NotificationScreenState extends State<NotificationScreen>
                                 ),
                               ),
                               child: Image.asset(
-                                "assets/images/icons/ic-inbox.png",
-                                width: 20.0,
-                                height: 20.0,
-                                color: index == 1
-                                    ? ColorResources.primary
-                                    : ColorResources.grey,
+                                "assets/images/icons/sos.png",
+                                width: 40.0,
+                                height: 40.0,
+                                // color: index == 1
+                                //     ? ColorResources.primary
+                                //     : ColorResources.grey,
                               ),
                             )
                           : Image.asset(
-                              "assets/images/icons/ic-inbox.png",
-                              width: 20.0,
-                              height: 20.0,
-                              color: index == 1
-                                  ? ColorResources.primary
-                                  : ColorResources.grey,
+                              "assets/images/icons/sos.png",
+                              width: 40.0,
+                              height: 40.0,
+                              // color: index == 1
+                              //     ? ColorResources.primary
+                              //     : ColorResources.grey,
                             ),
               child: Text(
                 "SOS",
@@ -182,22 +182,22 @@ class _NotificationScreenState extends State<NotificationScreen>
               icon: context.read<InboxProvider>().inboxInfoStatus ==
                       InboxInfoStatus.loading
                   ? Image.asset(
-                      "assets/images/icons/ic-inbox.png",
-                      width: 20.0,
-                      height: 20.0,
-                      color: index == 2
-                          ? ColorResources.primary
-                          : ColorResources.grey,
+                      "assets/images/icons/broadcast.png",
+                      width: 40.0,
+                      height: 40.0,
+                      // color: index == 2
+                      //     ? ColorResources.primary
+                      //     : ColorResources.grey,
                     )
                   : context.read<InboxProvider>().inboxInfoStatus ==
                           InboxInfoStatus.error
                       ? Image.asset(
-                          "assets/images/icons/ic-inbox.png",
-                          width: 20.0,
-                          height: 20.0,
-                          color: index == 2
-                              ? ColorResources.primary
-                              : ColorResources.grey,
+                          "assets/images/icons/broadcast.png",
+                          width: 40.0,
+                          height: 40.0,
+                          // color: index == 2
+                          //     ? ColorResources.primary
+                          //     : ColorResources.grey,
                         )
                       : context.read<InboxProvider>().inboxInfoStatus ==
                                   InboxInfoStatus.loaded &&
@@ -219,21 +219,21 @@ class _NotificationScreenState extends State<NotificationScreen>
                                 ),
                               ),
                               child: Image.asset(
-                                "assets/images/icons/ic-inbox.png",
-                                width: 20.0,
-                                height: 20.0,
-                                color: index == 2
-                                    ? ColorResources.primary
-                                    : ColorResources.grey,
+                                "assets/images/icons/broadcast.png",
+                                width: 40.0,
+                                height: 40.0,
+                                // color: index == 2
+                                //     ? ColorResources.primary
+                                //     : ColorResources.grey,
                               ),
                             )
                           : Image.asset(
-                              "assets/images/icons/ic-inbox.png",
-                              width: 20.0,
-                              height: 20.0,
-                              color: index == 2
-                                  ? ColorResources.primary
-                                  : ColorResources.grey,
+                              "assets/images/icons/broadcast.png",
+                              width: 40.0,
+                              height: 40.0,
+                              // color: index == 2
+                              //     ? ColorResources.primary
+                              //     : ColorResources.grey,
                             ),
               child: Text(
                 "Broadcast",
@@ -249,22 +249,22 @@ class _NotificationScreenState extends State<NotificationScreen>
               icon: context.read<InboxProvider>().inboxInfoStatus ==
                       InboxInfoStatus.loading
                   ? Image.asset(
-                      "assets/images/icons/ic-inbox.png",
-                      width: 20.0,
-                      height: 20.0,
-                      color: index == 2
-                          ? ColorResources.primary
-                          : ColorResources.grey,
+                      "assets/images/icons/transaksi.png",
+                      width: 40.0,
+                      height: 40.0,
+                      // color: index == 2
+                      //     ? ColorResources.primary
+                      //     : ColorResources.grey,
                     )
                   : context.read<InboxProvider>().inboxInfoStatus ==
                           InboxInfoStatus.error
                       ? Image.asset(
-                          "assets/images/icons/ic-inbox.png",
-                          width: 20.0,
-                          height: 20.0,
-                          color: index == 2
-                              ? ColorResources.primary
-                              : ColorResources.grey,
+                          "assets/images/icons/transaksi.png",
+                          width: 40.0,
+                          height: 40.0,
+                          // color: index == 2
+                          //     ? ColorResources.primary
+                          //     : ColorResources.grey,
                         )
                       : context.read<InboxProvider>().inboxInfoStatus ==
                                   InboxInfoStatus.loaded &&
@@ -289,28 +289,28 @@ class _NotificationScreenState extends State<NotificationScreen>
                                 ),
                               ),
                               child: Image.asset(
-                                "assets/images/icons/ic-inbox.png",
-                                width: 20.0,
-                                height: 20.0,
-                                color: index == 3
-                                    ? ColorResources.primary
-                                    : ColorResources.grey,
+                                "assets/images/icons/transaksi.png",
+                                width: 40.0,
+                                height: 40.0,
+                                // color: index == 3
+                                //     ? ColorResources.primary
+                                //     : ColorResources.grey,
                               ),
                             )
                           : Image.asset(
-                              "assets/images/icons/ic-inbox.png",
-                              width: 20.0,
-                              height: 20.0,
-                              color: index == 2
-                                  ? ColorResources.primary
-                                  : ColorResources.grey,
+                              "assets/images/icons/transaksi.png",
+                              width: 40.0,
+                              height: 40.0,
+                              // color: index == 2
+                              //     ? ColorResources.primary
+                              //     : ColorResources.grey,
                             ),
               child: Text(
                 "Transaction",
                 style: robotoRegular.copyWith(
                     fontWeight: FontWeight.w600,
                     fontSize: Dimensions.fontSizeDefault,
-                    color: index == 2
+                    color: index == 3
                         ? ColorResources.primary
                         : ColorResources.grey),
               ),
@@ -689,7 +689,7 @@ class _NotificationScreenState extends State<NotificationScreen>
                 getTranslated("NO_INBOX_AVAILABLE", context),
                 style: robotoRegular.copyWith(
                   fontSize: Dimensions.fontSizeDefault,
-                  color: ColorResources.white,
+                  color: ColorResources.black,
                 ),
               )),
             ),

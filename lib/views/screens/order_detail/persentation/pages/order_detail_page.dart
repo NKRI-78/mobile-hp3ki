@@ -121,7 +121,7 @@ class OrderDetailView extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      DateFormat().format(detail.order.createdAt),
+                      DateFormat(null, 'id').format(detail.order.createdAt),
                       style: const TextStyle(
                         fontSize: 12,
                         // fontWeight: FontWeight.bold,

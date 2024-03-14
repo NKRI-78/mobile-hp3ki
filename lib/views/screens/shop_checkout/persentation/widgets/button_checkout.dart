@@ -25,8 +25,7 @@ class ButtonCheckout extends StatelessWidget {
                     : () async {
                         if (!notifier.isAllShipiingSelected) {
                           GeneralModal.error(context,
-                              msg:
-                                  'There are still deliveries yet to be selected',
+                              msg: 'Masih ada pengiriman yang belum dipilih',
                               onOk: () {
                             Navigator.pop(context);
                           });
@@ -34,7 +33,8 @@ class ButtonCheckout extends StatelessWidget {
                         }
                         if (notifier.paymentMethod == null) {
                           GeneralModal.error(context,
-                              msg: 'Selected first payment method', onOk: () {
+                              msg: 'Pilih terlbenih dahulu metode pembayaran',
+                              onOk: () {
                             Navigator.pop(context);
                           });
                           return;

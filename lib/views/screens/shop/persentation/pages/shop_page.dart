@@ -58,9 +58,16 @@ class ShopView extends StatelessWidget {
                 return Consumer<ProfileProvider>(
                     builder: (context, notifier, child) {
                   bool hasStore = notifier.user?.storeId != null;
+                  bool isPlatinum = notifier.user?.memberType == "PLATINUM";
                   return IconButton(
                     onPressed: () {
                       if (!hasStore) {
+                        if (!isPlatinum) {
+                          context
+                              .read<ProfileProvider>()
+                              .showNonPlatinumLimit(context);
+                          return;
+                        }
                         NS.push(context, const StoreOpenPage());
                       } else {
                         NS.push(context, const MyStorePage());

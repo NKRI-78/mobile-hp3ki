@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:hp3ki/views/screens/home/home.dart';
+import 'package:hp3ki/views/screens/upgrademember/index.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hp3ki/providers/auth/auth.dart';
@@ -137,6 +138,46 @@ class CustomDialog {
         btnOkText: "Ok",
         btnOkColor: ColorResources.secondary,
         btnOkOnPress: () {},
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Peringatan',
+                style: robotoRegular.copyWith(
+                    fontSize: Dimensions.fontSizeExtraLarge,
+                    fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Text(
+                warning,
+                style: robotoRegular.copyWith(
+                  fontSize: Dimensions.fontSizeLarge,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ))
+      ..show();
+  }
+
+  static AwesomeDialog showWarningMemberNonPlatinum(BuildContext context,
+      {required String warning}) {
+    return AwesomeDialog(
+        // autoHide: const Duration(seconds: 5),
+        context: context,
+        animType: AnimType.scale,
+        dialogType: DialogType.warning,
+        btnOkText: "Ok",
+        btnOkColor: ColorResources.secondary,
+        btnOkOnPress: () {
+          NS.push(context, const UpgradeMemberIndexScreen());
+        },
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(

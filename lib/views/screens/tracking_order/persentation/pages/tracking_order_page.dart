@@ -116,7 +116,7 @@ class TrackingOrderView extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              DateFormat().format(dateTime),
+                              DateFormat(null, 'id').format(dateTime),
                               style: const TextStyle(
                                 color: Colors.grey,
                                 fontSize: 12,
