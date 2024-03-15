@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hp3ki/data/models/package_account/package_account_model.dart';
 import 'package:hp3ki/data/models/ppob_v2/payment_list.dart';
 import 'package:hp3ki/data/repository/upgrade_member/upgrade_member.dart';
 import 'package:hp3ki/utils/color_resources.dart';
@@ -76,11 +77,35 @@ class UpgradeMemberProvider with ChangeNotifier {
     }
   }
 
-  Future<void> sendPaymentInquiry(BuildContext context,
-      {required String userId, required String paymentCode}) async {
+  Future<void> sendPaymentInquiry(
+    BuildContext context, {
+    required String userId,
+    required String paymentCode,
+  }) async {
     setStateInquiryStatus(InquiryStatus.loading);
     try {
       await umr.sendPaymentInquiry(userId: userId, paymentCode: paymentCode);
+      CustomDialog.buildPaymentSuccessDialog(context);
+      setStateInquiryStatus(InquiryStatus.loaded);
+    } on CustomException catch (e) {
+      debugPrint(e.toString());
+      ShowSnackbar.snackbar(context, e.toString(), '', ColorResources.error);
+      setStateInquiryStatus(InquiryStatus.error);
+    } catch (e, stacktrace) {
+      ShowSnackbar.snackbar(context, e.toString(), '', ColorResources.error);
+      debugPrint(stacktrace.toString());
+      setStateInquiryStatus(InquiryStatus.error);
+    }
+  }
+
+  Future<void> sendPaymentInquiryV2(BuildContext context,
+      {required String userId,
+      required String paymentCode,
+      required PackageAccount package}) async {
+    setStateInquiryStatus(InquiryStatus.loading);
+    try {
+      await umr.sendPaymentInquiry(
+          userId: userId, paymentCode: paymentCode, package: package);
       CustomDialog.buildPaymentSuccessDialog(context);
       setStateInquiryStatus(InquiryStatus.loaded);
     } on CustomException catch (e) {

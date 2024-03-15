@@ -48,7 +48,7 @@ class _InputPostComponentState extends State<InputPostComponent> {
     if (membershipStatus != "PLATINUM" || membershipStatus == "-") {
       context.read<ProfileProvider>().showNonPlatinumLimit(context);
     } else {
-      imageSource = await showDialog<ImageSource>(
+      imageSource = await showDialog<ImageSource?>(
           context: context,
           builder: (context) => AlertDialog(
                 title: Text(
@@ -90,9 +90,12 @@ class _InputPostComponentState extends State<InputPostComponent> {
       }
       if (imageSource == ImageSource.gallery) {
         files = [];
-
         var pickerFiles = await ImagePicker().pickMultiImage(
             maxHeight: 480.0, maxWidth: 640.0, imageQuality: 70);
+
+        if (pickerFiles.isEmpty) {
+          return;
+        }
         for (var imageAsset in pickerFiles) {
           File compressedFile = await FlutterNativeImage.compressImage(
               imageAsset.path,

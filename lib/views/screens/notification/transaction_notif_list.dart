@@ -74,14 +74,7 @@ class _TransactionNotifListState extends State<TransactionNotifList> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (listUnpaid.isEmpty && listPaid.isEmpty)
-            const Expanded(
-              child: Center(
-                child: Text(
-                  'Belum ada transaksi',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-              ),
-            )
+            const SizedBox()
           else
             Expanded(
                 child: ListView(
@@ -360,13 +353,17 @@ class _TransactionNotifListState extends State<TransactionNotifList> {
               ],
             )),
           if (listPaid.isEmpty && listUnpaid.isEmpty && !loading)
-            const Expanded(
-              flex: 2,
-              child: SizedBox(
-                width: double.infinity,
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: Text('Belum ada transaksi'),
+            SizedBox(
+              width: double.infinity,
+              height: MediaQuery.of(context).size.height * .7,
+              child: const Align(
+                alignment: Alignment.center,
+                child: Text(
+                  'Belum ada transaksi',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             )

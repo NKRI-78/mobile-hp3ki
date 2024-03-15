@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:hp3ki/data/models/package_account/package_account_model.dart';
 import 'package:hp3ki/data/models/ppob_v2/payment_list.dart';
 import 'package:hp3ki/providers/upgrade_member/upgrade_member.dart';
 import 'package:hp3ki/services/navigation.dart';
+import 'package:hp3ki/utils/constant.dart';
+import 'package:hp3ki/utils/dio.dart';
 import 'package:hp3ki/utils/shared_preferences.dart';
 import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
 import 'package:hp3ki/views/basewidgets/dialog/custom/custom.dart';
@@ -14,6 +17,7 @@ import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
+import 'package:dio/dio.dart';
 
 class UpgradeMemberInquiryV2Screen extends StatefulWidget {
   const UpgradeMemberInquiryV2Screen({super.key});
@@ -28,11 +32,39 @@ class _UpgradeMemberInquiryV2ScreenState
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      init();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return buildUI();
+  }
+
+  List<PackageAccount> packages = [];
+
+  PackageAccount? package;
+
+  Dio client = DioManager().getClient();
+
+  Future<void> init() async {
+    try {
+      final res = await client
+          .get('${AppConstants.baseUrl}/api/v1/pricelist/pricing-account');
+      packages = (res.data['data'] as List)
+          .map((e) => PackageAccount.fromJson(e))
+          .toList();
+
+      if (packages.isNotEmpty) {
+        package = packages[0];
+      }
+
+      setState(() {});
+    } on DioError {
+      ///
+    }
   }
 
   Scaffold buildUI() {
@@ -60,7 +92,7 @@ class _UpgradeMemberInquiryV2ScreenState
           UpgradeMemberProvider upgradeMemberProvider, Widget? child) {
         PaymentListData? data = upgradeMemberProvider.selectedPaymentChannel;
         final double adminFee = data?.totalAdminFee?.toDouble() ?? 0;
-        const double basePrice = 100000;
+        // const double basePrice = 100000;
         return Wrap(children: [
           InkWell(
             onTap: () {
@@ -125,11 +157,87 @@ class _UpgradeMemberInquiryV2ScreenState
           else
             ListTile(
               tileColor: ColorResources.white,
+              trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 NS.push(context, const UpgradeMemberV2IndexScreen());
               },
               title: const Text('Pilih metode pembayaran'),
             ),
+          Container(
+            color: ColorResources.white,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 10,
+                  color: const Color(0xffD9D9D9),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Pilihan Paket',
+                        style: robotoRegular.copyWith(
+                            fontWeight: FontWeight.w600,
+                            fontSize: Dimensions.fontSizeLarge),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    ...List.generate(
+                      packages.length,
+                      (index) {
+                        final p = packages[index];
+                        return InkWell(
+                          onTap: () {
+                            setState(() {
+                              package = p;
+                            });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              left: 16,
+                              right: 8,
+                              bottom: 8,
+                            ),
+                            child: Row(
+                              children: [
+                                Radio<PackageAccount>.adaptive(
+                                    value: p,
+                                    groupValue: package,
+                                    onChanged: (pack) {
+                                      setState(() {
+                                        package = pack;
+                                      });
+                                    }),
+                                const SizedBox(
+                                  width: 12,
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    p.name,
+                                    style: robotoRegular.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: Dimensions.fontSizeLarge),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
           Container(
             color: ColorResources.white,
             child: Column(
@@ -151,9 +259,9 @@ class _UpgradeMemberInquiryV2ScreenState
                             fontSize: Dimensions.fontSizeLarge),
                       ),
                     ),
-                    const InfoTile(
+                    InfoTile(
                       label: 'Biaya Upgrade Member',
-                      price: basePrice,
+                      price: package?.price.toDouble() ?? 0,
                     ),
                     InfoTile(
                       label: 'Biaya Admin',
@@ -161,7 +269,7 @@ class _UpgradeMemberInquiryV2ScreenState
                     ),
                     InfoTile(
                       label: 'Total Harga',
-                      price: basePrice + adminFee,
+                      price: (package?.price.toDouble() ?? 0) + adminFee,
                     ),
                   ],
                 ),
@@ -186,6 +294,11 @@ class _UpgradeMemberInquiryV2ScreenState
               if (data == null) {
                 CustomDialog.showErrorCustom(context,
                     title: '', message: "Harap pilih metode pembayaran");
+                return;
+              }
+              if (package == null) {
+                CustomDialog.showErrorCustom(context,
+                    title: '', message: "Harap pilih paket terlebih dahulu");
                 return;
               }
               buildAskDialog(context);
@@ -230,13 +343,14 @@ class _UpgradeMemberInquiryV2ScreenState
       btnOkText: "Yakin",
       btnOkColor: ColorResources.secondary,
       btnOkOnPress: () async {
-        context.read<UpgradeMemberProvider>().sendPaymentInquiry(
+        context.read<UpgradeMemberProvider>().sendPaymentInquiryV2(
               context,
               userId: SharedPrefs.getUserId(),
               paymentCode: context
                   .read<UpgradeMemberProvider>()
                   .selectedPaymentChannel!
                   .paymentCode!,
+              package: package!,
             );
       },
       btnCancelText: "Tidak",
