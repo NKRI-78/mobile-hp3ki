@@ -33,7 +33,7 @@ class ButtonCheckout extends StatelessWidget {
                         }
                         if (notifier.paymentMethod == null) {
                           GeneralModal.error(context,
-                              msg: 'Pilih terlbenih dahulu metode pembayaran',
+                              msg: 'Pilih terlebih dahulu metode pembayaran',
                               onOk: () {
                             Navigator.pop(context);
                           });

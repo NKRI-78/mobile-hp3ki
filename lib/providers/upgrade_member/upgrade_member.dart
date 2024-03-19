@@ -56,6 +56,11 @@ class UpgradeMemberProvider with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
+  void undoSelectedPaymentChannel() {
+    _selectedPaymentChannel = null;
+    Future.delayed(Duration.zero, () => notifyListeners());
+  }
+
   Future<void> getPaymentChannel(BuildContext context) async {
     setStatePaymentChannelStatus(PaymentChannelStatus.loading);
     try {

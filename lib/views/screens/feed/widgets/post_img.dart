@@ -374,6 +374,7 @@ class _PostImageState extends State<PostImage> {
             },
             child: Image.network(
               widget.medias[0].path!,
+              width: double.infinity,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) => Container(
                 margin: const EdgeInsets.all(0.0),

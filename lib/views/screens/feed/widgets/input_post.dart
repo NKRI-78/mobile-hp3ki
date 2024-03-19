@@ -13,7 +13,6 @@ import 'package:sn_progress_dialog/progress_dialog.dart';
 
 import 'package:video_compress/video_compress.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:hp3ki/localization/language_constraints.dart';
 import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
 import 'package:hp3ki/views/screens/feed/widgets/create_post_image_camera.dart';
@@ -81,8 +80,8 @@ class _InputPostComponentState extends State<InputPostComponent> {
       if (imageSource == ImageSource.camera) {
         XFile? pickedFile = await ImagePicker().pickImage(
             source: ImageSource.camera,
-            maxHeight: 480.0,
-            maxWidth: 640.0,
+            maxHeight: 720.0,
+            maxWidth: 1280.0,
             imageQuality: 70);
         if (pickedFile != null) {
           NS.push(context, CreatePostImageCameraScreen(pickedFile));
@@ -91,17 +90,21 @@ class _InputPostComponentState extends State<InputPostComponent> {
       if (imageSource == ImageSource.gallery) {
         files = [];
         var pickerFiles = await ImagePicker().pickMultiImage(
-            maxHeight: 480.0, maxWidth: 640.0, imageQuality: 70);
+            maxHeight: 720.0, maxWidth: 1280.0, imageQuality: 70);
 
         if (pickerFiles.isEmpty) {
           return;
         }
-        for (var imageAsset in pickerFiles) {
-          File compressedFile = await FlutterNativeImage.compressImage(
-              imageAsset.path,
-              quality: 70,
-              percentage: 70);
-          setState(() => files.add(File(compressedFile.path)));
+        if (pickerFiles.length > 8) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Hanya dapat upload 8 gambar')));
+        }
+        for (var imageAsset in pickerFiles.take(8)) {
+          // File compressedFile = await FlutterNativeImage.compressImage(
+          //     imageAsset.path,
+          //     quality: 70,
+          //     percentage: 70);
+          setState(() => files.add(File(imageAsset.path)));
         }
         Future.delayed(const Duration(seconds: 1), () {
           NS.push(

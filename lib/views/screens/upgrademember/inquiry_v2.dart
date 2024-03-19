@@ -39,6 +39,11 @@ class _UpgradeMemberInquiryV2ScreenState
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return buildUI();
   }
@@ -83,7 +88,12 @@ class _UpgradeMemberInquiryV2ScreenState
   }
 
   SliverAppBar buildAppBar() {
-    return const CustomAppBar(title: 'Pembayaran').buildSliverAppBar(context);
+    return CustomAppBar(
+        title: 'Pembayaran',
+        onTapBack: () {
+          context.read<UpgradeMemberProvider>().undoSelectedPaymentChannel();
+          NS.pop(context);
+        }).buildSliverAppBar(context);
   }
 
   SliverToBoxAdapter buildItems() {
@@ -352,6 +362,7 @@ class _UpgradeMemberInquiryV2ScreenState
                   .paymentCode!,
               package: package!,
             );
+        context.read<UpgradeMemberProvider>().undoSelectedPaymentChannel();
       },
       btnCancelText: "Tidak",
       btnCancelColor: Colors.red,
