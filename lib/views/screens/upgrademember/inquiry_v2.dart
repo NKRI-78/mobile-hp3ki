@@ -45,7 +45,11 @@ class _UpgradeMemberInquiryV2ScreenState
 
   @override
   Widget build(BuildContext context) {
-    return buildUI();
+    return PopScope(
+        onPopInvoked: (vo) {
+          context.read<UpgradeMemberProvider>().undoSelectedPaymentChannel();
+        },
+        child: buildUI());
   }
 
   List<PackageAccount> packages = [];
@@ -92,7 +96,6 @@ class _UpgradeMemberInquiryV2ScreenState
         title: 'Pembayaran',
         onTapBack: () {
           context.read<UpgradeMemberProvider>().undoSelectedPaymentChannel();
-          NS.pop(context);
         }).buildSliverAppBar(context);
   }
 

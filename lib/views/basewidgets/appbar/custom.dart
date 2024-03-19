@@ -39,27 +39,23 @@ class CustomAppBar {
       actions: actions,
       leading: fromHome == true
           ? Container()
-          : InkWell(
-              onTap: () {
-                onTapBack?.call() ?? NS.pop(context);
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                    border: Border.all(
-                        color: ColorResources.transparent, width: 1.0)),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.only(left: Dimensions.paddingSizeLarge),
-                  child: IconButton(
-                      onPressed: () {
-                        onTapBack?.call() ?? NS.pop(context);
-                      },
-                      icon: Icon(
-                        isWebview == true ? Icons.close : Icons.arrow_back,
-                        size: Dimensions.iconSizeLarge,
-                        color: ColorResources.black,
-                      )),
-                ),
+          : Container(
+              decoration: BoxDecoration(
+                  border: Border.all(
+                      color: ColorResources.transparent, width: 1.0)),
+              child: Padding(
+                padding:
+                    const EdgeInsets.only(left: Dimensions.paddingSizeLarge),
+                child: IconButton(
+                    onPressed: () {
+                      onTapBack?.call();
+                      NS.pop(context);
+                    },
+                    icon: Icon(
+                      isWebview == true ? Icons.close : Icons.arrow_back,
+                      size: Dimensions.iconSizeLarge,
+                      color: ColorResources.black,
+                    )),
               ),
             ),
       bottom: bottom,
@@ -84,28 +80,24 @@ class CustomAppBar {
       actions: actions,
       leading: fromHome == true
           ? Container()
-          : InkWell(
-              onTap: () {
-                onTapBack?.call() ?? NS.pop(context);
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  border:
-                      Border.all(color: ColorResources.transparent, width: 1.0),
-                ),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.only(left: Dimensions.paddingSizeLarge),
-                  child: IconButton(
-                      onPressed: () {
-                        onTapBack?.call() ?? NS.pop(context);
-                      },
-                      icon: Icon(
-                        isWebview == true ? Icons.close : Icons.arrow_back,
-                        size: Dimensions.iconSizeLarge,
-                        color: ColorResources.black,
-                      )),
-                ),
+          : Container(
+              decoration: BoxDecoration(
+                border:
+                    Border.all(color: ColorResources.transparent, width: 1.0),
+              ),
+              child: Padding(
+                padding:
+                    const EdgeInsets.only(left: Dimensions.paddingSizeLarge),
+                child: IconButton(
+                    onPressed: () {
+                      onTapBack?.call();
+                      NS.pop(context);
+                    },
+                    icon: Icon(
+                      isWebview == true ? Icons.close : Icons.arrow_back,
+                      size: Dimensions.iconSizeLarge,
+                      color: ColorResources.black,
+                    )),
               ),
             ),
       bottom: bottom,
