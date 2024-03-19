@@ -33,6 +33,8 @@ class InboxData extends Equatable {
   final String? link;
   final User? user;
   final bool? read;
+  final double latitude;
+  final double longitude;
   final String? createdAt;
   final String? updatedAt;
 
@@ -44,6 +46,8 @@ class InboxData extends Equatable {
     this.link,
     this.user,
     this.read,
+    required this.latitude,
+    required this.longitude,
     this.createdAt,
     this.updatedAt,
   });
@@ -56,6 +60,8 @@ class InboxData extends Equatable {
         link: json["link"],
         user: User.fromJson(json["user"]),
         read: json["read"],
+        latitude: double.parse((json["latitude"] ?? 0).toString()),
+        longitude: double.parse((json["longitude"] ?? 0).toString()),
         createdAt: json["created_at"],
         updatedAt: json["updated_at"],
       );
@@ -68,6 +74,8 @@ class InboxData extends Equatable {
         "link": link,
         "user": user?.toJson(),
         "read": read,
+        "latitude": latitude,
+        "longitude": longitude,
         "created_at": createdAt,
         "updated_at": updatedAt,
       };
@@ -83,6 +91,8 @@ class InboxData extends Equatable {
         read,
         createdAt,
         updatedAt,
+        latitude,
+        longitude,
       ];
 }
 

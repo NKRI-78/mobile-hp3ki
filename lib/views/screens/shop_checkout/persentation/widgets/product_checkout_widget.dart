@@ -37,8 +37,8 @@ class ProductCheckoutWidget extends StatelessWidget {
               ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 shrinkWrap: true,
-                children: List.generate(data.items.length, (i) {
-                  final product = data.items[i];
+                children: List.generate(data.filterSelected.length, (i) {
+                  final product = data.filterSelected[i];
 
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 12.0),

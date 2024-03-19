@@ -2,6 +2,8 @@ import 'package:hp3ki/data/models/inbox/inbox.dart';
 
 class MockInbox {
   static const InboxData expectedInboxData = InboxData(
+    latitude: 0,
+    longitude: 0,
     id: "75f42fef-7343-4d2b-bf43-032dae449572",
     title: "InboxData Test",
     subject: "Testing",

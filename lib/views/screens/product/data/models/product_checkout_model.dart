@@ -41,6 +41,9 @@ class StoreElement {
   StoreStore store;
   List<Item> items;
 
+  List<Item> get filterSelected =>
+      items.where((element) => element.cart.selected).toList();
+
   StoreElement({
     required this.selected,
     required this.store,

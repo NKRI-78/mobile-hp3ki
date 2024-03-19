@@ -93,6 +93,14 @@ class ShopCartView extends StatelessWidget {
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  Checkbox.adaptive(
+                                      value: item.cart.selected,
+                                      onChanged: (value) {
+                                        context
+                                            .read<ShopCartProvider>()
+                                            .cartSelected(item.cart.id,
+                                                type: 'none', selected: value);
+                                      }),
                                   Container(
                                     height: 60,
                                     width: 60,

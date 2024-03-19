@@ -569,7 +569,8 @@ class _NotificationScreenState extends State<NotificationScreen>
                       return buildNotificationItem(
                           context.read<InboxProvider>().inboxInfo!,
                           i,
-                          Icons.info);
+                          Icons.info,
+                          "info");
                     }
                     return Container();
                   },
@@ -642,7 +643,8 @@ class _NotificationScreenState extends State<NotificationScreen>
                       return buildNotificationItem(
                           context.read<InboxProvider>().inboxPanic!,
                           i,
-                          Icons.warning);
+                          Icons.warning,
+                          "sos");
                     }
                     return Container();
                   },
@@ -721,7 +723,11 @@ class _NotificationScreenState extends State<NotificationScreen>
                         .read<InboxProvider>()
                         .inboxPayment!
                         .isNotEmpty) {
-                      return buildNotificationItem(null, i, Icons.payments,
+                      return buildNotificationItem(
+                          null,
+                          i,
+                          Icons.payments,
+                          "payment",
                           context.read<InboxProvider>().inboxPayment!);
                     }
                     return Container();
@@ -739,7 +745,8 @@ class _NotificationScreenState extends State<NotificationScreen>
     );
   }
 
-  Widget buildNotificationItem(List<InboxData>? inbox, int i, IconData icon,
+  Widget buildNotificationItem(
+      List<InboxData>? inbox, int i, IconData icon, String type,
       [List<InboxPaymentData>? inboxPayment]) {
     return InkWell(
       onDoubleTap: () {},
@@ -750,11 +757,13 @@ class _NotificationScreenState extends State<NotificationScreen>
               .getInboxDetailAndUpdateInboxPayment(
                 context,
                 inboxId: inboxPayment![i].id!,
+                type: type,
                 inboxSelected: inboxPayment[i],
               );
         } else {
           await context.read<InboxProvider>().getInboxDetailAndUpdateInbox(
                 context,
+                type: type,
                 inboxId: inbox[i].id!,
                 inboxSelected: inbox[i],
               );

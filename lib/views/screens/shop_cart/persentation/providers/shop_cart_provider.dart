@@ -24,6 +24,16 @@ class ShopCartProvider with ChangeNotifier {
     }
   }
 
+  Future<void> cartSelected(String id, {String? type, bool? selected}) async {
+    try {
+      await repo.cartSelected(id,
+          type: type ?? 'none', selected: selected ?? false);
+      fetchCarts();
+    } catch (e) {
+      ///
+    }
+  }
+
   void deleteItem(String id) async {
     try {
       await repo.deleteCart(id);

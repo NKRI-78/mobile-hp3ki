@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:chewie/chewie.dart';
+import 'package:flutter/widgets.dart';
 import 'package:hp3ki/data/models/feed/feedmedia.dart';
 import 'package:readmore/readmore.dart';
 import 'package:video_player/video_player.dart';
@@ -32,14 +34,14 @@ class _PostVideoState extends State<PostVideo> {
         VideoPlayerController.networkUrl(Uri.parse(widget.media.path ?? "-"))
           ..setLooping(false)
           ..initialize().then((_) {
+            chewieC = ChewieController(
+              videoPlayerController: videoPlayerC!,
+              // aspectRatio: videoPlayerC!.value.aspectRatio,
+              autoPlay: false,
+              looping: false,
+            );
             setState(() {});
           });
-    chewieC = ChewieController(
-      videoPlayerController: videoPlayerC!,
-      aspectRatio: videoPlayerC!.value.aspectRatio,
-      autoPlay: false,
-      looping: false,
-    );
   }
 
   @override
@@ -47,6 +49,23 @@ class _PostVideoState extends State<PostVideo> {
     super.initState();
 
     getData();
+  }
+
+  // an arbitrary value, this can be whatever you need it to be
+  double videoContainerRatio = 0.5;
+
+  double getScale() {
+    double videoRatio = videoPlayerC?.value.aspectRatio ?? 0.5;
+
+    if (videoRatio < videoContainerRatio) {
+      ///for tall videos, we just return the inverse of the controller aspect ratio
+      return videoContainerRatio / videoRatio;
+    } else {
+      ///for wide videos, divide the video AR by the fixed container AR
+      ///so that the video does not over scale
+
+      return videoRatio / videoContainerRatio;
+    }
   }
 
   @override
@@ -87,17 +106,18 @@ class _PostVideoState extends State<PostVideo> {
                 fontWeight: FontWeight.w600),
           ),
         ),
-        videoPlayerC != null
+        chewieC != null
             ? Container(
                 margin: const EdgeInsets.only(top: 30.0, bottom: 30.0),
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
                     AspectRatio(
-                        aspectRatio: 1.0,
-                        child: Chewie(
-                          controller: chewieC!,
-                        )),
+                      aspectRatio: 1,
+                      child: Chewie(
+                        controller: chewieC!,
+                      ),
+                    ),
                     // Positioned.fill(
                     //   child: GestureDetector(
                     //     behavior: HitTestBehavior.opaque,

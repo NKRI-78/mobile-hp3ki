@@ -385,6 +385,7 @@ class InboxProvider with ChangeNotifier {
   Future<void> getInboxDetailAndUpdateInboxPayment(
     BuildContext context, {
     required int inboxId,
+    required String type,
     required InboxPaymentData inboxSelected,
   }) async {
     setStateInboxDetailStatus(InboxDetailStatus.loading);
@@ -392,7 +393,7 @@ class InboxProvider with ChangeNotifier {
       _inboxDetail = null;
       _inboxPaymentDetail = inboxSelected;
       await ir.updateInboxPayment(inboxId: inboxId);
-      NS.push(context, const DetailInboxScreen());
+      NS.push(context, DetailInboxScreen(type: type));
       setStateInboxDetailStatus(InboxDetailStatus.loaded);
       Future.delayed(
         const Duration(
@@ -421,6 +422,7 @@ class InboxProvider with ChangeNotifier {
   Future<void> getInboxDetailAndUpdateInbox(
     BuildContext context, {
     required String inboxId,
+    required String type,
     required InboxData inboxSelected,
   }) async {
     setStateInboxDetailStatus(InboxDetailStatus.loading);
@@ -428,7 +430,11 @@ class InboxProvider with ChangeNotifier {
       _inboxPaymentDetail = null;
       _inboxDetail = inboxSelected;
       await ir.updateInbox(inboxId: inboxId, userId: SharedPrefs.getUserId());
-      NS.push(context, const DetailInboxScreen());
+      NS.push(
+          context,
+          DetailInboxScreen(
+            type: type,
+          ));
       setStateInboxDetailStatus(InboxDetailStatus.loaded);
       Future.delayed(
         const Duration(

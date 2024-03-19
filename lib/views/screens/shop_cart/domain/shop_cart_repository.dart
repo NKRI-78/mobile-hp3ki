@@ -16,6 +16,20 @@ class ShopCartRepository {
     }
   }
 
+  Future<void> cartSelected(String id,
+      {String type = 'none', bool selected = false}) async {
+    try {
+      await client.post(
+        "${AppConstants.baseUrl}/api/v1/cart/update/selected/$id",
+        data: {"selected": selected, "type": type},
+      );
+
+      // return ShopCartModel.fromJson(res.data['data']);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<void> deleteCart(String id) async {
     try {
       await client.post("${AppConstants.baseUrl}/api/v1/cart/delete", data: {
