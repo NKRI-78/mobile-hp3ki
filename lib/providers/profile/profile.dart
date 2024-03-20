@@ -244,7 +244,7 @@ class ProfileProvider with ChangeNotifier {
         : SharedPrefs.getOtherJobData();
     Object personalData = SharedPrefs.getPersonalDataObject();
     try {
-      Future.wait([
+      await Future.wait([
         pr.fulfillJobData(data, formJobType),
         pr.updateProfile(data: personalData),
       ]);

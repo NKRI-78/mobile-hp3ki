@@ -17,13 +17,15 @@ class RegionDropdownRepo {
 
   Future<ProvinceModel?> getProvinces() async {
     try {
-      Response res = await dioClient!.post("${AppConstants.baseUrl}/api/v1/administration/provinces", data: { });
+      Response res = await dioClient!.post(
+          "${AppConstants.baseUrl}/api/v1/administration/provinces",
+          data: {});
       ProvinceModel province = ProvinceModel.fromJson(res.data);
       return province;
-    } on DioError catch(e) {
+    } on DioError catch (e) {
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw CustomException(errorMessage);
-    }catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(e.toString());
       debugPrint(stacktrace.toString());
       throw CustomException(e.toString());
@@ -32,15 +34,16 @@ class RegionDropdownRepo {
 
   Future<CityModel?> getCities({required String province}) async {
     try {
-      Response res = await dioClient!.post("${AppConstants.baseUrl}/api/v1/administration/cities", data: {
+      Response res = await dioClient!
+          .post("${AppConstants.baseUrl}/api/v1/administration/cities", data: {
         "province_name": province,
       });
       CityModel city = CityModel.fromJson(res.data);
       return city;
-    } on DioError catch(e) {
+    } on DioError catch (e) {
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw CustomException(errorMessage);
-    }catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(e.toString());
       debugPrint(stacktrace.toString());
       throw CustomException(e.toString());
@@ -49,15 +52,17 @@ class RegionDropdownRepo {
 
   Future<DistrictModel?> getDistricts({required String city}) async {
     try {
-      Response res = await dioClient!.post("${AppConstants.baseUrl}/api/v1/administration/districts", data: {
-        "city_name": city,
-      });
+      Response res = await dioClient!.post(
+          "${AppConstants.baseUrl}/api/v1/administration/districts",
+          data: {
+            "city_name": city,
+          });
       DistrictModel district = DistrictModel.fromJson(res.data);
       return district;
-    } on DioError catch(e) {
+    } on DioError catch (e) {
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw CustomException(errorMessage);
-    }catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(e.toString());
       debugPrint(stacktrace.toString());
       throw CustomException(e.toString());
@@ -66,19 +71,20 @@ class RegionDropdownRepo {
 
   Future<SubdistrictModel?> getSubdistricts({required String district}) async {
     try {
-      Response res = await dioClient!.post("${AppConstants.baseUrl}/api/v1/administration/subdistricts", data: {
-        "district_name": district,
-      });
+      Response res = await dioClient!.post(
+          "${AppConstants.baseUrl}/api/v1/administration/subdistricts",
+          data: {
+            "district_name": district,
+          });
       SubdistrictModel subdistrict = SubdistrictModel.fromJson(res.data);
       return subdistrict;
-    } on DioError catch(e) {
+    } on DioError catch (e) {
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw CustomException(errorMessage);
-    }catch(e, stacktrace) {
+    } catch (e, stacktrace) {
       debugPrint(e.toString());
       debugPrint(stacktrace.toString());
       throw CustomException(e.toString());
     }
   }
-
 }

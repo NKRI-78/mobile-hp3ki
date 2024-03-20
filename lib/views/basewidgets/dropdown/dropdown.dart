@@ -65,7 +65,7 @@ class CustomDropdown {
       dropdownSearchDecoration: buildDropdownSearchDecoration(label: label),
       popupProps: PopupProps.dialog(
           showSearchBox: true,
-          showSelectedItems: true,
+          showSelectedItems: false,
           searchFieldProps: TextFieldProps(
               decoration: buildSearchDecoration(searchHint: searchHint)!)),
       onChanged: (value) {
@@ -106,7 +106,7 @@ class CustomDropdown {
       dropdownSearchDecoration: buildDropdownSearchDecoration(label: label),
       popupProps: PopupProps.dialog(
           showSearchBox: true,
-          showSelectedItems: true,
+          showSelectedItems: false,
           searchFieldProps: TextFieldProps(
               decoration: buildSearchDecoration(searchHint: searchHint)!)),
       onChanged: (value) async {
@@ -126,7 +126,7 @@ class CustomDropdown {
       dropdownSearchDecoration: buildDropdownSearchDecoration(label: label),
       popupProps: PopupProps.dialog(
           showSearchBox: true,
-          showSelectedItems: true,
+          showSelectedItems: false,
           searchFieldProps: TextFieldProps(
               decoration: buildSearchDecoration(searchHint: searchHint)!)),
       onChanged: (value) async {
@@ -169,7 +169,7 @@ class CustomDropdown {
       dropdownSearchDecoration: buildDropdownSearchDecoration(label: label),
       popupProps: PopupProps.dialog(
           showSearchBox: true,
-          showSelectedItems: true,
+          showSelectedItems: false,
           searchFieldProps: TextFieldProps(
               decoration: buildSearchDecoration(searchHint: searchHint)!)),
       onChanged: (value) async {
@@ -193,7 +193,7 @@ class CustomDropdown {
       dropdownSearchDecoration: buildDropdownSearchDecoration(label: label),
       popupProps: PopupProps.dialog(
           showSearchBox: true,
-          showSelectedItems: true,
+          showSelectedItems: false,
           searchFieldProps: TextFieldProps(
               decoration: buildSearchDecoration(searchHint: searchHint)!)),
       onChanged: (value) async {
@@ -216,7 +216,7 @@ class CustomDropdown {
       dropdownSearchDecoration: buildDropdownSearchDecoration(label: label),
       popupProps: PopupProps.dialog(
           showSearchBox: true,
-          showSelectedItems: true,
+          showSelectedItems: false,
           searchFieldProps: TextFieldProps(
               decoration: buildSearchDecoration(searchHint: searchHint)!)),
       onChanged: (value) async {
@@ -240,7 +240,7 @@ class CustomDropdown {
       dropdownSearchDecoration: buildDropdownSearchDecoration(label: label),
       popupProps: PopupProps.dialog(
           showSearchBox: true,
-          showSelectedItems: true,
+          showSelectedItems: false,
           searchFieldProps: TextFieldProps(
               decoration: buildSearchDecoration(searchHint: searchHint)!)),
       onChanged: (value) {
