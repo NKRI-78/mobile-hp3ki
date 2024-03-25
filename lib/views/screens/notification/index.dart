@@ -306,7 +306,7 @@ class _NotificationScreenState extends State<NotificationScreen>
                               //     : ColorResources.grey,
                             ),
               child: Text(
-                "Transaction",
+                "Transaksi",
                 style: robotoRegular.copyWith(
                     fontWeight: FontWeight.w600,
                     fontSize: Dimensions.fontSizeDefault,
