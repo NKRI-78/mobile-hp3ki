@@ -66,11 +66,9 @@ class _PostsState extends State<Posts> {
     return InkWell(
       onLongPress: () {},
       onTap: () {
-        NS.push(
-            context,
-            PostDetailScreen(
-              postId: widget.feedData[widget.i].uid!,
-            ));
+        NS.push(context, PostDetailScreen(
+          postId: widget.feedData[widget.i].uid!,
+        ));
       },
       child: Container(
         margin: const EdgeInsets.only(top: Dimensions.marginSizeDefault),
@@ -81,8 +79,7 @@ class _PostsState extends State<Posts> {
             ListTile(
                 dense: true,
                 leading: CachedNetworkImage(
-                  imageUrl: widget.feedData[widget.i].user!.profilePic ??
-                      "https://p7.hiclipart.com/preview/92/319/609/computer-icons-person-clip-art-name.jpg",
+                  imageUrl: widget.feedData[widget.i].user!.profilePic ?? "https://p7.hiclipart.com/preview/92/319/609/computer-icons-person-clip-art-name.jpg",
                   imageBuilder:
                       (BuildContext context, ImageProvider imageProvider) {
                     return CircleAvatar(

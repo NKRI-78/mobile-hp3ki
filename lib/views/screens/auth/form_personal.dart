@@ -66,8 +66,6 @@ class _FormPersonalScreenState extends State<FormPersonalScreen> {
   Future<void> submit() async {
     String name = nameC.text.trim();
     String ktp = ktpC.text.trim();
-    String? ktpPhotoPath = "";
-    String? selfiePhotoPath = "";
     String alamatKTP = alamatKTPC.text.trim();
     String provinsi = provinsiC.text.trim();
     String kecamatan = kecamatanC.text.trim();
@@ -106,18 +104,16 @@ class _FormPersonalScreenState extends State<FormPersonalScreen> {
     }
 
     if (formKey.currentState!.validate()) {
-      selfiePhotoPath = await context
-          .read<MediaProvider>()
-          .uploadPicture(context, selfiePhoto!);
-      ktpPhotoPath =
-          await context.read<MediaProvider>().uploadPicture(context, ktpPhoto!);
+
+      String? ktpPhotoPath = await context.read<MediaProvider>().uploadPicture(context, ktpPhoto!);
+      String? selfiePhotoPath = await context.read<MediaProvider>().uploadPicture(context, selfiePhoto!);
 
       SharedPrefs.writePersonalData(
         fullname: name,
         addressKtp: alamatKTP,
-        picKtp: ktpPhotoPath!,
+        picKtp: ktpPhotoPath.toString(),
         noKtp: ktp,
-        avatar: selfiePhotoPath!,
+        avatar: selfiePhotoPath.toString(),
         provinceId: provinsi,
         province: context.read<RegionDropdownProvider>().currentProvince!,
         cityId: kabupaten,
@@ -128,14 +124,8 @@ class _FormPersonalScreenState extends State<FormPersonalScreen> {
         subdistrict: context.read<RegionDropdownProvider>().currentSubdistrict!,
       );
 
-      if (selfiePhotoPath.isEmpty && ktpPhotoPath.isEmpty ||
-          selfiePhotoPath.isEmpty ||
-          ktpPhotoPath.isEmpty) {
-        ShowSnackbar.snackbar(context, 'Foto Selfie dan KTP terlebih dahulu',
-            "", ColorResources.error);
-      } else {
-        await context.read<ProfileProvider>().setPersonalData(context);
-      }
+      await context.read<ProfileProvider>().setPersonalData(context);
+
     }
   }
 

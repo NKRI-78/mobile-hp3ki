@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+
 import 'package:hp3ki/providers/profile/profile.dart';
+
 import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
 import 'package:hp3ki/localization/language_constraints.dart';
+
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
+
 import 'package:hp3ki/views/basewidgets/textfield/textfield_two.dart';
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
+
 import 'package:provider/provider.dart';
 
 class EditProfileScreen extends StatefulWidget {

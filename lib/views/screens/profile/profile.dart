@@ -84,25 +84,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<String?> uploadPicture(BuildContext context, File file) async {
-    String? path =
-        await context.read<MediaProvider>().uploadPicture(context, file);
+    String? path = await context.read<MediaProvider>().uploadPicture(context, file);
     return path;
   }
 
   Future<void> editPicture() async {
     pfpPath = await uploadPicture(context, file!);
-    debugPrint('pfp: ' + pfpPath!);
-    context
-        .read<ProfileProvider>()
-        .updateProfilePicture(context, pfpPath: pfpPath!);
-    Future.delayed(
-      const Duration(seconds: 1),
-      () {
-        setState(() {
-          file = null;
-        });
-      },
-    );
+ 
+    await context.read<ProfileProvider>().updateProfilePicture(context, pfpPath: pfpPath!);
+    
+    setState(() {
+      file = null;
+    });
   }
 
   Future<void> chooseFile() async {
@@ -139,38 +132,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
         XFile? pickedFile = await ImagePicker().pickImage(
           source: ImageSource.gallery,
         );
+
         File? cropped = await ImageCropper().cropImage(
-            sourcePath: pickedFile!.path,
-            androidUiSettings: AndroidUiSettings(
-                toolbarTitle: getTranslated("CROP_IT", context),
-                toolbarColor: Colors.blueGrey[900],
-                toolbarWidgetColor: ColorResources.white,
-                initAspectRatio: CropAspectRatioPreset.original,
-                lockAspectRatio: false),
-            iosUiSettings: const IOSUiSettings(
-              minimumAspectRatio: 1.0,
-            ));
+          sourcePath: pickedFile!.path,
+          androidUiSettings: AndroidUiSettings(
+            toolbarTitle: getTranslated("CROP_IT", context),
+            toolbarColor: Colors.blueGrey[900],
+            toolbarWidgetColor: ColorResources.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false
+          ),
+          iosUiSettings: const IOSUiSettings(
+            minimumAspectRatio: 1.0,
+          )
+        );
+
         if (cropped != null) {
           setState(() => file = cropped);
         } else {
           setState(() => file = null);
         }
       } else {
+       
         XFile? pickedFile = await ImagePicker().pickImage(
           source: ImageSource.camera,
         );
-        setState(() => file = File(pickedFile!.path));
+
         File? cropped = await ImageCropper().cropImage(
-            sourcePath: pickedFile!.path,
-            androidUiSettings: AndroidUiSettings(
-                toolbarTitle: getTranslated("CROP_IT", context),
-                toolbarColor: Colors.blueGrey[900],
-                toolbarWidgetColor: ColorResources.white,
-                initAspectRatio: CropAspectRatioPreset.original,
-                lockAspectRatio: false),
-            iosUiSettings: const IOSUiSettings(
-              minimumAspectRatio: 1.0,
-            ));
+          sourcePath: pickedFile!.path,
+          androidUiSettings: AndroidUiSettings(
+            toolbarTitle: getTranslated("CROP_IT", context),
+            toolbarColor: Colors.blueGrey[900],
+            toolbarWidgetColor: ColorResources.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false
+          ),
+          iosUiSettings: const IOSUiSettings(
+            minimumAspectRatio: 1.0,
+          )
+        );
+        
         if (cropped != null) {
           setState(() => file = cropped);
         } else {
@@ -594,19 +595,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           child: CustomButton(
                             isLoading: context
-                                        .watch<MediaProvider>()
-                                        .uploadPictureStatus ==
-                                    UploadPictureStatus.loading
-                                ? true
-                                : false,
+                            .watch<MediaProvider>()
+                            .uploadPictureStatus == UploadPictureStatus.loading
+                            ? true
+                            : false,
                             customText: true,
-                            text: Text(
-                              'Ubah Foto Profil',
+                            text: Text('Ubah Foto Profil',
                               style: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeLarge,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1.5,
-                                  color: ColorResources.white),
+                                fontSize: Dimensions.fontSizeLarge,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.5,
+                                color: ColorResources.white
+                              ),
                             ),
                             btnColor: ColorResources.success,
                             isBorderRadius: true,
