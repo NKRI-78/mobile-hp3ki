@@ -830,6 +830,7 @@ class FeedProvider with ChangeNotifier {
     try {
       String forumId = Helper.createUniqueV4Id();
       Response? resPath = await fr.uploadMedia("videos", file!);
+
       String path = resPath!.data["data"]["path"];
 
       Future.wait([
@@ -843,8 +844,9 @@ class FeedProvider with ChangeNotifier {
       });
     } on CustomException catch (e) {
       ShowSnackbar.snackbar(context, '${e.cause}', '', ColorResources.error);
-    } catch (e) {
+    } catch (e, stacktrace) {
       debugPrint(e.toString());
+      debugPrint(stacktrace.toString());
       ShowSnackbar.snackbar(
           context,
           'Terjadi error tidak terduga pada aplikasi.',

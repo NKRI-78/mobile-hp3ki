@@ -19,7 +19,7 @@ class FeedRepo {
   Future<void> deleteComment(String commentId) async {
     try {
       await dioClient!.get(
-          "${AppConstants.baseUrlFeed}/api/v1/forum/comment/delete/$commentId");
+          "${AppConstants.baseUrl}/api/v1/forum/comment/delete/$commentId");
     } on DioError catch (e) {
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw CustomException(errorMessage);
@@ -33,7 +33,7 @@ class FeedRepo {
       String forumId, String commentId, String userId) async {
     try {
       await dioClient!
-          .post("${AppConstants.baseUrlFeed}/api/v1/forum/comment/like", data: {
+          .post("${AppConstants.baseUrl}/api/v1/forum/comment/like", data: {
         "forum_id": forumId,
         "comment_id": commentId,
         "user_id": userId,
@@ -49,8 +49,8 @@ class FeedRepo {
 
   Future<void> deleteReply(String replyId) async {
     try {
-      await dioClient!.get(
-          "${AppConstants.baseUrlFeed}/api/v1/forum/reply/delete/$replyId");
+      await dioClient!
+          .get("${AppConstants.baseUrl}/api/v1/forum/reply/delete/$replyId");
     } on DioError catch (e) {
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw CustomException(errorMessage);
@@ -63,7 +63,7 @@ class FeedRepo {
   Future<void> sendReply(
       String forumId, String commentId, String userId, String reply) async {
     try {
-      await dioClient!.post("${AppConstants.baseUrlFeed}/api/v1/forum/reply",
+      await dioClient!.post("${AppConstants.baseUrl}/api/v1/forum/reply",
           data: {
             "forum_id": forumId,
             "comment_id": commentId,
@@ -81,8 +81,7 @@ class FeedRepo {
 
   Future<void> likeForum(String forumId, String userId) async {
     try {
-      await dioClient!
-          .post("${AppConstants.baseUrlFeed}/api/v1/forum/like", data: {
+      await dioClient!.post("${AppConstants.baseUrl}/api/v1/forum/like", data: {
         "forum_id": forumId,
         "user_id": userId,
       });
@@ -98,7 +97,7 @@ class FeedRepo {
   Future<void> deleteForum(String forumId) async {
     try {
       await dioClient!
-          .get("${AppConstants.baseUrlFeed}/api/v1/forum/delete/$forumId");
+          .get("${AppConstants.baseUrl}/api/v1/forum/delete/$forumId");
     } on DioError catch (e) {
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw CustomException(errorMessage);
@@ -110,8 +109,8 @@ class FeedRepo {
 
   Future<ForumDetail?> fetchForumDetail(String targetId) async {
     try {
-      Response res = await dioClient!.get(
-          "${AppConstants.baseUrlFeed}/api/v1/forum/$targetId?comment_page=1");
+      Response res = await dioClient!
+          .get("${AppConstants.baseUrl}/api/v1/forum/$targetId?comment_page=1");
       ForumDetail data = ForumDetail.fromJson(res.data);
       return data;
     } on DioError catch (e) {
@@ -127,7 +126,7 @@ class FeedRepo {
   Future<ForumDetail?> fetchMoreComment(String targetId, int page) async {
     try {
       Response res = await dioClient!.get(
-          "${AppConstants.baseUrlFeed}/api/v1/forum/$targetId?comment_page=$page");
+          "${AppConstants.baseUrl}/api/v1/forum/$targetId?comment_page=$page");
       ForumDetail data = ForumDetail.fromJson(res.data);
       return data;
     } on DioError catch (e) {
@@ -142,7 +141,7 @@ class FeedRepo {
   Future<FeedModel?> fetchFeedMostRecent(int page) async {
     try {
       Response res = await dioClient!.get(
-          "${AppConstants.baseUrlFeed}/api/v1/forum?search=&page=$page&limit=5&forum_highlight_type=MOST_RECENT");
+          "${AppConstants.baseUrl}/api/v1/forum?search=&page=$page&limit=5&forum_highlight_type=MOST_RECENT");
       FeedModel data = FeedModel.fromJson(res.data);
       return data;
     } on DioError catch (e) {
@@ -157,7 +156,7 @@ class FeedRepo {
   Future<FeedModel?> fetchFeedMostPopular(int page) async {
     try {
       Response res = await dioClient!.get(
-          "${AppConstants.baseUrlFeed}/api/v1/forum?search=&page=$page&limit=5&forum_highlight_type=MOST_POPULAR");
+          "${AppConstants.baseUrl}/api/v1/forum?search=&page=$page&limit=5&forum_highlight_type=MOST_POPULAR");
       FeedModel data = FeedModel.fromJson(res.data);
       return data;
     } on DioError catch (e) {
@@ -172,7 +171,7 @@ class FeedRepo {
   Future<FeedModel?> fetchFeedSelf(int page, String userId) async {
     try {
       Response res = await dioClient!.get(
-          "${AppConstants.baseUrlFeed}/api/v1/forum?search=&page=$page&limit=5&forum_highlight_type=SELF");
+          "${AppConstants.baseUrl}/api/v1/forum?search=&page=$page&limit=5&forum_highlight_type=SELF");
       FeedModel data = FeedModel.fromJson(res.data);
       return data;
     } on DioError catch (e) {
@@ -195,7 +194,7 @@ class FeedRepo {
         ),
       });
       Response res = await dioClient!.post(
-        "${AppConstants.baseUrlFeed}/api/v1/media",
+        "${AppConstants.baseUrl}/api/v1/media",
         data: formData,
       );
       return res;
@@ -220,7 +219,7 @@ class FeedRepo {
         ),
       });
       Response res = await dioClient!.post(
-        "${AppConstants.baseUrlFeed}/api/v1/media",
+        "${AppConstants.baseUrl}/api/v1/media",
         data: formData,
       );
       return res;
@@ -236,7 +235,7 @@ class FeedRepo {
   Future<void> createForumMedia(String forumId, String path) async {
     try {
       await dioClient!
-          .post("${AppConstants.baseUrlFeed}/api/v1/forum/media", data: {
+          .post("${AppConstants.baseUrl}/api/v1/forum/media", data: {
         "forum_id": forumId,
         "path": path,
       });
@@ -252,8 +251,8 @@ class FeedRepo {
   Future<Response?> sendPostText(
       String text, String userId, String forumId) async {
     try {
-      Response res = await dioClient!
-          .post("${AppConstants.baseUrlFeed}/api/v1/forum", data: {
+      Response res =
+          await dioClient!.post("${AppConstants.baseUrl}/api/v1/forum", data: {
         "forum_id": forumId,
         "caption": text,
         "forum_type": "text",
@@ -281,7 +280,7 @@ class FeedRepo {
       };
 
       await dioClient!
-          .post("${AppConstants.baseUrlFeed}/api/v1/forum", data: postsData);
+          .post("${AppConstants.baseUrl}/api/v1/forum", data: postsData);
     } on DioError catch (e) {
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw CustomException(errorMessage);
@@ -303,7 +302,7 @@ class FeedRepo {
       };
 
       await dioClient!
-          .post("${AppConstants.baseUrlFeed}/api/v1/forum", data: postsData);
+          .post("${AppConstants.baseUrl}/api/v1/forum", data: postsData);
     } on DioError catch (e) {
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw CustomException(errorMessage);
@@ -324,7 +323,7 @@ class FeedRepo {
         "user_id": userId,
       };
       await dioClient!
-          .post("${AppConstants.baseUrlFeed}/api/v1/forum", data: postsData);
+          .post("${AppConstants.baseUrl}/api/v1/forum", data: postsData);
     } on DioError catch (e) {
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw CustomException(errorMessage);
@@ -346,7 +345,7 @@ class FeedRepo {
       };
 
       await dioClient!
-          .post("${AppConstants.baseUrlFeed}/api/v1/forum", data: postsData);
+          .post("${AppConstants.baseUrl}/api/v1/forum", data: postsData);
     } on DioError catch (e) {
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw CustomException(errorMessage);
@@ -368,7 +367,7 @@ class FeedRepo {
       };
 
       await dioClient!
-          .post("${AppConstants.baseUrlFeed}/api/v1/forum", data: postsData);
+          .post("${AppConstants.baseUrl}/api/v1/forum", data: postsData);
     } on DioError catch (e) {
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw CustomException(errorMessage);
@@ -381,7 +380,7 @@ class FeedRepo {
   Future<void> sendComment(
       String content, String targetId, String userId) async {
     try {
-      await dioClient!.post("${AppConstants.baseUrlFeed}/api/v1/forum/comment",
+      await dioClient!.post("${AppConstants.baseUrl}/api/v1/forum/comment",
           data: {"forum_id": targetId, "user_id": userId, "comment": content});
     } on DioError catch (e) {
       final errorMessage = DioExceptions.fromDioError(e).toString();

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -194,17 +195,36 @@ class ShopView extends StatelessWidget {
             height: 160,
             width: double.infinity,
             clipBehavior: Clip.antiAlias,
-            child: product.picture == '-'
-                ? const Center(
-                    child: Icon(
-                      Icons.image,
-                      size: 80,
-                    ),
-                  )
-                : Image.network(
-                    product.picture,
-                    fit: BoxFit.cover,
+            child: CachedNetworkImage(
+              imageUrl: product.picture,
+              errorWidget: (context, url, error) {
+                return Container(
+                  height: 160.0,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(image: AssetImage('assets/images/logo/logo.png'))
                   ),
+                );
+              },
+              placeholder: (context, url) {
+                return Container(
+                  height: 160.0,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(image: AssetImage('assets/images/logo/logo.png'))
+                  ),
+                );
+              },
+            )
+            //  product.picture == '-'
+            //     ? const Center(
+            //         child: Icon(
+            //           Icons.image,
+            //           size: 80,
+            //         ),
+            //       )
+            //     : Image.network(
+            //         product.picture,
+            //         fit: BoxFit.cover,
+            //       ),
           ),
           const SizedBox(
             height: 4,

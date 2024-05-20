@@ -907,7 +907,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: ListTile(
                             horizontalTitleGap: 0.0,
                             leading: CircleAvatar(
-                              backgroundColor: ColorResources.white,
+                              backgroundColor: Colors.transparent,
                               radius: 40.0,
                               child: Consumer<ProfileProvider>(
                                 builder: (BuildContext context,
@@ -937,7 +937,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     imageBuilder: (BuildContext context,
                                         ImageProvider<Object> imageProvider) {
                                       return CircleAvatar(
-                                        backgroundColor: ColorResources.white,
+                                        backgroundColor: Colors.transparent,
                                         backgroundImage: imageProvider,
                                         maxRadius: 40.0,
                                       );
@@ -946,7 +946,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         String url, dynamic error) {
                                       return CircleAvatar(
                                           backgroundColor:
-                                              ColorResources.greyDarkPrimary,
+                                              Colors.transparent,
                                           maxRadius: 40.0,
                                           child: Image.asset(
                                             "assets/images/icons/ic-person.png",
@@ -1376,29 +1376,42 @@ class _HomeScreenState extends State<HomeScreen> {
                             borderRadius: BorderRadius.circular(30.0),
                             child: CachedNetworkImage(
                               imageUrl: newsProvider.news![i].image!,
-                              imageBuilder: (BuildContext context,
-                                  ImageProvider imageProvider) {
+                              imageBuilder: (BuildContext context, ImageProvider imageProvider) {
                                 return Container(
                                   width: 250.0,
                                   height: 140.0,
                                   decoration: BoxDecoration(
-                                      color: ColorResources.white,
-                                      image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.fill,
-                                      )),
-                                );
-                              },
-                              placeholder:
-                                  (BuildContext context, String value) {
-                                return Container(
-                                  width: 250.0,
-                                  height: 140.0,
-                                  decoration: BoxDecoration(
-                                    color: ColorResources.backgroundDisabled,
-                                    borderRadius: BorderRadius.circular(30.0),
+                                    color: ColorResources.white,
+                                    image: DecorationImage(
+                                      image: imageProvider,
+                                      fit: BoxFit.fill,
+                                    )
                                   ),
                                 );
+                              },
+                              placeholder: (BuildContext context, String value) {
+                                return Container(
+                                  width: 250.0,
+                                  height: 140.0,
+                                  decoration: const BoxDecoration(
+                                    image: DecorationImage(
+                                      fit: BoxFit.fill,
+                                      image: AssetImage("assets/images/logo/logo.png")
+                                    )
+                                  ),
+                                ); 
+                              },
+                              errorWidget: (BuildContext context, String value, dynamic _) {
+                                return Container(
+                                  width: 250.0,
+                                  height: 140.0,
+                                  decoration: const BoxDecoration(
+                                    image: DecorationImage(
+                                      fit: BoxFit.fill,
+                                      image: AssetImage("assets/images/logo/logo.png")
+                                    )
+                                  ),
+                                );  
                               },
                             ),
                           ),
@@ -1583,7 +1596,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                       child: CachedNetworkImage(
                                         fit: BoxFit.cover,
-                                        // imageUrl: storeProvider.elektronikProducts![index].medias!.images!.first.path!,
                                         imageUrl: product.picture == '-'
                                             ? AppConstants.avatarError
                                             : product.picture,
@@ -1599,16 +1611,25 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     fit: BoxFit.cover)),
                                           );
                                         },
+                                        errorWidget: (BuildContext context, String value, dynamic _) {
+                                          return Container(
+                                            height: 165.0,
+                                            decoration: const BoxDecoration(
+                                              image: DecorationImage(
+                                                image: AssetImage("assets/images/logo/logo.png")
+                                              )
+                                            ),
+                                          );  
+                                        },
                                         placeholder: (context, url) {
                                           return Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(15.0),
-                                              color: ColorResources
-                                                  .backgroundDisabled,
-                                            ),
                                             height: 165.0,
-                                          );
+                                            decoration: const BoxDecoration(
+                                              image: DecorationImage(
+                                                image: AssetImage("assets/images/logo/logo.png")
+                                              )
+                                            ),
+                                          );  
                                         },
                                       ),
                                     ),

@@ -244,13 +244,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   SliverPadding buildUserKTA() {
-    final height = MediaQuery.sizeOf(context).height;
-    final isSmall = height < 1000 ? true : false;
+
     return SliverPadding(
       padding: const EdgeInsets.only(top: 30),
       sliver: SliverToBoxAdapter(
         child: Column(
           children: [
+            
             RepaintBoundary(
               key: ktaImageKey,
               child: Column(
@@ -270,8 +270,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           image: DecorationImage(
                             fit: BoxFit.fitWidth,
                             image: AssetImage(isPlatinum
-                                ? "assets/images/profile/kta-premium.png"
-                                : "assets/images/profile/kta-free.png"),
+                            ? "assets/images/profile/kta-premium.png"
+                            : "assets/images/profile/kta-free.png"),
                           ),
                         ),
                         padding:
@@ -279,15 +279,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Image.network(
-                              context
-                                      .read<ProfileProvider>()
-                                      .user
-                                      ?.organizationPath ??
-                                  AppConstants.avatarError,
-                              width: 30,
-                              height: 30,
-                            ),
                             const SizedBox(
                               width: 8,
                             ),
@@ -344,104 +335,104 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ],
                         ),
                       ),
-                      Positioned(
-                        top: isSmall ? 100 : 127,
-                        left: 50,
-                        child: file != null
-                            ? InkWell(
-                                onTap: chooseFile,
-                                child: Container(
-                                  height: 130.0,
-                                  width: 120.0,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15.0),
-                                    image: DecorationImage(
-                                      image: FileImage(file!),
-                                      fit: BoxFit.fill,
-                                    ),
-                                  ),
-                                ),
-                              )
-                            : InkWell(
-                                onTap: chooseFile,
-                                child: CachedNetworkImage(
-                                  fit: BoxFit.fill,
-                                  imageUrl: context
-                                          .read<ProfileProvider>()
-                                          .user
-                                          ?.avatar ??
-                                      AppConstants.avatarError,
-                                  imageBuilder: (BuildContext context,
-                                      ImageProvider<Object> imageProvider) {
-                                    return Container(
-                                      height: 130.0,
-                                      width: 120.0,
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(15.0),
-                                        image: DecorationImage(
-                                          image: imageProvider,
-                                          fit: BoxFit.fill,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  errorWidget: (BuildContext context,
-                                      String url, dynamic error) {
-                                    return Container(
-                                      height: 130.0,
-                                      width: 120.0,
-                                      decoration: BoxDecoration(
-                                        color: ColorResources.greyDarkPrimary,
-                                        borderRadius:
-                                            BorderRadius.circular(15.0),
-                                        image: const DecorationImage(
-                                          image: AssetImage(
-                                              'assets/images/icons/ic-person.png'),
-                                          fit: BoxFit.fill,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                      ),
                       // Positioned(
-                      //   bottom: 75,
-                      //   left: 140,
-                      //   child: Container(
-                      //     alignment: Alignment.center,
-                      //     decoration: BoxDecoration(
-                      //         borderRadius: BorderRadius.circular(50.0),
-                      //         color: file != null
-                      //             ? ColorResources.error
-                      //             : ColorResources.primary),
-                      //     child: InkWell(
-                      //       onTap: file != null
-                      //           ? () {
-                      //               setState(() {
-                      //                 file = null;
-                      //               });
-                      //             }
-                      //           : chooseFile,
-                      //       child: Padding(
-                      //         padding: const EdgeInsets.all(
-                      //             Dimensions.paddingSizeExtraSmall),
-                      //         child: file != null
-                      //             ? const Icon(
-                      //                 Icons.close,
-                      //                 color: ColorResources.white,
-                      //                 size: Dimensions.iconSizeDefault,
-                      //               )
-                      //             : const Icon(
-                      //                 Icons.camera_alt,
-                      //                 color: ColorResources.white,
-                      //                 size: Dimensions.iconSizeDefault,
+                      //   top: isSmall ? 100 : 127,
+                      //   left: 50,
+                      //   child: file != null
+                      //       ? InkWell(
+                      //           onTap: chooseFile,
+                      //           child: Container(
+                      //             height: 130.0,
+                      //             width: 120.0,
+                      //             decoration: BoxDecoration(
+                      //               borderRadius: BorderRadius.circular(15.0),
+                      //               image: DecorationImage(
+                      //                 image: FileImage(file!),
+                      //                 fit: BoxFit.fill,
                       //               ),
-                      //       ),
-                      //     ),
-                      //   ),
+                      //             ),
+                      //           ),
+                      //         )
+                      //       : InkWell(
+                      //           onTap: chooseFile,
+                      //           child: CachedNetworkImage(
+                      //             fit: BoxFit.fill,
+                      //             imageUrl: context
+                      //                     .read<ProfileProvider>()
+                      //                     .user
+                      //                     ?.avatar ??
+                      //                 AppConstants.avatarError,
+                      //             imageBuilder: (BuildContext context,
+                      //                 ImageProvider<Object> imageProvider) {
+                      //               return Container(
+                      //                 height: 130.0,
+                      //                 width: 120.0,
+                      //                 decoration: BoxDecoration(
+                      //                   borderRadius:
+                      //                       BorderRadius.circular(15.0),
+                      //                   image: DecorationImage(
+                      //                     image: imageProvider,
+                      //                     fit: BoxFit.fill,
+                      //                   ),
+                      //                 ),
+                      //               );
+                      //             },
+                      //             errorWidget: (BuildContext context,
+                      //                 String url, dynamic error) {
+                      //               return Container(
+                      //                 height: 130.0,
+                      //                 width: 120.0,
+                      //                 decoration: BoxDecoration(
+                      //                   color: ColorResources.greyDarkPrimary,
+                      //                   borderRadius:
+                      //                       BorderRadius.circular(15.0),
+                      //                   image: const DecorationImage(
+                      //                     image: AssetImage(
+                      //                         'assets/images/icons/ic-person.png'),
+                      //                     fit: BoxFit.fill,
+                      //                   ),
+                      //                 ),
+                      //               );
+                      //             },
+                      //           ),
+                      //         ),
                       // ),
+                      Positioned(
+                        bottom: 75,
+                        left: 140,
+                        child: Container(
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50.0),
+                              color: file != null
+                                  ? ColorResources.error
+                                  : ColorResources.primary),
+                          child: InkWell(
+                            onTap: file != null
+                                ? () {
+                                    setState(() {
+                                      file = null;
+                                    });
+                                  }
+                                : chooseFile,
+                            child: Padding(
+                              padding: const EdgeInsets.all(
+                                  Dimensions.paddingSizeExtraSmall),
+                              child: file != null
+                                  ? const Icon(
+                                      Icons.close,
+                                      color: ColorResources.white,
+                                      size: Dimensions.iconSizeDefault,
+                                    )
+                                  : const Icon(
+                                      Icons.camera_alt,
+                                      color: ColorResources.white,
+                                      size: Dimensions.iconSizeDefault,
+                                    ),
+                            ),
+                          ),
+                        ),
+                      ),
                       Positioned(
                         top: 155,
                         left: 190,
@@ -575,12 +566,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       //   ),
                       // ),
                       Positioned(
-                        top: height * 0.25,
+                        bottom: 30,
                         right: 40,
                         child: QrImageView(
-                          data:
-                              context.read<ProfileProvider>().user?.noMember ??
-                                  "-",
+                          data:context.read<ProfileProvider>().user?.noMember ?? "-",
                           size: 60.0,
                         ),
                       )
@@ -627,13 +616,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   InkWell(
                     onTap: () async {
-                      final RenderRepaintBoundary boundary =
-                          ktaImageKey.currentContext!.findRenderObject()
-                              as RenderRepaintBoundary;
-                      final ui.Image image =
-                          await boundary.toImage(pixelRatio: 10);
-                      ByteData? byteData = await image.toByteData(
-                          format: ui.ImageByteFormat.png);
+                      final RenderRepaintBoundary boundary = ktaImageKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+                      final ui.Image image = await boundary.toImage(pixelRatio: 10);
+                      ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
                       var pngBytes = byteData!.buffer.asUint8List();
                       // var bs64 = base64Encode(pngBytes);
 
@@ -642,11 +627,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       await file.writeAsBytes(
                         pngBytes,
                       );
-                      final params =
-                          SaveFileDialogParams(sourceFilePath: file.path);
-                      final finalPath =
-                          await FlutterFileDialog.saveFile(params: params);
-
+                      final params = SaveFileDialogParams(sourceFilePath: file.path);
+                      final finalPath = await FlutterFileDialog.saveFile(params: params);
                       debugPrint(finalPath ?? 'Cannot save');
                     },
                     child: Container(
@@ -1110,21 +1092,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: ListTile(
                   horizontalTitleGap: 0.0,
                   leading: CircleAvatar(
-                    backgroundColor: ColorResources.white,
+                    backgroundColor: Colors.transparent,
                     radius: 40.0,
                     child: Consumer<ProfileProvider>(
                       builder: (BuildContext context,
                           ProfileProvider profileProvider, Widget? child) {
                         if (profileProvider.profileStatus ==
                             ProfileStatus.error) {
-                          return CircleAvatar(
-                            backgroundColor: ColorResources.greyDarkPrimary,
-                            radius: 40.0,
-                            child: SizedBox.shrink(
-                                child: Image.asset(
-                              'assets/images/icons/ic-person.png',
-                              fit: BoxFit.fill,
-                            )),
+                          return Image.asset(
+                           "assets/images/icons/ic-person.png",
                           );
                         }
                         return CachedNetworkImage(
@@ -1134,20 +1110,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   AppConstants.avatarError,
                           imageBuilder: (BuildContext context,
                               ImageProvider<Object> imageProvider) {
-                            return CircleAvatar(
-                              backgroundColor: ColorResources.white,
-                              backgroundImage: imageProvider,
-                              maxRadius: 40.0,
+                            return Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(image: imageProvider)
+                              ),
                             );
                           },
                           errorWidget: (BuildContext context, String url,
                               dynamic error) {
-                            return CircleAvatar(
-                                backgroundColor: ColorResources.greyDarkPrimary,
-                                maxRadius: 40.0,
-                                child: Image.asset(
-                                  "assets/images/icons/ic-person.png",
-                                ));
+                            return Image.asset(
+                              "assets/images/icons/ic-person.png",
+                            );
                           },
                         );
                       },

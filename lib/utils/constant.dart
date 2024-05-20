@@ -3,7 +3,7 @@ import 'package:timeago/timeago.dart';
 import 'package:hp3ki/data/models/language/language.dart';
 
 class AppConstants {
-  static const String baseUrl = 'https://api-hp3ki.inovatif78.com';
+  static const String baseUrl = 'https://api-hp3ki.inovatiftujuh8.com';
   //static const String baseUrl = 'http://192.168.1.5:3007';
   static const String baseUrlDisbursementDenom =
       'https://pg-$switchTo.connexist.id/disbursement/pub/v1/disbursement/denom';
@@ -17,7 +17,6 @@ class AppConstants {
       'https://pg-$switchTo.connexist.id/disbursement/api/v1';
   static const String baseUrlImg = 'http://feedapi.connexist.id/d/f';
   static const String baseUrlChat = 'https://feedapi.connexist.id/api/v1/chat';
-  static const String baseUrlFeed = baseUrl;
   static const String baseUrlFeedMedia =
       'https://api-media-general.inovasi78.com/media-service/v1/upload';
   static const String baseUrlFeedImg = 'https://feedapi.connexist.id:7443/d/f';
@@ -47,7 +46,7 @@ class AppConstants {
 
   static const String switchTo = 'prod';
   static const String switchToBaseUrl = "https://smsapi.connexist.com:8443";
-  static const String switchToBaseUrlFeed = "https://api-hp3ki.inovatif78.com";
+  static const String switchToBaseUrlFeed = "https://api-hp3ki.inovatiftujuh8.com";
   static const String switchToChatBaseUrl = "https://feedapi.connexist.id:5091";
   static const String xContextId = '898106017820';
   static const String mobileUa =
