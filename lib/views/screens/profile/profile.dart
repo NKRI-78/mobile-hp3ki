@@ -335,68 +335,62 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ],
                         ),
                       ),
-                      // Positioned(
-                      //   top: isSmall ? 100 : 127,
-                      //   left: 50,
-                      //   child: file != null
-                      //       ? InkWell(
-                      //           onTap: chooseFile,
-                      //           child: Container(
-                      //             height: 130.0,
-                      //             width: 120.0,
-                      //             decoration: BoxDecoration(
-                      //               borderRadius: BorderRadius.circular(15.0),
-                      //               image: DecorationImage(
-                      //                 image: FileImage(file!),
-                      //                 fit: BoxFit.fill,
-                      //               ),
-                      //             ),
-                      //           ),
-                      //         )
-                      //       : InkWell(
-                      //           onTap: chooseFile,
-                      //           child: CachedNetworkImage(
-                      //             fit: BoxFit.fill,
-                      //             imageUrl: context
-                      //                     .read<ProfileProvider>()
-                      //                     .user
-                      //                     ?.avatar ??
-                      //                 AppConstants.avatarError,
-                      //             imageBuilder: (BuildContext context,
-                      //                 ImageProvider<Object> imageProvider) {
-                      //               return Container(
-                      //                 height: 130.0,
-                      //                 width: 120.0,
-                      //                 decoration: BoxDecoration(
-                      //                   borderRadius:
-                      //                       BorderRadius.circular(15.0),
-                      //                   image: DecorationImage(
-                      //                     image: imageProvider,
-                      //                     fit: BoxFit.fill,
-                      //                   ),
-                      //                 ),
-                      //               );
-                      //             },
-                      //             errorWidget: (BuildContext context,
-                      //                 String url, dynamic error) {
-                      //               return Container(
-                      //                 height: 130.0,
-                      //                 width: 120.0,
-                      //                 decoration: BoxDecoration(
-                      //                   color: ColorResources.greyDarkPrimary,
-                      //                   borderRadius:
-                      //                       BorderRadius.circular(15.0),
-                      //                   image: const DecorationImage(
-                      //                     image: AssetImage(
-                      //                         'assets/images/icons/ic-person.png'),
-                      //                     fit: BoxFit.fill,
-                      //                   ),
-                      //                 ),
-                      //               );
-                      //             },
-                      //           ),
-                      //         ),
-                      // ),
+                      Positioned(
+                        top: 125.0,
+                        left: 52.0,
+                        child: file != null
+                            ? InkWell(
+                                onTap: chooseFile,
+                                child: Container(
+                                  height: 130.0,
+                                  width: 100.0,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                    image: DecorationImage(
+                                      image: FileImage(file!),
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : InkWell(
+                                onTap: chooseFile,
+                                child: CachedNetworkImage(
+                                  fit: BoxFit.fill,
+                                  imageUrl: context.read<ProfileProvider>().user?.avatar ??  AppConstants.avatarError,
+                                  imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
+                                    return Container(
+                                      height: 130.0,
+                                      width: 120.0,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15.0),
+                                        image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.fill,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  errorWidget: (BuildContext context,
+                                      String url, dynamic error) {
+                                    return Container(
+                                      height: 130.0,
+                                      width: 120.0,
+                                      decoration: BoxDecoration(
+                                        color: ColorResources.greyDarkPrimary,
+                                        borderRadius:
+                                            BorderRadius.circular(15.0),
+                                        image: const DecorationImage(
+                                          image: AssetImage(
+                                              'assets/images/icons/ic-person.png'),
+                                          fit: BoxFit.fill,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                      ),
                       Positioned(
                         bottom: 75,
                         left: 140,

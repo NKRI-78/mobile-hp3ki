@@ -1112,45 +1112,68 @@ class _HomeScreenState extends State<HomeScreen> {
                       currentIndex = i;
                       setState(() {});
                     }),
-                itemCount: bannerProvider.banners!.length,
-                itemBuilder: (BuildContext context, int i, int z) {
-                  return CachedNetworkImage(
-                    imageUrl: bannerProvider.banners![i].path!,
-                    imageBuilder:
-                        (BuildContext context, ImageProvider imageProvider) {
-                      return Card(
-                        margin: EdgeInsets.zero,
-                        color: ColorResources.transparent,
-                        elevation: 10.0,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0)),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15.0),
-                            image: DecorationImage(
-                                fit: BoxFit.fill, image: imageProvider),
-                          ),
-                        ),
-                      );
-                    },
-                    placeholder: (BuildContext context, String text) {
-                      return Shimmer.fromColors(
-                        baseColor: Colors.grey[300]!,
-                        highlightColor: Colors.grey[200]!,
-                        child: Card(
+                    itemCount: bannerProvider.banners!.length,
+                    itemBuilder: (BuildContext context, int i, int z) {
+                    return CachedNetworkImage(
+                      imageUrl: bannerProvider.banners![i].path!,
+                      imageBuilder: (BuildContext context, ImageProvider imageProvider) {
+                        return Card(
                           margin: EdgeInsets.zero,
-                          color: ColorResources.white,
-                          elevation: 4.0,
+                          color: ColorResources.transparent,
+                          elevation: 10.0,
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0)),
+                            borderRadius: BorderRadius.circular(15.0)
+                          ),
                           child: Container(
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15.0),
-                                color: ColorResources.white),
+                              borderRadius: BorderRadius.circular(15.0),
+                              image: DecorationImage(
+                                fit: BoxFit.fill, 
+                                image: imageProvider
+                              ),
+                            ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                      placeholder: (BuildContext context, String text) {
+                        return Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[200]!,
+                          child: Card(
+                            margin: EdgeInsets.zero,
+                            color: ColorResources.white,
+                            elevation: 4.0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0)
+                            ),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15.0),
+                                color: ColorResources.white
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      errorWidget: (context, url, error) {
+                         return Card(
+                          margin: EdgeInsets.zero,
+                          color: ColorResources.transparent,
+                          elevation: 10.0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0)
+                          ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15.0),
+                              image: DecorationImage(
+                                fit: BoxFit.fill, 
+                                image: AssetImage('assets/images/logo/app-icon.png')
+                              ),
+                            ),
+                          ),
+                        );  
+                      },
                   );
                 },
               ),
