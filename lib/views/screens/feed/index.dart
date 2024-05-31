@@ -62,7 +62,7 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
   }
   
   recentFeedControllerListener() {
-    if(recentFeedC.position.pixels == recentFeedC.position.maxScrollExtent && !recentFeedC.position.outOfRange){
+    if(recentFeedC.position.pixels >= recentFeedC.position.maxScrollExtent){
       context.read<FeedProvider>().loadPageRecent = true;
       context.read<FeedProvider>().fetchFeedMostRecentLoad(context);
       context.read<FeedProvider>().stopLoadPageRecent();
@@ -70,7 +70,7 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
   }
     
   popularFeedControllerListener() {
-    if(popularFeedC.position.pixels == popularFeedC.position.maxScrollExtent && !popularFeedC.position.outOfRange){
+    if(popularFeedC.position.pixels >= popularFeedC.position.maxScrollExtent){
       context.read<FeedProvider>().loadPagePopular = true;
       context.read<FeedProvider>().fetchFeedMostPopularLoad(context);
       context.read<FeedProvider>().stopLoadPagePopular();
@@ -78,7 +78,7 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
   }
     
   selfFeedControllerListener() {
-    if(selfFeedC.position.pixels == selfFeedC.position.maxScrollExtent && !selfFeedC.position.outOfRange){
+    if(selfFeedC.position.pixels >= selfFeedC.position.maxScrollExtent){
       context.read<FeedProvider>().loadPageSelf = true;
       context.read<FeedProvider>().fetchFeedSelfLoad(context);
       context.read<FeedProvider>().stopLoadPageSelf();
@@ -382,7 +382,9 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                 );
               },
               physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: feedProvider.loadPageRecent == true ? feedProvider.g1List.length + 1 : feedProvider.g1List.length,
+              itemCount: feedProvider.loadPageRecent == true 
+              ? feedProvider.g1List.length + 1 
+              : feedProvider.g1List.length,
               itemBuilder: (BuildContext content, int i) {
               if (feedProvider.g1List.length == i) {
                 return const Center(
