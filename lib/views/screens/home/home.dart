@@ -407,6 +407,9 @@ class _DashboardScreenState extends State<DashboardScreen>
                     onPress: () {
                       final String membershipStatus =
                           SharedPrefs.getUserMemberType().trim();
+
+                      debugPrint(membershipStatus.toString()); 
+
                       final selectedMenu = menu[index];
                       final String selectedMenuName = selectedMenu["name"];
                       final selectedMenuScreen = selectedMenu["screen"];
