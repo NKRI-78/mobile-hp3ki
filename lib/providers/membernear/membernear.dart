@@ -59,10 +59,7 @@ class MembernearProvider with ChangeNotifier {
           onTap: () {
             buildResponseModalBottomSheet(context, membernear);
           },
-          icon: await MarkerIcon.downloadResizePictureCircle(
-            membernear.user!.avatar! == "" || membernear.user?.avatar == null
-            ? "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png"
-            : membernear.user!.avatar!,
+          icon: await MarkerIcon.downloadResizePictureCircle("https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png",
             size: 100,
             addBorder: true,
             borderColor: ColorResources.success,
@@ -148,11 +145,9 @@ class MembernearProvider with ChangeNotifier {
                 alignment: Alignment.topCenter,
                 child: Column(
                   children: [
-                    CircleAvatar(
+                    const CircleAvatar(
                       maxRadius: 50.0,
-                      backgroundImage: NetworkImage(membernear.user?.avatar == "" || membernear.user?.avatar == null 
-                        ? "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png"
-                        : membernear.user!.avatar!,
+                      backgroundImage: NetworkImage("https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png"
                       ),
                     ),
                     const SizedBox(height: 10.0),

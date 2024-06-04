@@ -145,7 +145,42 @@ class _MediaScreenState extends State<MediaScreen> {
                 ),
               )
             ),
-          )
+          ),
+
+          Container(
+            width: double.infinity,
+            margin: const EdgeInsets.only(
+              top: 20.0,
+              left: 40.0,
+              right: 40.0
+            ),
+            child: Card(
+              color: Colors.white,
+              surfaceTintColor: Colors.white,
+              child: InkWell(
+                onTap: () async {
+                  await launchUrl(Uri.parse('https://www.youtube.com/@hp3kichannel'));
+                },
+                child: const Padding(
+                  padding: EdgeInsets.all(12.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                              
+                      Text("Youtube",
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
+                              
+                    ],
+                  ),
+                ),
+              )
+            ),
+          ),
           
         ],
       )
