@@ -3,22 +3,38 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
+import 'package:hp3ki/localization/language_constraints.dart';
+
+import 'package:hp3ki/views/basewidgets/button/bounce.dart';
+import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
+
+import 'package:hp3ki/utils/dio.dart';
+import 'package:hp3ki/utils/modal.dart';
+import 'package:hp3ki/utils/shared_preferences.dart';
+import 'package:hp3ki/utils/constant.dart';
+import 'package:hp3ki/utils/extension.dart';
+import 'package:hp3ki/utils/box_shadow.dart';
+import 'package:hp3ki/utils/color_resources.dart';
+import 'package:hp3ki/utils/custom_themes.dart';
+import 'package:hp3ki/utils/dimensions.dart';
+import 'package:hp3ki/utils/helper.dart';
+
 import 'package:hp3ki/data/models/user/user.dart';
+
 import 'package:hp3ki/providers/banner/banner.dart';
 import 'package:hp3ki/providers/inbox/inbox.dart';
 import 'package:hp3ki/providers/location/location.dart';
 import 'package:hp3ki/providers/news/news.dart';
 import 'package:hp3ki/providers/ppob/ppob.dart';
 import 'package:hp3ki/providers/profile/profile.dart';
-import 'package:hp3ki/utils/dio.dart';
-import 'package:hp3ki/utils/modal.dart';
-import 'package:hp3ki/utils/shared_preferences.dart';
-import 'package:hp3ki/views/basewidgets/button/bounce.dart';
+import 'package:hp3ki/providers/firebase/firebase.dart';
+
+import 'package:hp3ki/services/navigation.dart';
+
 import 'package:hp3ki/views/screens/about/about_menu.dart';
 import 'package:hp3ki/views/screens/auth/sign_in.dart';
 import 'package:hp3ki/views/screens/calender/calender.dart';
 import 'package:hp3ki/views/screens/checkin/checkin.dart';
-// import 'package:hp3ki/views/screens/comingsoon/comingsoon.dart';
 import 'package:hp3ki/views/screens/feed/index.dart';
 import 'package:hp3ki/views/screens/media/media.dart';
 import 'package:hp3ki/views/screens/membernear/membernear.dart';
@@ -30,10 +46,11 @@ import 'package:hp3ki/views/screens/profile/profile.dart';
 import 'package:hp3ki/views/screens/shop/data/models/shop.dart';
 import 'package:hp3ki/views/screens/shop_detail/persentation/pages/shop_detail_page.dart';
 import 'package:hp3ki/views/screens/sos/indexv2.dart';
+import 'package:hp3ki/views/screens/news/index.dart';
+
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
-import 'package:hp3ki/utils/helper.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_glow/flutter_glow.dart';
@@ -41,17 +58,6 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:badges/badges.dart' as b;
-import 'package:hp3ki/providers/firebase/firebase.dart';
-import 'package:hp3ki/localization/language_constraints.dart';
-import 'package:hp3ki/services/navigation.dart';
-import 'package:hp3ki/utils/constant.dart';
-import 'package:hp3ki/utils/extension.dart';
-import 'package:hp3ki/utils/box_shadow.dart';
-import 'package:hp3ki/utils/color_resources.dart';
-import 'package:hp3ki/utils/custom_themes.dart';
-import 'package:hp3ki/utils/dimensions.dart';
-import 'package:hp3ki/views/screens/news/index.dart';
-import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
 
 class DashboardScreen extends StatefulWidget {
   final int? index;
@@ -59,11 +65,10 @@ class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key, this.index}) : super(key: key);
 
   @override
-  _DashboardScreenState createState() => _DashboardScreenState();
+  DashboardScreenState createState() => DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen>
-    with SingleTickerProviderStateMixin {
+class DashboardScreenState extends State<DashboardScreen> with SingleTickerProviderStateMixin {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   late PanelController panelC;
@@ -1167,7 +1172,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15.0),
-                              image: DecorationImage(
+                              image: const DecorationImage(
                                 fit: BoxFit.fill, 
                                 image: AssetImage('assets/images/logo/app-icon.png')
                               ),
