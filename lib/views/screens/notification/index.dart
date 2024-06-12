@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hp3ki/data/models/inbox/inbox.dart';
-import 'package:hp3ki/data/models/inbox/inbox_payment.dart';
-import 'package:hp3ki/utils/extension.dart';
-import 'package:hp3ki/utils/helper.dart';
-import 'package:hp3ki/views/screens/notification/transaction_notif_list.dart';
 import 'package:provider/provider.dart';
 import 'package:badges/badges.dart' as b;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:hp3ki/localization/language_constraints.dart';
 
+import 'package:hp3ki/views/screens/notification/transaction_notif_list.dart';
+
 import 'package:hp3ki/providers/inbox/inbox.dart';
 
+import 'package:hp3ki/data/models/inbox/inbox.dart';
+import 'package:hp3ki/data/models/inbox/inbox_payment.dart';
+
+import 'package:hp3ki/utils/extension.dart';
+import 'package:hp3ki/utils/helper.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
@@ -322,7 +324,7 @@ class _NotificationScreenState extends State<NotificationScreen>
       context.read<InboxProvider>().resetInboxInfoPageCount();
     }
     if (mounted) {
-      context.read<InboxProvider>().resetInboxPaymentPageCount();
+      // context.read<InboxProvider>().resetInboxPaymentPageCount();
     }
     if (mounted) {
       context.read<InboxProvider>().resetInboxPanicPageCount();
@@ -334,7 +336,7 @@ class _NotificationScreenState extends State<NotificationScreen>
       context.read<InboxProvider>().getInboxPanic(context);
     }
     if (mounted) {
-      context.read<InboxProvider>().getInboxPayment(context);
+      // context.read<InboxProvider>().getInboxPayment(context);
     }
   }
 
@@ -402,7 +404,7 @@ class _NotificationScreenState extends State<NotificationScreen>
       }
       if (index == 2) {
         if (mounted) {
-          await context.read<InboxProvider>().getInboxPayment(context);
+          // await context.read<InboxProvider>().getInboxPayment(context);
         }
       }
     }

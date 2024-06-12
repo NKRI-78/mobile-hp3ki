@@ -14,15 +14,17 @@ class InboxRepo {
     dioClient ??= DioManager.shared.getClient();
   }
 
-  Future<InboxModel?> getInbox(
-      {required String userId, required String type, int? page = 1}) async {
+  Future<InboxModel?> getInbox({
+    required String userId, 
+    required String type,
+    int? page = 1
+  }) async {
     try {
-      Response res = await dioClient!.post(
-          "${AppConstants.baseUrl}/api/v1/inbox?page=$page&limit=6",
-          data: {
-            "user_id": userId,
-            "type": type,
-          });
+      Response res = await dioClient!.post("${AppConstants.baseUrl}/api/v1/inbox?page=$page&limit=6",
+      data: {
+        "user_id": userId,
+        "type": type,
+      });
       InboxModel data = InboxModel.fromJson(res.data);
       return data;
     } on DioError catch (e) {
@@ -51,8 +53,8 @@ class InboxRepo {
     }
   }
 
-  Future<void> updateInbox(
-      {required String inboxId, required String userId}) async {
+  Future<void> updateInbox({
+    required String inboxId, required String userId}) async {
     try {
       await dioClient!
           .post("${AppConstants.baseUrl}/api/v1/inbox/detail", data: {
@@ -87,8 +89,9 @@ class InboxRepo {
     }
   }
 
-  Future<InboxCountPaymentModel?> getInboxCountPayment(
-      {required String userId}) async {
+  Future<InboxCountPaymentModel?> getInboxCountPayment({
+    required String userId
+  }) async {
     try {
       Response res = await dioClient!
           .post("${AppConstants.baseUrlPpob}/inbox/badges", data: {

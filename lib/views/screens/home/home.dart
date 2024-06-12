@@ -26,11 +26,8 @@ import 'package:hp3ki/views/screens/my_store/persentation/pages/my_store_page.da
 import 'package:hp3ki/views/screens/my_store_create/persentation/pages/store_open_page.dart';
 import 'package:hp3ki/views/screens/notification/index.dart';
 import 'package:hp3ki/views/screens/ppob/confirm_paymentv2.dart';
-import 'package:hp3ki/views/screens/ppob/ppobv2.dart';
-import 'package:hp3ki/views/screens/ppob/topup/topup.dart';
 import 'package:hp3ki/views/screens/profile/profile.dart';
 import 'package:hp3ki/views/screens/shop/data/models/shop.dart';
-import 'package:hp3ki/views/screens/shop/persentation/pages/shop_page.dart';
 import 'package:hp3ki/views/screens/shop_detail/persentation/pages/shop_detail_page.dart';
 import 'package:hp3ki/views/screens/sos/indexv2.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -195,16 +192,16 @@ class _DashboardScreenState extends State<DashboardScreen>
       //   "icon": "bottomsheet/icon-mart.png",
       //   "screen": const ComingSoonScreen(title: 'HP3KI Mart'),
       // },
-      {
-        "name": "PPOB",
-        "icon": "bottomsheet/icon-ppob.png",
-        "screen": const PPOBV2Screen(),
-      },
-      {
-        "name": "TopUp",
-        "icon": "bottomsheet/icon-topup.png",
-        "screen": const TopUpScreen(),
-      },
+      // {
+      //   "name": "PPOB",
+      //   "icon": "bottomsheet/icon-ppob.png",
+      //   "screen": const PPOBV2Screen(),
+      // },
+      // {
+      //   "name": "TopUp",
+      //   "icon": "bottomsheet/icon-topup.png",
+      //   "screen": const TopUpScreen(),
+      // },
       {
         "name": "SOS",
         "icon": "bottomsheet/icon-sos.png",
@@ -230,11 +227,11 @@ class _DashboardScreenState extends State<DashboardScreen>
         "icon": "bottomsheet/icon-membernear.png",
         "screen": const MembernearScreen(),
       },
-      {
-        "name": "Market",
-        "icon": "bottomsheet/icon-mart.png",
-        "screen": const ShopPage(),
-      },
+      // {
+      //   "name": "Market",
+      //   "icon": "bottomsheet/icon-mart.png",
+      //   "screen": const ShopPage(),
+      // },
       // {
       //   "name": "Mart",
       //   "icon": "bottomsheet/icon-mart.png",
@@ -611,8 +608,9 @@ class _DashboardScreenState extends State<DashboardScreen>
     });
   }
 
-  Widget buildNavbarItem(
-      {required int index, required String image, required String label}) {
+  Widget buildNavbarItem({
+    required int index, 
+    required String image, required String label}) {
     return GestureDetector(
       onTap: () => onItemTapped(index),
       child: Column(
@@ -707,13 +705,13 @@ class _HomeScreenState extends State<HomeScreen> {
         context.read<FirebaseProvider>().initFcm(context);
       }
       if (mounted) {
-        context.read<PPOBProvider>().initPaymentGatewayFCM(context);
+        // context.read<PPOBProvider>().initPaymentGatewayFCM(context);
       }
       if (mounted) {
-        context.read<PPOBProvider>().createWalletData(context);
+        // context.read<PPOBProvider>().createWalletData(context);
       }
       if (mounted) {
-        context.read<PPOBProvider>().getBalance(context);
+        // context.read<PPOBProvider>().getBalance(context);
       }
       if (mounted) {
         context.read<ProfileProvider>().remote();
@@ -722,7 +720,7 @@ class _HomeScreenState extends State<HomeScreen> {
         context.read<LocationProvider>().getCurrentPosition(context);
       }
       if (mounted) {
-        await context.read<InboxProvider>().getReadCount(context);
+        // await context.read<InboxProvider>().getReadCount(context);
       }
     }
   }
@@ -763,9 +761,9 @@ class _HomeScreenState extends State<HomeScreen> {
               context.read<NewsProvider>().getNews(context);
               context.read<BannerProvider>().getBanner(context);
               context.read<FirebaseProvider>().initFcm(context);
-              context.read<PPOBProvider>().initPaymentGatewayFCM(context);
-              context.read<PPOBProvider>().getBalance(context);
-              context.read<InboxProvider>().getReadCount(context);
+              // context.read<PPOBProvider>().initPaymentGatewayFCM(context);
+              // context.read<PPOBProvider>().getBalance(context);
+              // context.read<InboxProvider>().getReadCount(context);
               context.read<LocationProvider>().getCurrentPosition(context);
             });
           },
@@ -1548,38 +1546,39 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             );
           } else {
-            return Column(children: [
-              context.watch<ProfileProvider>().isActive != 1
-                  ? const SizedBox()
-                  : Padding(
-                      padding: const EdgeInsets.only(
-                        left: Dimensions.marginSizeExtraLarge,
-                        right: Dimensions.marginSizeExtraLarge,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Mart',
-                            style: poppinsRegular.copyWith(
-                                fontSize: Dimensions.fontSizeExtraLarge,
-                                fontWeight: FontWeight.w600,
-                                color: ColorResources.white,
-                                shadows: boxShadow),
-                          ),
-                          GestureDetector(
-                            onTap: () => NS.push(context, const ShopPage()),
-                            child: Text(
-                              'Lihat Semua',
-                              style: poppinsRegular.copyWith(
-                                  color: ColorResources.yellowSecondaryV5,
-                                  shadows: boxShadow),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-              const SizedBox(height: 10),
+            return Column(
+              children: [
+              // context.watch<ProfileProvider>().isActive != 1
+              //     ? const SizedBox()
+              //     : Padding(
+              //         padding: const EdgeInsets.only(
+              //           left: Dimensions.marginSizeExtraLarge,
+              //           right: Dimensions.marginSizeExtraLarge,
+              //         ),
+              //         child: Row(
+              //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //           children: [
+              //             Text(
+              //               'Mart',
+              //               style: poppinsRegular.copyWith(
+              //                   fontSize: Dimensions.fontSizeExtraLarge,
+              //                   fontWeight: FontWeight.w600,
+              //                   color: ColorResources.white,
+              //                   shadows: boxShadow),
+              //             ),
+              //             GestureDetector(
+              //               onTap: () => NS.push(context, const ShopPage()),
+              //               child: Text(
+              //                 'Lihat Semua',
+              //                 style: poppinsRegular.copyWith(
+              //                     color: ColorResources.yellowSecondaryV5,
+              //                     shadows: boxShadow),
+              //               ),
+              //             ),
+              //           ],
+              //         ),
+              //       ),
+              // const SizedBox(height: 10),
               context.watch<ProfileProvider>().isActive != 1
                   ? const SizedBox()
                   : SizedBox(

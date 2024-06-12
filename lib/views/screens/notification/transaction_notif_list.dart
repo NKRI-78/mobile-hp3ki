@@ -352,21 +352,21 @@ class _TransactionNotifListState extends State<TransactionNotifList> {
                 })
               ],
             )),
-          if (listPaid.isEmpty && listUnpaid.isEmpty && !loading)
-            SizedBox(
-              width: double.infinity,
-              height: MediaQuery.of(context).size.height * .7,
-              child: const Align(
-                alignment: Alignment.center,
-                child: Text(
-                  'Belum ada transaksi',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            )
+          // if (listPaid.isEmpty && listUnpaid.isEmpty && !loading)
+          //   SizedBox(
+          //     width: double.infinity,
+          //     height: MediaQuery.of(context).size.height * .7,
+          //     child: const Align(
+          //       alignment: Alignment.center,
+          //       child: Text(
+          //         'Belum ada transaksi',
+          //         style: TextStyle(
+          //           fontSize: 18,
+          //           fontWeight: FontWeight.bold,
+          //         ),
+          //       ),
+          //     ),
+          //   )
         ],
       ),
     );
