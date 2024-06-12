@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:hp3ki/views/screens/home/home.dart';
-import 'package:hp3ki/views/screens/upgrademember/inquiry_v2.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hp3ki/providers/auth/auth.dart';
@@ -166,8 +165,7 @@ class CustomDialog {
       ..show();
   }
 
-  static AwesomeDialog showWarningMemberNonPlatinum(BuildContext context,
-      {required String warning}) {
+  static AwesomeDialog showWarningMemberNonPlatinum(BuildContext context, {required String warning}) {
     return AwesomeDialog(
         // autoHide: const Duration(seconds: 5),
         context: context,
@@ -176,7 +174,7 @@ class CustomDialog {
         btnOkText: "Ok",
         btnOkColor: ColorResources.secondary,
         btnOkOnPress: () {
-          NS.push(context, const UpgradeMemberInquiryV2Screen());
+          // NS.push(context, const UpgradeMemberInquiryV2Screen());
         },
         body: Padding(
           padding: const EdgeInsets.all(8.0),

@@ -36,6 +36,7 @@ import 'package:hp3ki/views/screens/auth/sign_in.dart';
 import 'package:hp3ki/views/screens/calender/calender.dart';
 import 'package:hp3ki/views/screens/checkin/checkin.dart';
 import 'package:hp3ki/views/screens/feed/index.dart';
+import 'package:hp3ki/views/screens/maintain/maintain.dart';
 import 'package:hp3ki/views/screens/media/media.dart';
 import 'package:hp3ki/views/screens/membernear/membernear.dart';
 import 'package:hp3ki/views/screens/my_store/persentation/pages/my_store_page.dart';
@@ -80,6 +81,15 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
   List widgetOptions = [];
 
   void onItemTapped(int index) {
+    final String membershipStatus = SharedPrefs.getUserMemberType().trim();
+
+    if(index == 2) {
+      if (membershipStatus != "PLATINUM" || membershipStatus == "-") {
+        context.read<ProfileProvider>().showNonPlatinumLimit(context);
+        return;
+      }
+    }
+
     setState(() {
       panelC.close();
       selectedIndex = index;
@@ -89,10 +99,9 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
   Future<bool> willPopScope() {
     DateTime now = DateTime.now();
     if (currentBackPressTime == null ||
-        now.difference(currentBackPressTime) > const Duration(seconds: 2)) {
+      now.difference(currentBackPressTime) > const Duration(seconds: 2)) {
       currentBackPressTime = now;
-      ShowSnackbar.snackbar(context, getTranslated("PRESS_TWICE_BACK", context),
-          "", ColorResources.primary);
+      ShowSnackbar.snackbar(context, getTranslated("PRESS_TWICE_BACK", context), "", ColorResources.primary);
       return Future.value(false);
     }
     SystemNavigator.pop();
@@ -173,8 +182,8 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
                 panelSnapping: true,
                 panel: buildMenuPanel(),
                 body: widgetOptions.isEmpty
-                    ? Container()
-                    : widgetOptions.elementAt(selectedIndex),
+                ? Container()
+                : widgetOptions.elementAt(selectedIndex),
               ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton:
@@ -197,16 +206,16 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
       //   "icon": "bottomsheet/icon-mart.png",
       //   "screen": const ComingSoonScreen(title: 'HP3KI Mart'),
       // },
-      // {
-      //   "name": "PPOB",
-      //   "icon": "bottomsheet/icon-ppob.png",
-      //   "screen": const PPOBV2Screen(),
-      // },
-      // {
-      //   "name": "TopUp",
-      //   "icon": "bottomsheet/icon-topup.png",
-      //   "screen": const TopUpScreen(),
-      // },
+      {
+        "name": "PPOB",
+        "icon": "bottomsheet/icon-ppob.png",
+        "screen": const MaintainScreen(),
+      },
+      {
+        "name": "TopUp",
+        "icon": "bottomsheet/icon-topup.png",
+        "screen": const MaintainScreen(),
+      },
       {
         "name": "SOS",
         "icon": "bottomsheet/icon-sos.png",
@@ -232,11 +241,11 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
         "icon": "bottomsheet/icon-membernear.png",
         "screen": const MembernearScreen(),
       },
-      // {
-      //   "name": "Market",
-      //   "icon": "bottomsheet/icon-mart.png",
-      //   "screen": const ShopPage(),
-      // },
+      {
+        "name": "Mart",
+        "icon": "bottomsheet/icon-mart.png",
+        "screen": const MaintainScreen(),
+      },
       // {
       //   "name": "Mart",
       //   "icon": "bottomsheet/icon-mart.png",
@@ -245,7 +254,7 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
       // {
       //   "name": "SHOP",
       //   "icon": "bottomsheet/icon-membernear.png",
-      //   "screen": const MembernearScreen(),
+      //   "screen": const MaintainScreen(),
       // },
     ];
 
@@ -623,16 +632,15 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
           IconButton(
             onPressed: () => onItemTapped(index),
             icon: image == "navbar-news"
-                ? const Icon(Icons.newspaper)
-                : Image.asset(
-                    'assets/images/home/$image.png',
-                    width: 30.0,
-                    height: 30.0,
-                    fit: BoxFit.fill,
-                    color: selectedIndex == index
-                        ? ColorResources.white
-                        : ColorResources.white.withOpacity(0.7),
-                  ),
+            ? const Icon(Icons.newspaper)
+            : Image.asset('assets/images/home/$image.png',
+              width: 30.0,
+              height: 30.0,
+              fit: BoxFit.fill,
+              color: selectedIndex == index
+              ? ColorResources.white
+              : ColorResources.white.withOpacity(0.7),
+            ),
             color: ColorResources.white,
           ),
           GlowText(
@@ -641,12 +649,12 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
               fontSize: Dimensions.fontSizeDefault,
               fontWeight: FontWeight.w500,
               color: selectedIndex == index
-                  ? ColorResources.white
-                  : ColorResources.white.withOpacity(0.7),
+              ? ColorResources.white
+              : ColorResources.white.withOpacity(0.7),
             ),
             glowColor: selectedIndex == index
-                ? Colors.amberAccent
-                : ColorResources.transparent,
+            ? Colors.amberAccent
+            : ColorResources.transparent,
             blurRadius: 10.0,
           ),
         ],
