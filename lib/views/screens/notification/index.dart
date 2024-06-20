@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:badges/badges.dart' as b;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -675,73 +676,77 @@ class _NotificationScreenState extends State<NotificationScreen>
       child: CustomScrollView(
         controller: inboxPaymentViewC,
         scrollDirection: Axis.vertical,
-        physics: const BouncingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics()),
-        slivers: [
-          if (context.watch<InboxProvider>().inboxPaymentStatus ==
-              InboxPaymentStatus.loading)
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: loadingWidget(),
-            ),
-          if (context.watch<InboxProvider>().inboxPaymentStatus ==
-              InboxPaymentStatus.empty)
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(
-                  child: Text(
-                getTranslated("NO_INBOX_AVAILABLE", context),
-                style: robotoRegular.copyWith(
-                  fontSize: Dimensions.fontSizeDefault,
-                  color: ColorResources.black,
-                ),
-              )),
-            ),
-          if (context.watch<InboxProvider>().inboxPaymentStatus ==
-              InboxPaymentStatus.error)
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(
-                  child: Text(
-                getTranslated("THERE_WAS_PROBLEM", context),
-                style: robotoRegular.copyWith(
-                  fontSize: Dimensions.fontSizeDefault,
-                  color: ColorResources.white,
-                ),
-              )),
-            ),
-          if (context.watch<InboxProvider>().inboxPaymentStatus ==
-              InboxPaymentStatus.loaded)
-            SliverPadding(
-              padding: const EdgeInsets.only(bottom: 80.0),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (BuildContext context, int i) {
-                    if (context.read<InboxProvider>().inboxPayment!.length ==
-                        i) {
-                      return loadingWidget();
-                    }
-                    if (context
-                        .read<InboxProvider>()
-                        .inboxPayment!
-                        .isNotEmpty) {
-                      return buildNotificationItem(
-                          null,
-                          i,
-                          Icons.payments,
-                          "payment",
-                          context.read<InboxProvider>().inboxPayment!);
-                    }
-                    return Container();
-                  },
-                  childCount:
-                      context.watch<InboxProvider>().isLoadInboxPayment == true
-                          ? context.read<InboxProvider>().inboxPayment!.length +
-                              1
-                          : context.read<InboxProvider>().inboxPayment!.length,
-                ),
-              ),
+        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+        slivers: const [
+
+          SliverFillRemaining(
+            child: Center(
+              child: Text("Data transaksi belum ada")
             )
+          )
+          // if (context.watch<InboxProvider>().inboxPaymentStatus ==
+          //     InboxPaymentStatus.loading)
+          //   SliverFillRemaining(
+          //     hasScrollBody: false,
+          //     child: loadingWidget(),
+          //   ),
+          // if (context.watch<InboxProvider>().inboxPaymentStatus == InboxPaymentStatus.empty)
+          //   SliverFillRemaining(
+          //     hasScrollBody: false,
+          //     child: Center(
+          //         child: Text(
+          //       getTranslated("NO_INBOX_AVAILABLE", context),
+          //       style: robotoRegular.copyWith(
+          //         fontSize: Dimensions.fontSizeDefault,
+          //         color: ColorResources.black,
+          //       ),
+          //     )),
+          //   ),
+          // if (context.watch<InboxProvider>().inboxPaymentStatus == InboxPaymentStatus.error)
+          //   SliverFillRemaining(
+          //     hasScrollBody: false,
+          //     child: Center(
+          //         child: Text(
+          //       getTranslated("THERE_WAS_PROBLEM", context),
+          //       style: robotoRegular.copyWith(
+          //         fontSize: Dimensions.fontSizeDefault,
+          //         color: ColorResources.white,
+          //       ),
+          //     )),
+          //   ),
+          // if (context.watch<InboxProvider>().inboxPaymentStatus ==
+          //     InboxPaymentStatus.loaded)
+
+            // SliverPadding(
+            //   padding: const EdgeInsets.only(bottom: 80.0),
+            //   sliver: SliverList(
+            //     delegate: SliverChildBuilderDelegate(
+            //       (BuildContext context, int i) {
+            //         if (context.read<InboxProvider>().inboxPayment!.length ==
+            //             i) {
+            //           return loadingWidget();
+            //         }
+            //         if (context
+            //             .read<InboxProvider>()
+            //             .inboxPayment!
+            //             .isNotEmpty) {
+            //           return buildNotificationItem(
+            //               null,
+            //               i,
+            //               Icons.payments,
+            //               "payment",
+            //               context.read<InboxProvider>().inboxPayment!);
+            //         }
+            //         return Container();
+            //       },
+            //       childCount:
+            //           context.watch<InboxProvider>().isLoadInboxPayment == true
+            //               ? context.read<InboxProvider>().inboxPayment!.length +
+            //                   1
+            //               : context.read<InboxProvider>().inboxPayment!.length,
+            //     ),
+            //   ),
+            // )
         ],
       ),
     );

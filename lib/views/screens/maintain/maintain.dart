@@ -69,7 +69,7 @@ class MaintainScreen extends StatelessWidget {
 
                   const Expanded(
                     flex: 3,
-                    child: Text("MAINTAINENANCE",
+                    child: Text("MAINTENANCE",
                       style: TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,

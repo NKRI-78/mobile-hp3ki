@@ -416,10 +416,7 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
                 children: [
                   Bouncing(
                     onPress: () {
-                      final String membershipStatus =
-                          SharedPrefs.getUserMemberType().trim();
-
-                      debugPrint(membershipStatus.toString()); 
+                      final String membershipStatus = SharedPrefs.getUserMemberType().trim();
 
                       final selectedMenu = menu[index];
                       final String selectedMenuName = selectedMenu["name"];
@@ -1466,72 +1463,72 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildProductsSection() {
-    // List products = [
-    //   {
-    //     "name":
-    //         "Velg Racing Mobil Pajero Sport Ring 20 HSR TSUYOI Velk Mobil Fortuner Triton Dmax R20",
-    //     "image":
-    //         "https://s2.bukalapak.com/img/20200500103/large/data.jpeg.webp",
-    //     "price": "12400000",
-    //   },
-    //   {
-    //     "name":
-    //         "Velg Mobil Vellfire 18x7.5 Pcd 5x114.3 ET 40 Black Polish Alphard",
-    //     "image":
-    //         "https://images.tokopedia.net/img/cache/900/VqbcmM/2021/7/7/a5f5d5ac-fcf1-409c-973c-53234a7a5a80.jpg",
-    //     "price": "7000000",
-    //   },
-    //   {
-    //     "name":
-    //         "Aksesoris Variasi Stoplamp Taillamp LED Meteo Axis Alphard ANH30 15+",
-    //     "image":
-    //         "https://images.tokopedia.net/img/cache/900/VqbcmM/2020/12/7/980d289a-93c0-4829-ab7d-2856850e43b0.jpg",
-    //     "price": "8800000",
-    //   },
-    //   {
-    //     "name":
-    //         "Toyota Vellfire Sarung Cover Mobil Durable Rubik | Guardian |Xtrem – Rubik",
-    //     "image":
-    //         "https://images.tokopedia.net/img/cache/900/hDjmkQ/2023/4/27/8b6764ef-e2fd-463b-9198-ee41f398691f.jpg",
-    //     "price": "870000",
-    //   },
-    //   {
-    //     "name": "Tas Thule VNJ ",
-    //     "image":
-    //         "https://images.tokopedia.net/img/cache/900/hDjmkQ/2021/1/11/bbabfbf8-3f75-4630-bb9b-fa0df0e063fc.jpg",
-    //     "price": "3800000",
-    //   },
-    //   {
-    //     "name": "SHOCKBREAKER DEPAN PAJERO SPORT ORIGINAL 4062A085",
-    //     "image":
-    //         "https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full//88/MTA-12139144/mitsubishi_shockbreaker_pajero_sport_-_triton_depan_belakang_original_premium_hitam_full01_d42eef41.jpg",
-    //     "price": "1800000",
-    //   },
-    //   {
-    //     "name": "Pac Makeup Kit New Edition",
-    //     "image":
-    //         "https://images.tokopedia.net/img/cache/900/attachment/2019/9/14/156847459919831/156847459919831_fbd91887-c44f-41e0-8a9c-14e7153e85b8.png",
-    //     "price": "3800000",
-    //   },
-    //   {
-    //     "name": "Set Alat Rias 7-in-1 dengan Dompet Plastik",
-    //     "image":
-    //         "https://images.tokopedia.net/img/cache/900/product-1/2013/9/30/2519619/2519619_06b76f48-29ae-11e3-b923-c35c2523fab8.jpg",
-    //     "price": "29900",
-    //   },
-    //   {
-    //     "name": "Sanggul Modern Variasi Terbaru Sanggul Bali Sanggul Batak",
-    //     "image":
-    //         "https://s2.bukalapak.com/img/71414911003/large/data.jpeg.webp",
-    //     "price": "40000",
-    //   },
-    //   {
-    //     "name": "Lore Jewellery - Kinara Simple Moissanite Ring 0.01 Carat – 4",
-    //     "image":
-    //         "https://images.tokopedia.net/img/cache/900/VqbcmM/2023/3/20/461ff11b-0d40-4ec8-b960-36ad7f2d7481.jpg",
-    //     "price": "548900",
-    //   },
-    // ];
+    List products = [
+      {
+        "name":
+            "Velg Racing Mobil Pajero Sport Ring 20 HSR TSUYOI Velk Mobil Fortuner Triton Dmax R20",
+        "image":
+            "https://s2.bukalapak.com/img/20200500103/large/data.jpeg.webp",
+        "price": "12400000",
+      },
+      {
+        "name":
+            "Velg Mobil Vellfire 18x7.5 Pcd 5x114.3 ET 40 Black Polish Alphard",
+        "image":
+            "https://images.tokopedia.net/img/cache/900/VqbcmM/2021/7/7/a5f5d5ac-fcf1-409c-973c-53234a7a5a80.jpg",
+        "price": "7000000",
+      },
+      {
+        "name":
+            "Aksesoris Variasi Stoplamp Taillamp LED Meteo Axis Alphard ANH30 15+",
+        "image":
+            "https://images.tokopedia.net/img/cache/900/VqbcmM/2020/12/7/980d289a-93c0-4829-ab7d-2856850e43b0.jpg",
+        "price": "8800000",
+      },
+      {
+        "name":
+            "Toyota Vellfire Sarung Cover Mobil Durable Rubik | Guardian |Xtrem – Rubik",
+        "image":
+            "https://images.tokopedia.net/img/cache/900/hDjmkQ/2023/4/27/8b6764ef-e2fd-463b-9198-ee41f398691f.jpg",
+        "price": "870000",
+      },
+      {
+        "name": "Tas Thule VNJ ",
+        "image":
+            "https://images.tokopedia.net/img/cache/900/hDjmkQ/2021/1/11/bbabfbf8-3f75-4630-bb9b-fa0df0e063fc.jpg",
+        "price": "3800000",
+      },
+      {
+        "name": "SHOCKBREAKER DEPAN PAJERO SPORT ORIGINAL 4062A085",
+        "image":
+            "https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full//88/MTA-12139144/mitsubishi_shockbreaker_pajero_sport_-_triton_depan_belakang_original_premium_hitam_full01_d42eef41.jpg",
+        "price": "1800000",
+      },
+      {
+        "name": "Pac Makeup Kit New Edition",
+        "image":
+            "https://images.tokopedia.net/img/cache/900/attachment/2019/9/14/156847459919831/156847459919831_fbd91887-c44f-41e0-8a9c-14e7153e85b8.png",
+        "price": "3800000",
+      },
+      {
+        "name": "Set Alat Rias 7-in-1 dengan Dompet Plastik",
+        "image":
+            "https://images.tokopedia.net/img/cache/900/product-1/2013/9/30/2519619/2519619_06b76f48-29ae-11e3-b923-c35c2523fab8.jpg",
+        "price": "29900",
+      },
+      {
+        "name": "Sanggul Modern Variasi Terbaru Sanggul Bali Sanggul Batak",
+        "image":
+            "https://s2.bukalapak.com/img/71414911003/large/data.jpeg.webp",
+        "price": "40000",
+      },
+      {
+        "name": "Lore Jewellery - Kinara Simple Moissanite Ring 0.01 Carat – 4",
+        "image":
+            "https://images.tokopedia.net/img/cache/900/VqbcmM/2023/3/20/461ff11b-0d40-4ec8-b960-36ad7f2d7481.jpg",
+        "price": "548900",
+      },
+    ];
 
     return SliverToBoxAdapter(
       child: Consumer<NewsProvider>(
@@ -1605,9 +1602,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             parent: AlwaysScrollableScrollPhysics()),
                         scrollDirection: Axis.horizontal,
                         // itemCount: newsProvider.news.length,
-                        itemCount: shops?.data.take(4).length ?? 0,
+                        itemCount: products.take(4).length,
                         itemBuilder: (context, i) {
-                          final product = shops!.data[i];
+                          
+                          final product = products[i];
+
                           return SizedBox(
                             width: 180.0,
                             child: Card(
@@ -1619,8 +1618,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: InkWell(
                                 onTap: () async {
                                   // await context.read<StoreProvider>().getProductDetail(context, productId: storeProvider.elektronikProducts![index].uid!);
-                                  Navigator.push(context,
-                                      ShopDetailPage.route(product.id));
+                                  // Navigator.push(context,
+                                  //     ShopDetailPage.route(product.id));
+                                  NS.push(context, const MaintainScreen());
                                 },
                                 borderRadius: BorderRadius.circular(15.0),
                                 child: Column(
@@ -1634,9 +1634,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                       child: CachedNetworkImage(
                                         fit: BoxFit.cover,
-                                        imageUrl: product.picture == '-'
-                                            ? AppConstants.avatarError
-                                            : product.picture,
+                                        imageUrl: product['image'],
                                         imageBuilder: (BuildContext context,
                                             ImageProvider imageProvider) {
                                           return Container(
@@ -1677,14 +1675,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                         horizontal: 8.0,
                                       ),
                                       child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.start,
                                         children: [
                                           // Text(storeProvider.elektronikProducts![index].title ?? "...",
                                           Text(
-                                            product.name,
+                                            product['name'],
                                             style: interRegular.copyWith(
                                               fontSize:
                                                   Dimensions.fontSizeDefault,
@@ -1698,7 +1694,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           // Text(Helper.formatCurrency(double.parse(storeProvider.elektronikProducts![index].price.toString())),
                                           Text(
                                             Helper.formatCurrency(double.parse(
-                                              product.price.toString(),
+                                              product['price'].toString(),
                                             )),
                                             style: interRegular.copyWith(
                                               color: ColorResources.white,
