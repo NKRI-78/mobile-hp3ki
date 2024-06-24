@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
+import 'package:hp3ki/views/screens/maintain/maintain.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -854,7 +855,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget buildActionPremiumButton({required String label}) {
     return CustomButton(
       onTap: () {
-        NS.push(context, const UpgradeMemberIndexScreen());
+        NS.push(context, const MaintainScreen());
+        // NS.push(context, const UpgradeMemberIndexScreen());
       },
       btnColor: ColorResources.white,
       isBoxShadow: hasRemainder ? true : false,

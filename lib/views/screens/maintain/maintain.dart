@@ -37,10 +37,6 @@ class MaintainScreen extends StatelessWidget {
             child: Center(child: Image.asset('assets/images/maintenance.png')),
           ),
 
-
-
-
-
           Positioned(
             top: 50.0,
             left: 0.0,
