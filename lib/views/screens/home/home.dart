@@ -45,7 +45,6 @@ import 'package:hp3ki/views/screens/notification/index.dart';
 import 'package:hp3ki/views/screens/ppob/confirm_paymentv2.dart';
 import 'package:hp3ki/views/screens/profile/profile.dart';
 import 'package:hp3ki/views/screens/shop/data/models/shop.dart';
-import 'package:hp3ki/views/screens/shop_detail/persentation/pages/shop_detail_page.dart';
 import 'package:hp3ki/views/screens/sos/indexv2.dart';
 import 'package:hp3ki/views/screens/news/index.dart';
 
@@ -1558,6 +1557,25 @@ class _HomeScreenState extends State<HomeScreen> {
           } else {
             return Column(
               children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: Dimensions.marginSizeExtraLarge,
+                    right: Dimensions.marginSizeExtraLarge,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Mart',
+                        style: poppinsRegular.copyWith(
+                          fontSize: Dimensions.fontSizeExtraLarge,
+                          fontWeight: FontWeight.w600,
+                          color: ColorResources.white,
+                          shadows: boxShadow
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               // context.watch<ProfileProvider>().isActive != 1
               //     ? const SizedBox()
               //     : Padding(
@@ -1588,7 +1606,7 @@ class _HomeScreenState extends State<HomeScreen> {
               //           ],
               //         ),
               //       ),
-              // const SizedBox(height: 10),
+              const SizedBox(height: 10),
               context.watch<ProfileProvider>().isActive != 1
                   ? const SizedBox()
                   : SizedBox(
