@@ -91,7 +91,7 @@ class AuthRepo {
         "new_password": newPassword,
         "is_forget": false,
       });
-    }on DioError catch(e) {
+    } on DioError catch(e) {
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw CustomException(errorMessage);
     } catch(e, stacktrace) {
@@ -109,7 +109,7 @@ class AuthRepo {
         "new_password": newPassword,
         "is_forget": true,
       });
-    }on DioError catch(e) {
+    } on DioError catch(e) {
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw CustomException(errorMessage);
     } catch(e, stacktrace) {
@@ -154,7 +154,7 @@ class AuthRepo {
 
   Future<AuthModel> verifyOtp(String email, String otp) async {
     try {
-      Response res = await dioClient!.post("${AppConstants.baseUrl}/api/v1/auth/verify-otp",data: {
+      Response res = await dioClient!.post("${AppConstants.baseUrl}/api/v1/auth/verify-otp", data: {
           "email": email,
           "otp": otp,
         }
@@ -162,7 +162,7 @@ class AuthRepo {
       Map<String, dynamic> data = res.data;
       AuthModel auth = AuthModel.fromJson(data);
       return auth;
-    }on DioError catch(e) {
+    } on DioError catch(e) {
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw CustomException(errorMessage);
     } catch(e, stacktrace) {
@@ -180,7 +180,7 @@ class AuthRepo {
     } on DioError catch(e) {
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw CustomException(errorMessage);
-    }catch(e, stacktrace) {
+    } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());
       debugPrint(e.toString());
       throw CustomException(e.toString());
@@ -198,7 +198,7 @@ class AuthRepo {
     } on DioError catch(e) {
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw CustomException(errorMessage);
-    }catch(e, stacktrace) {
+    } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());
       debugPrint(e.toString());
       throw CustomException(e.toString());

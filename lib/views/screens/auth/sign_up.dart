@@ -56,8 +56,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     String profesi = profesiC.text.trim();
     String pass = passC.text.trim();
     String passConfirm = passConfirmC.text.trim();
-    bool emailValid = RegExp(r"[a-zA-Z0-9_]+@[a-zA-Z]+\.(com|net|org)$")
-        .hasMatch(email.trim());
+    bool emailValid = RegExp(r"[a-zA-Z0-9_]+@[a-zA-Z]+\.(com|net|org)$").hasMatch(email.trim());
 
     if (formKey.currentState!.validate()) {
       if (!emailValid) {
@@ -252,8 +251,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         padding: const EdgeInsets.all(Dimensions.marginSizeLarge),
         child: Card(
           elevation: 0.0,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
           child: Container(
             padding: const EdgeInsets.all(
               30.0,
