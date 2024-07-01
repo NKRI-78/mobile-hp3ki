@@ -3,35 +3,39 @@ import 'dart:io';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
+import 'package:provider/provider.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
-import 'package:hp3ki/views/screens/maintain/maintain.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-
+import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:hp3ki/localization/language_constraints.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+
+import 'package:hp3ki/localization/language_constraints.dart';
+
+import 'package:hp3ki/services/navigation.dart';
+
 import 'package:hp3ki/providers/media/media.dart';
 import 'package:hp3ki/providers/ppob/ppob.dart';
 import 'package:hp3ki/providers/profile/profile.dart';
+
 import 'package:hp3ki/utils/helper.dart';
-import 'package:hp3ki/views/screens/privacy_policy/privacy_policy.dart';
-import 'package:hp3ki/views/screens/upgrademember/index.dart';
-import 'package:provider/provider.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:hp3ki/services/navigation.dart';
 import 'package:hp3ki/utils/constant.dart';
 import 'package:hp3ki/utils/extension.dart';
-import 'package:hp3ki/views/basewidgets/button/custom.dart';
-import 'package:hp3ki/views/basewidgets/dialog/custom/custom.dart';
-import 'package:hp3ki/views/screens/auth/change_password.dart';
-import 'package:flutter/material.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
+
+import 'package:hp3ki/views/basewidgets/button/custom.dart';
+import 'package:hp3ki/views/basewidgets/dialog/custom/custom.dart';
+
+import 'package:hp3ki/views/screens/auth/change_password.dart';
+import 'package:hp3ki/views/screens/privacy_policy/privacy_policy.dart';
 import 'package:hp3ki/views/screens/profile/edit.dart';
+import 'package:hp3ki/views/screens/maintain/maintain.dart';
 
 final GlobalKey ktaImageKey = GlobalKey();
 
@@ -45,7 +49,6 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   File? file;
   ImageSource? imageSource;
-
   String? pfpPath;
 
   late bool isPlatinum;
@@ -72,12 +75,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       } else {
         isPlatinum = true;
       }
-      final remainingDays =
-          context.read<ProfileProvider>().user!.remainingDays!;
+      final remainingDays = context.read<ProfileProvider>().user!.remainingDays!;
       if (remainingDays > 0 && remainingDays < 11) {
         hasRemainder = true;
-        remainderCount =
-            context.read<ProfileProvider>().user!.remainingDays ?? 0;
+        remainderCount = context.read<ProfileProvider>().user!.remainingDays ?? 0;
       } else {
         hasRemainder = false;
       }

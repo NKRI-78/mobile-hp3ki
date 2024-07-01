@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+
 import 'package:hp3ki/data/models/auth/auth.dart';
 import 'package:hp3ki/data/models/job/job.dart';
 import 'package:hp3ki/data/models/organization/organization.dart';
+
 import 'package:hp3ki/utils/constant.dart';
 import 'package:hp3ki/utils/dio.dart';
 import 'package:hp3ki/utils/exceptions.dart';
