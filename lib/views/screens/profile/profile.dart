@@ -43,10 +43,10 @@ class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<ProfileScreen> createState() => ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class ProfileScreenState extends State<ProfileScreen> {
   File? file;
   ImageSource? imageSource;
   String? pfpPath;
@@ -102,34 +102,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> chooseFile() async {
     imageSource = await showDialog<ImageSource>(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-              title: Text(
-                getTranslated("SOURCE_IMAGE", context),
-                style: robotoRegular.copyWith(
-                    fontSize: Dimensions.fontSizeDefault,
-                    color: ColorResources.primary),
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text(
+          getTranslated("SOURCE_IMAGE", context),
+          style: robotoRegular.copyWith(
+              fontSize: Dimensions.fontSizeDefault,
+              color: ColorResources.primary),
+        ),
+        actions: [
+          MaterialButton(
+            child: Text(getTranslated("CAMERA", context),
+              style: robotoRegular.copyWith(
+                fontSize: Dimensions.fontSizeDefault,
+                color: ColorResources.primary
+              )
+            ),
+            onPressed: () => Navigator.pop(context, ImageSource.camera),
+          ),
+          MaterialButton(
+            child: Text(
+              getTranslated("GALLERY", context),
+              style: robotoRegular.copyWith(
+                fontSize: Dimensions.fontSizeDefault,
+                color: ColorResources.primary
               ),
-              actions: [
-                MaterialButton(
-                  child: Text(getTranslated("CAMERA", context),
-                      style: robotoRegular.copyWith(
-                          fontSize: Dimensions.fontSizeDefault,
-                          color: ColorResources.primary)),
-                  onPressed: () => Navigator.pop(context, ImageSource.camera),
-                ),
-                MaterialButton(
-                    child: Text(
-                      getTranslated("GALLERY", context),
-                      style: robotoRegular.copyWith(
-                          fontSize: Dimensions.fontSizeDefault,
-                          color: ColorResources.primary),
-                    ),
-                    onPressed: () =>
-                        Navigator.pop(context, ImageSource.gallery))
-              ],
-            ));
+            ),
+            onPressed: () => Navigator.pop(context, ImageSource.gallery)
+          )
+        ],
+      )
+    );
     if (imageSource != null) {
+
       if (imageSource == ImageSource.gallery) {
         XFile? pickedFile = await ImagePicker().pickImage(
           source: ImageSource.gallery,
@@ -154,6 +159,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         } else {
           setState(() => file = null);
         }
+
       } else {
        
         XFile? pickedFile = await ImagePicker().pickImage(
@@ -179,6 +185,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         } else {
           setState(() => file = null);
         }
+
       }
     }
   }
@@ -231,18 +238,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   BoxDecoration buildBackgroundImage() {
     return const BoxDecoration(
-        backgroundBlendMode: BlendMode.darken,
-        gradient: LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-            colors: [
-              ColorResources.primary,
-              Color.fromARGB(255, 12, 59, 153),
-            ]),
-        image: DecorationImage(
-            image: AssetImage('assets/images/background/bg.png'),
-            opacity: 0.7,
-            fit: BoxFit.cover));
+      backgroundBlendMode: BlendMode.darken,
+      gradient: LinearGradient(
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+        colors: [
+          ColorResources.primary,
+          Color.fromARGB(255, 12, 59, 153),
+        ]
+      ),
+      image: DecorationImage(
+      image: AssetImage('assets/images/background/bg.png'),
+      opacity: 0.7,
+      fit: BoxFit.cover
+    ));
   }
 
   SliverPadding buildUserKTA() {
@@ -288,19 +297,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  if (context
-                                          .read<ProfileProvider>()
-                                          .user
-                                          ?.organizationBahasa
-                                          ?.isNotEmpty ??
-                                      false)
+                                  if (context.read<ProfileProvider>().user?.organizationBahasa?.isNotEmpty ?? false)
                                     FittedBox(
                                       child: Text(
                                         context
-                                                .read<ProfileProvider>()
-                                                .user
-                                                ?.organizationBahasa ??
-                                            "...",
+                                        .read<ProfileProvider>()
+                                        .user
+                                        ?.organizationBahasa ?? "...",
                                         style: poppinsRegular.copyWith(
                                           fontWeight: FontWeight.w600,
                                           fontSize: 12,
@@ -309,20 +312,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         maxLines: 1,
                                       ),
                                     ),
-                                  if (context
-                                          .read<ProfileProvider>()
-                                          .user
-                                          ?.organizationEnglish
-                                          ?.isNotEmpty ??
-                                      false)
+                                  if (context.read<ProfileProvider>().user?.organizationEnglish?.isNotEmpty ?? false)
                                     FittedBox(
-                                      child: Text(
-                                        context
-                                                .read<ProfileProvider>()
-                                                .user
-                                                ?.organizationEnglish
-                                                ?.trim() ??
-                                            "...",
+                                      child: Text(context.read<ProfileProvider>().user?.organizationEnglish?.trim() ?? "...",
                                         style: poppinsRegular.copyWith(
                                           fontWeight: FontWeight.w600,
                                           fontSize: 12,
