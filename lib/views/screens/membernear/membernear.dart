@@ -31,12 +31,12 @@ class MembernearScreenState extends State<MembernearScreen> {
   late ScrollController sc;
 
   Future<void> getData() async {
-    if(mounted) {
-      await context.read<LocationProvider>().getCurrentPosition(context);
-    }
-    if(mounted) {
+    if(!mounted) return;
+      context.read<LocationProvider>().getCurrentPosition(context);
+
+    if(!mounted) return;
       await context.read<MembernearProvider>().getMembernear(context);
-    }
+
   }
 
   @override 

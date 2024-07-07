@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:external_path/external_path.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:hp3ki/data/models/feed/feedmedia.dart';
 import 'package:hp3ki/services/navigation.dart';
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
@@ -116,43 +118,64 @@ class _PostDocState extends State<PostDoc> {
             ),
             const SizedBox(height: 12.0),
             Container(
-                height: 56.0,
-                margin: const EdgeInsets.only(left: 16.0, right: 16.0),
-                decoration: BoxDecoration(
-                    color: color, borderRadius: BorderRadius.circular(8.0)),
-                child: Row(
+            height: 80.0,
+            margin: const EdgeInsets.only(left: 16.0, right: 16.0),
+            decoration: BoxDecoration(
+              color: color, 
+              borderRadius: BorderRadius.circular(8.0)
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(
+                  type!,
+                  style: poppinsRegular.copyWith(
+                    fontSize: Dimensions.fontSizeDefault,
+                    fontWeight: FontWeight.w600,
+                    color: ColorResources.white
+                  ),
+                ),
+                SizedBox(
+                  width: 200.0,
+                  child: Text(widget.medias[0].path!.split('/').last,
+                    style: poppinsRegular.copyWith(
+                      fontSize: Dimensions.fontSizeSmall,
+                      color: ColorResources.white
+                    )
+                  ),
+                ),
+                Row(
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Expanded(
-                        child: Container(
-                      margin: const EdgeInsets.only(left: 12.0),
-                      child: Text(
-                        type!,
-                        style: poppinsRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
-                            fontWeight: FontWeight.w600,
-                            color: ColorResources.white),
-                      ),
-                    )),
-                    Expanded(
-                      child: Text(widget.medias[0].path!.split('/').last,
-                          style: poppinsRegular.copyWith(
-                              fontSize: Dimensions.fontSizeDefault,
-                              color: ColorResources.white)),
+
+                    IconButton(
+                      onPressed: () async {
+                        buildAskDialog(context);
+                      },
+                      color: ColorResources.white,
+                      icon: type == "link"
+                      ? const Icon(Icons.read_more)
+                      : const Icon(Icons.arrow_circle_down),
                     ),
-                    Expanded(
-                      child: IconButton(
+
+                    const SizedBox(width: 3.0),
+
+                     type == "link" 
+                     ? const SizedBox()
+                     : IconButton(
                         onPressed: () async {
-                          buildAskDialog(context);
+                          await launchUrl(Uri.parse(widget.medias[0].path!));
                         },
                         color: ColorResources.white,
-                        icon: type == "link"
-                            ? const Icon(Icons.read_more)
-                            : const Icon(Icons.arrow_circle_down),
-                      ),
-                    )
+                        icon: const Icon(Icons.visibility)
+                      ) ,
+
                   ],
-                ))
+                ),
+                
+              ],
+            ))
           ],
         );
       },

@@ -61,7 +61,7 @@ class ProfileScreenState extends State<ProfileScreen> {
       context.read<ProfileProvider>().getProfile(context);
     }
     if (mounted) {
-      context.read<PPOBProvider>().getBalance(context);
+      // context.read<PPOBProvider>().getBalance(context);
     }
     if (mounted) {
       file = null;
@@ -266,6 +266,7 @@ class ProfileScreenState extends State<ProfileScreen> {
               key: ktaImageKey,
               child: Column(
                 children: [
+
                   Stack(
                     children: [
                       Container(
@@ -285,17 +286,14 @@ class ProfileScreenState extends State<ProfileScreen> {
                             : "assets/images/profile/kta-free.png"),
                           ),
                         ),
-                        padding:
-                            const EdgeInsets.only(left: 16, top: 30, right: 16),
+                        padding:  const EdgeInsets.only(left: 16, top: 27, bottom: 27, right: 16),
                         child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const SizedBox(
-                              width: 8,
-                            ),
+                            
                             Expanded(
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   if (context.read<ProfileProvider>().user?.organizationBahasa?.isNotEmpty ?? false)
                                     FittedBox(
@@ -329,62 +327,63 @@ class ProfileScreenState extends State<ProfileScreen> {
                           ],
                         ),
                       ),
+
                       Positioned(
                         top: 125.0,
                         left: 52.0,
                         child: file != null
-                            ? InkWell(
-                                onTap: chooseFile,
-                                child: Container(
+                        ? InkWell(
+                            onTap: chooseFile,
+                            child: Container(
+                              height: 130.0,
+                              width: 100.0,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15.0),
+                                image: DecorationImage(
+                                  image: FileImage(file!),
+                                  fit: BoxFit.fill,
+                                ),
+                              ),
+                            ),
+                          )
+                        : InkWell(
+                            onTap: chooseFile,
+                            child: CachedNetworkImage(
+                              fit: BoxFit.fill,
+                              imageUrl: context.read<ProfileProvider>().user?.avatar ??  AppConstants.avatarError,
+                              imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
+                                return Container(
                                   height: 130.0,
-                                  width: 100.0,
+                                  width: 120.0,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(15.0),
                                     image: DecorationImage(
-                                      image: FileImage(file!),
+                                      image: imageProvider,
                                       fit: BoxFit.fill,
                                     ),
                                   ),
-                                ),
-                              )
-                            : InkWell(
-                                onTap: chooseFile,
-                                child: CachedNetworkImage(
-                                  fit: BoxFit.fill,
-                                  imageUrl: context.read<ProfileProvider>().user?.avatar ??  AppConstants.avatarError,
-                                  imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
-                                    return Container(
-                                      height: 130.0,
-                                      width: 120.0,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15.0),
-                                        image: DecorationImage(
-                                          image: imageProvider,
-                                          fit: BoxFit.fill,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  errorWidget: (BuildContext context,
-                                      String url, dynamic error) {
-                                    return Container(
-                                      height: 130.0,
-                                      width: 120.0,
-                                      decoration: BoxDecoration(
-                                        color: ColorResources.greyDarkPrimary,
-                                        borderRadius:
-                                            BorderRadius.circular(15.0),
-                                        image: const DecorationImage(
-                                          image: AssetImage(
-                                              'assets/images/icons/ic-person.png'),
-                                          fit: BoxFit.fill,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                      ),
+                                );
+                              },
+                              errorWidget: (BuildContext context,
+                                  String url, dynamic error) {
+                                return Container(
+                                  height: 130.0,
+                                  width: 120.0,
+                                  decoration: BoxDecoration(
+                                    color: ColorResources.greyDarkPrimary,
+                                    borderRadius:
+                                        BorderRadius.circular(15.0),
+                                    image: const DecorationImage(
+                                      image: AssetImage('assets/images/icons/ic-person.png'),
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+
                       Positioned(
                         bottom: 75,
                         left: 140,

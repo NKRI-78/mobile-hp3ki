@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:hp3ki/providers/internet/internet.dart';
-import 'package:hp3ki/providers/news/news.dart';
-import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
-import 'package:hp3ki/views/screens/connection/connection.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
+
+import 'package:hp3ki/providers/internet/internet.dart';
+import 'package:hp3ki/providers/news/news.dart';
+
+import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
+import 'package:hp3ki/views/screens/connection/connection.dart';
+
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/utils/extension.dart';
 import 'package:hp3ki/utils/color_resources.dart';
+
 import 'package:hp3ki/localization/language_constraints.dart';
 
 class NewsScreen extends StatefulWidget {
@@ -21,10 +25,10 @@ class NewsScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<NewsScreen> createState() => _NewsScreenState();
+  State<NewsScreen> createState() => NewsScreenState();
 }
 
-class _NewsScreenState extends State<NewsScreen> {
+class NewsScreenState extends State<NewsScreen> {
 
   Future<void> getData() async {
     if(mounted) {
@@ -173,7 +177,7 @@ class _NewsScreenState extends State<NewsScreen> {
                               height: 125.0,
                               decoration: BoxDecoration(
                                 image: DecorationImage(
-                                  fit: BoxFit.fill,
+                                  fit: BoxFit.contain,
                                   image: image
                                 )
                               ),

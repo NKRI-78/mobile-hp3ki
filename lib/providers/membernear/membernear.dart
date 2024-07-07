@@ -59,7 +59,7 @@ class MembernearProvider with ChangeNotifier {
           onTap: () {
             buildResponseModalBottomSheet(context, membernear);
           },
-          icon: await MarkerIcon.downloadResizePictureCircle("https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png",
+          icon: await MarkerIcon.downloadResizePictureCircle("https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1677509740.jpg",
             size: 100,
             addBorder: true,
             borderColor: ColorResources.success,
@@ -147,7 +147,7 @@ class MembernearProvider with ChangeNotifier {
                   children: [
                     const CircleAvatar(
                       maxRadius: 50.0,
-                      backgroundImage: NetworkImage("https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png"
+                      backgroundImage: NetworkImage("https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1677509740.jpg"
                       ),
                     ),
                     const SizedBox(height: 10.0),

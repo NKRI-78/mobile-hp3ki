@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:hp3ki/providers/profile/profile.dart';
-import 'package:hp3ki/utils/shared_preferences.dart';
 // import 'package:timeago/timeago.dart' as timeago;
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+
+import 'package:hp3ki/providers/profile/profile.dart';
 
 import 'package:hp3ki/services/navigation.dart';
 
@@ -13,14 +14,13 @@ import 'package:hp3ki/localization/language_constraints.dart';
 
 import 'package:hp3ki/data/models/feed/feeds.dart';
 
-import 'package:intl/intl.dart';
-
 import 'package:hp3ki/providers/feed/feed.dart';
 // import 'package:hp3ki/providers/profile/profile.dart';
 
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
+import 'package:hp3ki/utils/shared_preferences.dart';
 
 import 'package:hp3ki/views/screens/feed/widgets/post_video.dart';
 import 'package:hp3ki/views/screens/feed/widgets/post_doc.dart';

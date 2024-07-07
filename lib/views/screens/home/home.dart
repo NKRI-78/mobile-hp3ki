@@ -1417,7 +1417,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     color: ColorResources.white,
                                     image: DecorationImage(
                                       image: imageProvider,
-                                      fit: BoxFit.fill,
+                                      fit: BoxFit.fitWidth,
                                     )
                                   ),
                                 );
@@ -1428,7 +1428,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   height: 140.0,
                                   decoration: const BoxDecoration(
                                     image: DecorationImage(
-                                      fit: BoxFit.fill,
+                                      fit: BoxFit.fitWidth,
                                       image: AssetImage("assets/images/logo/logo.png")
                                     )
                                   ),
@@ -1440,7 +1440,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   height: 140.0,
                                   decoration: const BoxDecoration(
                                     image: DecorationImage(
-                                      fit: BoxFit.fill,
+                                      fit: BoxFit.fitWidth,
                                       image: AssetImage("assets/images/logo/logo.png")
                                     )
                                   ),

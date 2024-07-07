@@ -216,10 +216,14 @@ class _DetailInfoPageState extends State<DetailNewsScreen> {
           height: double.infinity,
           child: CachedNetworkImage(
             imageUrl: imageUrl ?? "...",
-            fit: BoxFit.fill,
+            fit: BoxFit.fitHeight,
             placeholder: (BuildContext context, String url)  {
-              return const Loader(
-                color: ColorResources.primary,
+              return Center(
+                child: Image.asset('assets/images/logo/logo.png',
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.fitHeight,
+                )
               );
             },
             errorWidget: (BuildContext context, String url, dynamic error) {
@@ -227,7 +231,7 @@ class _DetailInfoPageState extends State<DetailNewsScreen> {
                 child: Image.asset('assets/images/logo/logo.png',
                   width: double.infinity,
                   height: double.infinity,
-                  fit: BoxFit.fill,
+                  fit: BoxFit.fitHeight,
                 )
               );
             }
