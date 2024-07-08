@@ -15,7 +15,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:hp3ki/container.dart' as core;
-import 'package:hp3ki/firebase_options.dart';
 import 'package:hp3ki/providers.dart';
 import 'package:hp3ki/providers/localization/localization.dart';
 import 'package:hp3ki/services/notification.dart';
@@ -26,7 +25,7 @@ import 'package:hp3ki/views/screens/splash/splash.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  
+
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   PlatformDispatcher.instance.onError = (error, stack) {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
