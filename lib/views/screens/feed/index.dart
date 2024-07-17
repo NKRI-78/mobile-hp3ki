@@ -386,14 +386,14 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
               ? feedProvider.g1List.length + 1 
               : feedProvider.g1List.length,
               itemBuilder: (BuildContext content, int i) {
-              if (feedProvider.g1List.length == i) {
-                return const Center(
-                  child: SpinKitThreeBounce(
-                    size: 20.0,
-                    color: ColorResources.primary,
-                  ),
-                );
-              }
+              // if (feedProvider.g1List.length == i) {
+              //   return const Center(
+              //     child: SpinKitThreeBounce(
+              //       size: 20.0,
+              //       color: ColorResources.primary,
+              //     ),
+              //   );
+              // }
               return Posts(
                 i: i,
                 feedData: feedProvider.g1List,
@@ -434,14 +434,14 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                 physics: const AlwaysScrollableScrollPhysics(),
                 itemCount: feedProvider.loadPagePopular == true ? feedProvider.g2List.length + 1 : feedProvider.g2List.length,
                 itemBuilder: (BuildContext content, int i) {
-                if (feedProvider.g2List.length == i) {
-                  return const Center(
-                    child: SpinKitThreeBounce(
-                      size: 20.0,
-                      color: ColorResources.primary,
-                    ),
-                  );
-                }
+                // if (feedProvider.g2List.length == i) {
+                //   return const Center(
+                //     child: SpinKitThreeBounce(
+                //       size: 20.0,
+                //       color: ColorResources.primary,
+                //     ),
+                //   );
+                // }
                 return Posts(
                   i: i,
                   feedData: feedProvider.g2List,
@@ -488,12 +488,12 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
               physics: const AlwaysScrollableScrollPhysics(),
               itemCount: feedProvider.loadPageSelf == true ? feedProvider.g3List.length + 1 : feedProvider.g3List.length,
               itemBuilder: (BuildContext content, int i) {
-              if (feedProvider.g3List.length == i) {
-                return const SpinKitThreeBounce(
-                  size: 20.0,
-                  color: ColorResources.primary,
-                );
-              }
+              // if (feedProvider.g3List.length == i) {
+              //   return const SpinKitThreeBounce(
+              //     size: 20.0,
+              //     color: ColorResources.primary,
+              //   );
+              // }
               return Posts(
                 i: i,
                 feedData: feedProvider.g3List,

@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 
-
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 
-
-//FIXME: implement ke semua page
 class NoConnectionScreen extends StatefulWidget {
   
   const NoConnectionScreen({ 

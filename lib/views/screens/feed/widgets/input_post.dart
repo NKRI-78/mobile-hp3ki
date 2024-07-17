@@ -30,10 +30,10 @@ class InputPostComponent extends StatefulWidget {
     Key? key,
   }) : super(key: key);
   @override
-  _InputPostComponentState createState() => _InputPostComponentState();
+  InputPostComponentState createState() => InputPostComponentState();
 }
 
-class _InputPostComponentState extends State<InputPostComponent> {
+class InputPostComponentState extends State<InputPostComponent> {
   ImageSource? imageSource;
   File? fileVideo;
   Uint8List? thumbnail;
@@ -90,7 +90,10 @@ class _InputPostComponentState extends State<InputPostComponent> {
       if (imageSource == ImageSource.gallery) {
         files = [];
         var pickerFiles = await ImagePicker().pickMultiImage(
-            maxHeight: 720.0, maxWidth: 1280.0, imageQuality: 70);
+            maxHeight: 720.0, 
+            maxWidth: 1280.0, 
+            imageQuality: 70,
+        );
 
         if (pickerFiles.isEmpty) {
           return;

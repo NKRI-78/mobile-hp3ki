@@ -1085,7 +1085,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: ColorResources.backgroundDisabled,
                         image: const DecorationImage(
                           image: AssetImage('assets/images/icons/ic-empty.png'),
-                          fit: BoxFit.fitHeight,
+                          fit: BoxFit.contain,
                         )),
                   ),
                   const SizedBox(
@@ -1102,88 +1102,91 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           } else {
             return Container(
-              height: 175.0,
+              height: 220.0,
               width: double.infinity,
               margin: const EdgeInsets.only(
                 top: Dimensions.marginSizeExtraLarge,
               ),
-              decoration:
-                  BoxDecoration(borderRadius: BorderRadius.circular(15.0)),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15.0)
+              ),
               child: CarouselSlider.builder(
                 carouselController: cc,
                 options: CarouselOptions(
-                    height: 200.0,
-                    autoPlay: true,
-                    enlargeCenterPage: true,
-                    viewportFraction: 0.9,
-                    enlargeStrategy: CenterPageEnlargeStrategy.scale,
-                    initialPage: currentIndex,
-                    onPageChanged: (int i, CarouselPageChangedReason reason) {
-                      currentIndex = i;
-                      setState(() {});
-                    }),
-                    itemCount: bannerProvider.banners!.length,
-                    itemBuilder: (BuildContext context, int i, int z) {
-                    return CachedNetworkImage(
-                      imageUrl: bannerProvider.banners![i].path!,
-                      imageBuilder: (BuildContext context, ImageProvider imageProvider) {
+                  autoPlay: true,
+                  enlargeCenterPage: true,
+                  viewportFraction: 0.9,
+                  enlargeStrategy: CenterPageEnlargeStrategy.scale,
+                  initialPage: currentIndex,
+                  onPageChanged: (int i, CarouselPageChangedReason reason) {
+                    currentIndex = i;
+                    setState(() {});
+                  }),
+                  itemCount: bannerProvider.banners!.length,
+                  itemBuilder: (BuildContext context, int i, int z) {
+                  return CachedNetworkImage(
+                    imageUrl: bannerProvider.banners![i].path!,
+                    imageBuilder: (BuildContext context, ImageProvider imageProvider) {
+                      return Card(
+                        margin: EdgeInsets.zero,
+                        color: ColorResources.transparent,
+                        elevation: 10.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0)
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15.0),
+                            image: DecorationImage(
+                              fit: BoxFit.fill, 
+                              image: imageProvider
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    placeholder: (BuildContext context, String text) {
+                      return Shimmer.fromColors(
+                        baseColor: Colors.grey[300]!,
+                        highlightColor: Colors.grey[200]!,
+                        child: Card(
+                          margin: EdgeInsets.zero,
+                          color: ColorResources.white,
+                          elevation: 0.0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0)
+                          ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15.0),
+                            image: const DecorationImage(
+                              fit: BoxFit.scaleDown, 
+                              image: AssetImage('assets/images/logo/app-icon.png')
+                            ),
+                          ),
+                        ),
+                        ),
+                      );
+                    },
+                    errorWidget: (context, url, error) {
                         return Card(
-                          margin: EdgeInsets.zero,
-                          color: ColorResources.transparent,
-                          elevation: 10.0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0)
-                          ),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15.0),
-                              image: DecorationImage(
-                                fit: BoxFit.fill, 
-                                image: imageProvider
-                              ),
+                        margin: EdgeInsets.zero,
+                        color: ColorResources.transparent,
+                        elevation: 0.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0)
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15.0),
+                            image: const DecorationImage(
+                              fit: BoxFit.scaleDown, 
+                              image: AssetImage('assets/images/logo/app-icon.png')
                             ),
                           ),
-                        );
-                      },
-                      placeholder: (BuildContext context, String text) {
-                        return Shimmer.fromColors(
-                          baseColor: Colors.grey[300]!,
-                          highlightColor: Colors.grey[200]!,
-                          child: Card(
-                            margin: EdgeInsets.zero,
-                            color: ColorResources.white,
-                            elevation: 4.0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0)
-                            ),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15.0),
-                                color: ColorResources.white
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                      errorWidget: (context, url, error) {
-                         return Card(
-                          margin: EdgeInsets.zero,
-                          color: ColorResources.transparent,
-                          elevation: 10.0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0)
-                          ),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15.0),
-                              image: const DecorationImage(
-                                fit: BoxFit.fill, 
-                                image: AssetImage('assets/images/logo/app-icon.png')
-                              ),
-                            ),
-                          ),
-                        );  
-                      },
+                        ),
+                      );  
+                    },
                   );
                 },
               ),

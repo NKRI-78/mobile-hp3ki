@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:hp3ki/utils/helper.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -233,7 +234,7 @@ class NewsScreenState extends State<NewsScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(newsProvider.news?[i].createdAt ?? "...",
+                                Text(Helper.formatDate(DateTime.parse(Helper.getFormatedDate(newsProvider.news![i].createdAt))),
                                   style: poppinsRegular.copyWith(
                                     fontSize: Dimensions.fontSizeSmall,
                                     color: ColorResources.grey,

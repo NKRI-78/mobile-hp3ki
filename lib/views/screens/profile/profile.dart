@@ -51,6 +51,8 @@ class ProfileScreenState extends State<ProfileScreen> {
   ImageSource? imageSource;
   String? pfpPath;
 
+  bool isDownload = false;
+
   late bool isPlatinum;
   late bool hasRemainder;
 
@@ -384,7 +386,9 @@ class ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ),
 
-                      Positioned(
+                      isDownload 
+                      ? const SizedBox() 
+                      : Positioned(
                         bottom: 75,
                         left: 140,
                         child: Container(
@@ -602,21 +606,39 @@ class ProfileScreenState extends State<ProfileScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   InkWell(
-                    onTap: () async {
-                      final RenderRepaintBoundary boundary = ktaImageKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
-                      final ui.Image image = await boundary.toImage(pixelRatio: 10);
-                      ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-                      var pngBytes = byteData!.buffer.asUint8List();
-                      // var bs64 = base64Encode(pngBytes);
+                    onTap: isDownload  
+                    ? () {} 
+                    : () async {
+                      setState(() {
+                        isDownload = true;
+                      });
 
-                      String dir = (await getTemporaryDirectory()).path;
-                      File file = File("$dir/kta-hp3ki.png");
-                      await file.writeAsBytes(
-                        pngBytes,
-                      );
-                      final params = SaveFileDialogParams(sourceFilePath: file.path);
-                      final finalPath = await FlutterFileDialog.saveFile(params: params);
-                      debugPrint(finalPath ?? 'Cannot save');
+                      Future.delayed(const Duration(seconds: 1), () async {
+
+                        final RenderRepaintBoundary boundary = ktaImageKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+                        final ui.Image image = await boundary.toImage(pixelRatio: 10);
+                        ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+                        var pngBytes = byteData!.buffer.asUint8List();
+                        // var bs64 = base64Encode(pngBytes);
+
+                        String dir = (await getTemporaryDirectory()).path;
+                        File file = File("$dir/kta-hp3ki.jpg");
+                        await file.writeAsBytes(
+                          pngBytes,
+                        );
+                        final params = SaveFileDialogParams(sourceFilePath: file.path);
+                        final finalPath = await FlutterFileDialog.saveFile(params: params);
+
+                        debugPrint(finalPath ?? 'Cannot save');
+
+                      });
+
+                      Future.delayed(const Duration(seconds: 2), () {
+                        setState(() {
+                          isDownload = false;
+                        });
+                      });
+
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -625,13 +647,17 @@ class ProfileScreenState extends State<ProfileScreen> {
                       ),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 8),
-                      child: const Row(
+                      child: Row(
                         children: [
-                          Text('Download'),
-                          SizedBox(
+
+                          isDownload 
+                          ? Text(getTranslated("LOADING", context)) 
+                          : Text(getTranslated("DOWNLOAD", context)),
+                          
+                          const SizedBox(
                             width: 8,
                           ),
-                          Icon(Icons.download_outlined),
+                          const Icon(Icons.download_outlined),
                         ],
                       ),
                     ),

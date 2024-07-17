@@ -74,7 +74,7 @@ class _DetailInfoPageState extends State<DetailInboxScreen> {
     }
     if (mounted) {
       if (url!.contains('howTo')) {
-        context.read<PPOBProvider>().getPaymentGuide(context, url!);
+        // context.read<PPOBProvider>().getPaymentGuide(context, url!);
       }
     }
   }

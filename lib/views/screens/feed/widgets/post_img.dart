@@ -103,7 +103,7 @@ class _PostImageState extends State<PostImage> {
                         child: Image.network(
                           image,
                           width: double.infinity,
-                          fit: BoxFit.cover,
+                          fit: BoxFit.fitHeight,
                           errorBuilder: (context, error, stackTrace) =>
                               Container(
                             margin: const EdgeInsets.all(0.0),
@@ -176,8 +176,6 @@ class _PostImageState extends State<PostImage> {
           const SizedBox(height: 8.0),
           CarouselSlider(
             options: CarouselOptions(
-                // height: 200.0,
-
                 enableInfiniteScroll: false,
                 viewportFraction: 1.0,
                 onPageChanged: (int i, CarouselPageChangedReason reason) {
@@ -253,7 +251,9 @@ class _PostImageState extends State<PostImage> {
                     // height: 200.0,
                     decoration: const BoxDecoration(
                         image: DecorationImage(
-                            image: AssetImage("assets/images/logo/logo.png"))),
+                            image: AssetImage("assets/images/logo/logo.png"),
+                            fit: BoxFit.fitHeight
+                          )),
                   ),
                 ),
               );
@@ -382,8 +382,11 @@ class _PostImageState extends State<PostImage> {
                 width: double.infinity,
                 height: 200.0,
                 decoration: const BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage("assets/images/logo/logo.png"))),
+                  image: DecorationImage(
+                    image: AssetImage("assets/images/logo/logo.png"),
+                    fit: BoxFit.fitHeight  
+                  )
+                ),
               ),
             ),
           ),

@@ -94,9 +94,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.didChangeDependencies();
   }
 
-  void listenOnClickNotifications() =>
-      NotificationService.onNotifications.stream.listen(onClickedNotification);
-  void onClickedNotification(String? payload) {}
+  void listenOnClickNotifications() => NotificationService.onNotifications.stream.listen(onClickedNotification);
+
+  void onClickedNotification(String? payload) {
+    
+  }
 
   @override
   void initState() {

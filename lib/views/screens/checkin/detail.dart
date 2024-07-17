@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+
 import 'package:hp3ki/localization/language_constraints.dart';
 import 'package:hp3ki/providers/checkin/checkin.dart';
+
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/constant.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
-
 
 import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
 
@@ -112,27 +113,27 @@ class _CheckInDetailScreenState extends State<CheckInDetailScreen> {
                       tileColor: ColorResources.white,
                       onTap: () {},
                       dense: true,
-                      leading: CircleAvatar(
-                        maxRadius: 40.0,
-                        child: SizedBox.expand(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10.0),
-                            child: CachedNetworkImage(
-                              imageUrl: avatar!.isNotEmpty ? avatar : AppConstants.avatarError,
-                              fit: BoxFit.fill,
-                              placeholder: (BuildContext context, String url) {
-                                return const CircleAvatar(
-                                  backgroundColor: ColorResources.transparent,
-                                  backgroundImage: AssetImage("assets/images/logo/logo.png")
-                                );
-                              },
-                              errorWidget: (BuildContext context, String url, dynamic error) {
-                                return const CircleAvatar(
-                                  backgroundColor: ColorResources.transparent,
-                                  backgroundImage: AssetImage("assets/images/logo/logo.png")
-                                );
-                              },
-                            ),
+                      leading: SizedBox(
+                        width: 45.0,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10.0),
+                          child: CachedNetworkImage(
+                            imageUrl: avatar!.isNotEmpty 
+                            ? avatar 
+                            : AppConstants.avatarError,
+                            fit: BoxFit.fitWidth,
+                            placeholder: (BuildContext context, String url) {
+                              return const CircleAvatar(
+                                backgroundColor: ColorResources.transparent,
+                                backgroundImage: AssetImage("assets/images/logo/logo.png")
+                              );
+                            },
+                            errorWidget: (BuildContext context, String url, dynamic error) {
+                              return const CircleAvatar(
+                                backgroundColor: ColorResources.transparent,
+                                backgroundImage: AssetImage("assets/images/logo/logo.png")
+                              );
+                            },
                           ),
                         ),
                       ),

@@ -1,8 +1,4 @@
-import 'package:hp3ki/providers/internet/internet.dart';
-import 'package:hp3ki/providers/news/news.dart';
-import 'package:hp3ki/utils/helper.dart';
-import 'package:hp3ki/views/screens/connection/connection.dart';
-import 'package:hp3ki/views/webview/webview.dart';
+
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -10,10 +6,20 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:hp3ki/localization/language_constraints.dart';
+
 import 'package:hp3ki/services/navigation.dart';
-import 'package:hp3ki/views/basewidgets/loader/circular.dart';
+
 import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
+
+import 'package:hp3ki/providers/internet/internet.dart';
+import 'package:hp3ki/providers/news/news.dart';
+
+import 'package:hp3ki/views/screens/connection/connection.dart';
+import 'package:hp3ki/views/webview/webview.dart';
+
+import 'package:hp3ki/utils/helper.dart';
 import 'package:hp3ki/utils/extension.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
@@ -21,14 +27,13 @@ import 'package:hp3ki/utils/dimensions.dart';
 
 class DetailNewsScreen extends StatefulWidget {
 
-
   const DetailNewsScreen({ Key? key,}) : super(key: key);
   
   @override
-  _DetailInfoPageState createState() => _DetailInfoPageState();
+  DetailInfoPageState createState() => DetailInfoPageState();
 }
 
-class _DetailInfoPageState extends State<DetailNewsScreen> {
+class DetailInfoPageState extends State<DetailNewsScreen> {
 
   String? imageUrl;
   String? title;
@@ -94,8 +99,8 @@ class _DetailInfoPageState extends State<DetailNewsScreen> {
         return Scaffold(
           backgroundColor: ColorResources.white,
           body: internetProvider.internetStatus == InternetStatus.disconnected
-            ? const NoConnectionScreen()
-            : buildConnectionAvailableContent(context),
+          ? const NoConnectionScreen()
+          : buildConnectionAvailableContent(context),
         );
       },
     );

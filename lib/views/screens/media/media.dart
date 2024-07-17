@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
@@ -56,14 +57,19 @@ class _MediaScreenState extends State<MediaScreen> {
                 onTap: () async {
                   await launchUrl(Uri.parse('https://www.facebook.com/hp3ki'));
                 },
-                child: const Padding(
-                  padding: EdgeInsets.all(12.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
                     children: [
+
+                      Image.asset('assets/images/icons/ic-fb.jpeg',
+                        width: 30.0,
+                      ),
+
+                      const SizedBox(width: 10),
                               
-                      Text("Facebook",
+                      const Text("Facebook",
                         style: TextStyle(
                           fontSize: 18.0,
                           fontWeight: FontWeight.bold
@@ -91,14 +97,19 @@ class _MediaScreenState extends State<MediaScreen> {
                 onTap: () async {
                   await launchUrl(Uri.parse('https://x.com/hp3ki_official'));
                 },
-                child: const Padding(
-                  padding: EdgeInsets.all(12.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+
+                      Image.asset('assets/images/icons/ic-x.jpeg',
+                        width: 30.0,
+                      ),
+
+                      const SizedBox(width: 10),
                               
-                      Text("X",
+                      const Text("X",
                         style: TextStyle(
                           fontSize: 18.0,
                           fontWeight: FontWeight.bold
@@ -126,14 +137,19 @@ class _MediaScreenState extends State<MediaScreen> {
                 onTap: () async {
                   await launchUrl(Uri.parse('https://www.instagram.com/hp3ki.official'));
                 },
-                child: const Padding(
-                  padding: EdgeInsets.all(12.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
                     children: [
+
+                      Image.asset('assets/images/icons/ic-ig.jpeg',
+                        width: 30.0,
+                      ),
+
+                      const SizedBox(width: 10),
                               
-                      Text("Instagram",
+                      const Text("Instagram",
                         style: TextStyle(
                           fontSize: 18.0,
                           fontWeight: FontWeight.bold
@@ -161,14 +177,19 @@ class _MediaScreenState extends State<MediaScreen> {
                 onTap: () async {
                   await launchUrl(Uri.parse('https://www.youtube.com/@hp3kichannel'));
                 },
-                child: const Padding(
-                  padding: EdgeInsets.all(12.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
                     children: [
                               
-                      Text("Youtube",
+                      Image.asset('assets/images/icons/ic-yt.jpeg',
+                        width: 30.0,
+                      ),
+
+                      const SizedBox(width: 10),
+                              
+                      const Text("Youtube",
                         style: TextStyle(
                           fontSize: 18.0,
                           fontWeight: FontWeight.bold
