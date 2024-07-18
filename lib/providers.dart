@@ -2,7 +2,7 @@ import 'package:hp3ki/providers/auth/auth.dart';
 import 'package:hp3ki/providers/banner/banner.dart';
 import 'package:hp3ki/providers/checkin/checkin.dart';
 import 'package:hp3ki/providers/event/event.dart';
-import 'package:hp3ki/providers/feed/feed.dart';
+import 'package:hp3ki/providers/feedv2/feed.dart';
 import 'package:hp3ki/providers/firebase/firebase.dart';
 import 'package:hp3ki/providers/inbox/inbox.dart';
 import 'package:hp3ki/providers/internet/internet.dart';
@@ -42,7 +42,7 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider(create: (_) => c.getIt<MembernearProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<SosProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<InboxProvider>()),
-  ChangeNotifierProvider(create: (_) => c.getIt<FeedProvider>()),
+  ChangeNotifierProvider(create: (_) => c.getIt<FeedProviderV2>()),
   ChangeNotifierProvider(create: (_) => c.getIt<EventProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<CheckInProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<AuthProvider>()),

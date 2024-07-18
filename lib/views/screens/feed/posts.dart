@@ -1,42 +1,37 @@
+
 import 'package:flutter/material.dart';
-import 'package:awesome_dialog/awesome_dialog.dart';
-// import 'package:timeago/timeago.dart' as timeago;
-import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:hp3ki/data/models/feedv2/feed.dart';
+import 'package:hp3ki/providers/feedv2/feed.dart';
+import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-import 'package:hp3ki/providers/profile/profile.dart';
+import 'package:hp3ki/utils/date_util.dart';
 
-import 'package:hp3ki/services/navigation.dart';
+import 'package:hp3ki/views/basewidgets/button/custom.dart';
 
 import 'package:hp3ki/localization/language_constraints.dart';
 
-import 'package:hp3ki/data/models/feed/feeds.dart';
 
-import 'package:hp3ki/providers/feed/feed.dart';
-// import 'package:hp3ki/providers/profile/profile.dart';
+import 'package:hp3ki/providers/profile/profile.dart';
 
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
-import 'package:hp3ki/utils/shared_preferences.dart';
 
 import 'package:hp3ki/views/screens/feed/widgets/post_video.dart';
 import 'package:hp3ki/views/screens/feed/widgets/post_doc.dart';
 import 'package:hp3ki/views/screens/feed/widgets/post_img.dart';
 import 'package:hp3ki/views/screens/feed/widgets/post_link.dart';
 import 'package:hp3ki/views/screens/feed/widgets/post_text.dart';
-import 'package:hp3ki/views/screens/feed/post_detail.dart';
 
 class Posts extends StatefulWidget {
   final int i;
-  final List<FeedData> feedData;
-
-  const Posts({
-    Key? key,
+  final List<Forum> forum;
+   
+  const Posts({Key? key, 
     required this.i,
-    required this.feedData,
+    required this.forum,
   }) : super(key: key);
 
   @override
@@ -46,328 +41,406 @@ class Posts extends StatefulWidget {
 class _PostsState extends State<Posts> {
   bool deletePostBtn = false;
 
+  @override 
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return buildUI();
-  }
-
-  Future<void> delete(BuildContext context, String forumId) async {
-    setState(() => deletePostBtn = true);
-    try {
-      await context.read<FeedProvider>().deleteForum(context, forumId);
-      setState(() => deletePostBtn = false);
-    } catch (e, stacktrace) {
-      setState(() => deletePostBtn = false);
-      debugPrint(stacktrace.toString());
-    }
-  }
-
-  Widget buildUI() {
-    return InkWell(
-      onLongPress: () {},
-      onTap: () {
-        NS.push(context, PostDetailScreen(
-          postId: widget.feedData[widget.i].uid!,
-        ));
-      },
-      child: Container(
-        margin: const EdgeInsets.only(top: Dimensions.marginSizeDefault),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-                dense: true,
-                leading: CachedNetworkImage(
-                  imageUrl: widget.feedData[widget.i].user!.profilePic ?? "https://p7.hiclipart.com/preview/92/319/609/computer-icons-person-clip-art-name.jpg",
-                  imageBuilder:
-                      (BuildContext context, ImageProvider imageProvider) {
-                    return CircleAvatar(
-                      backgroundColor: ColorResources.transparent,
-                      backgroundImage: imageProvider,
-                      radius: 20.0,
-                    );
-                  },
-                  placeholder: (BuildContext context, _) {
-                    return const CircleAvatar(
-                      backgroundColor: ColorResources.black,
-                      backgroundImage:
-                          AssetImage('assets/images/icons/ic-person.png'),
-                      radius: 20.0,
-                    );
-                  },
-                  errorWidget: (BuildContext context, _, dynamic data) {
-                    return const CircleAvatar(
-                      backgroundColor: ColorResources.black,
-                      backgroundImage:
-                          AssetImage('assets/images/icons/ic-person.png'),
-                      radius: 20.0,
-                    );
-                  },
-                ),
-                title: Text(
-                  widget.feedData[widget.i].user!.fullname ?? "...",
-                  style: poppinsRegular.copyWith(
-                      fontSize: Dimensions.fontSizeDefault,
-                      color: ColorResources.black),
-                ),
-                subtitle: Text(
-                  DateFormat(null, getTranslated('LOCALE', context)).format(
-                    widget.feedData[widget.i].createdAt!,
-                  ),
-                  style: poppinsRegular.copyWith(
-                      fontSize: Dimensions.fontSizeDefault,
-                      color: ColorResources.dimGrey),
-                ),
-                trailing: widget.feedData[widget.i].user!.uid ==
-                        SharedPrefs.getUserId()
-                    ? grantedDeletePost(context, widget.feedData[widget.i].uid!)
-                    : PopupMenuButton(
-                        itemBuilder: (BuildContext buildContext) {
-                          return [
-                            PopupMenuItem(
-                                child: Text(
-                                    getTranslated('BLOCK_CONTENT', context),
-                                    style: poppinsRegular.copyWith(
-                                        color: ColorResources.error,
-                                        fontSize: Dimensions.fontSizeDefault)),
-                                value: "/report-user"),
-                            PopupMenuItem(
-                                child: Text(
-                                    getTranslated('BLOCK_USER', context),
-                                    style: poppinsRegular.copyWith(
-                                        color: ColorResources.error,
-                                        fontSize: Dimensions.fontSizeDefault)),
-                                value: "/report-user"),
-                            PopupMenuItem(
-                                child: Text(getTranslated('SPAM', context),
-                                    style: poppinsRegular.copyWith(
-                                        color: ColorResources.error,
-                                        fontSize: Dimensions.fontSizeDefault)),
-                                value: "/report-user"),
-                            PopupMenuItem(
-                                child: Text(getTranslated('NUDITY', context),
-                                    style: poppinsRegular.copyWith(
-                                        color: ColorResources.error,
-                                        fontSize: Dimensions.fontSizeDefault)),
-                                value: "/report-user"),
-                            PopupMenuItem(
-                                child: Text(getTranslated('FAKE_INFO', context),
-                                    style: poppinsRegular.copyWith(
-                                        color: ColorResources.error,
-                                        fontSize: Dimensions.fontSizeDefault)),
-                                value: "/report-user")
-                          ];
-                        },
-                        onSelected: (route) {
-                          if (route == "/report-user") {
-                            showAnimatedDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return Dialog(
-                                    child: Container(
-                                        height: 150.0,
-                                        padding: const EdgeInsets.all(10.0),
-                                        margin: const EdgeInsets.only(
-                                            top: 10.0,
-                                            bottom: 10.0,
-                                            left: 16.0,
-                                            right: 16.0),
-                                        child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              const SizedBox(height: 10.0),
-                                              const Icon(
-                                                Icons.delete,
-                                                color: ColorResources.black,
-                                              ),
-                                              const SizedBox(height: 10.0),
-                                              Text(
-                                                getTranslated(
-                                                    "ARE_YOU_SURE_REPORT",
-                                                    context),
-                                                style: poppinsRegular.copyWith(
-                                                    fontSize: Dimensions
-                                                        .fontSizeDefault,
-                                                    fontWeight:
-                                                        FontWeight.w600),
-                                              ),
-                                              const SizedBox(height: 10.0),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                mainAxisSize: MainAxisSize.max,
-                                                children: [
-                                                  ElevatedButton(
-                                                      onPressed: () =>
-                                                          Navigator.of(context)
-                                                              .pop(),
-                                                      child: Text(
-                                                          getTranslated(
-                                                              "NO", context),
-                                                          style: poppinsRegular
-                                                              .copyWith(
-                                                                  fontSize:
-                                                                      Dimensions
-                                                                          .fontSizeDefault))),
-                                                  StatefulBuilder(builder:
-                                                      (BuildContext context,
-                                                          Function s) {
-                                                    return ElevatedButton(
-                                                      style: ButtonStyle(
-                                                        backgroundColor:
-                                                            MaterialStateProperty
-                                                                .all(
-                                                                    ColorResources
-                                                                        .error),
-                                                      ),
-                                                      onPressed: () async {
-                                                        Navigator.of(context,
-                                                                rootNavigator:
-                                                                    true)
-                                                            .pop();
-                                                      },
-                                                      child: Text(
-                                                        getTranslated(
-                                                            "YES", context),
-                                                        style: poppinsRegular.copyWith(
-                                                            fontSize: Dimensions
-                                                                .fontSizeDefault),
-                                                      ),
-                                                    );
-                                                  })
-                                                ],
-                                              )
-                                            ])));
-                              },
-                            );
-                          }
-                        },
-                      )),
-            const SizedBox(height: 5.0),
-            if (widget.feedData[widget.i].forumType == 'link')
-              PostLink(
-                  url: widget.feedData[widget.i].media!.first.path,
-                  caption: widget.feedData[widget.i].caption ?? "..."),
-            if (widget.feedData[widget.i].forumType == 'text')
-              PostText(widget.feedData[widget.i].caption ?? "..."),
-            if (widget.feedData[widget.i].forumType == "document")
-              PostDoc(
-                  medias: widget.feedData[widget.i].media ?? [],
-                  caption: widget.feedData[widget.i].caption!),
-            if (widget.feedData[widget.i].forumType == 'image')
-              PostImage(false, widget.feedData[widget.i].media ?? [],
-                  widget.feedData[widget.i].caption ?? "..."),
-            if (widget.feedData[widget.i].forumType == 'video')
-              PostVideo(
-                  media: widget.feedData[widget.i].media!.first,
-                  caption: widget.feedData[widget.i].caption!),
-            Container(
-                margin: const EdgeInsets.only(
-                    top: Dimensions.marginSizeExtraSmall,
-                    bottom: Dimensions.marginSizeDefault,
-                    left: Dimensions.marginSizeDefault,
-                    right: Dimensions.marginSizeDefault),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      SizedBox(
-                        width: 40.0,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Text(
-                                widget.feedData[widget.i].forumLikes?.total
-                                        .toString() ??
-                                    "...",
-                                style: poppinsRegular.copyWith(
-                                    color: ColorResources.black,
-                                    fontSize: Dimensions.fontSizeDefault)),
-                            InkWell(
-                              onTap: () {
-                                final String membershipStatus =
-                                    SharedPrefs.getUserMemberType().trim();
-                                if (membershipStatus != "PLATINUM" ||
-                                    membershipStatus == "-") {
-                                  context
-                                      .read<ProfileProvider>()
-                                      .showNonPlatinumLimit(context);
-                                } else {
-                                  context.read<FeedProvider>().likeForum(
-                                        context,
-                                        widget.feedData[widget.i].uid!,
-                                      );
-                                }
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Icon(Icons.thumb_up,
-                                    size: 16.0,
-                                    color: widget.feedData[widget.i].forumLikes!
-                                            .likes!.isNotEmpty
-                                        ? ColorResources.primary
-                                        : ColorResources.black),
+    return Container(
+      margin: const EdgeInsets.only(top: Dimensions.marginSizeDefault),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [ 
+          ListTile(
+            dense: true,
+            leading: CachedNetworkImage(
+            imageUrl: "${widget.forum[widget.i].user!.avatar!}",
+              imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
+                backgroundColor: Colors.transparent,
+                backgroundImage: imageProvider,
+                radius: 20.0,
+              ),
+              placeholder: (BuildContext context, String url) => const CircleAvatar(
+                backgroundColor: Colors.transparent,
+                backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                radius: 20.0,
+              ),
+              errorWidget: (BuildContext context, String url, dynamic error) => const CircleAvatar(
+                backgroundColor: Colors.transparent,
+                backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                radius: 20.0,
+              )
+            ),
+            title: Text(widget.forum[widget.i].user!.username!,
+              style: robotoRegular.copyWith(
+                fontSize: Dimensions.fontSizeDefault,
+                color: ColorResources.black
+              ),
+            ),
+            subtitle: Text(DateHelper.formatDateTime(widget.forum[widget.i].createdAt!, context),
+              style: robotoRegular.copyWith(
+                fontSize: Dimensions.fontSizeExtraSmall,
+                color: ColorResources.dimGrey
+              ),
+            ),
+            trailing: context.read<ProfileProvider>().user!.id == widget.forum[widget.i].user!.id! 
+            ? grantedDeletePost(context) 
+            : PopupMenuButton(
+                itemBuilder: (BuildContext buildContext) { 
+                  return [
+                    PopupMenuItem(
+                      child: Text("Block content",
+                        style: robotoRegular.copyWith(
+                          color: ColorResources.error,
+                          fontSize: Dimensions.fontSizeSmall
+                        )
+                      ), 
+                      value: "/report-user"
+                    ),
+                    PopupMenuItem(
+                      child: Text("Block user",
+                        style: robotoRegular.copyWith(
+                          color: ColorResources.error,
+                          fontSize: Dimensions.fontSizeSmall
+                        )
+                      ), 
+                      value: "/report-user"
+                    ),
+                    PopupMenuItem(
+                      child: Text("It's spam",
+                        style: robotoRegular.copyWith(
+                          color: ColorResources.error,
+                          fontSize: Dimensions.fontSizeSmall
+                        )
+                      ), 
+                      value: "/report-user"
+                    ),
+                    PopupMenuItem(
+                      child: Text("Nudity or sexual activity",
+                        style: robotoRegular.copyWith(
+                          color: ColorResources.error,
+                          fontSize: Dimensions.fontSizeSmall
+                        )
+                      ), 
+                      value: "/report-user"
+                    ),
+                    PopupMenuItem(
+                      child: Text("False Information",
+                        style: robotoRegular.copyWith(
+                          color: ColorResources.error,
+                          fontSize: Dimensions.fontSizeSmall
+                        )
+                      ), 
+                      value: "/report-user"
+                    )
+                  ];
+                },
+                onSelected: (route) {
+                  if(route == "/report-user") {
+                    showAnimatedDialog(
+                      barrierDismissible: true,
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Dialog(
+                          child: Container(
+                          height: 150.0,
+                          padding: const EdgeInsets.all(10.0),
+                          margin: const EdgeInsets.only(
+                            top: 10.0, 
+                            bottom: 10.0, 
+                            left: 16.0, 
+                            right: 16.0
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const SizedBox(height: 10.0),
+                              const Icon(Icons.delete,
+                                color: ColorResources.black,
                               ),
-                            )
-                          ],
-                        ),
+                              const SizedBox(height: 10.0),
+                              Text(getTranslated("ARE_YOU_SURE_REPORT", context),
+                                style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeSmall,
+                                  fontWeight: FontWeight.w600
+                                ),
+                              ),
+                              const SizedBox(height: 10.0),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () => Navigator.of(context).pop(),
+                                    child: Text(getTranslated("NO", context),
+                                      style: robotoRegular.copyWith(
+                                        fontSize: Dimensions.fontSizeSmall
+                                      )
+                                    )
+                                  ), 
+                                  StatefulBuilder(
+                                    builder: (BuildContext context, Function s) {
+                                    return ElevatedButton(
+                                    style: ButtonStyle(
+                                      backgroundColor: MaterialStateProperty.all(
+                                        ColorResources.error
+                                      ),
+                                    ),
+                                    onPressed: () async { 
+                                      Navigator.of(context, rootNavigator: true).pop(); 
+                                    },
+                                    child: Text(getTranslated("YES", context), 
+                                      style: robotoRegular.copyWith(
+                                        fontSize: Dimensions.fontSizeSmall
+                                      ),
+                                    ),                           
+                                  );
+                                })
+                              ],
+                            ) 
+                          ])
+                        )
+                      );
+                    },
+                  );
+                }
+              },
+            )
+          ),
+    
+          const SizedBox(height: 5.0),
+          Container(
+            margin: const EdgeInsets.only(left: Dimensions.marginSizeDefault),
+            child: PostText(widget.forum[widget.i].caption!)
+          ),
+          if(widget.forum[widget.i].type == "link")
+            PostLink(url: widget.forum[widget.i].link ?? "-"),
+          if(widget.forum[widget.i].type == "document")
+            widget.forum[widget.i].media!.isNotEmpty ?
+            PostDoc(
+              medias: widget.forum[widget.i].media!, 
+            ) : Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
+          if(widget.forum[widget.i].type == "image")
+            widget.forum[widget.i].media!.isNotEmpty ? 
+            PostImage(
+              false,
+              widget.forum[widget.i].media!, 
+            ) : Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
+          if(widget.forum[widget.i].type == "video")
+            widget.forum[widget.i].media!.isNotEmpty ? 
+            PostVideo(
+              media: widget.forum[widget.i].media![0].path!,
+            ): Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
+        
+          Container(
+            margin: const EdgeInsets.only(
+              top: Dimensions.marginSizeExtraSmall, 
+              bottom: Dimensions.marginSizeDefault, 
+              left: Dimensions.marginSizeDefault, 
+              right: Dimensions.marginSizeDefault
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                SizedBox(
+                  width: 40.0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('${widget.forum[widget.i].like!.total}', 
+                        style: robotoRegular.copyWith(
+                          color: ColorResources.black,
+                          fontSize: Dimensions.fontSizeSmall
+                        )
                       ),
-                      Text(
-                        '${widget.feedData[widget.i].forumComments?.total.toString()} ${getTranslated("COMMENT", context)}',
-                        style: poppinsRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault),
+                      InkWell(
+                        onTap: () async => context.read<FeedProviderV2>().toggleLike(context: context, feedId: widget.forum[widget.i].id!, feedLikes: widget.forum[widget.i].like!),
+                        child: Container(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Icon(
+                            Icons.thumb_up,
+                            size: 16.0,
+                            color: widget.forum[widget.i].like!.likes.where((el) => el.user!.id == context.read<FeedProviderV2>().ar.getUserId()).isEmpty ? ColorResources.black : ColorResources.blue
+                          ),
+                        ),
                       )
-                    ])),
-          ],
-        ),
-      ),
-    );
-  }
+                    ],
+                  ),
+                ),
+                Text('${widget.forum[widget.i].comment!.total.toString()} ${getTranslated("COMMENT", context)}',
+                  style: robotoRegular.copyWith(
+                    fontSize: Dimensions.fontSizeSmall
+                  ),
+                )
+              ]
+            )
+          ), 
+          
+      ],
+    ),
+        );
+}
 
-  Widget grantedDeletePost(BuildContext context, String forumId) {
+  Widget grantedDeletePost(context) {
     return PopupMenuButton(
-      itemBuilder: (BuildContext buildContext) {
+      itemBuilder: (BuildContext buildContext) { 
         return [
           PopupMenuItem(
-              child: Text(getTranslated("DELETE_POST", context),
-                  style: poppinsRegular.copyWith(
-                      color: ColorResources.black,
-                      fontSize: Dimensions.fontSizeDefault)),
-              value: "/delete-post")
+            child: Text(getTranslated("DELETE_POST", context),
+              style: robotoRegular.copyWith(
+                color: ColorResources.primary,
+                fontSize: Dimensions.fontSizeSmall
+              )
+            ), 
+            value: "/delete-post"
+          )
         ];
       },
       onSelected: (route) {
-        if (route == "/delete-post") {
-          AwesomeDialog(
+        if(route == "/delete-post") {
+          showAnimatedDialog(
+            barrierDismissible: true,
             context: context,
-            dialogType: DialogType.warning,
-            animType: AnimType.topSlide,
-            title: getTranslated('WARNING', context),
-            dismissOnBackKeyPress: true,
-            dismissOnTouchOutside: true,
-            titleTextStyle: poppinsRegular.copyWith(
-                fontWeight: FontWeight.bold,
-                fontSize: Dimensions.fontSizeExtraLarge,
-                color: ColorResources.black),
-            desc: getTranslated('DELETE_POST', context),
-            descTextStyle: poppinsRegular.copyWith(
-                fontSize: Dimensions.fontSizeDefault,
-                color: ColorResources.black),
-            btnCancelColor: ColorResources.primary,
-            btnCancelText: getTranslated('CANCEL', context),
-            btnCancelOnPress: () {},
-            btnOkColor: ColorResources.error,
-            btnOkText: "Ok",
-            btnOkOnPress: () async {
-              await delete(context, forumId);
+            builder: (BuildContext context) {
+              return Builder(
+                builder: (BuildContext context) {
+                  return Container(
+                    margin: const EdgeInsets.only(
+                      left: 25.0,
+                      right: 25.0
+                    ),
+                    child: CustomDialog(
+                      backgroundColor: Colors.transparent,
+                      elevation: 0.0,
+                      minWidth: 180.0,
+                      child: Transform.rotate(
+                        angle: 0.0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(20.0),
+                            border: Border.all(
+                              color: ColorResources.white,
+                              width: 1.0
+                            )
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  Transform.rotate(
+                                    angle: 56.5,
+                                    child: Container(
+                                      margin: const EdgeInsets.all(5.0),
+                                      height: 270.0,
+                                      decoration: BoxDecoration(
+                                        color: ColorResources.white,
+                                        borderRadius: BorderRadius.circular(20.0),
+                                      ),
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.center,
+                                    child: Container(
+                                      margin: const EdgeInsets.only(
+                                        top: 50.0,
+                                        left: 25.0,
+                                        right: 25.0,
+                                        bottom: 25.0
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+
+                                          Image.asset("assets/imagesv2/remove.png",
+                                            width: 60.0,
+                                            height: 60.0,
+                                          ),
+                                          
+                                          const SizedBox(height: 15.0),
+
+                                          Text(getTranslated("DELETE_POST", context),
+                                            style: poppinsRegular.copyWith(
+                                              fontSize: Dimensions.fontSizeDefault,
+                                              color: ColorResources.black
+                                            ),
+                                          ),
+
+                                          const SizedBox(height: 20.0),
+
+                                          StatefulBuilder(
+                                            builder: (BuildContext context, Function setState) {
+                                              return  Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: [
+                                
+                                                  Expanded(
+                                                    child: CustomButton(
+                                                      isBorderRadius: true,
+                                                      isBoxShadow: true,
+                                                      btnColor: ColorResources.error,
+                                                      isBorder: false,
+                                                      onTap: () {
+                                                        Navigator.of(context).pop();
+                                                      }, 
+                                                      btnTxt: getTranslated("NO", context)
+                                                    ),
+                                                  ),
+                                
+                                                  const SizedBox(width: 8.0),
+                                
+                                                  Expanded(
+                                                    child: CustomButton(
+                                                      isBorderRadius: true,
+                                                      isBoxShadow: true,
+                                                      btnColor: ColorResources.success,
+                                                      onTap: () async {
+                                                        setState(() => deletePostBtn = true);
+                                                        try {         
+                                                          await context.read<FeedProviderV2>().deletePost(context, widget.forum[widget.i].id!);               
+                                                          setState(() => deletePostBtn = false);        
+                                                        } catch(e, stacktrace) {
+                                                          setState(() => deletePostBtn = false);
+                                                          debugPrint(stacktrace.toString()); 
+                                                        }
+                                                      }, 
+                                                      btnTxt: deletePostBtn 
+                                                      ? "..." 
+                                                      : getTranslated("YES", context)
+                                                    ),
+                                                  )
+                                
+                                                ],
+                                              );
+                                            },
+                                          ),
+
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ) 
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ); 
             },
-          ).show();
+          );
         }
       },
     );
   }
-}
+} 

@@ -1,27 +1,38 @@
-import 'dart:io';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hp3ki/providers/profile/profile.dart';
-import 'package:hp3ki/utils/shared_preferences.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:readmore/readmore.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:timeago/timeago.dart' as timeago;
-import 'package:hp3ki/localization/language_constraints.dart';
-import 'package:hp3ki/providers/feed/feed.dart';
+import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+
+import 'package:hp3ki/data/models/feedv2/feedDetail.dart' as m;
+import 'package:hp3ki/data/models/feed/comment.dart';
+
+import 'package:hp3ki/providers/feedv2/feed.dart';
+import 'package:hp3ki/providers/feedv2/feedDetail.dart' as p;
+import 'package:hp3ki/providers/profile/profile.dart';
+
 import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
-import 'package:hp3ki/data/models/feed/feedsdetail.dart';
-import 'package:hp3ki/views/screens/feed/widgets/post_link.dart';
-import 'package:hp3ki/views/screens/feed/widgets/post_text.dart';
+
+import 'package:hp3ki/utils/date_util.dart';
+
 import 'package:hp3ki/views/screens/feed/replies.dart';
 import 'package:hp3ki/views/screens/feed/widgets/post_doc.dart';
 import 'package:hp3ki/views/screens/feed/widgets/post_img.dart';
+import 'package:hp3ki/views/screens/feed/widgets/post_link.dart';
 import 'package:hp3ki/views/screens/feed/widgets/post_video.dart';
+
+import 'package:hp3ki/services/navigation.dart';
+
+import 'package:hp3ki/localization/language_constraints.dart';
+
+import 'package:hp3ki/views/basewidgets/loader/circular.dart';
+
+import 'package:hp3ki/views/screens/feed/widgets/post_text.dart';
 
 class PostDetailScreen extends StatefulWidget {
   final String postId;
@@ -37,59 +48,60 @@ class PostDetailScreen extends StatefulWidget {
 
 class _PostDetailScreenState extends State<PostDetailScreen> {
   bool deletePostBtn = false;
+  late p.FeedDetailProviderV2 feedDetailProviderV2;
   
-  TextEditingController commentC = TextEditingController();
   FocusNode commentFn = FocusNode();
 
   @override
   void initState() {  
     super.initState();
+    feedDetailProviderV2 = context.read<p.FeedDetailProviderV2>();
+    feedDetailProviderV2.commentC = TextEditingController();
     Future.delayed(Duration.zero, () {
       if(mounted) {
-        context.read<FeedProvider>().fetchForumDetail(context, widget.postId);
+        feedDetailProviderV2.getFeedDetail(context, widget.postId);
       }
     });
   }
 
-  Future<void> deleteComment(BuildContext context, String commentId) async {
-    await context.read<FeedProvider>().deleteComment(
-      context,
-      commentId: commentId,
-      postId: widget.postId,
-    );               
+  Widget commentSticker(BuildContext context, CommentContent comment) {
+    return CachedNetworkImage(
+      imageUrl: '${comment.url}',
+      imageBuilder: (BuildContext context, ImageProvider<Object> image) {
+        return Container(
+          height: 60.0,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+            alignment: Alignment.centerLeft,
+              image: image
+            )
+          ),
+        );
+      }
+    );
   }
 
-  Future<void> deletePost(BuildContext context, String postId) async {
-    try {         
-      await context.read<FeedProvider>().deleteForum(context, postId);               
-      setState(() => deletePostBtn = false); 
-    } catch(e, stacktrace) {
-      setState(() => deletePostBtn = false);
-      debugPrint(stacktrace.toString()); 
-    }
-  }
-
-  Widget commentText(BuildContext context, CommentElement comment) {
+  Widget commentText(BuildContext context, String comment) {
     return ReadMoreText(
-      comment.comment ?? "...",
-      style: poppinsRegular.copyWith(
+      comment,
+      style: robotoRegular.copyWith(
         fontSize: Dimensions.fontSizeDefault
       ),
       trimLines: 2,
       colorClickableText: ColorResources.black,
       trimMode: TrimMode.Line,
       trimCollapsedText: getTranslated("READ_MORE", context),
-      trimExpandedText: getTranslated("LESS", context),
-      moreStyle: poppinsRegular.copyWith(fontSize: Dimensions.fontSizeDefault, fontWeight: FontWeight.w600),
-      lessStyle: poppinsRegular.copyWith(fontSize: Dimensions.fontSizeDefault, fontWeight: FontWeight.w600),
+      trimExpandedText: getTranslated("LESS_MORE", context),
+      moreStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.w600),
+      lessStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.w600),
     );
   }
 
-  SliverToBoxAdapter post(BuildContext context) {
+  Widget post(BuildContext context) {
     return SliverToBoxAdapter(
-      child: Consumer<FeedProvider>(
-        builder: (BuildContext context, FeedProvider feedProvider, Widget? child) {
-          if (feedProvider.forumDetailStatus == ForumDetailStatus.loading) {
+      child: Consumer<p.FeedDetailProviderV2>(
+        builder: (BuildContext context, p.FeedDetailProviderV2 feedDetailProviderV2, Widget? child) {
+          if (feedDetailProviderV2.feedDetailStatus == p.FeedDetailStatus.loading) {
             return const SizedBox(
               height: 100.0,
               child: Center(
@@ -101,81 +113,178 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
             );
           }
           return Container(
-            color: ColorResources.white,
+            margin: const EdgeInsets.only(top: Dimensions.marginSizeDefault),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start, 
               mainAxisSize: MainAxisSize.min,
               children: [
-                Divider(
-                  color: ColorResources.black.withOpacity(0.5),
-                  thickness: 0.5,
-                ),
                 ListTile(
                   dense: true,
-                  leading: CachedNetworkImage( 
-                    imageUrl: feedProvider.forumDetail.data!.user!.profilePic ?? "https://p7.hiclipart.com/preview/92/319/609/computer-icons-person-clip-art-name.jpg",
-                    imageBuilder: (BuildContext context, ImageProvider imageProvider) {
-                      return CircleAvatar(
-                        backgroundColor: ColorResources.transparent,
-                        backgroundImage: imageProvider,
-                        radius: 20.0,
-                      );
-                    },
-                    placeholder: (BuildContext context, _) {
-                      return const CircleAvatar(
-                        backgroundColor: ColorResources.black,
-                        backgroundImage: AssetImage('assets/images/icons/ic-person.png'),
-                        radius: 20.0,
-                      );
-                    },
-                    errorWidget: (BuildContext context, _, dynamic data) {
-                      return const CircleAvatar(
-                        backgroundColor: ColorResources.black,
-                        backgroundImage: AssetImage('assets/images/icons/ic-person.png'),
-                        radius: 20.0,
-                      ); 
-                    },
+                  leading: CachedNetworkImage(
+                  imageUrl: feedDetailProviderV2.feedDetailData.forum!.user?.avatar ?? "-",
+                    imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      backgroundImage: imageProvider,
+                      radius: 20.0,
+                    ),
+                    placeholder: (BuildContext context, String url) => const CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                      radius: 20.0,
+                    ),
+                    errorWidget: (BuildContext context, String url, dynamic error) => const CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                      radius: 20.0,
+                    )
                   ),
-                  title: Text(feedProvider.forumDetail.data!.user?.fullname ?? "...",
-                    style: poppinsRegular.copyWith(
+                  title: Text(feedDetailProviderV2.feedDetailData.forum!.user?.username ?? "-",
+                    style: robotoRegular.copyWith(
                       fontSize: Dimensions.fontSizeDefault,
                       color: ColorResources.black
                     ),
                   ),
-                  subtitle: Text(timeago.format((feedProvider.forumDetail.data!.createdAt!.toLocal()), locale: getTranslated('LOCALE', context)),
-                    style: poppinsRegular.copyWith(
-                      fontSize: Dimensions.fontSizeDefault,
+                  subtitle: Text(DateHelper.formatDateTime(feedDetailProviderV2.feedDetailData.forum!.createdAt!, context),
+                    style: robotoRegular.copyWith(
+                      fontSize: Dimensions.fontSizeExtraSmall,
                       color: ColorResources.dimGrey
                     ),
                   ),
-                  trailing: SharedPrefs.getUserId() == feedProvider.forumDetail.data!.user!.uid 
-                  ? grantedDeletePost(context, feedProvider.forumDetail.data!.uid!) 
-                  : const SizedBox()
+                  trailing: context.read<ProfileProvider>().user!.id == feedDetailProviderV2.feedDetailData.forum!.user?.id
+                  ? grantedDeletePost(context) 
+                  :  PopupMenuButton(
+                      itemBuilder: (BuildContext buildContext) { 
+                        return [
+                          PopupMenuItem(
+                            child: Text("block user",
+                              style: robotoRegular.copyWith(
+                                color: ColorResources.error,
+                                fontSize: Dimensions.fontSizeSmall
+                              )
+                            ), 
+                            value: "/report-user"
+                          ),
+                          PopupMenuItem(
+                            child: Text("It's spam",
+                              style: robotoRegular.copyWith(
+                                color: ColorResources.error,
+                                fontSize: Dimensions.fontSizeSmall
+                              )
+                            ), 
+                            value: "/report-user"
+                          ),
+                          PopupMenuItem(
+                            child: Text("Nudity or sexual activity",
+                              style: robotoRegular.copyWith(
+                                color: ColorResources.error,
+                                fontSize: Dimensions.fontSizeSmall
+                              )
+                            ), 
+                            value: "/report-user"
+                          ),
+                          PopupMenuItem(
+                            child: Text("False Information",
+                              style: robotoRegular.copyWith(
+                                color: ColorResources.error,
+                                fontSize: Dimensions.fontSizeSmall
+                              )
+                            ), 
+                            value: "/report-user"
+                          )
+                        ];
+                      },
+                      onSelected: (route) {
+                        if(route == "/report-user") {
+                          showAnimatedDialog(
+                            context: context,
+                            builder: (context) {
+                              return Dialog(
+                                child: Container(
+                                height: 150.0,
+                                padding: const EdgeInsets.all(10.0),
+                                margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const SizedBox(height: 10.0),
+                                    const Icon(Icons.delete,
+                                      color: ColorResources.black,
+                                    ),
+                                    const SizedBox(height: 10.0),
+                                    Text(getTranslated("ARE_YOU_SURE_REPORT", context),
+                                      style: robotoRegular.copyWith(
+                                        fontSize: Dimensions.fontSizeSmall,
+                                        fontWeight: FontWeight.w600
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10.0),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: () => Navigator.of(context).pop(),
+                                          child: Text(getTranslated("NO", context),
+                                            style: robotoRegular.copyWith(
+                                              fontSize: Dimensions.fontSizeSmall
+                                            )
+                                          )
+                                        ), 
+                                        StatefulBuilder(
+                                          builder: (BuildContext context, Function s) {
+                                          return ElevatedButton(
+                                          style: ButtonStyle(
+                                            backgroundColor: MaterialStateProperty.all(
+                                              ColorResources.error
+                                            ),
+                                          ),
+                                          onPressed: () async { 
+                                            Navigator.of(context, rootNavigator: true).pop(); 
+                                          },
+                                          child: Text(getTranslated("YES", context), 
+                                            style: robotoRegular.copyWith(
+                                              fontSize: Dimensions.fontSizeSmall
+                                            ),
+                                          ),                           
+                                        );
+                                      })
+                                    ],
+                                  ) 
+                                ])
+                              )
+                            );
+                          },
+                        );
+                      }
+                    },
+                  )
                 ),
-
+          
                 const SizedBox(height: 5.0),
-                  if(feedProvider.forumDetail.data!.forumType == 'link')
-                    PostLink(
-                      url: feedProvider.forumDetail.data!.media!.first.path,
-                      caption: feedProvider.forumDetail.data!.caption ?? "..."),
-                  if(feedProvider.forumDetail.data!.forumType == 'text') 
-                    PostText(feedProvider.forumDetail.data!.caption ?? "..."),
-                  if(feedProvider.forumDetail.data!.forumType == "document")
-                    PostDoc(
-                      medias: feedProvider.forumDetail.data!.media ?? [], 
-                      caption: feedProvider.forumDetail.data!.caption!
-                    ),
-                  if(feedProvider.forumDetail.data!.forumType == 'image')
-                    PostImage(
-                      false,
-                      feedProvider.forumDetail.data!.media ?? [], 
-                      feedProvider.forumDetail.data!.caption ?? "..."
-                    ),
-                  if(feedProvider.forumDetail.data!.forumType == 'video')
-                    PostVideo(
-                      media : feedProvider.forumDetail.data!.media!.first, 
-                      caption: feedProvider.forumDetail.data!.caption!
-                    ),
+                
+                Container(
+                  margin: const EdgeInsets.only(left: Dimensions.marginSizeDefault),
+                  child: PostText(feedDetailProviderV2.feedDetailData.forum!.caption ?? "-")
+                ),
+                if(feedDetailProviderV2.feedDetailData.forum!.type == "link")
+                  PostLink(url: feedDetailProviderV2.feedDetailData.forum!.link ?? "-"),
+                if (feedDetailProviderV2.feedDetailData.forum!.type == "document")
+                  feedDetailProviderV2.feedDetailData.forum!.media!.isNotEmpty ? 
+                  PostDoc(
+                    medias: feedDetailProviderV2.feedDetailData.forum!.media!, 
+                  ) : Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
+                if (feedDetailProviderV2.feedDetailData.forum!.type == "image")
+                  feedDetailProviderV2.feedDetailData.forum!.media!.isNotEmpty ? 
+                PostImage(
+                  true,
+                  feedDetailProviderV2.feedDetailData.forum!.media!, 
+                ): Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
+                if (feedDetailProviderV2.feedDetailData.forum!.type == "video")
+                  feedDetailProviderV2.feedDetailData.forum!.media!.isNotEmpty ? 
+                  PostVideo(
+                    media: feedDetailProviderV2.feedDetailData.forum!.media![0].path,
+                  ): Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
+            
                 Container(
                   margin: const EdgeInsets.only(top: Dimensions.marginSizeExtraSmall, left: Dimensions.marginSizeDefault, right: Dimensions.marginSizeDefault),
                   child: Row(
@@ -186,41 +295,34 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(feedProvider.forumDetail.data!.forumLikes!.total.toString(),
-                              style: poppinsRegular.copyWith(
-                                fontSize: Dimensions.fontSizeDefault
+                            Text("${feedDetailProviderV2.feedDetailData.forum!.like!.total}",
+                              style: robotoRegular.copyWith(
+                                fontSize: Dimensions.fontSizeSmall
                               )
                             ),
                             InkWell(
-                              onTap: () {
-                                final String membershipStatus = SharedPrefs.getUserMemberType().trim(); 
-                                if(membershipStatus != "PLATINUM" || membershipStatus == "-"){
-                                  context.read<ProfileProvider>().showNonPlatinumLimit(context);
-                                } else {
-                                  feedProvider.likeForum(context, widget.postId,);
-                                }
-                              },
+                              onTap: () async => context.read<p.FeedDetailProviderV2>().toggleLike(context: context, feedId: feedDetailProviderV2.feedDetailData.forum!.id!, feedLikes: feedDetailProviderV2.feedDetailData.forum!.like!)
+                              ,
                               child: Container(
                                 padding: const EdgeInsets.all(5.0),
                                 child: Icon(Icons.thumb_up,
                                   size: 16.0,
-                                  color: feedProvider.forumDetail.data!.forumLikes!.likes!.isNotEmpty ? ColorResources.primary : ColorResources.black
+                                  color:  feedDetailProviderV2.feedDetailData.forum!.like!.likes.where((el) => el.user!.id ==  feedDetailProviderV2.ar.getUserId()).isEmpty ? ColorResources.black : ColorResources.blue
                                 ),
                               ),
                             )
                           ],
                         ),
                       ),
-                      Text('${feedProvider.forumDetail.data!.forumComments!.total.toString()} ${getTranslated("COMMENT", context)}',
-                        style: poppinsRegular.copyWith(
-                          fontSize: Dimensions.fontSizeDefault
+                      Text('${feedDetailProviderV2.feedDetailData.forum!.comment!.total} ${getTranslated("COMMENT", context)}',
+                        style: robotoRegular.copyWith(
+                          fontSize: Dimensions.fontSizeSmall
                         ),
                       ),
                     ]
                   )
                 ),
-                const SizedBox(height: 10.0,)
-
+          
               ]
             ),
           );
@@ -233,230 +335,252 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorResources.greyLightPrimary,
       body: NestedScrollView(
         physics: const BouncingScrollPhysics(),
         headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
           return [
-            buildAppBar(context),
+            SliverAppBar(
+              systemOverlayStyle: SystemUiOverlayStyle.light,
+              backgroundColor: ColorResources.white,
+              title: Text('Post', 
+                style: robotoRegular.copyWith(
+                  color: ColorResources.black,
+                  fontWeight: FontWeight.w600,
+                  fontSize: Dimensions.fontSizeDefault
+                )
+              ),
+              leading: CupertinoNavigationBarBackButton(
+                color: ColorResources.black,
+                onPressed: () {
+                  NS.pop(context);
+                },
+              ),
+              elevation: 0.0,
+              pinned: false,
+              centerTitle: false,
+              floating: true,
+            ),
             post(context)
           ];
         },
-        body: buildBodyContent()
-      ),
-      bottomNavigationBar: buildNavBar(context)
-    );
-  }
-
-  SliverAppBar buildAppBar(BuildContext context) {
-    return SliverAppBar(
-      systemOverlayStyle: SystemUiOverlayStyle.light,
-      backgroundColor: ColorResources.white,
-      title: Text('Post', 
-        style: poppinsRegular.copyWith(
-          color: ColorResources.black,
-          fontSize: Dimensions.fontSizeLarge,
-          fontWeight: FontWeight.bold
-        ),
-      ),
-      leading: IconButton(
-        icon: Padding(
-          padding: const EdgeInsets.only(left: Dimensions.paddingSizeDefault),
-          child: Icon(
-            Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back,
-            color: ColorResources.black,
-            size: Dimensions.iconSizeExtraLarge,
-          ),
-        ),
-        onPressed: () => Navigator.of(context).pop(),
-      ),
-      elevation: 0.0,
-      pinned: false,
-      centerTitle: false,
-      floating: true,
-    );
-  }
-
-  Widget buildNavBar(BuildContext context) {
-    return Container(
-      padding: MediaQuery.of(context).viewInsets,
-      decoration: const BoxDecoration(
-        color: ColorResources.white
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          const SizedBox(width: 16.0),
-          Expanded(
-            child: TextField(
-              focusNode: commentFn,
-              controller: commentC,
-              style: poppinsRegular.copyWith(
-                color: ColorResources.black,
-                fontSize: Dimensions.fontSizeDefault
-              ),
-              decoration: InputDecoration.collapsed(
-                hintText: '${getTranslated("WRITE_COMMENT", context)} ...',
-                hintStyle: poppinsRegular.copyWith(
-                  color: ColorResources.black.withOpacity(0.6),
-                  fontSize: Dimensions.fontSizeDefault
-                ),
-              ),
-            ),
-          ),
-          IconButton(
-            icon: const Icon(
-              Icons.send,
-              color: ColorResources.primary,
-            ),
-            onPressed: () async {
-              final String membershipStatus = SharedPrefs.getUserMemberType().trim(); 
-              if(membershipStatus != "PLATINUM" || membershipStatus == "-"){
-                context.read<ProfileProvider>().showNonPlatinumLimit(context);
-              } else {
-                String commentText = commentC.text;
-                if (commentText.trim().isEmpty) {
-                  return;
-                }
-                commentFn.unfocus();
-                commentC.clear();
-                await context.read<FeedProvider>().sendComment(context, commentText, widget.postId);
-              }
+        body: Consumer<p.FeedDetailProviderV2>(
+          builder: (BuildContext context, p.FeedDetailProviderV2 feedDetailProviderV2, Widget? child) {
+            if (feedDetailProviderV2.feedDetailStatus == p.FeedDetailStatus.loading) {
+              return const Center(
+                child: SpinKitThreeBounce(
+                  size: 20.0,
+                  color: ColorResources.primary,
+                )
+              );
+            } 
+            if (feedDetailProviderV2.feedDetailStatus == p.FeedDetailStatus.empty) {
+              return Center(
+                child: Text(getTranslated("THERE_IS_NO_COMMENT", context),
+                  style: robotoRegular.copyWith(
+                    fontSize: Dimensions.fontSizeDefault
+                  ),
+                )
+              );
             }
-          ),
-        ],
-      ),
-    );
-  }
-
-  Consumer<FeedProvider> buildBodyContent() {
-    return Consumer<FeedProvider>(
-        builder: (BuildContext context, FeedProvider feedProvider, Widget? child) {
-          if (feedProvider.forumDetailStatus == ForumDetailStatus.loading) {
-            return const Center(
-              child: SpinKitThreeBounce(
-                size: 20.0,
-                color: ColorResources.primary,
-              )
-            );
-          } 
-          if (feedProvider.forumDetailStatus == ForumDetailStatus.empty) {
-            return Center(
-              child: Text(getTranslated("THERE_IS_NO_COMMENT", context),
-                style: poppinsRegular.copyWith(
-                  fontSize: Dimensions.fontSizeDefault
-                ),
-              )
-            );
-          }
-          return NotificationListener<ScrollNotification>(
-            child: ListView.separated(
-              separatorBuilder: (BuildContext context, int i) {
-                return const SizedBox(height: 8.0);
+            return RefreshIndicator(
+              onRefresh: () {
+              return Future.sync(() {
+                  feedDetailProviderV2.getFeedDetail(context, widget.postId);
+                });
               },
-              physics: const BouncingScrollPhysics(),
-              itemCount: feedProvider.loadMoreComment == true ? feedProvider.commentList.length + 1 :feedProvider.commentList.length,
-              itemBuilder: (BuildContext context, int i) {
-                if (feedProvider.commentList.length == i) {
-                  return const Center(
-                    child: SpinKitThreeBounce(
-                      size: 20.0,
-                      color: ColorResources.primary
-                    )
-                  );
-                }
-                return InkWell(
-                  onLongPress: () {
-                    if (SharedPrefs.getUserId() == feedProvider.commentList[i].user!.uid) {
-                      AwesomeDialog(
-                        context: context,
-                        dialogType: DialogType.warning,
-                        animType: AnimType.topSlide,
-                        title: getTranslated('WARNING', context),
-                        dismissOnBackKeyPress: true,
-                        dismissOnTouchOutside: true,
-                        titleTextStyle: poppinsRegular.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: Dimensions.fontSizeExtraLarge,
-                          color: ColorResources.black
-                        ),
-                        desc: getTranslated('DELETE_COMMENT', context),
-                        descTextStyle: poppinsRegular.copyWith(
-                          fontSize: Dimensions.fontSizeDefault,
-                          color: ColorResources.black
-                        ),
-                        btnCancelColor: ColorResources.primary,
-                        btnCancelText: getTranslated('CANCEL', context),
-                        btnCancelOnPress: () {},
-                        btnOkColor: ColorResources.error,
-                        btnOkText: "Ok",
-                        btnOkOnPress: () async {
-                          await deleteComment(context, feedProvider.commentList[i].uid!);
-                        },
-                      ).show();
+              child: NotificationListener(
+                onNotification: (notification) {
+                  if (notification is ScrollEndNotification) {
+                  if (notification.metrics.pixels == notification.metrics.maxScrollExtent) {
+                    if (feedDetailProviderV2.hasMore) {
+                      feedDetailProviderV2.loadMoreComment(context: context, postId: widget.postId);
                     }
+                  }
+                }
+                return false;
+                },
+                child: ListView.separated(
+                  separatorBuilder: (BuildContext context, int i) {
+                    return const SizedBox(height: 8.0);
                   },
-                  child: Column(
-                    children: [
-                    ListTile(
-                      leading: CachedNetworkImage( 
-                      imageUrl: feedProvider.commentList[i].user!.profilePic ?? "https://p7.hiclipart.com/preview/92/319/609/computer-icons-person-clip-art-name.jpg",
-                      imageBuilder: (BuildContext context, ImageProvider imageProvider) {
-                        return CircleAvatar(
-                          backgroundColor: ColorResources.transparent,
-                          backgroundImage: imageProvider,
-                          radius: 20.0,
-                        );
-                      },
-                      placeholder: (BuildContext context, _) {
-                        return const CircleAvatar(
-                          backgroundColor: ColorResources.black,
-                          backgroundImage: AssetImage('assets/images/icons/ic-person.png'),
-                          radius: 20.0,
-                        );
-                      },
-                      errorWidget: (BuildContext context, _, dynamic data) {
-                        return const CircleAvatar(
-                          backgroundColor: ColorResources.black,
-                          backgroundImage: AssetImage('assets/images/icons/ic-person.png'),
-                          radius: 20.0,
-                        ); 
-                      },
-                    ),
-                      title: Container(
-                        padding: const EdgeInsets.all(8.0),
-                        decoration: const BoxDecoration(
-                          color: ColorResources.white,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(8.0)
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: feedDetailProviderV2.comments.length,
+                  itemBuilder: (BuildContext context, int i) {
+                    m.CommentElement comment = feedDetailProviderV2.comments[i];
+                    // if (comment.comment.length == i) {
+                    //   return const Center(
+                    //     child: SpinKitThreeBounce(
+                    //       size: 20.0,
+                    //       color: ColorResources.primary
+                    //     )
+                    //   );
+                    // }
+                    return Column(
+                      children: [
+                      ListTile(
+                        leading: CachedNetworkImage(
+                        imageUrl: "${comment.user.avatar}",
+                          imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            backgroundImage: imageProvider,
+                            radius: 20.0,
+                          ),
+                          placeholder: (BuildContext context, String url) => const CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                            radius: 20.0,
+                          ),
+                          errorWidget: (BuildContext context, String url, dynamic error) => const CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                            radius: 20.0,
                           )
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(feedProvider.commentList[i].user?.fullname ?? "...",
-                                style: poppinsRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeDefault,
-                                  fontWeight: FontWeight.w600
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 5.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    commentText(context, feedProvider.commentList[i])
-                                  ],
-                                ),
-                              ),
-                            ]
+                        title: Container(
+                          padding: const EdgeInsets.all(8.0),
+                          decoration: const BoxDecoration(
+                            color: ColorResources.blueGrey,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(8.0)
+                            )
                           ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(comment.user.username,
+                                  style: robotoRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeDefault,
+                                  ),
+                                ),
+                                Text(DateHelper.formatDateTime(comment.createdAt, context),
+                                  style: robotoRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeExtraSmall,
+                                    color: ColorResources.dimGrey
+                                  ),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.only(top: 5.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                        commentText(context, comment.comment)
+                                    ],
+                                  ),
+                                ),
+                              ]
+                            ),
+                          ),
+                          trailing: context.read<ProfileProvider>().user!.id == comment.user.id 
+                          ? grantedDeleteComment(context, comment.id)
+                          : PopupMenuButton(
+                            itemBuilder: (BuildContext buildContext) { 
+                              return [
+                                PopupMenuItem(
+                                  child: Text("block user",
+                                    style: robotoRegular.copyWith(
+                                      color: ColorResources.error,
+                                      fontSize: Dimensions.fontSizeSmall
+                                    )
+                                  ), 
+                                  value: "/report-user"
+                                ),
+                                PopupMenuItem(
+                                  child: Text("It's spam",
+                                    style: robotoRegular.copyWith(
+                                      color: ColorResources.error,
+                                      fontSize: Dimensions.fontSizeSmall
+                                    )
+                                  ), 
+                                  value: "/report-user"
+                                ),
+                                PopupMenuItem(
+                                  child: Text("Nudity or sexual activity",
+                                    style: robotoRegular.copyWith(
+                                      color: ColorResources.error,
+                                      fontSize: Dimensions.fontSizeSmall
+                                    )
+                                  ), 
+                                  value: "/report-user"
+                                ),
+                                PopupMenuItem(
+                                  child: Text("False Information",
+                                    style: robotoRegular.copyWith(
+                                      color: ColorResources.error,
+                                      fontSize: Dimensions.fontSizeSmall
+                                    )
+                                  ), 
+                                  value: "/report-user"
+                                )
+                              ];
+                            },
+                            onSelected: (route) {
+                              if(route == "/report-user") {
+                                showAnimatedDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return Dialog(
+                                      child: Container(
+                                      height: 150.0,
+                                      padding: const EdgeInsets.all(10.0),
+                                      margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          const SizedBox(height: 10.0),
+                                          const Icon(Icons.delete,
+                                            color: ColorResources.black,
+                                          ),
+                                          const SizedBox(height: 10.0),
+                                          Text(getTranslated("ARE_YOU_SURE_REPORT", context),
+                                            style: robotoRegular.copyWith(
+                                              fontSize: Dimensions.fontSizeSmall,
+                                              fontWeight: FontWeight.w600
+                                            ),
+                                          ),
+                                          const SizedBox(height: 10.0),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: [
+                                              ElevatedButton(
+                                                onPressed: () => Navigator.of(context).pop(),
+                                                child: Text(getTranslated("NO", context),
+                                                  style: robotoRegular.copyWith(
+                                                    fontSize: Dimensions.fontSizeSmall
+                                                  )
+                                                )
+                                              ), 
+                                              StatefulBuilder(
+                                                builder: (BuildContext context, Function s) {
+                                                return ElevatedButton(
+                                                style: ButtonStyle(
+                                                  backgroundColor: MaterialStateProperty.all(
+                                                    ColorResources.error
+                                                  ),
+                                                ),
+                                                onPressed: () async { 
+                                                  Navigator.of(context, rootNavigator: true).pop(); 
+                                                },
+                                                child: Text(getTranslated("YES", context), 
+                                                  style: robotoRegular.copyWith(
+                                                    fontSize: Dimensions.fontSizeSmall
+                                                  ),
+                                                ),                           
+                                              );
+                                            })
+                                          ],
+                                        ) 
+                                      ])
+                                    )
+                                  );
+                                },
+                              );
+                            }
+                          },
                         )
-                    ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: SizedBox(
+                      
+                      ),
+                      SizedBox(
                         width: 150.0,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -466,27 +590,25 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
-                                  Text(feedProvider.commentList[i].commentLikes!.total.toString(),
-                                    style: poppinsRegular.copyWith(fontSize: Dimensions.fontSizeDefault),
+                                  Text(comment.like.total.toString(),
+                                    style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
                                   ),
                                   InkWell(
                                     onTap: () {
-                                      final String membershipStatus = SharedPrefs.getUserMemberType().trim(); 
-                                      if(membershipStatus != "PLATINUM" || membershipStatus == "-"){
-                                        context.read<ProfileProvider>().showNonPlatinumLimit(context);
-                                      } else {
-                                        feedProvider.likeComment(
-                                          context,
-                                          postId: widget.postId,
-                                          commentId: feedProvider.commentList[i].uid!
-                                        );
-                                      }
+                                      feedDetailProviderV2.toggleLikeComment(
+                                        context: context, 
+                                        feedId: widget.postId, 
+                                        commentId: comment.id, 
+                                        feedLikes: comment.like
+                                      );
                                     },
                                     child: Container(
                                       padding: const EdgeInsets.all(5.0),
                                       child: Icon(Icons.thumb_up,
                                         size: 16.0,
-                                        color: feedProvider.commentList[i].commentLikes!.likes!.isNotEmpty ? ColorResources.primary : ColorResources.black),
+                                        color: comment.like.likes.where(
+                                          (el) => el.user!.id == feedDetailProviderV2.ar.getUserId()
+                                        ).isEmpty ? ColorResources.black : ColorResources.blue),
                                     ),
                                   ),
                                 ]
@@ -494,55 +616,86 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                             ),
                             InkWell(
                               onTap: () {
-                                Navigator.push(context,
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) => RepliesScreen(
-                                      id: feedProvider.commentList[i].uid!,
-                                      postId: widget.postId,
-                                      i: i,
-                                    ),
-                                  ),
-                                );
+                                Navigator.push(context, NS.fromLeft(RepliesScreen(
+                                  id: comment.id,
+                                  postId: widget.postId,
+                                  index: i,
+                                ))).then((_) => setState(() {
+                                  feedDetailProviderV2.getFeedDetail(context, widget.postId);
+                                }));
                               },
                               child: Container(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Text('${getTranslated("REPLY",context)} (${feedProvider.commentList[i].commentReplies!.total!})',
-                                style: poppinsRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeDefault,
+                                child: Text('${getTranslated("REPLY",context)} (${comment.reply.total})',
+                                style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeSmall,
                                   fontStyle: FontStyle.italic)
                                 ),
                               )
                             ),
                           ]
                         ),
-                      ),
-                    )
-                  ]),
-                );
-              },
+                      )
+                    ]);
+                  
+                  },
+                ),
+              ),
+            );
+          },
+        )      
+      ),
+      bottomNavigationBar: Container(
+        padding: MediaQuery.of(context).viewInsets,
+        decoration: const BoxDecoration(
+          color: ColorResources.white
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            const SizedBox(width: 16.0),
+            Expanded(
+              child: TextField(
+                focusNode: commentFn,
+                controller: feedDetailProviderV2.commentC,
+                style: robotoRegular.copyWith(
+                  color: ColorResources.black,
+                  fontSize: Dimensions.fontSizeSmall
+                ),
+                decoration: InputDecoration.collapsed(
+                  hintText: '${getTranslated("WRITE_COMMENT", context)} ...',
+                  hintStyle: robotoRegular.copyWith(
+                    color: ColorResources.greyDarkPrimary,
+                    fontSize: Dimensions.fontSizeSmall
+                  ),
+                ),
+              ),
             ),
-            onNotification: (ScrollNotification scrollInfo) {
-              if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-                feedProvider.loadMoreComment = true;
-                feedProvider.fetchMoreComment(context);
-                feedProvider.stopLoadMoreComment();
+            IconButton(
+              icon: const Icon(
+                Icons.send,
+                color: ColorResources.black,
+              ),
+              onPressed: () async {
+                await feedDetailProviderV2.postComment(context, widget.postId);
               }
-              return false;
-            },
-          );
-        },
-      );
+            ),
+          ],
+        ),
+      )
+    );
   }
 
-  Widget grantedDeletePost(context, String postId) {
+  Widget grantedDeletePost(context) {
     return PopupMenuButton(
       itemBuilder: (BuildContext buildContext) { 
         return [
           PopupMenuItem(
             child: Text(getTranslated("DELETE_POST", context),
-              style: poppinsRegular.copyWith(
+              style: robotoRegular.copyWith(
                 color: ColorResources.black,
-                fontSize: Dimensions.fontSizeDefault
+                fontSize: Dimensions.fontSizeSmall
               )
             ), 
             value: "/delete-post"
@@ -551,34 +704,170 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       },
       onSelected: (route) {
         if(route == "/delete-post") {
-          AwesomeDialog(
+          showAnimatedDialog(
             context: context,
-            dialogType: DialogType.warning,
-            animType: AnimType.topSlide,
-            title: getTranslated('WARNING', context),
-            dismissOnBackKeyPress: true,
-            dismissOnTouchOutside: true,
-            titleTextStyle: poppinsRegular.copyWith(
-              fontWeight: FontWeight.bold,
-              fontSize: Dimensions.fontSizeExtraLarge,
-              color: ColorResources.black
-            ),
-            desc: getTranslated('DELETE_POST', context),
-            descTextStyle: poppinsRegular.copyWith(
-              fontSize: Dimensions.fontSizeDefault,
-              color: ColorResources.black
-            ),
-            btnCancelColor: ColorResources.primary,
-            btnCancelText: getTranslated('CANCEL', context),
-            btnCancelOnPress: () {},
-            btnOkColor: ColorResources.error,
-            btnOkText: "Ok",
-            btnOkOnPress: () async {
-              await deletePost(context, postId);
+            builder: (context) {
+              return Dialog(
+                child: Container(
+                height: 150.0,
+                padding: const EdgeInsets.all(10.0),
+                margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 10.0),
+                    const Icon(
+                      Icons.delete,
+                      color: ColorResources.white,
+                    ),
+                    const SizedBox(height: 10.0),
+                    Text(getTranslated("DELETE_POST", context),
+                      style: robotoRegular.copyWith(
+                        fontSize: Dimensions.fontSizeSmall,
+                        fontWeight: FontWeight.w600
+                      ),
+                    ),
+                    const SizedBox(height: 10.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: Text(getTranslated("NO", context),
+                            style: robotoRegular,
+                          )
+                        ), 
+                        StatefulBuilder(
+                          builder: (BuildContext context, Function s) {
+                          return ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: ColorResources.error
+                          ),
+                          onPressed: () async { 
+                          s(() => deletePostBtn = true);
+                            try {         
+                              await context.read<FeedProviderV2>().deletePost(context, feedDetailProviderV2.feedDetailData.forum!.id!);               
+                              s(() => deletePostBtn = false);
+                              Navigator.of(context).pop();             
+                            } catch(e) {
+                              s(() => deletePostBtn = false);
+                              debugPrint(e.toString()); 
+                            }
+                          },
+                          child: deletePostBtn 
+                          ? const Loader(
+                              color: ColorResources.white,
+                            )
+                          : Text(getTranslated("YES", context),
+                              style: robotoRegular.copyWith(
+                                fontSize: Dimensions.fontSizeSmall
+                              ),
+                            )
+                          );
+                        })
+                      ],
+                    ) 
+                  ])
+                )
+              );
             },
-          ).show();
+          );
         }
       },
     );
   }
+
+  Widget grantedDeleteComment(context, String idComment) {
+    return PopupMenuButton(
+      itemBuilder: (BuildContext buildContext) { 
+        return [
+          PopupMenuItem(
+            child: Text(getTranslated("DELETE_COMMENT", context),
+              style: robotoRegular.copyWith(
+                color: ColorResources.black,
+                fontSize: Dimensions.fontSizeSmall
+              )
+            ), 
+            value: "/delete-post"
+          )
+        ];
+      },
+      onSelected: (route) {
+        if(route == "/delete-post") {
+          showAnimatedDialog(
+            context: context,
+            builder: (context) {
+              return Dialog(
+                child: Container(
+                height: 150.0,
+                padding: const EdgeInsets.all(10.0),
+                margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 10.0),
+                    const Icon(
+                      Icons.delete,
+                      color: ColorResources.white,
+                    ),
+                    const SizedBox(height: 10.0),
+                    Text(getTranslated("DELETE_COMMENT", context),
+                      style: robotoRegular.copyWith(
+                        fontSize: Dimensions.fontSizeSmall,
+                        fontWeight: FontWeight.w600
+                      ),
+                    ),
+                    const SizedBox(height: 10.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: Text(getTranslated("NO", context),
+                            style: robotoRegular,
+                          )
+                        ), 
+                        StatefulBuilder(
+                          builder: (BuildContext context, Function s) {
+                          return ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: ColorResources.error
+                          ),
+                          onPressed: () async { 
+                          s(() => deletePostBtn = true);
+                            try {         
+                              await context.read<p.FeedDetailProviderV2>().deleteComment(context: context, feedId: feedDetailProviderV2.feedDetailData.forum!.id!, deleteId: idComment);               
+                              s(() => deletePostBtn = false);
+                              Navigator.of(context).pop();             
+                            } catch(e) {
+                              s(() => deletePostBtn = false);
+                              debugPrint(e.toString()); 
+                            }
+                          },
+                          child: deletePostBtn 
+                          ? const Loader(
+                              color: ColorResources.white,
+                            )
+                          : Text(getTranslated("YES", context),
+                              style: robotoRegular.copyWith(
+                                fontSize: Dimensions.fontSizeSmall
+                              ),
+                            )
+                          );
+                        })
+                      ],
+                    ) 
+                  ])
+                )
+              );
+            },
+          );
+        }
+      },
+    );
+  }
+
+
 }

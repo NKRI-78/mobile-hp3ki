@@ -8,6 +8,7 @@ import 'package:hp3ki/data/models/organization/organization.dart';
 import 'package:hp3ki/utils/constant.dart';
 import 'package:hp3ki/utils/dio.dart';
 import 'package:hp3ki/utils/exceptions.dart';
+import 'package:hp3ki/utils/shared_preferences.dart';
 
 class AuthRepo {
   Dio? dioClient;
@@ -25,7 +26,6 @@ class AuthRepo {
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw CustomException(errorMessage);
     } catch(e, stacktrace) {
-      debugPrint(e.toString());
       debugPrint(stacktrace.toString());
       throw CustomException(e.toString());
     }
@@ -40,7 +40,6 @@ class AuthRepo {
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw CustomException(errorMessage);
     }catch(e, stacktrace) {
-      debugPrint(e.toString());
       debugPrint(stacktrace.toString());
       throw CustomException(e.toString());
     }
@@ -61,7 +60,6 @@ class AuthRepo {
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw CustomException(errorMessage);
     } catch(e, stacktrace) {
-      debugPrint(e.toString());
       debugPrint(stacktrace.toString());
       throw CustomException(e.toString());
     }
@@ -79,7 +77,6 @@ class AuthRepo {
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw CustomException(errorMessage);
     } catch(e, stacktrace) {
-      debugPrint(e.toString());
       debugPrint(stacktrace.toString());
       throw CustomException(e.toString());
     }
@@ -97,7 +94,6 @@ class AuthRepo {
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw CustomException(errorMessage);
     } catch(e, stacktrace) {
-      debugPrint(e.toString());
       debugPrint(stacktrace.toString());
       throw CustomException(e.toString());
     }
@@ -115,7 +111,6 @@ class AuthRepo {
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw CustomException(errorMessage);
     } catch(e, stacktrace) {
-      debugPrint(e.toString());
       debugPrint(stacktrace.toString());
       throw CustomException(e.toString());
     }
@@ -133,7 +128,6 @@ class AuthRepo {
       throw CustomException(errorMessage);
     } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());
-      debugPrint(e.toString());
       throw CustomException(e.toString());
     }
   }
@@ -149,7 +143,6 @@ class AuthRepo {
       throw CustomException(errorMessage);
     }catch(e, stacktrace) {
       debugPrint(stacktrace.toString());
-      debugPrint(e.toString());
       throw CustomException(e.toString());
     }
   }
@@ -169,7 +162,6 @@ class AuthRepo {
       throw CustomException(errorMessage);
     } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());
-      debugPrint(e.toString());
       throw CustomException(e.toString());
     }
   }
@@ -184,7 +176,6 @@ class AuthRepo {
       throw CustomException(errorMessage);
     } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());
-      debugPrint(e.toString());
       throw CustomException(e.toString());
     }
   }
@@ -202,8 +193,15 @@ class AuthRepo {
       throw CustomException(errorMessage);
     } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());
-      debugPrint(e.toString());
       throw CustomException(e.toString());
     }
+  }
+
+  String getUserId() {
+    return SharedPrefs.getUserId();
+  }
+
+  String getUserFullname() {
+    return SharedPrefs.getUserName();
   }
 }

@@ -1,24 +1,21 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:io' as io;
+
+
 import 'package:flutter/material.dart';
-import 'package:chewie/chewie.dart';
-import 'package:flutter/widgets.dart';
-import 'package:hp3ki/data/models/feed/feedmedia.dart';
-import 'package:readmore/readmore.dart';
 import 'package:video_player/video_player.dart';
+import 'package:chewie/chewie.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:hp3ki/localization/language_constraints.dart';
+
+
 import 'package:hp3ki/utils/color_resources.dart';
-import 'package:hp3ki/utils/custom_themes.dart';
-import 'package:hp3ki/utils/dimensions.dart';
+
 
 class PostVideo extends StatefulWidget {
-  final FeedMedia media;
-  final String caption;
+  final String media;
 
   const PostVideo({
-    Key? key,
+    Key? key, 
     required this.media,
-    required this.caption,
   }) : super(key: key);
 
   @override
@@ -26,52 +23,51 @@ class PostVideo extends StatefulWidget {
 }
 
 class _PostVideoState extends State<PostVideo> {
+
   VideoPlayerController? videoPlayerC;
   ChewieController? chewieC;
-
+  
   Future<void> getData() async {
-    videoPlayerC =
-        VideoPlayerController.networkUrl(Uri.parse(widget.media.path ?? "-"))
-          ..setLooping(false)
-          ..initialize().then((_) {
-            chewieC = ChewieController(
-              videoPlayerController: videoPlayerC!,
-              // aspectRatio: videoPlayerC!.value.aspectRatio,
-              autoPlay: false,
-              looping: false,
-            );
-            setState(() {});
-          });
+    if(mounted) {
+      if(io.Platform.isAndroid) {
+        videoPlayerC = VideoPlayerController.networkUrl(Uri.parse(widget.media))
+        ..setLooping(false)
+        ..initialize().then((_) {
+          setState(() {});
+        });
+        chewieC = ChewieController(
+          videoPlayerController: videoPlayerC!,
+          aspectRatio: videoPlayerC!.value.aspectRatio,
+          autoPlay: false,
+          looping: false,
+        );
+      } else {
+        videoPlayerC = VideoPlayerController.networkUrl(Uri.parse(widget.media))
+        ..setLooping(false)
+        ..initialize().then((_) {
+          setState(() { });
+        });
+        chewieC = ChewieController(
+          videoPlayerController: videoPlayerC!,
+          aspectRatio: videoPlayerC!.value.aspectRatio,
+          autoPlay: false,
+          looping: false,
+        );
+      }
+    }
   }
 
   @override
   void initState() {
     super.initState();
-
+     
     getData();
-  }
-
-  // an arbitrary value, this can be whatever you need it to be
-  double videoContainerRatio = 0.5;
-
-  double getScale() {
-    double videoRatio = videoPlayerC?.value.aspectRatio ?? 0.5;
-
-    if (videoRatio < videoContainerRatio) {
-      ///for tall videos, we just return the inverse of the controller aspect ratio
-      return videoContainerRatio / videoRatio;
-    } else {
-      ///for wide videos, divide the video AR by the fixed container AR
-      ///so that the video does not over scale
-
-      return videoRatio / videoContainerRatio;
-    }
   }
 
   @override
   void dispose() {
-    videoPlayerC?.dispose();
-    chewieC?.dispose();
+    videoPlayerC!.dispose();
+    chewieC!.dispose();
 
     super.dispose();
   }
@@ -82,53 +78,38 @@ class _PostVideoState extends State<PostVideo> {
   }
 
   Widget buildUI() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          margin: const EdgeInsets.all(Dimensions.marginSizeDefault),
-          child: ReadMoreText(
-            widget.caption,
-            style: poppinsRegular.copyWith(
-              fontSize: Dimensions.fontSizeDefault,
-            ),
-            trimLines: 2,
-            colorClickableText: ColorResources.black,
-            trimMode: TrimMode.Line,
-            trimCollapsedText: getTranslated("READ_MORE", context),
-            trimExpandedText: '\n${getTranslated("LESS_MORE", context)}',
-            moreStyle: poppinsRegular.copyWith(
-                fontSize: Dimensions.fontSizeDefault,
-                fontWeight: FontWeight.w600),
-            lessStyle: poppinsRegular.copyWith(
-                fontSize: Dimensions.fontSizeDefault,
-                fontWeight: FontWeight.w600),
-          ),
-        ),
-        chewieC != null
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            videoPlayerC != null
             ? Container(
-                margin: const EdgeInsets.only(top: 30.0, bottom: 30.0),
+                margin: const EdgeInsets.only(
+                  top: 30.0,
+                  bottom: 30.0
+                ),
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
                     AspectRatio(
-                      aspectRatio: 1,
+                      aspectRatio: videoPlayerC!.value.aspectRatio,
                       child: Chewie(
                         controller: chewieC!,
-                      ),
+                      )
                     ),
                     // Positioned.fill(
                     //   child: GestureDetector(
                     //     behavior: HitTestBehavior.opaque,
-                    //     onTap: () => videoPlayerC!.value.isPlaying
-                    //     ? videoPlayerC!.pause()
+                    //     onTap: () => videoPlayerC!.value.isPlaying 
+                    //     ? videoPlayerC!.pause() 
                     //     : videoPlayerC!.play(),
                     //     child: Stack(
                     //       clipBehavior: Clip.none,
                     //       children: [
-                    //         videoPlayerC!.value.isPlaying
-                    //         ? Container()
+                    //         videoPlayerC!.value.isPlaying 
+                    //         ? Container() 
                     //         : Container(
                     //             alignment: Alignment.center,
                     //             child: const Icon(
@@ -152,15 +133,85 @@ class _PostVideoState extends State<PostVideo> {
                     // )
                   ],
                 ),
-              )
+            ) 
             : const SizedBox(
-                height: 200,
-                child: SpinKitThreeBounce(
-                  size: 20.0,
-                  color: ColorResources.primary,
-                ),
-              )
-      ],
+              height: 200,
+              child: SpinKitThreeBounce(
+                size: 20.0,
+                color: ColorResources.primary,
+              ),
+            ),
+          ],
+        ); 
+      },
     );
   }
 }
+
+// import 'package:flutter/material.dart';
+
+// import 'package:chewie/chewie.dart';
+// import 'package:video_player/video_player.dart';
+
+// import 'package:hp3ki/utils/constant.dart';
+
+// class VideoPlay extends StatefulWidget {
+//   final String dataSource;
+//   const VideoPlay({
+//     required this.dataSource,
+//     super.key
+//   });
+
+//   @override
+//   State<VideoPlay> createState() => _VideoPlayState();
+// }
+
+// class _VideoPlayState extends State<VideoPlay> {
+
+//   ChewieController? chewieC;
+//   late VideoPlayerController videoC;
+  
+//   @override 
+//   void initState() {
+//     super.initState();
+//     initializePlayer();
+//   }
+
+//   @override 
+//   void dispose() {
+//     videoC.dispose();
+//     chewieC?.dispose();
+
+//     super.dispose();
+//   }
+
+//   Future<void> initializePlayer() async {
+//     videoC = VideoPlayerController.networkUrl(Uri.parse("${widget.dataSource}"));
+    
+//     await Future.wait([
+//       videoC.initialize(),
+//     ]);
+
+//     chewieC = ChewieController(
+//       videoPlayerController: videoC,
+//       autoInitialize: true,
+//       aspectRatio: videoC.value.aspectRatio,
+//       autoPlay: false,
+//       looping: false,
+//     );
+
+//     setState(() { });
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return chewieC != null && chewieC!.videoPlayerController.value.isInitialized
+//     ? AspectRatio(
+//         aspectRatio: videoC.value.aspectRatio,
+//         child: Chewie(
+//           controller: chewieC!
+//         ),
+//       )
+//     : Container();
+//   }
+// }

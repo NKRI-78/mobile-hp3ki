@@ -4,7 +4,7 @@ import 'package:hp3ki/data/repository/auth/auth.dart';
 import 'package:hp3ki/data/repository/banner/banner.dart';
 import 'package:hp3ki/data/repository/checkin/checkin.dart';
 import 'package:hp3ki/data/repository/event/event.dart';
-import 'package:hp3ki/data/repository/feed/feed.dart';
+import 'package:hp3ki/data/repository/feedv2/feed.dart';
 import 'package:hp3ki/data/repository/firebase/firebase.dart';
 import 'package:hp3ki/data/repository/inbox/inbox.dart';
 import 'package:hp3ki/data/repository/maintenance/maintenance.dart';
@@ -19,7 +19,7 @@ import 'package:hp3ki/providers/auth/auth.dart';
 import 'package:hp3ki/providers/banner/banner.dart';
 import 'package:hp3ki/providers/checkin/checkin.dart';
 import 'package:hp3ki/providers/event/event.dart';
-import 'package:hp3ki/providers/feed/feed.dart';
+import 'package:hp3ki/providers/feedv2/feed.dart';
 import 'package:hp3ki/providers/firebase/firebase.dart';
 import 'package:hp3ki/providers/inbox/inbox.dart';
 import 'package:hp3ki/providers/internet/internet.dart';
@@ -62,9 +62,9 @@ Future<void> init() async {
   getIt.registerLazySingleton(() => InboxRepo(
         dioClient: null,
       ));
-  getIt.registerLazySingleton(() => FeedRepo(
-        dioClient: null,
-      ));
+  getIt.registerLazySingleton(() => FeedRepoV2(
+       sp: getIt(),
+  ));
   getIt.registerLazySingleton(() => CheckInRepo(
         dioClient: null,
       ));
@@ -129,7 +129,8 @@ Future<void> init() async {
   getIt.registerFactory(() => InboxProvider(
         ir: getIt(),
       ));
-  getIt.registerFactory(() => FeedProvider(
+  getIt.registerFactory(() => FeedProviderV2(
+        ar: getIt(),
         fr: getIt(),
       ));
   getIt.registerFactory(() => CheckInProvider(

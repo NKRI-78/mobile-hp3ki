@@ -1,393 +1,528 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:mime/mime.dart';
 import 'package:dio/dio.dart';
-import 'package:hp3ki/utils/exceptions.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:path/path.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:hp3ki/data/models/feed/feedsdetail.dart';
-import 'package:hp3ki/data/models/feed/feeds.dart';
+
+import 'package:hp3ki/data/models/feed/comment.dart';
+import 'package:hp3ki/data/models/feed/groups.dart';
+import 'package:hp3ki/data/models/feed/mediakey.dart';
+import 'package:hp3ki/data/models/feed/notification.dart';
+import 'package:hp3ki/data/models/feed/reply.dart';
+import 'package:hp3ki/data/models/feed/singlecomment.dart';
+import 'package:hp3ki/data/models/feed/singlereply.dart';
+import 'package:hp3ki/data/models/feed/sticker.dart';
+import 'package:hp3ki/data/models/feed/post.dart';
+
 import 'package:hp3ki/utils/constant.dart';
 import 'package:hp3ki/utils/dio.dart';
 
 class FeedRepo {
-  Dio? dioClient;
+  final SharedPreferences sp;
+  FeedRepo({ required this.sp });
 
-  FeedRepo({required this.dioClient}) {
-    dioClient ??= DioManager.shared.getClient();
-  }
-
-  Future<void> deleteComment(String commentId) async {
+  Future<void> deletePost(BuildContext context, String postId) async {
     try {
-      await dioClient!.get(
-          "${AppConstants.baseUrl}/api/v1/forum/comment/delete/$commentId");
-    } on DioError catch (e) {
-      final errorMessage = DioExceptions.fromDioError(e).toString();
-      throw CustomException(errorMessage);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      throw CustomException(e.toString());
-    }
-  }
-
-  Future<void> likeComment(
-      String forumId, String commentId, String userId) async {
-    try {
-      await dioClient!
-          .post("${AppConstants.baseUrl}/api/v1/forum/comment/like", data: {
-        "forum_id": forumId,
-        "comment_id": commentId,
-        "user_id": userId,
-      });
-    } on DioError catch (e) {
-      final errorMessage = DioExceptions.fromDioError(e).toString();
-      throw CustomException(errorMessage);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      throw CustomException(e.toString());
-    }
-  }
-
-  Future<void> deleteReply(String replyId) async {
-    try {
-      await dioClient!
-          .get("${AppConstants.baseUrl}/api/v1/forum/reply/delete/$replyId");
-    } on DioError catch (e) {
-      final errorMessage = DioExceptions.fromDioError(e).toString();
-      throw CustomException(errorMessage);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      throw CustomException(e.toString());
-    }
-  }
-
-  Future<void> sendReply(
-      String forumId, String commentId, String userId, String reply) async {
-    try {
-      await dioClient!.post("${AppConstants.baseUrl}/api/v1/forum/reply",
-          data: {
-            "forum_id": forumId,
-            "comment_id": commentId,
-            "user_id": userId,
-            "reply": reply
-          });
-    } on DioError catch (e) {
-      final errorMessage = DioExceptions.fromDioError(e).toString();
-      throw CustomException(errorMessage);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      throw CustomException(e.toString());
-    }
-  }
-
-  Future<void> likeForum(String forumId, String userId) async {
-    try {
-      await dioClient!.post("${AppConstants.baseUrl}/api/v1/forum/like", data: {
-        "forum_id": forumId,
-        "user_id": userId,
-      });
-    } on DioError catch (e) {
-      final errorMessage = DioExceptions.fromDioError(e).toString();
-      throw CustomException(errorMessage);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      throw CustomException(e.toString());
-    }
-  }
-
-  Future<void> deleteForum(String forumId) async {
-    try {
-      await dioClient!
-          .get("${AppConstants.baseUrl}/api/v1/forum/delete/$forumId");
-    } on DioError catch (e) {
-      final errorMessage = DioExceptions.fromDioError(e).toString();
-      throw CustomException(errorMessage);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      throw CustomException(e.toString());
-    }
-  }
-
-  Future<ForumDetail?> fetchForumDetail(String targetId) async {
-    try {
-      Response res = await dioClient!
-          .get("${AppConstants.baseUrl}/api/v1/forum/$targetId?comment_page=1");
-      ForumDetail data = ForumDetail.fromJson(res.data);
-      return data;
-    } on DioError catch (e) {
-      final errorMessage = DioExceptions.fromDioError(e).toString();
-      throw CustomException(errorMessage);
-    } catch (e, stacktrace) {
+      Dio dio = DioManager.shared.getClient();
+      await dio.delete("${AppConstants.baseUrlFeed}/post/delete/$postId");
+   } on DioError catch(_) {
+      
+    } catch(e) {
       debugPrint(e.toString());
-      debugPrint(stacktrace.toString());
-      throw CustomException(stacktrace.toString());
     }
   }
 
-  Future<ForumDetail?> fetchMoreComment(String targetId, int page) async {
-    try {
-      Response res = await dioClient!.get(
-          "${AppConstants.baseUrl}/api/v1/forum/$targetId?comment_page=$page");
-      ForumDetail data = ForumDetail.fromJson(res.data);
-      return data;
-    } on DioError catch (e) {
-      final errorMessage = DioExceptions.fromDioError(e).toString();
-      throw CustomException(errorMessage);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      throw CustomException(e.toString());
+  Future<PostModel?> fetchPost(BuildContext context, String postId) async {
+    try{ 
+      Dio dio = DioManager.shared.getClient();
+      Response res = await dio.get("${AppConstants.baseUrlFeed}/post/fetch/$postId");
+      Map<String, dynamic> data = res.data;
+      return compute(parseFetchPost, data);
+    } on DioError catch(_) {
+      
+    } catch(e) {
+      debugPrint(e.toString());
     }
+    return null;
+  }  
+
+  Future<Sticker?> fetchListSticker(BuildContext context) async {
+    try {
+      Dio dio = DioManager.shared.getClient();
+      Response res = await dio.get("${AppConstants.baseUrlFeed}/sticker/list");
+      Map<String, dynamic> data = res.data;
+      return compute(parseFetchListSticker, data);
+    } on DioError catch(_) {
+   
+    } catch(e) {
+      debugPrint(e.toString());
+    }
+    return null;
   }
 
-  Future<FeedModel?> fetchFeedMostRecent(int page) async {
-    try {
-      Response res = await dioClient!.get(
-          "${AppConstants.baseUrl}/api/v1/forum?search=&page=$page&limit=5&forum_highlight_type=MOST_RECENT");
-      FeedModel data = FeedModel.fromJson(res.data);
-      return data;
-    } on DioError catch (e) {
-      final errorMessage = DioExceptions.fromDioError(e).toString();
-      throw CustomException(errorMessage);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      throw CustomException(stacktrace.toString());
+  Future<SingleReply?> fetchReply(BuildContext context, String postId) async {
+    try { 
+      Dio dio = DioManager.shared.getClient();
+      Response res = await dio.get("${AppConstants.baseUrlFeed}/reply/fetch/$postId");
+      Map<String, dynamic> data = res.data;
+      return compute(parseFetchReply, data);
+    } on DioError catch(_) {
+     
+    } catch(e) {
+      debugPrint(e.toString());
     }
+    return null;
   }
 
-  Future<FeedModel?> fetchFeedMostPopular(int page) async {
+  Future<SingleComment?> fetchComment(BuildContext context, String targetId) async {
     try {
-      Response res = await dioClient!.get(
-          "${AppConstants.baseUrl}/api/v1/forum?search=&page=$page&limit=5&forum_highlight_type=MOST_POPULAR");
-      FeedModel data = FeedModel.fromJson(res.data);
-      return data;
-    } on DioError catch (e) {
-      final errorMessage = DioExceptions.fromDioError(e).toString();
-      throw CustomException(errorMessage);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      throw CustomException(e.toString());
+      Dio dio = DioManager.shared.getClient();
+      Response res = await dio.get("${AppConstants.baseUrlFeed}/comment/fetch/$targetId");
+      Map<String, dynamic> data = res.data;
+      return compute(parseFetchComment, data);
+    } on DioError catch(_) {
+     
+    } catch(e) {
+      debugPrint(e.toString());
     }
+    return null;
+  }  
+
+  Future<Reply?> fetchAllReply(BuildContext context, String targetId, [String nextCursor = ""]) async {
+    try {
+      Dio dio = DioManager.shared.getClient();
+      Response res = await dio.get("${AppConstants.baseUrlFeed}/reply/list?targetId=$targetId&cursorId=$nextCursor");
+      Map<String, dynamic> data = res.data;
+      return compute(parseFetchAllReply, data);
+    } on DioError catch(_) {
+     
+    } catch(e) {
+      debugPrint(e.toString());
+    }
+    return null;
   }
 
-  Future<FeedModel?> fetchFeedSelf(int page, String userId) async {
+  Future<FeedNotification?> fetchAllNotification(BuildContext context, [String cursorId = ""]) async {
     try {
-      Response res = await dioClient!.get(
-          "${AppConstants.baseUrl}/api/v1/forum?search=&page=$page&limit=5&forum_highlight_type=SELF");
-      FeedModel data = FeedModel.fromJson(res.data);
-      return data;
-    } on DioError catch (e) {
-      final errorMessage = DioExceptions.fromDioError(e).toString();
-      throw CustomException(errorMessage);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      throw CustomException(e.toString());
+      Dio dio = DioManager.shared.getClient();
+      Response res = await dio.get("${AppConstants.baseUrlFeed}/notification/list?cursorId=$cursorId");
+      Map<String, dynamic> data = res.data;
+      return compute(parseFetchAllNotification, data);
+    } on DioError catch(_) {
+    
+    } catch(e) {
+      debugPrint(e.toString());
     }
+    return null;
+  }
+    
+  Future<Comment?> fetchListCommentMostRecent(BuildContext context, String targetId, [String nextCursor = ""]) async {
+    try { 
+      Dio dio = DioManager.shared.getClient();
+      Response res = await dio.get("${AppConstants.baseUrlFeed}/comment/list?targetType=POST&type=MOST_RECENT&targetId=$targetId&cursorId=$nextCursor");
+      Map<String, dynamic> data = res.data;   
+      return compute(parseFetchListCommentMostRecent, data);      
+    } on DioError catch(_) {
+      
+    } catch(e) {
+      debugPrint(e.toString());
+    }
+    return null;
   }
 
-  Future<Response?> uploadMedia(String mediaType, File file) async {
+  Future<GroupsModel?> fetchGroupsMostRecent(BuildContext context, [String nextCursor = ""]) async {
     try {
-      String fileName = file.path.split('/').last;
-      var formData = FormData.fromMap({
-        "folder": mediaType,
-        "media": await MultipartFile.fromFile(
-          file.path,
-          filename: fileName,
-        ),
+      Dio dio = DioManager.shared.getClient();
+      Response res = await dio.get("${AppConstants.baseUrlFeed}/post/list?type=MOST_RECENT&cursorId=$nextCursor");
+      Map<String, dynamic> data = res.data;   
+      return compute(parseFetchGroupsMostRecent, data);
+    } on DioError catch(_) {
+   
+    } catch(e) {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
+
+  Future<GroupsModel?> fetchGroupsMostPopular(BuildContext context, [String nextCursor = ""]) async {
+    try {
+      Dio dio = DioManager.shared.getClient();
+      Response res = await dio.get("${AppConstants.baseUrlFeed}/post/list?type=MOST_POPULAR&cursorId=$nextCursor");
+      Map<String, dynamic> data = res.data;   
+      return compute(parseFetchGroupsMostRecent, data);
+    } on DioError catch(_) {
+      
+    } catch(e) {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
+
+  Future<GroupsModel?> fetchGroupsSelf(BuildContext context, [String nextCursor = ""]) async {
+    try {
+      Dio dio = DioManager.shared.getClient();
+      Response res = await dio.get("${AppConstants.baseUrlFeed}/post/list?type=SELF&cursorId=$nextCursor");
+      Map<String, dynamic> data = res.data;   
+      return compute(parseFetchGroupsMostRecent, data);
+    } on DioError catch(_) {
+   
+    } catch(e) {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
+
+  Future<String?> getMediaKey(BuildContext context) async {
+    try {
+      Dio dio = DioManager.shared.getClient();
+      Response res = await dio.get("${AppConstants.baseUrlFeedMedia}/mediaKey");
+      Map<String, dynamic> data = res.data;   
+       MediaKey mediaKey = MediaKey.fromJson(data);
+       return mediaKey.body;
+    } on DioError catch(_) {
+      
+    } catch(e) {
+      debugPrint(e.toString());
+    }
+    return null;
+  } 
+
+  Future<Response?> uploadMedia(BuildContext context, File file) async {
+    try {
+      Dio dio = DioManager.shared.getClient();
+      // Response res = await dio.post("${AppConstants.baseUrlFeedMedia}/$mediaKey/$base64?path=/community/${AppConstants.xContextId}/${basename(file.path.trim().replaceAll(' ',''))}", 
+      //   data: file.readAsBytesSync()
+      // );
+      FormData formData = FormData.fromMap({
+        "folder": "videos",
+        "subfolder": "hp3ki",
+        "media": await MultipartFile.fromFile(file.path, filename: basename(file.path)),
       });
-      Response res = await dioClient!.post(
-        "${AppConstants.baseUrl}/api/v1/media",
-        data: formData,
+      Response res = await dio.post("${AppConstants.baseUrl}/media-service/upload", data: formData);
+      return res;
+    } on DioError catch(_) {
+    
+    }  catch(e) {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
+
+  Future<Response?> like(BuildContext context, String targetId, String targetType, String type) async {
+    try { 
+      Dio dio = DioManager.shared.getClient();
+      Response res = await dio.post("${AppConstants.baseUrlFeed}/like/toggle", 
+        data: {
+          "targetType": targetType,
+          "targetId": targetId,
+          "type": type
+        }
       );
       return res;
-    } on DioError catch (e) {
-      final errorMessage = DioExceptions.fromDioError(e).toString();
-      throw CustomException(errorMessage);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      throw CustomException(e.toString());
+    } on DioError catch(_) {
+      
+    } catch(e) {
+      debugPrint(e.toString());
     }
+    return null;
   }
 
-  Future<Response?> uploadMediaFilePicker(
-      String mediaType, FilePickerResult file) async {
+  Future<Response?> sendPostText(BuildContext context, String text) async {
     try {
-      String fileName = file.paths.first!.split('/').last;
-      var formData = FormData.fromMap({
-        "folder": mediaType,
-        "media": await MultipartFile.fromFile(
-          file.paths.first!,
-          filename: fileName,
-        ),
-      });
-      Response res = await dioClient!.post(
-        "${AppConstants.baseUrl}/api/v1/media",
-        data: formData,
+      Dio dio = DioManager.shared.getClient();
+      Response res = await dio.post("${AppConstants.baseUrlFeed}/post/write", 
+        data: {
+          "groupId": "",
+          "visibilityType": "PUBLIC",
+          "type": "TEXT",
+          "content": {
+            "charset": "UTF_8",
+            "text": text
+          }
+        }
       );
       return res;
-    } on DioError catch (e) {
-      final errorMessage = DioExceptions.fromDioError(e).toString();
-      throw CustomException(errorMessage);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      throw CustomException(e.toString());
+    } on DioError catch(_) {  
+     
     }
+    catch(e) {
+      debugPrint(e.toString());
+    }
+    return null;
   }
 
-  Future<void> createForumMedia(String forumId, String path) async {
+  Future<Response?> sendPostLink(BuildContext context, String caption, String text) async {
     try {
-      await dioClient!
-          .post("${AppConstants.baseUrl}/api/v1/forum/media", data: {
-        "forum_id": forumId,
-        "path": path,
-      });
-    } on DioError catch (e) {
-      final errorMessage = DioExceptions.fromDioError(e).toString();
-      throw CustomException(errorMessage);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      throw CustomException(e.toString());
-    }
-  }
-
-  Future<Response?> sendPostText(
-      String text, String userId, String forumId) async {
-    try {
-      Response res =
-          await dioClient!.post("${AppConstants.baseUrl}/api/v1/forum", data: {
-        "forum_id": forumId,
-        "caption": text,
-        "forum_type": "text",
-        "user_id": userId,
-      });
+      Dio dio = DioManager.shared.getClient();
+      Response res = await dio.post("${AppConstants.baseUrlFeed}/post/write", 
+        data: {
+         "groupId": "",
+          "visibilityType": "PUBLIC",
+          "type": "LINK",
+          "content": {
+            "charset": "UTF_8",
+            "caption": caption,
+            "url": text
+          }
+        }
+      );
       return res;
-    } on DioError catch (e) {
-      final errorMessage = DioExceptions.fromDioError(e).toString();
-      throw CustomException(errorMessage);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      throw CustomException(e.toString());
+    } on DioError catch(_) {  
+     
+    } catch(e) {
+      debugPrint(e.toString());
     }
+    return null;
   }
 
-  Future<void> sendPostLink(
-      String caption, String url, String userId, String forumId) async {
+  Future<Response?> sendPostDoc(BuildContext context, String caption, FilePickerResult files) async {
     try {
+      Dio dio = DioManager.shared.getClient();
+      Response res = await dio.post("${AppConstants.baseUrlFeed}/post/write", 
+        data: {
+          "groupId": "",
+          "visibilityType": "PUBLIC",
+          "type": "DOCUMENT",
+          "content" : {
+            "caption" : caption,
+            "medias": [
+              {
+                "originalName": basename(files.files[0].path!.trim().replaceAll(' ','')),
+                "fileLength": files.files[0].size,
+                "path": "/community/${AppConstants.xContextId}/${basename(files.files[0].path!.trim().replaceAll(' ',''))}",
+                "contentType": lookupMimeType(basename(files.files[0].path!))
+              }
+            ]
+          }
+        }
+      );
+      return res;
+    } on DioError catch(_) {  
+     
+    }  catch(e) {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
+
+  Future<Response?> sendPostImage(BuildContext context, String caption, List<File> files) async {
+    try {
+      Dio dio = DioManager.shared.getClient();
       Map<String, Object> postsData = {};
-      postsData = {
-        "forum_id": forumId,
-        "caption": caption,
-        "forum_type": "document",
-        "user_id": userId,
-      };
-
-      await dioClient!
-          .post("${AppConstants.baseUrl}/api/v1/forum", data: postsData);
-    } on DioError catch (e) {
-      final errorMessage = DioExceptions.fromDioError(e).toString();
-      throw CustomException(errorMessage);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      throw CustomException(e.toString());
-    }
+      List<Map<String, Object>> postsMedia = [];
+      if(files.length > 1) {
+        for (int i = 0; i < files.length; i++) {
+          postsMedia.add(
+            {
+              "originalName": basename(files[i].path),
+              "fileLength": files[i].lengthSync(),
+              "path": "/community/${AppConstants.xContextId}/${basename(files[i].path)}",
+              "contentType": lookupMimeType(basename(files[i].path))!
+            }
+          );
+        }
+        postsData = {
+          "groupId": "",
+          "visibilityType": "PUBLIC",
+          "type": "IMAGE",
+          "content" : {
+            "caption" : caption,
+            "medias": postsMedia,
+          }
+        };
+      } else {
+        postsData = {
+          "groupId": "",
+          "visibilityType": "PUBLIC",
+          "type": "IMAGE",
+          "content" : {
+            "caption" : caption,
+            "medias": [
+              {
+                "originalName": basename(files[0].path),
+                "fileLength": files[0].lengthSync(),
+                "path": "/community/${AppConstants.xContextId}/${basename(files[0].path)}",
+                "contentType": lookupMimeType(basename(files[0].path))
+              }
+            ]
+          }
+        };
+      }
+      Response res = await dio.post("${AppConstants.baseUrlFeed}/post/write", 
+        data: postsData
+      );
+      return res;
+    } on DioError catch(_) {  
+     
+    } catch(e) {
+      debugPrint(e.toString());
+    }  
+    return null;
   }
 
-  Future<void> sendPostDoc(
-      String forumId, String caption, String userId) async {
+  Future<Response?> sendPostImageCamera(BuildContext context, String caption, File file) async {
     try {
-      Map<String, Object> postsData = {};
+      Dio dio = DioManager.shared.getClient();
+      Map<String, Object> postsData = {}; 
       postsData = {
-        "forum_id": forumId,
-        "caption": caption,
-        "forum_type": "document",
-        "user_id": userId,
+        "groupId": "",
+        "visibilityType": "PUBLIC",
+        "type": "IMAGE",
+        "content" : {
+          "caption" : caption,
+          "medias": [
+            {
+              "originalName": basename(file.path),
+              "fileLength": file.lengthSync(),
+              "path": "/community/${AppConstants.xContextId}/${basename(file.path)}",
+              "contentType": lookupMimeType(basename(file.path))
+            }
+          ]
+        }
       };
-
-      await dioClient!
-          .post("${AppConstants.baseUrl}/api/v1/forum", data: postsData);
-    } on DioError catch (e) {
-      final errorMessage = DioExceptions.fromDioError(e).toString();
-      throw CustomException(errorMessage);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      throw CustomException(e.toString());
+      Response res = await dio.post("${AppConstants.baseUrlFeed}/post/write", 
+        data: postsData
+      );
+      return res;
+    } on DioError catch(_) {  
+      
+    } catch(e) {
+      debugPrint(e.toString());
     }
+    return null;
   }
 
-  Future<void> sendPostImage(
-      String forumId, String caption, String userId) async {
+  Future<Response?> sendPostVideo(BuildContext context, String caption, File file) async {
     try {
-      Map<String, Object> postsData = {};
-      postsData = {
-        "forum_id": forumId,
-        "caption": caption,
-        "forum_type": "image",
-        "user_id": userId,
+      Dio dio = DioManager.shared.getClient();
+      Map<String, Object> postsData = {
+        "groupId": "",
+        "visibilityType": "PUBLIC",
+        "type": "VIDEO",
+        "content" : {
+          "caption" : caption,
+          "medias": [
+            {
+              "originalName": basename(file.path.trim().replaceAll(' ','')),
+              "fileLength": file.lengthSync(),
+              "path": "/community/${AppConstants.xContextId}/${basename(file.path.trim().replaceAll(' ',''))}",
+              "contentType": lookupMimeType(basename(file.path))
+            }
+          ]
+        }
       };
-      await dioClient!
-          .post("${AppConstants.baseUrl}/api/v1/forum", data: postsData);
-    } on DioError catch (e) {
-      final errorMessage = DioExceptions.fromDioError(e).toString();
-      throw CustomException(errorMessage);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      throw CustomException(e.toString());
+      Response res = await dio.post("${AppConstants.baseUrlFeed}/post/write", 
+        data: postsData
+      );
+      return res;
+    } on DioError catch(_) {
+    
+    } catch(e) {
+      debugPrint(e.toString());
     }
+    return null;
   }
 
-  Future<void> sendPostImageCamera(
-      String forumId, String caption, String userId) async {
+  Future<Response?> sendReply(BuildContext context, String text, String targetId) async {
     try {
-      Map<String, Object> postsData = {};
-      postsData = {
-        "forum_id": forumId,
-        "caption": caption,
-        "forum_type": "image",
-        "user_id": userId,
+      Dio dio = DioManager.shared.getClient();
+      Map<String, Object> postsData = {
+        "targetId": targetId,
+        "type": "TEXT",
+        "content" : {
+          "text" : text
+        }
       };
-
-      await dioClient!
-          .post("${AppConstants.baseUrl}/api/v1/forum", data: postsData);
-    } on DioError catch (e) {
-      final errorMessage = DioExceptions.fromDioError(e).toString();
-      throw CustomException(errorMessage);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      throw CustomException(e.toString());
+      Response res = await dio.post("${AppConstants.baseUrlFeed}/reply/write",
+        data: postsData
+      );
+      return res;
+    } on DioError catch(_) {  
+      
+    } catch(e) {
+      debugPrint(e.toString());
     }
-  }
+    return null;
+  } 
 
-  Future<void> sendPostVideo(
-      String forumId, String caption, String userId) async {
+  Future<void> sendComment(BuildContext context, String content, String targetId, [String type = "TEXT"]) async {
     try {
-      Map<String, Object> postsData = {};
-      postsData = {
-        "forum_id": forumId,
-        "caption": caption,
-        "forum_type": "video",
-        "user_id": userId,
-      };
-
-      await dioClient!
-          .post("${AppConstants.baseUrl}/api/v1/forum", data: postsData);
-    } on DioError catch (e) {
-      final errorMessage = DioExceptions.fromDioError(e).toString();
-      throw CustomException(errorMessage);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      throw CustomException(e.toString());
+      Dio dio = DioManager.shared.getClient();
+      Map<String, Object> data = {};
+      if(type == "TEXT") {
+        data = {
+          "targetType": "POST",
+          "targetId": targetId,
+          "visibilityType" : "FRIENDS",
+          "type": type,
+          "content" : {
+            "text" : content
+          }
+        };
+      }
+      if(type == "STICKER") {
+        data = {
+          "targetType": "POST",
+          "targetId": targetId,
+          "visibilityType" : "FRIENDS",
+          "type" : type,
+          "content": {
+            "url": content
+          }
+        };
+      }
+      await dio.post("${AppConstants.baseUrlFeed}/comment/write",
+        data: data
+      ); 
+    } on DioError catch(_) {  
+      
+    } catch(e) {
+      debugPrint(e.toString());
     }
   }
 
-  Future<void> sendComment(
-      String content, String targetId, String userId) async {
-    try {
-      await dioClient!.post("${AppConstants.baseUrl}/api/v1/forum/comment",
-          data: {"forum_id": targetId, "user_id": userId, "comment": content});
-    } on DioError catch (e) {
-      final errorMessage = DioExceptions.fromDioError(e).toString();
-      throw CustomException(errorMessage);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      throw CustomException(e.toString());
-    }
-  }
 }
+
+GroupsModel parseFetchGroupsMostRecent(dynamic data) {
+  GroupsModel groupsModel = GroupsModel.fromJson(data);
+  return groupsModel;
+}
+
+Comment parseFetchListCommentMostRecent(dynamic data) {
+  Comment comment = Comment.fromJson(data);
+  return comment; 
+}
+
+FeedNotification parseFetchAllNotification(dynamic data) {
+  FeedNotification notification = FeedNotification.fromJson(data);
+  return notification;
+}
+
+Reply parseFetchAllReply(dynamic data) {
+  Reply reply = Reply.fromJson(data);
+  return reply;
+}
+
+SingleComment parseFetchComment(dynamic data) {
+  SingleComment singleComment = SingleComment.fromJson(data);
+  return singleComment;
+}
+
+SingleReply parseFetchReply(dynamic data) {
+  SingleReply singleReply = SingleReply.fromJson(data);
+  return singleReply;
+}
+
+Sticker parseFetchListSticker(dynamic data) {
+  Sticker sticker = Sticker.fromJson(data);
+  return sticker;
+}
+
+PostModel parseFetchPost(dynamic data) {
+  PostModel postModel = PostModel.fromJson(data);
+  return postModel;
+} 

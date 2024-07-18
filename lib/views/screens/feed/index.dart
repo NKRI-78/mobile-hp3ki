@@ -1,19 +1,23 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:hp3ki/providers/feedv2/feed.dart';
+
+import 'package:hp3ki/services/navigation.dart';
+import 'package:hp3ki/views/screens/feed/post_detail.dart';
+
+import 'package:hp3ki/views/screens/feed/widgets/input_post.dart';
+import 'package:hp3ki/views/screens/feed/notification.dart';
+import 'package:hp3ki/views/screens/feed/posts.dart';
+
+import 'package:hp3ki/localization/language_constraints.dart';
+
 import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
-import 'package:hp3ki/providers/feed/feed.dart';
-import 'package:hp3ki/services/navigation.dart';
-import 'package:hp3ki/localization/language_constraints.dart';
-import 'package:hp3ki/views/basewidgets/button/custom.dart';
-import 'package:hp3ki/views/screens/feed/widgets/input_post.dart';
-import 'package:hp3ki/views/screens/feed/posts.dart';
 
 class FeedIndex extends StatefulWidget {
   const FeedIndex({Key? key}) : super(key: key);
@@ -23,300 +27,53 @@ class FeedIndex extends StatefulWidget {
 }
 
 class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
-  late ScrollController recentFeedC;
-  late ScrollController popularFeedC;
-  late ScrollController selfFeedC;
+  GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
 
-  late TabController tabC;
+  late TabController tabController;
+  late FeedProviderV2 feedProviderV2;
 
-  Future<void> refresh(BuildContext context) async {
-    Future.sync((){
-      context.read<FeedProvider>().fetchFeedMostRecent(context);
-      context.read<FeedProvider>().fetchFeedMostPopular(context);
-      context.read<FeedProvider>().fetchFeedSelf(context);
-    });
-  }
-
-  Future<void> getData() async {
-    Future.delayed(Duration.zero, () async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      if(prefs.getBool("isAccept") == null) {
-        termsAndCondition();
-      } 
-      if(mounted) {
-        await Permission.storage.request();
-        Permission.storage.isDenied.then((value) async {
-          await Permission.storage.request();
-        });
-      }
-      if(mounted) {
-        context.read<FeedProvider>().fetchFeedMostRecent(context);    
-      }
-      if(mounted) {
-        context.read<FeedProvider>().fetchFeedMostPopular(context);
-      }
-      if(mounted) {
-        context.read<FeedProvider>().fetchFeedSelf(context);
-      }
-    });
-  }
+  GlobalKey g1Key = GlobalKey();
+  GlobalKey g2Key = GlobalKey();
+  GlobalKey g3Key = GlobalKey();
+  GlobalKey<RefreshIndicatorState> refreshIndicatorKey1 = GlobalKey<RefreshIndicatorState>();
+  GlobalKey<RefreshIndicatorState> refreshIndicatorKey2 = GlobalKey<RefreshIndicatorState>();
+  GlobalKey<RefreshIndicatorState> refreshIndicatorKey3 = GlobalKey<RefreshIndicatorState>();
   
-  recentFeedControllerListener() {
-    if(recentFeedC.position.pixels >= recentFeedC.position.maxScrollExtent){
-      context.read<FeedProvider>().loadPageRecent = true;
-      context.read<FeedProvider>().fetchFeedMostRecentLoad(context);
-      context.read<FeedProvider>().stopLoadPageRecent();
-    }
-  }
-    
-  popularFeedControllerListener() {
-    if(popularFeedC.position.pixels >= popularFeedC.position.maxScrollExtent){
-      context.read<FeedProvider>().loadPagePopular = true;
-      context.read<FeedProvider>().fetchFeedMostPopularLoad(context);
-      context.read<FeedProvider>().stopLoadPagePopular();
-    }
-  }
-    
-  selfFeedControllerListener() {
-    if(selfFeedC.position.pixels >= selfFeedC.position.maxScrollExtent){
-      context.read<FeedProvider>().loadPageSelf = true;
-      context.read<FeedProvider>().fetchFeedSelfLoad(context);
-      context.read<FeedProvider>().stopLoadPageSelf();
-    }
+  FocusNode groupsFocusNode = FocusNode();
+  FocusNode commentFocusNode = FocusNode();
+
+  Future refresh(BuildContext context) async {
+    Future.sync((){
+      feedProviderV2.fetchFeedMostRecent(context);
+      feedProviderV2.fetchFeedPopuler(context);
+      feedProviderV2.fetchFeedSelf(context);
+    });
   }
 
   @override
   void initState() {
     super.initState();
-
-    recentFeedC = ScrollController();
-    recentFeedC.addListener(recentFeedControllerListener);
-    popularFeedC = ScrollController();
-    popularFeedC.addListener(popularFeedControllerListener);
-    selfFeedC = ScrollController();
-    selfFeedC.addListener(selfFeedControllerListener);
-
-    tabC = TabController(length: 3, vsync: this, initialIndex: 0);
-
-    Future.microtask(() {
-      getData();
-    },);
+    feedProviderV2 = context.read<FeedProviderV2>();
+    Future.delayed(Duration.zero, () {
+      if(mounted) {
+        feedProviderV2.fetchFeedMostRecent(context);
+        feedProviderV2.fetchFeedPopuler(context);
+        feedProviderV2.fetchFeedSelf(context);    
+      }
+    });
+    tabController = TabController(length: 3, vsync: this, initialIndex: 0);
   }
-
-
+  
   @override
   void dispose() {
-    tabC.dispose();
-
-    recentFeedC.removeListener(recentFeedControllerListener);
-    recentFeedC.dispose();
-    popularFeedC.removeListener(popularFeedControllerListener);
-    popularFeedC.dispose();
-    selfFeedC.removeListener(selfFeedControllerListener);
-    selfFeedC.dispose();
-
+    tabController.dispose();
     super.dispose();
-  }
-
-  void termsAndCondition() {
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: false,
-      barrierColor: Colors.black.withOpacity(0.5),
-      transitionDuration: const Duration(milliseconds: 700),
-      pageBuilder: (BuildContext context, Animation<double> double, _) {
-        return Center(
-          child: Material(
-            color: ColorResources.transparent,
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20.0),
-              height: 580,
-              decoration: BoxDecoration(
-                color: ColorResources.primary, 
-                borderRadius: BorderRadius.circular(20.0)
-              ),
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Container(
-                      margin: const EdgeInsets.only(top: 0.0, left: 0.0),
-                      child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20.0),
-                        child: Image.asset("assets/images/background/shading-top-left.png")
-                      )
-                    )
-                  ),
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Container(
-                      margin: const EdgeInsets.only(top: 0.0, right: 0.0),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20.0),
-                        child: Image.asset("assets/images/background/shading-right.png")
-                      )
-                    )
-                  ),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: Container(
-                      margin: const EdgeInsets.only(top: 200.0, right: 0.0),
-                      child: Image.asset("assets/images/background/shading-right-bottom.png")
-                    )
-                  ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-
-                        Text("It's important that you understand what",
-                          style: poppinsRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
-                            fontWeight: FontWeight.w300,
-                            color: ColorResources.white
-                          ),
-                        ),
-                        
-                        const SizedBox(height: 8.0),
-
-                        Text("information hp3ki collects.",
-                          style: poppinsRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
-                            fontWeight: FontWeight.w300,
-                            color: ColorResources.white
-                          ),
-                        ),
-
-                        const SizedBox(height: 8.0),
-
-                        Text("Some examples of data hp3ki collects and users are:",
-                          style: poppinsRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
-                            fontWeight: FontWeight.w300,
-                            color: ColorResources.white
-                          ),
-                        ),
-
-                        const SizedBox(height: 8.0),
-
-                        Text("● Your Information & Content",
-                          style: poppinsRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
-                            fontWeight: FontWeight.w600,
-                            color: ColorResources.white
-                          ),
-                        ),
-
-                        const SizedBox(height: 8.0),
-
-                        Text("This may include any information you share with us,\nfor example; your create a post and another users\ncan like your post or comment also you can delete\nyour post.",
-                          style: poppinsRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
-                            fontWeight: FontWeight.w300,
-                            color: ColorResources.white
-                          ),
-                        ),
-
-                        const SizedBox(height: 8.0),
-
-                        Text("● Photos, Videos & Documents",
-                          style: poppinsRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
-                            fontWeight: FontWeight.w600,
-                            color: ColorResources.white
-                          ),
-                        ),
-
-                        const SizedBox(height: 8.0),
-
-                        Text("This may include your can post on media\nphotos, videos, or documents",
-                          style: poppinsRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
-                            fontWeight: FontWeight.w300,
-                            color: ColorResources.white
-                          ),
-                        ),
-
-                        const SizedBox(height: 8.0),
-
-                        Text("● Embedded Links",
-                          style: poppinsRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
-                            fontWeight: FontWeight.w600,
-                            color: ColorResources.white
-                          ),
-                        ),
-
-                        const SizedBox(height: 8.0),
-
-                        Text("This may include your can post on link\nsort of news, etc",
-                          style: poppinsRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
-                            fontWeight: FontWeight.w300,
-                            color: ColorResources.white
-                          ),
-                        ),
-                      ]
-                    ) 
-                  ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(
-                            left: 30.0,
-                            right: 30.0,
-                            bottom: 30.0,
-                          ),
-                          child: CustomButton(
-                            isBorderRadius: true,
-                            btnColor: ColorResources.white,
-                            btnTextColor: ColorResources.primary,
-                            onTap: () async {
-                              SharedPreferences prefs = await SharedPreferences.getInstance();
-                              prefs.setBool("isAccept", true);
-                              NS.pop(context);
-                            }, 
-                            btnTxt: "Agree"
-                          ),
-                        )
-                      ],
-                    ) 
-                  )
-                ],
-              ),
-            ),
-          )
-        );
-      },
-      transitionBuilder: (_, anim, __, child) {
-        Tween<Offset> tween;
-        if (anim.status == AnimationStatus.reverse) {
-          tween = Tween(begin: const Offset(-1, 0), end: Offset.zero);
-        } else {
-          tween = Tween(begin: const Offset(1, 0), end: Offset.zero);
-        }
-        return SlideTransition(
-          position: tween.animate(anim),
-          child: FadeTransition(
-            opacity: anim,
-            child: child,
-          ),
-        );
-      },
-    );
   }
 
   Widget tabSection(BuildContext context) {
     return SliverToBoxAdapter(
       child: TabBar(
-        controller: tabC,
+        controller: tabController,
         unselectedLabelColor: ColorResources.primary,
         indicatorSize: TabBarIndicatorSize.tab,
         labelColor: ColorResources.white,
@@ -327,8 +84,8 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
           indicatorColor: ColorResources.primary,
           tabBarIndicatorSize: TabBarIndicatorSize.tab,
         ),
-        labelStyle: poppinsRegular.copyWith(
-          fontSize: Dimensions.fontSizeDefault
+        labelStyle: robotoRegular.copyWith(
+          fontSize: Dimensions.fontSizeSmall
         ),
       tabs: [
         Tab(text: getTranslated("LATEST", context)),
@@ -339,192 +96,230 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
   }
 
   Widget tabbarviewsection(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 90.0),
-      child: TabBarView(
-        physics: const NeverScrollableScrollPhysics(),
-        controller: tabC,
-        children: [
-          buildFeedRecent(),
-          buildFeedPopular(),
-          buildFeedSelf()
-        ]
-      ),
-    );
-  }
+    return TabBarView(
+      physics: const NeverScrollableScrollPhysics(),
+      controller: tabController,
+      children: [
 
-  Consumer<FeedProvider> buildFeedRecent() {
-    return Consumer<FeedProvider>(
-        builder: (BuildContext context, FeedProvider feedProvider, Widget? child) {
-          if (feedProvider.feedMostRecentStatus == FeedMostRecentStatus.loading) {
-            return const Center(
-              child: SpinKitThreeBounce(
-                size: 20.0,
-                color: ColorResources.primary,
+        Consumer<FeedProviderV2>(
+          builder: (BuildContext context, FeedProviderV2 feedProviderv2, Widget? child) {
+            if (feedProviderv2.feedRecentStatus == FeedRecentStatus.loading) {
+              return const Center(
+                child: SpinKitThreeBounce(
+                  size: 20.0,
+                  color: ColorResources.primary,
+                ),
+              );
+            }
+            if (feedProviderv2.feedRecentStatus == FeedRecentStatus.empty) {
+              return Center(
+                child: Text(getTranslated("THERE_IS_NO_POST", context), style: robotoRegular)
+              );
+            }
+            if (feedProviderv2.feedRecentStatus == FeedRecentStatus.error) {
+              return Center(
+                child: Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular)
+              );
+            }
+            return NotificationListener<ScrollNotification>(
+              child: RefreshIndicator(
+                backgroundColor: ColorResources.primary,
+                color: ColorResources.white,
+                key: refreshIndicatorKey1,
+                  onRefresh: () => refresh(context),
+                  child: ListView.separated(
+                    separatorBuilder: (BuildContext context, int i) {
+                      return Container(
+                        color: Colors.blueGrey[50],
+                        height: 40.0,
+                      );
+                    },
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    key: g1Key,
+                    itemCount: feedProviderv2.forum1.length,
+                    itemBuilder: (BuildContext content, int i) {
+                    if (feedProviderv2.forum1.length == i) {
+                      return const Center(
+                        child: SpinKitThreeBounce(
+                          size: 20.0,
+                          color: ColorResources.primary,
+                        ),
+                      );
+                    }
+                    return InkWell(
+                      onTap: () {
+                        Navigator.push(context, NS.fromLeft(PostDetailScreen(postId: feedProviderV2.forum1[i].id!))).then((_) => setState(() {
+                          feedProviderV2.fetchFeedMostRecent(context);
+                        }));
+                      },
+                      child: Posts(
+                        i: i,
+                        forum: feedProviderV2.forum1,
+                      ),
+                    );
+                  }
+                ),
               ),
-            );
-          }
-          if (feedProvider.feedMostRecentStatus == FeedMostRecentStatus.empty) {
-            return Center(
-              child: Text(getTranslated("THERE_IS_NO_POST", context), style: poppinsRegular)
-            );
-          }
-          return RefreshIndicator(
-            backgroundColor: ColorResources.primary,
-            color: ColorResources.white,
-            onRefresh: () => refresh(context),
-            child: ListView.separated(
-              controller: recentFeedC,
-              separatorBuilder: (BuildContext context, int i) {
-                return Container(
-                  color: Colors.blueGrey[50],
-                  height: 20.0,
-                );
+              onNotification: (ScrollNotification notification) {
+                if (notification is ScrollEndNotification) {
+                  if (notification.metrics.pixels == notification.metrics.maxScrollExtent) {
+                    if (feedProviderv2.hasMore) {
+                      feedProviderv2.loadMoreRecent(context: context);
+                    }
+                  }
+                }
+                return false;
               },
-              physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: feedProvider.loadPageRecent == true 
-              ? feedProvider.g1List.length + 1 
-              : feedProvider.g1List.length,
-              itemBuilder: (BuildContext content, int i) {
-              // if (feedProvider.g1List.length == i) {
-              //   return const Center(
-              //     child: SpinKitThreeBounce(
-              //       size: 20.0,
-              //       color: ColorResources.primary,
-              //     ),
-              //   );
-              // }
-              return Posts(
-                i: i,
-                feedData: feedProvider.g1List,
+            );
+          },
+        ),
+
+        Consumer<FeedProviderV2>(
+          builder: (BuildContext context, FeedProviderV2 feedProviderv2, Widget? child) {
+            if (feedProviderv2.feedPopulerStatus == FeedPopulerStatus.loading) {
+              return const Center(
+                child: SpinKitThreeBounce(
+                  size: 20.0,
+                  color: ColorResources.primary,
+                ),
               );
             }
-          ),
-        );
-      },
-    );
-  }
-
-  Consumer<FeedProvider> buildFeedPopular() {
-    return Consumer<FeedProvider>(
-        builder: (BuildContext context, FeedProvider feedProvider, Widget? child) {
-          if(feedProvider.feedMostPopularStatus == FeedMostPopularStatus.loading) {
-            return const SpinKitThreeBounce(
-              size: 20.0,
-              color: ColorResources.primary
-            );
-          } 
-          if(feedProvider.feedMostPopularStatus == FeedMostPopularStatus.empty) {
-            return Center(
-              child: Text(getTranslated("THERE_IS_NO_POST", context), style: poppinsRegular)
-            );
-          }
-          return RefreshIndicator(
-            backgroundColor: ColorResources.primary,
-            color: ColorResources.white,
-              onRefresh: () => refresh(context),
-              child: ListView.separated(
-                controller: popularFeedC,
-                separatorBuilder: (BuildContext context, int i) {
-                  return Container(
-                    color: Colors.blueGrey[50],
-                    height: 20.0,
-                  );
-                },
-                physics: const AlwaysScrollableScrollPhysics(),
-                itemCount: feedProvider.loadPagePopular == true ? feedProvider.g2List.length + 1 : feedProvider.g2List.length,
-                itemBuilder: (BuildContext content, int i) {
-                // if (feedProvider.g2List.length == i) {
-                //   return const Center(
-                //     child: SpinKitThreeBounce(
-                //       size: 20.0,
-                //       color: ColorResources.primary,
-                //     ),
-                //   );
-                // }
-                return Posts(
-                  i: i,
-                  feedData: feedProvider.g2List,
-                );
-              }
-            ),
-          );
-        },
-      );
-  }
-
-  Consumer<FeedProvider> buildFeedSelf() {
-    return Consumer<FeedProvider>(
-        builder: (BuildContext context, FeedProvider feedProvider, Widget? child) {
-          if(feedProvider.feedSelfStatus == FeedSelfStatus.loading) {
-            return const Center(
-              child: SpinKitThreeBounce(
-                size: 20.0,
-                color: ColorResources.primary,
-              )
-            );
-          } 
-          if(feedProvider.feedSelfStatus == FeedSelfStatus.empty) {
-            return Center(
-              child: Text(getTranslated("THERE_IS_NO_POST", context), 
-                style: poppinsRegular.copyWith(
-                  fontSize: Dimensions.fontSizeDefault
-                )
-              )
-            );
-          }
-        return RefreshIndicator(
-          backgroundColor: ColorResources.primary,
-          color: ColorResources.white,
-            onRefresh: () => refresh(context),
-            child: ListView.separated(
-              controller: selfFeedC,
-              separatorBuilder: (BuildContext context, int i) {
-                return Container(
-                  color: Colors.blueGrey[50],
-                  height: 20.0,
-                );
-              },
-              physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: feedProvider.loadPageSelf == true ? feedProvider.g3List.length + 1 : feedProvider.g3List.length,
-              itemBuilder: (BuildContext content, int i) {
-              // if (feedProvider.g3List.length == i) {
-              //   return const SpinKitThreeBounce(
-              //     size: 20.0,
-              //     color: ColorResources.primary,
-              //   );
-              // }
-              return Posts(
-                i: i,
-                feedData: feedProvider.g3List,
+            if (feedProviderv2.feedPopulerStatus == FeedPopulerStatus.empty) {
+              return Center(
+                child: Text(getTranslated("THERE_IS_NO_POST", context), style: robotoRegular)
               );
             }
-          ),
-        );
-      },
+            if (feedProviderv2.feedPopulerStatus == FeedPopulerStatus.error) {
+              return Center(
+                child: Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular)
+              );
+            }
+            return NotificationListener<ScrollNotification>(
+              child: RefreshIndicator(
+                backgroundColor: ColorResources.primary,
+                color: ColorResources.white,
+                key: refreshIndicatorKey2,
+                  onRefresh: () => refresh(context),
+                  child: ListView.separated(
+                    separatorBuilder: (BuildContext context, int i) {
+                      return Container(
+                        color: Colors.blueGrey[50],
+                        height: 40.0,
+                      );
+                    },
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    key: g2Key,
+                    itemCount: feedProviderv2.forum2.length,
+                    itemBuilder: (BuildContext content, int i) {
+                    if (feedProviderv2.forum2.length == i) {
+                      return const Center(
+                        child: SpinKitThreeBounce(
+                          size: 20.0,
+                          color: ColorResources.primary,
+                        ),
+                      );
+                    }
+                    return InkWell(
+                      onTap: () {
+                        Navigator.push(context, NS.fromLeft(PostDetailScreen(postId: feedProviderV2.forum1[i].id!))).then((_) => setState(() {
+                          feedProviderV2.fetchFeedPopuler(context);
+                        }));
+                      },
+                      child: Posts(
+                        i: i,
+                        forum: feedProviderv2.forum2,
+                      ),
+                    );
+                  }
+                ),
+              ),
+              onNotification: (ScrollNotification notification) {
+                if (notification is ScrollEndNotification) {
+                  if (notification.metrics.pixels == notification.metrics.maxScrollExtent) {
+                    if (feedProviderv2.hasMore2) {
+                      feedProviderv2.loadMorePopuler(context: context);
+                    }
+                  }
+                }
+                return false;
+              },
+            );
+          },
+        ),
+        
+        Consumer<FeedProviderV2>(
+          builder: (BuildContext context, FeedProviderV2 feedProviderv2, Widget? child) {
+            if (feedProviderv2.feedSelfStatus == FeedSelfStatus.loading) {
+              return const Center(
+                child: SpinKitThreeBounce(
+                  size: 20.0,
+                  color: ColorResources.primary,
+                ),
+              );
+            }
+            if (feedProviderv2.feedSelfStatus == FeedSelfStatus.empty) {
+              return Center(
+                child: Text(getTranslated("THERE_IS_NO_POST", context), style: robotoRegular)
+              );
+            }
+            if (feedProviderv2.feedSelfStatus == FeedSelfStatus.error) {
+              return Center(
+                child: Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular)
+              );
+            }
+            return NotificationListener<ScrollNotification>(
+              child: RefreshIndicator(
+                backgroundColor: ColorResources.primary,
+                color: ColorResources.white,
+                key: refreshIndicatorKey3,
+                  onRefresh: () => refresh(context),
+                  child: ListView.separated(
+                    separatorBuilder: (BuildContext context, int i) {
+                      return Container(
+                        color: Colors.blueGrey[50],
+                        height: 40.0,
+                      );
+                    },
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    key: g3Key,
+                    itemCount: feedProviderv2.forum3.length,
+                    itemBuilder: (BuildContext content, int i) {
+                    if (feedProviderv2.forum3.length == i) {
+                      return const SpinKitThreeBounce(
+                        size: 20.0,
+                        color: ColorResources.primary,
+                      );
+                    }
+                    return InkWell(
+                      onTap: () {
+                        Navigator.push(context, NS.fromLeft(PostDetailScreen(postId: feedProviderV2.forum1[i].id!))).then((_) => setState(() {
+                          feedProviderV2.fetchFeedSelf(context);
+                        }));
+                      },
+                      child: Posts(
+                        i: i,
+                        forum: feedProviderv2.forum3,
+                      ),
+                    );
+                  }
+                ),
+              ),
+              onNotification: (ScrollNotification notification) {
+                if (notification is ScrollEndNotification) {
+                  if (notification.metrics.pixels == notification.metrics.maxScrollExtent) {
+                    if (feedProviderv2.hasMore3) {
+                      feedProviderv2.loadMoreSelf(context: context);
+                    }
+                  }
+                }
+                return false;
+              },
+            );
+          },
+        )
+      ]
     );
   } 
-
-  SliverAppBar buildAppBar(BuildContext context) {
-    return SliverAppBar(
-      systemOverlayStyle: SystemUiOverlayStyle.light,
-      backgroundColor: ColorResources.white,
-      automaticallyImplyLeading: false,
-      elevation: 0.0,
-      forceElevated: true,
-      pinned: true,
-      centerTitle: true,
-      floating: true,
-      title: Text('Community Feed',
-        style: poppinsRegular.copyWith(
-          color: ColorResources.black,
-          fontSize: Dimensions.fontSizeLarge,
-          fontWeight: FontWeight.bold
-        ),
-      ),
-      leading: Container(),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -533,15 +328,49 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
 
   Widget buildUI() {
     return Scaffold(
-    
-    body: NestedScrollView(
-      headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
-        return [
-          buildAppBar(context),
-          const InputPostComponent(),
-          tabSection(context)
-        ];
-      },
+     key: globalKey,
+     body: NestedScrollView(
+       physics: const ScrollPhysics(),
+       headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
+          return [
+            SliverAppBar(
+              systemOverlayStyle: SystemUiOverlayStyle.dark,
+              backgroundColor: ColorResources.white,
+              automaticallyImplyLeading: false,
+              title: Text('Community Feed',
+                style: robotoRegular.copyWith(
+                  color: ColorResources.primary,
+                  fontWeight: FontWeight.w600,
+                  fontSize: Dimensions.fontSizeDefault
+                )
+              ),
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    NS.push(context, NotificationScreen());
+                  },
+                  icon: const Icon(
+                    Icons.notifications,
+                    color: ColorResources.primary
+                  ),
+                ),
+              ],
+              leading: CupertinoNavigationBarBackButton(
+                color: ColorResources.primary,
+                onPressed: () {
+                  NS.pop(context);
+                },
+              ),
+              elevation: 0.0,
+              forceElevated: true,
+              pinned: true,
+              centerTitle: true,
+              floating: true,
+            ),
+            InputPostComponent(),
+            tabSection(context)
+          ];
+         },
         body: tabbarviewsection(context),
       )
     );

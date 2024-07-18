@@ -8,10 +8,10 @@ import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 
 class PostText extends StatefulWidget {
-  final String item;
+  final String text;
 
   const PostText(
-    this.item, 
+    this.text, 
     {Key? key}
   ) : super(key: key);
 
@@ -27,31 +27,33 @@ class _PostTextState extends State<PostText> {
   }
   
   Widget buildUI() {
-    return Builder(
-      builder: (BuildContext context) {
-        return Container(
-          margin: const EdgeInsets.all(Dimensions.marginSizeDefault),
-          child: ReadMoreText(
-            widget.item,
-            style: poppinsRegular.copyWith(
+    return Container(
+      width: 250.0,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ReadMoreText(
+            widget.text,
+            style: robotoRegular.copyWith(
               fontSize: Dimensions.fontSizeDefault,
             ),
             trimLines: 2,
             colorClickableText: ColorResources.black,
             trimMode: TrimMode.Line,
             trimCollapsedText: getTranslated("READ_MORE", context),
-            trimExpandedText: '\n${'\n${getTranslated("LESS_MORE", context)}'}',
-            moreStyle: poppinsRegular.copyWith(
-              fontSize: Dimensions.fontSizeDefault, 
+            trimExpandedText: getTranslated("LESS_MORE", context),
+            moreStyle: robotoRegular.copyWith(
+              fontSize: Dimensions.fontSizeSmall, 
               fontWeight: FontWeight.w600
             ),
-            lessStyle: poppinsRegular.copyWith(
-              fontSize: Dimensions.fontSizeDefault, 
+            lessStyle: robotoRegular.copyWith(
+              fontSize: Dimensions.fontSizeSmall, 
               fontWeight: FontWeight.w600
             ),
-          ) 
-        );
-      },
+          ),
+        ],
+      ) 
     );
   }
 

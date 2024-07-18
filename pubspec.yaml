@@ -172,6 +172,7 @@ flutter:
     - assets/sounds/
     - assets/language/
     - assets/images/
+    - assets/imagesv2/
     - assets/images/auth/
     - assets/images/avatar/
     - assets/images/background/

@@ -4,6 +4,8 @@ import 'package:hp3ki/data/models/language/language.dart';
 
 class AppConstants {
   static const String baseUrl = 'https://api-hp3ki.inovatiftujuh8.com';
+  static const String baseUrlFeed = switchToBaseUrlFeed;
+  static const String baseUrlFeedV2 = 'https://api-forum-general.inovatiftujuh8.com';
   //static const String baseUrl = 'http://192.168.1.5:3007';
   static const String baseUrlDisbursementDenom = 'https://pg-$switchTo.connexist.id/disbursement/pub/v1/disbursement/denom';
   static const String baseUrlEcommerceDeliveryTimeslots = '$switchToBaseUrl/commerce-hp3ki/pub/v1/ninja/deliveryTimeSlots';

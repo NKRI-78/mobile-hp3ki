@@ -1,22 +1,25 @@
-import 'package:equatable/equatable.dart';
+import 'feedposttype.dart';
 
-class FeedMedia extends Equatable {
-  const FeedMedia({
+class FeedMedia {
+  FeedMedia({
+    this.originalName,
+    this.fileLength,
     this.path,
+    this.contentType,
+    this.kind
   });
 
-  final String? path;
+  String? originalName;
+  int? fileLength;
+  String? path;
+  String? contentType;
+  PostType? kind;
 
   factory FeedMedia.fromJson(Map<String, dynamic> json) => FeedMedia(
-        path: json["path"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "path": path,
-      };
-
-  @override
-  List<Object?> get props => [
-        path,
-      ];
+    originalName: json["originalName"],
+    fileLength: json["fileLength"],
+    path: json["path"],
+    contentType: json["contentType"],
+    kind: postTypeValues.map[json["kind"]],
+  );
 }
