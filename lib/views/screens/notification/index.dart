@@ -669,8 +669,8 @@ class _NotificationScreenState extends State<NotificationScreen>
       color: ColorResources.white,
       onRefresh: () {
         return Future.sync(() {
-          context.read<InboxProvider>().resetInboxPaymentPageCount();
-          context.read<InboxProvider>().getInboxPayment(context);
+          // context.read<InboxProvider>().resetInboxPaymentPageCount();
+          // context.read<InboxProvider>().getInboxPayment(context);
         });
       },
       child: CustomScrollView(

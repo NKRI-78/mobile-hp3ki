@@ -1,4 +1,7 @@
 import 'package:flutter/widgets.dart';
+import 'package:hp3ki/providers/profile/profile.dart';
+import 'package:provider/provider.dart';
+
 import 'package:hp3ki/data/models/feedv2/feedDetail.dart';
 import 'package:hp3ki/data/repository/auth/auth.dart';
 import 'package:hp3ki/data/repository/feedv2/feed.dart';
@@ -16,6 +19,8 @@ class FeedDetailProviderV2 with ChangeNotifier {
 
   late TextEditingController commentC;
 
+  String commentVal = "";
+
   bool hasMore = true;
   int pageKey = 1;
 
@@ -32,6 +37,12 @@ class FeedDetailProviderV2 with ChangeNotifier {
 
   List<CommentElement> _comments = [];
   List<CommentElement> get comments => [..._comments];
+
+  void onChangeComment(String val) {
+    commentVal = val;
+
+    notifyListeners();
+  }
 
   Future<void> getFeedDetail(BuildContext context, String postId) async {
     pageKey = 1;
@@ -71,20 +82,39 @@ class FeedDetailProviderV2 with ChangeNotifier {
     String feedId,
     ) async {
     try {
+      
       if (commentC.text.trim() == "") {
         commentC.text = "";
         return;
       }
 
-      await fr.postComment(context: context, feedId: feedId, comment: commentC.text, userId: ar.getUserId().toString());
-
-      FeedDetailModel? fdm = await fr.fetchDetail(context, 1, feedId);
-      _feedDetailData = fdm!.data;
-
-      _comments.clear();
-      _comments.addAll(fdm.data.forum!.comment!.comments);
-
       commentC.text = "";
+
+      _comments.add(
+        CommentElement(
+          id: feedId, 
+          comment: commentVal, 
+          createdAt: DateTime.now().toLocal().toIso8601String().toString(), 
+          user: User(
+            id: context.read<ProfileProvider>().user!.id.toString(),
+            avatar: context.read<ProfileProvider>().user!.avatar.toString(), 
+            username: context.read<ProfileProvider>().user!.fullname.toString()
+          ), 
+          reply: CommentReply(
+            total: 0,
+            replies: [],
+          ), 
+          like: FeedLikes(
+            total: 0, 
+            likes: []
+          )
+        )
+      );
+
+      await fr.postComment(
+        context: context, feedId: feedId, 
+        comment: commentVal, userId: ar.getUserId().toString()
+      );
 
       setStateFeedDetailStatus(FeedDetailStatus.loaded);
     } on CustomException catch (e) {
@@ -95,11 +125,11 @@ class FeedDetailProviderV2 with ChangeNotifier {
     }
   }
 
-  Future<void> toggleLike(
-      {
-      required BuildContext context,
-      required String feedId, 
-      required FeedLikes feedLikes}) async {
+  Future<void> toggleLike({
+    required BuildContext context,
+    required String feedId, 
+    required FeedLikes feedLikes
+  }) async {
     try {
       int idxLikes = feedLikes.likes.indexWhere((el) => el.user!.id == ar.getUserId().toString());
       if (idxLikes != -1) {
@@ -107,10 +137,11 @@ class FeedDetailProviderV2 with ChangeNotifier {
         feedLikes.total = feedLikes.total - 1;
       } else {
         feedLikes.likes.add(UserLikes(
-            user: User(
-            id: ar.getUserId().toString(),
-            avatar: "-",
-            username: ar.getUserFullname())));
+          user: User(
+          id: ar.getUserId().toString(),
+          avatar: "-",
+          username: ar.getUserFullname())
+        ));
         feedLikes.total = feedLikes.total + 1;
       }
       await fr.toggleLike(context: context, feedId: feedId, userId: ar.getUserId().toString());

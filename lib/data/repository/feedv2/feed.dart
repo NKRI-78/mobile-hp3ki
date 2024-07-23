@@ -29,7 +29,7 @@ class FeedRepoV2 {
       FeedModel fm = FeedModel.fromJson(data);
       return fm;
     } on DioError catch(e) {
-      debugPrint("Fetch Feed (${e.error.toString()})");
+      debugPrint("Fetch Feed (${e.response!.data.toString()})");
     } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());
     }
@@ -95,20 +95,21 @@ class FeedRepoV2 {
     return null;
   }
 
-  Future<Map<String, dynamic>> uploadMedia(
-      {required BuildContext context,required String folder, required File media}) async {
+  Future<Map<String, dynamic>> uploadMedia({
+    required String folder, 
+    required File media
+  }) async {
     try {
       FormData formData = FormData.fromMap({
         "folder": folder,
-        "file": await MultipartFile.fromFile(media.path,
-            filename: p.basename(media.path)),
+        "file": await MultipartFile.fromFile(media.path, filename: p.basename(media.path)),
       });
       Dio dio = DioManager.shared.getClient();
       Response res = await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/upload", data: formData);
       Map<String, dynamic> data = res.data;
       return data;
     } on DioError catch(e) {
-      debugPrint(e.toString());
+      debugPrint(e.response!.data.toString());
       throw CustomException(e.toString());
     }  catch(e) {
       debugPrint(e.toString());
@@ -117,7 +118,6 @@ class FeedRepoV2 {
   }
 
   Future<void> postMedia({
-      required BuildContext context,
       required String feedId,
       required String path,
       required String size
@@ -127,7 +127,7 @@ class FeedRepoV2 {
       await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/upload-media",
       data: {"forum_id": feedId, "path": path, "size": size});
     } on DioError catch(e) {
-      debugPrint(e.toString());
+      debugPrint(e.response!.data.toString());
       throw CustomException(e.toString());
     }  catch(e) {
       debugPrint(e.toString());
@@ -136,7 +136,6 @@ class FeedRepoV2 {
   }
 
   Future<void> post({
-    required BuildContext context,
     required String feedId,
     required String appName,
     required String userId,

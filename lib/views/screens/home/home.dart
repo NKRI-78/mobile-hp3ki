@@ -920,58 +920,46 @@ class _HomeScreenState extends State<HomeScreen> {
                               backgroundColor: Colors.transparent,
                               radius: 40.0,
                               child: Consumer<ProfileProvider>(
-                                builder: (BuildContext context,
-                                    ProfileProvider profileProvider,
-                                    Widget? child) {
-                                  if (profileProvider.profileStatus ==
-                                      ProfileStatus.loading) {
+                                builder: (BuildContext context, ProfileProvider profileProvider, Widget? child) {
+
+                                  if (profileProvider.profileStatus == ProfileStatus.loading) {
                                     return const CircleAvatar(
-                                      backgroundColor:
-                                          ColorResources.backgroundDisabled,
+                                      backgroundColor:ColorResources.backgroundDisabled,
                                       maxRadius: 40.0,
                                     );
                                   }
-                                  if (profileProvider.profileStatus ==
-                                      ProfileStatus.error) {
+
+                                  if (profileProvider.profileStatus == ProfileStatus.error) {
                                     return const CircleAvatar(
-                                      backgroundColor:
-                                          ColorResources.backgroundDisabled,
+                                      backgroundColor:ColorResources.backgroundDisabled,
                                       maxRadius: 40.0,
                                     );
                                   }
+                                  
                                   UserData? user = profileProvider.user;
+
                                   return CachedNetworkImage(
-                                    fit: BoxFit.fill,
-                                    imageUrl: user?.avatar ??
-                                        AppConstants.avatarError,
-                                    imageBuilder: (BuildContext context,
-                                        ImageProvider<Object> imageProvider) {
+                                    imageUrl: user?.avatar.toString() ?? "",
+                                    imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
                                       return CircleAvatar(
                                         backgroundColor: Colors.transparent,
-                                        backgroundImage: imageProvider,
                                         maxRadius: 40.0,
+                                        backgroundImage: imageProvider,
                                       );
                                     },
-                                    errorWidget: (BuildContext context,
-                                        String url, dynamic error) {
-                                      return CircleAvatar(
-                                          backgroundColor:
-                                              Colors.transparent,
-                                          maxRadius: 40.0,
-                                          child: Image.asset(
-                                            "assets/images/icons/ic-person.png",
-                                          ));
+                                    errorWidget: (BuildContext context, String url, dynamic error) {
+                                      return Image.asset("assets/images/icons/ic-person.png");
                                     },
                                   );
                                 },
+
                               ),
                             ),
                             title: Row(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  getTranslated("WELCOME", context),
+                                Text(getTranslated("WELCOME", context),
                                   style: poppinsRegular.copyWith(
                                     color: ColorResources.white,
                                     fontSize: Dimensions.fontSizeLarge,
@@ -989,11 +977,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                     const SizedBox(
                                       width: 5,
                                     ),
-                                    Text(
-                                      getTranslated('MY_BALANCE', context),
+                                    Text(getTranslated('MY_BALANCE', context),
                                       style: poppinsRegular.copyWith(
-                                          fontSize: Dimensions.fontSizeDefault,
-                                          color: ColorResources.white),
+                                        fontSize: Dimensions.fontSizeDefault,
+                                        color: ColorResources.white
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -1004,17 +992,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: [
                                 Expanded(
                                   child: Text(
-                                    context
-                                                .watch<ProfileProvider>()
-                                                .profileStatus ==
-                                            ProfileStatus.loading
-                                        ? "..."
-                                        : context
-                                                    .watch<ProfileProvider>()
-                                                    .profileStatus ==
-                                                ProfileStatus.error
-                                            ? "-"
-                                            : 'Hi, ${context.read<ProfileProvider>().user?.fullname?.smallSentence() ?? "..."}',
+                                    context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading
+                                    ? "..."
+                                    : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error
+                                    ? "-"
+                                    : 'Hi, ${context.read<ProfileProvider>().user?.fullname?.smallSentence() ?? "..."}',
                                     maxLines: 1,
                                     style: poppinsRegular.copyWith(
                                         fontWeight: FontWeight.w600,
@@ -1420,7 +1402,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     color: ColorResources.white,
                                     image: DecorationImage(
                                       image: imageProvider,
-                                      fit: BoxFit.fitWidth,
+                                      fit: BoxFit.cover,
                                     )
                                   ),
                                 );

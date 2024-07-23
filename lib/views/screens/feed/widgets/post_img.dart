@@ -28,10 +28,10 @@ class PostImage extends StatefulWidget {
   ) : super(key: key);
 
   @override
-  _PostImageState createState() => _PostImageState();
+  PostImageState createState() => PostImageState();
 }
 
-class _PostImageState extends State<PostImage> {
+class PostImageState extends State<PostImage> {
   int current = 0;
 
   @override
@@ -56,7 +56,7 @@ class _PostImageState extends State<PostImage> {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         image: imageProvider,
-                        fit: BoxFit.cover,
+                        fit: BoxFit.contain,
                       ),
                     ),
                   ),
@@ -68,6 +68,7 @@ class _PostImageState extends State<PostImage> {
                       height: 200.0,
                       decoration: const BoxDecoration(
                         image: DecorationImage(
+                          fit: BoxFit.contain,
                           image: AssetImage("assets/images/logo/logo.png")
                         )
                       ),
@@ -103,7 +104,7 @@ class _PostImageState extends State<PostImage> {
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                 image: imageProvider,
-                                fit: BoxFit.cover,
+                                fit: BoxFit.contain,
                               ),
                             ),
                           ),
@@ -115,6 +116,7 @@ class _PostImageState extends State<PostImage> {
                               height: 200.0,
                               decoration: const BoxDecoration(
                                 image: DecorationImage(
+                                  fit: BoxFit.contain,
                                   image: AssetImage("assets/images/logo/logo.png")
                                 )
                               ),
@@ -166,7 +168,7 @@ class _PostImageState extends State<PostImage> {
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             image: imageProvider,
-                            fit: BoxFit.cover,
+                            fit: BoxFit.contain,
                           ),
                         ),
                       ),
@@ -178,6 +180,7 @@ class _PostImageState extends State<PostImage> {
                           height: 200.0,
                           decoration: const BoxDecoration(
                             image: DecorationImage(
+                              fit: BoxFit.contain,
                               image: AssetImage("assets/images/logo/logo.png")
                             )
                           ),
@@ -226,7 +229,8 @@ class _PostImageState extends State<PostImage> {
             return InkWell(
               onTap: () {
                 NS.push(context, PreviewImageScreen(
-                  img: '${i.path}',
+                  id: current,
+                  medias: widget.medias,
                 ));
               },
               onLongPress: () async {
@@ -244,8 +248,9 @@ class _PostImageState extends State<PostImage> {
                         return ElevatedButton(
                           onPressed: () async { 
                             Directory documentsIos = await getApplicationDocumentsDirectory();
-                            String? saveDir = Platform.isIOS ? documentsIos.path : await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS);
-                          
+                            String? saveDir = Platform.isIOS 
+                            ? documentsIos.path 
+                            : await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS);
                             NS.pop(context);
                             ShowSnackbar.snackbar(context, "Gambar telah disimpan pada $saveDir", "", ColorResources.success);
                           },
@@ -268,7 +273,7 @@ class _PostImageState extends State<PostImage> {
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: imageProvider,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.contain,
                     ),
                   ),
                 ),
@@ -280,6 +285,7 @@ class _PostImageState extends State<PostImage> {
                     height: 200.0,
                     decoration: const BoxDecoration(
                       image: DecorationImage(
+                        fit: BoxFit.contain,
                         image: AssetImage("assets/images/logo/logo.png")
                       )
                     ),

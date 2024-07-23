@@ -1,34 +1,30 @@
-import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
-
-import 'package:photo_view/photo_view.dart';
-import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:gallery_saver/gallery_saver.dart';
+
+import 'package:carousel_slider/carousel_slider.dart';
 
 import 'package:hp3ki/services/navigation.dart';
 
-import 'package:hp3ki/utils/custom_themes.dart';
-import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 
-import 'package:hp3ki/localization/language_constraints.dart';
-
-import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
-
 class PreviewImageScreen extends StatefulWidget {
+  final List<dynamic>? medias;
+  final int? id;
+
   const PreviewImageScreen({
+    this.medias,
+    this.id,
     Key? key, 
-    this.img
   }) : super(key: key);
-  final String? img;
 
   @override
   _PreviewImageScreenState createState() => _PreviewImageScreenState();
 }
 
 class _PreviewImageScreenState extends State<PreviewImageScreen> {
+
+  var current = 0;
   
   @override
   void initState() {
@@ -42,6 +38,9 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    current = widget.id!;
+
     return buildUI();
   }
   
@@ -59,87 +58,86 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
             NS.pop(context);
           }
         ),
-        actions: [
-          Container(
-            margin: const EdgeInsets.all(8.0),
-            height: 40.0,
-            width: 40.0,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(50.0),
-            ),
-            child: PopupMenuButton(
-              onSelected: (int i) async {
-                switch (i) {
-                  case 1:
-                    ProgressDialog pr = ProgressDialog(context: context);
-                    try {
-                      PermissionStatus statusStorage = await Permission.storage.status;
-                      if(!statusStorage.isGranted) {
-                        await Permission.storage.request();
-                      } 
-                      pr.show(
-                        max: 1,
-                        msg: '${getTranslated("DOWNLOADING", context)}...'
-                      );
-                      await GallerySaver.saveImage(widget.img!);
-                      pr.close();
-                      ShowSnackbar.snackbar(context, getTranslated("SAVE_TO_GALLERY", context), "", ColorResources.success);
-                    } catch(e, stacktrace) {
-                      debugPrint(stacktrace.toString());
-                      pr.close();
-                      ShowSnackbar.snackbar(context, getTranslated("THERE_WAS_PROBLEM", context), "", ColorResources.error);
-                    }
-                  break;
-                  default:
-                }
-              },
-              icon: const Icon(Icons.more_horiz),
-              itemBuilder: (BuildContext context) => [
-                PopupMenuItem(
-                  padding: const EdgeInsets.only(
-                    left: Dimensions.paddingSizeSmall,
-                    right: Dimensions.paddingSizeSmall
-                  ),
-                  textStyle: poppinsRegular.copyWith(
-                    fontSize: Dimensions.fontSizeDefault
-                  ),
-                  child: Text(getTranslated("DOWNLOAD", context),
-                    style: poppinsRegular.copyWith(
-                      fontSize: Dimensions.fontSizeDefault,
-                      color: ColorResources.black
-                    )
-                  ),
-                  value: 1,
-                ),
-              ]
-            ),
-          )
-        ]
       ),
       backgroundColor: ColorResources.black,
       body: Center(
-        child: Hero(
-          tag: 'Image',
-          child: CachedNetworkImage(
-            imageUrl: widget.img!,
-            imageBuilder: (BuildContext context, ImageProvider imageProvider) => PhotoView(
-              initialScale: PhotoViewComputedScale.contained * 1.1,
-              imageProvider: imageProvider,
-            ),
-            placeholder: (BuildContext context, String url) => Shimmer.fromColors(
-              highlightColor: ColorResources.white,
-              baseColor: Colors.grey[200]!,
-              child: Container(
-                margin: const EdgeInsets.all(0.0),
-                padding: const EdgeInsets.all(0.0),
-                width: double.infinity,
-                height: 200.0,
-                color: Colors.grey
-              )  
-            ),
+        child: CarouselSlider(
+          options: CarouselOptions(
+            height: 200.0,
+            enableInfiniteScroll: false,
+            initialPage: current,
+            viewportFraction: 1.0,
+            onPageChanged: (int i, CarouselPageChangedReason reason) {
+              setState(() => current = i);
+            }
           ),
-        )
-      ),
+          items: widget.medias!.map((i) {
+            return CachedNetworkImage(
+              imageUrl: "${i.path}",
+              imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) => Container(
+                height: 200.0,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+              errorWidget: (BuildContext context, String url, dynamic _) {
+                return Container(
+                  margin: const EdgeInsets.all(0.0),
+                  padding: const EdgeInsets.all(0.0),
+                  width: double.infinity,
+                  height: 200.0,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      fit: BoxFit.contain,
+                      image: AssetImage("assets/images/logo/logo.png")
+                    )
+                  ),
+                );
+              },
+              placeholder: (BuildContext context, String url) {
+                return Shimmer.fromColors(
+                  highlightColor: ColorResources.white,
+                  baseColor: Colors.grey[200]!,
+                  child: Container(
+                    margin: const EdgeInsets.all(0.0),
+                    padding: const EdgeInsets.all(0.0),
+                    width: double.infinity,
+                    height: 200.0,
+                    color: ColorResources.white
+                  )  
+                );
+              } 
+            );
+          }).toList()
+      )
+      
+      // Center(
+      //   child: Hero(
+      //     tag: 'Image',
+      //     child: CachedNetworkImage(
+      //       imageUrl: widget.img!,
+      //       imageBuilder: (BuildContext context, ImageProvider imageProvider) => PhotoView(
+      //         initialScale: PhotoViewComputedScale.contained * 1.1,
+      //         imageProvider: imageProvider,
+      //       ),
+      //       placeholder: (BuildContext context, String url) => Shimmer.fromColors(
+      //         highlightColor: ColorResources.white,
+      //         baseColor: Colors.grey[200]!,
+      //         child: Container(
+      //           margin: const EdgeInsets.all(0.0),
+      //           padding: const EdgeInsets.all(0.0),
+      //           width: double.infinity,
+      //           height: 200.0,
+      //           color: Colors.grey
+      //         )  
+      //       ),
+      //     ),
+      //   )
+      // ),
+      )
     );
   }
 }

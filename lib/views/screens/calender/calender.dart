@@ -422,11 +422,102 @@ class _CalenderScreenState extends State<CalenderScreen> {
                       },
                     ),
                   ),
+
+                  Container(
+                    margin: const EdgeInsets.only(top: 10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(getTranslated("TITLE", context),
+                          style: poppinsRegular.copyWith(
+                            fontSize: Dimensions.fontSizeDefault,
+                            fontWeight: FontWeight.w600
+                          )
+                        ),
+                        const SizedBox(height: 10.0),
+                        Text(events[i].title!.trim(),
+                          style: poppinsRegular.copyWith(
+                            color: ColorResources.black,
+                            fontSize: Dimensions.fontSizeDefault,
+                          )
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  Container(
+                    margin: const EdgeInsets.only(top: 10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(getTranslated("DESCRIPTION", context),
+                          style: poppinsRegular.copyWith(
+                            fontSize: Dimensions.fontSizeDefault,
+                            fontWeight: FontWeight.w600
+                          )
+                        ),
+                        Html(
+                          data: events[i].description,
+                          shrinkWrap: true,
+                          style: {
+                            'body': Style(
+                              margin: Margins.zero,
+                              padding: HtmlPaddings.zero,
+                              fontFamily: 'Poppins',
+                            ),
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+    
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(getTranslated("LOCATION", context),
+                        style: poppinsRegular.copyWith(
+                          fontSize: Dimensions.fontSizeDefault,
+                          fontWeight: FontWeight.w600
+                        )
+                      ),
+                      const SizedBox(height: 6.0),
+                      Text(events[i].location ?? "...",
+                        style: poppinsRegular.copyWith(
+                          fontSize: Dimensions.fontSizeDefault
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  Container(
+                    margin: const EdgeInsets.only(top: 10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(getTranslated("DATE", context),
+                          style: poppinsRegular.copyWith(
+                            fontSize: Dimensions.fontSizeDefault,
+                            fontWeight: FontWeight.w600
+                          )
+                        ),
+                        const SizedBox(height: 6.0),
+                        Text(Helper.formatDate(DateTime.parse(Helper.getFormatedDate(events[i].date))),
+                          style: poppinsRegular.copyWith(
+                            fontSize: Dimensions.fontSizeDefault
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
     
                   Container(
                     margin: const EdgeInsets.only(top: 10.0),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       mainAxisSize: MainAxisSize.max,
                       children: [
 
@@ -471,106 +562,11 @@ class _CalenderScreenState extends State<CalenderScreen> {
                       ],
                     ),
                   ),
-
-                  Container(
-                    margin: const EdgeInsets.only(top: 5.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(getTranslated("TITLE", context),
-                          style: poppinsRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
-                            fontWeight: FontWeight.w600
-                          )
-                        ),
-                        const SizedBox(height: 10.0),
-                        Text(events[i].title!.trim(),
-                          style: poppinsRegular.copyWith(
-                            color: ColorResources.black,
-                            fontSize: Dimensions.fontSizeDefault,
-                          )
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 10.0),
-                  
-                  Container(
-                    margin: const EdgeInsets.only(top: 5.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(getTranslated("DESCRIPTION", context),
-                          style: poppinsRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
-                            fontWeight: FontWeight.w600
-                          )
-                        ),
-                        Html(
-                          data: events[i].description,
-                          shrinkWrap: true,
-                          style: {
-                            'body': Style(
-                              margin: Margins.zero,
-                              fontFamily: 'Poppins',
-                            ),
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-    
-                  Container(
-                    margin: const EdgeInsets.only(top: 5.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(getTranslated("LOCATION", context),
-                          style: poppinsRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
-                            fontWeight: FontWeight.w600
-                          )
-                        ),
-                        const SizedBox(height: 6.0),
-                        Text(events[i].location ?? "...",
-                          style: poppinsRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  Container(
-                    margin: const EdgeInsets.only(top: 10.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(getTranslated("DATE", context),
-                          style: poppinsRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
-                            fontWeight: FontWeight.w600
-                          )
-                        ),
-                        const SizedBox(height: 6.0),
-                        Text(Helper.formatDate(DateTime.parse(Helper.getFormatedDate(events[i].date))),
-                          style: poppinsRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
     
                   Container(
                     margin: const EdgeInsets.only(
-                      top: Dimensions.marginSizeSmall,
-                      bottom: Dimensions.marginSizeSmall
+                      top: 10.0,
+                      bottom: 10.0
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,

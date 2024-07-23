@@ -367,7 +367,7 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
               centerTitle: true,
               floating: true,
             ),
-            InputPostComponent(),
+            const InputPostComponent(),
             tabSection(context)
           ];
          },

@@ -47,21 +47,31 @@ class PostDetailScreen extends StatefulWidget {
 }
 
 class _PostDetailScreenState extends State<PostDetailScreen> {
+
+  late ScrollController sc;
+  
   bool deletePostBtn = false;
+
   late p.FeedDetailProviderV2 feedDetailProviderV2;
   
   FocusNode commentFn = FocusNode();
 
+  Future<void> getData() async {
+  
+    if(!mounted) return;
+      await feedDetailProviderV2.getFeedDetail(context, widget.postId);
+  }
+
   @override
   void initState() {  
     super.initState();
+
+    sc = ScrollController();
+
     feedDetailProviderV2 = context.read<p.FeedDetailProviderV2>();
     feedDetailProviderV2.commentC = TextEditingController();
-    Future.delayed(Duration.zero, () {
-      if(mounted) {
-        feedDetailProviderV2.getFeedDetail(context, widget.postId);
-      }
-    });
+
+    Future.microtask(() => getData());
   }
 
   Widget commentSticker(BuildContext context, CommentContent comment) {
@@ -391,15 +401,16 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               child: NotificationListener(
                 onNotification: (notification) {
                   if (notification is ScrollEndNotification) {
-                  if (notification.metrics.pixels == notification.metrics.maxScrollExtent) {
-                    if (feedDetailProviderV2.hasMore) {
-                      feedDetailProviderV2.loadMoreComment(context: context, postId: widget.postId);
+                    if (notification.metrics.pixels == notification.metrics.maxScrollExtent) {
+                      if (feedDetailProviderV2.hasMore) {
+                        feedDetailProviderV2.loadMoreComment(context: context, postId: widget.postId);
+                      }
                     }
                   }
-                }
-                return false;
+                  return false;
                 },
                 child: ListView.separated(
+                  controller: sc,
                   separatorBuilder: (BuildContext context, int i) {
                     return const SizedBox(height: 8.0);
                   },
@@ -419,7 +430,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                       children: [
                       ListTile(
                         leading: CachedNetworkImage(
-                        imageUrl: "${comment.user.avatar}",
+                        imageUrl: comment.user.avatar,
                           imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
                             backgroundColor: Colors.transparent,
                             backgroundImage: imageProvider,
@@ -654,11 +665,16 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.max,
           children: [
+            
             const SizedBox(width: 16.0),
+
             Expanded(
               child: TextField(
                 focusNode: commentFn,
                 controller: feedDetailProviderV2.commentC,
+                onChanged: (String val) {
+                  feedDetailProviderV2.onChangeComment(val);
+                },
                 style: robotoRegular.copyWith(
                   color: ColorResources.black,
                   fontSize: Dimensions.fontSizeSmall
@@ -672,15 +688,24 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 ),
               ),
             ),
+
             IconButton(
               icon: const Icon(
                 Icons.send,
                 color: ColorResources.black,
               ),
               onPressed: () async {
+                Future.delayed(const Duration(seconds: 1), () {
+                  sc.animateTo(
+                    sc.position.maxScrollExtent, 
+                    duration: const Duration(seconds: 1), 
+                    curve: Curves.bounceIn
+                  );
+                });
                 await feedDetailProviderV2.postComment(context, widget.postId);
               }
             ),
+            
           ],
         ),
       )

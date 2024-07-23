@@ -3,6 +3,8 @@ import 'package:hp3ki/providers/banner/banner.dart';
 import 'package:hp3ki/providers/checkin/checkin.dart';
 import 'package:hp3ki/providers/event/event.dart';
 import 'package:hp3ki/providers/feedv2/feed.dart';
+import 'package:hp3ki/providers/feedv2/feedDetail.dart';
+import 'package:hp3ki/providers/feedv2/feedReply.dart';
 import 'package:hp3ki/providers/firebase/firebase.dart';
 import 'package:hp3ki/providers/inbox/inbox.dart';
 import 'package:hp3ki/providers/internet/internet.dart';
@@ -41,8 +43,10 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider(create: (_) => c.getIt<LocationProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<MembernearProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<SosProvider>()),
-  ChangeNotifierProvider(create: (_) => c.getIt<InboxProvider>()),
+  ChangeNotifierProvider(create: (_) => c.getIt<InboxProvider>()),    
+  ChangeNotifierProvider(create: (_) => c.getIt<FeedDetailProviderV2>()),
   ChangeNotifierProvider(create: (_) => c.getIt<FeedProviderV2>()),
+  ChangeNotifierProvider(create: (_) => c.getIt<FeedReplyProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<EventProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<CheckInProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<AuthProvider>()),
@@ -52,11 +56,9 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider(create: (_) => c.getIt<RegionDropdownProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<BannerProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<UpgradeMemberProvider>()),
-  ChangeNotifierProvider(
-      create: (_) => c.getIt<ShopCartProvider>()..fetchCarts()),
-  ChangeNotifierProvider(
-      create: (_) =>
-          c.getIt<ShippingAddressProvider>()..fetchAllShippingAddress()),
+  ChangeNotifierProvider(create: (_) => c.getIt<ShopCartProvider>()..fetchCarts()),
+  ChangeNotifierProvider(create: (_) => c.getIt<ShippingAddressProvider>()..fetchAllShippingAddress()),
+
   StreamProvider<UserLocation>(
     initialData: UserLocation(latitude: 0.0, longitude: 0.0),
     create: (_) => LocationService().locationStream,

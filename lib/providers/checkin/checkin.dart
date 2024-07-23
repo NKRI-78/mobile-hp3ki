@@ -32,6 +32,8 @@ class CheckInProvider extends ChangeNotifier {
     required this.lp,
   });
 
+  String checkInDataSelected = "";
+
   CheckInStatus _checkInStatus = CheckInStatus.loading;
   CheckInStatus get checkInStatus => _checkInStatus;
 
@@ -188,11 +190,11 @@ class CheckInProvider extends ChangeNotifier {
   }
 
   Future<void> joinCheckIn(BuildContext context, String checkInId) async {
+    checkInDataSelected = checkInId;
     setStateCheckInStatusJoin(CheckInStatusJoin.loading);
     try {
       await cr.joinCheckIn(checkInId, SharedPrefs.getUserId());
-      ShowSnackbar.snackbar(
-          context, getTranslated('JOINED', context), '', ColorResources.green);
+      ShowSnackbar.snackbar(context, getTranslated('JOINED', context), '', ColorResources.green);
       getCheckIn(context);
       setStateCheckInStatusJoin(CheckInStatusJoin.loaded);
     } on CustomException catch (e) {

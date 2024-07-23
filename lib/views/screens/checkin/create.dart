@@ -47,41 +47,41 @@ class _CreateCheckInScreenState extends State<CreateCheckInScreen> {
   List<Marker> markers = [];
 
   Future<void> createCheckIn(BuildContext context) async {
-      String? caption = captionC.text.trim();
-      String? desc = descC.text.trim();
-      String? date = dateC.text.trim();
-      String? start = datetimeStartC.text.trim();
-      String? end = datetimeEndC.text.trim();
+    String? caption = captionC.text.trim();
+    String? desc = descC.text.trim();
+    String? date = dateC.text.trim();
+    String? start = datetimeStartC.text.trim();
+    String? end = datetimeEndC.text.trim();
 
-      if(caption.isEmpty) {
-        ShowSnackbar.snackbar(context, getTranslated('CAPTION_IS_REQUIRED', context), "", ColorResources.error);
-        return;
-      }
-      if(desc.isEmpty) {
-        ShowSnackbar.snackbar(context, 'Deskripsi harus diisi.', "", ColorResources.error);
-        return;
-      }
-      if(date.isEmpty) {
-        ShowSnackbar.snackbar(context, getTranslated('DATE_IS_REQUIRED', context), "", ColorResources.error);
-        return;
-      }
-      if(start.isEmpty) {
-        ShowSnackbar.snackbar(context, getTranslated('DATE_TIME_START_IS_REQUIRED', context), "", ColorResources.error);
-        return;
-      }
-      if(end.isEmpty) {
-        ShowSnackbar.snackbar(context, getTranslated('DATE_TIME_END_IS_REQUIRED', context), "", ColorResources.error);  
-        return; 
-      }
-      
-      await context.read<CheckInProvider>().createCheckIn(
-        context,
-        caption,
-        date,
-        start,
-        end,
-        desc,
-      );
+    if(caption.isEmpty) {
+      ShowSnackbar.snackbar(context, getTranslated('CAPTION_IS_REQUIRED', context), "", ColorResources.error);
+      return;
+    }
+    if(desc.isEmpty) {
+      ShowSnackbar.snackbar(context, 'Deskripsi harus diisi.', "", ColorResources.error);
+      return;
+    }
+    if(date.isEmpty) {
+      ShowSnackbar.snackbar(context, getTranslated('DATE_IS_REQUIRED', context), "", ColorResources.error);
+      return;
+    }
+    if(start.isEmpty) {
+      ShowSnackbar.snackbar(context, getTranslated('DATE_TIME_START_IS_REQUIRED', context), "", ColorResources.error);
+      return;
+    }
+    if(end.isEmpty) {
+      ShowSnackbar.snackbar(context, getTranslated('DATE_TIME_END_IS_REQUIRED', context), "", ColorResources.error);  
+      return; 
+    }
+    
+    await context.read<CheckInProvider>().createCheckIn(
+      context,
+      caption,
+      date,
+      start,
+      end,
+      desc,
+    );
   }
 
   @override 

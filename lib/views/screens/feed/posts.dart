@@ -57,7 +57,7 @@ class _PostsState extends State<Posts> {
           ListTile(
             dense: true,
             leading: CachedNetworkImage(
-            imageUrl: "${widget.forum[widget.i].user!.avatar!}",
+            imageUrl: widget.forum[widget.i].user!.avatar!,
               imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
                 backgroundColor: Colors.transparent,
                 backgroundImage: imageProvider,

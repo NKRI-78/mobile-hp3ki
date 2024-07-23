@@ -127,7 +127,7 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
       theme: ThemeData(
         useMaterial3: false,
         elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
+        style: ElevatedButton.styleFrom(
           backgroundColor: ColorResources.primary,
         )),
         appBarTheme: const AppBarTheme(

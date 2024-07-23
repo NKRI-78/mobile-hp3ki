@@ -210,7 +210,6 @@ class FeedProviderV2 with ChangeNotifier {
 
     if (feedType == "text") {
       await fr.post(
-        context: context, 
         feedId: feedId,
         appName: 'hp3ki', 
         userId: ar.getUserId().toString(), 
@@ -224,10 +223,9 @@ class FeedProviderV2 with ChangeNotifier {
     if (feedType == "image") {
    
       for (File p in files) {
-        Map<String, dynamic> d = await fr.uploadMedia(context: context, folder: "images", media: File(p.path));
+        Map<String, dynamic> d = await fr.uploadMedia(folder: "images", media: File(p.path));
 
         await fr.post(
-          context: context, 
           feedId: feedId,
           appName: 'hp3ki', 
           userId: ar.getUserId().toString(), 
@@ -237,7 +235,7 @@ class FeedProviderV2 with ChangeNotifier {
           caption: postC.text, 
         );
       
-        await fr.postMedia(context: context, feedId: feedId, path: d["data"]["path"], size: d["data"]["size"]);
+        await fr.postMedia(feedId: feedId, path: d["data"]["path"], size: d["data"]["size"]);
       }
     }
 
@@ -271,10 +269,9 @@ class FeedProviderV2 with ChangeNotifier {
     setStateWritePost(WritePostStatus.loading);
 
     if (feedType == "image") {
-      Map<String, dynamic> d = await fr.uploadMedia(context: context, folder: "images", media: File(files.path));
+      Map<String, dynamic> d = await fr.uploadMedia(folder: "images", media: File(files.path));
       
       await fr.post(
-        context: context, 
         feedId: feedId,
         appName: 'hp3ki', 
         userId: ar.getUserId().toString(), 
@@ -284,7 +281,7 @@ class FeedProviderV2 with ChangeNotifier {
         caption: postC.text, 
       );
 
-      await fr.postMedia(context: context, feedId: feedId, path: d["data"]["path"], size: d["data"]["size"]);
+      await fr.postMedia(feedId: feedId, path: d["data"]["path"], size: d["data"]["size"]);
     }
 
     setStateWritePost(WritePostStatus.loaded);
@@ -305,31 +302,40 @@ class FeedProviderV2 with ChangeNotifier {
     String feedId = const Uuid().v4();
     
     if (postC.text.trim().isEmpty) {
-      setStateWritePost(WritePostStatus.loaded);
+      setStateWritePost(WritePostStatus.error);
       return ShowSnackbar.snackbar(context, getTranslated("CAPTION_IS_REQUIRED", context), "", ColorResources.error);
     }
 
     if(postC.text.trim().length > 1000) {
-      setStateWritePost(WritePostStatus.loaded);
+      setStateWritePost(WritePostStatus.error);
       ShowSnackbar.snackbar(context, getTranslated("CAPTION_MAXIMAL", context), "", ColorResources.error);
       return;
     }
 
     if (feedType == "video") {
-      Map<String, dynamic> d = await fr.uploadMedia(context: context, folder: "videos", media: files);
-      
-      await fr.post(
-        context: context, 
-        feedId: feedId,
-        appName: 'hp3ki', 
-        userId: ar.getUserId().toString(), 
-        feedType: type, 
-        media: d["data"]["path"], 
-        link: '',
-        caption: postC.text, 
-      );
 
-      await fr.postMedia(context: context, feedId: feedId, path: d["data"]["path"], size: d["data"]["size"]);
+      try {
+
+        Map<String, dynamic> d = await fr.uploadMedia(folder: "videos", media: files);
+        
+        await fr.post(
+          feedId: feedId,
+          appName: 'hp3ki', 
+          userId: ar.getUserId().toString(), 
+          feedType: type, 
+          media: d["data"]["path"], 
+          link: '',
+          caption: postC.text, 
+        );
+
+        await fr.postMedia(feedId: feedId, path: d["data"]["path"], size: d["data"]["size"]);
+
+      } catch(e) {
+
+        setStateWritePost(WritePostStatus.error);
+      
+      }
+      
     }
 
     setStateWritePost(WritePostStatus.loaded);
@@ -383,7 +389,6 @@ class FeedProviderV2 with ChangeNotifier {
 
     if (feedType == "link") {
       await fr.post(
-        context: context, 
         feedId: feedId,
         appName: 'hp3ki', 
         userId: ar.getUserId().toString(), 
@@ -422,10 +427,9 @@ class FeedProviderV2 with ChangeNotifier {
       return;
     }
 
-    Map<String, dynamic> d = await fr.uploadMedia(context: context, folder: "documents", media: files);
+    Map<String, dynamic> d = await fr.uploadMedia(folder: "documents", media: files);
 
     await fr.post(
-      context: context, 
       feedId: feedId,
       appName: 'hp3ki', 
       userId: ar.getUserId().toString(), 
@@ -435,8 +439,7 @@ class FeedProviderV2 with ChangeNotifier {
       caption: caption, 
     );
     
-    await fr.postMedia(
-      context: context, 
+    await fr.postMedia( 
       feedId: feedId, 
       path: d["data"]["path"], 
       size: d["data"]["size"]

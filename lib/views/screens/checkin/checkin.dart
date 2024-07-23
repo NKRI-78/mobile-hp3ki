@@ -429,7 +429,7 @@ class _CheckInScreenState extends State<CheckInScreen> {
             elevation: 3.0, backgroundColor: Colors.green[300]!,
           ),
           onPressed: () => join(checkInProvider.checkInData[i].id!),
-          child: checkInProvider.checkInStatusJoin == CheckInStatusJoin.loading
+          child: checkInProvider.checkInData[i].id == checkInProvider.checkInDataSelected
           ? const Loader(
             color: ColorResources.white,
           ) : Text(getTranslated('JOIN', context),
