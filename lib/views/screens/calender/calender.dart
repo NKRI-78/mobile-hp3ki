@@ -12,7 +12,6 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:provider/provider.dart';
 import 'package:hp3ki/data/models/event/event.dart';
 import 'package:hp3ki/localization/language_constraints.dart';
-import 'package:hp3ki/services/navigation.dart';
 import 'package:hp3ki/providers/event/event.dart';
 import 'package:hp3ki/utils/helper.dart';
 import 'package:hp3ki/utils/color_resources.dart';
@@ -572,44 +571,27 @@ class _CalenderScreenState extends State<CalenderScreen> {
                       mainAxisSize: MainAxisSize.max,
                       children: [
     
-                        Expanded(
-                          child: CustomButton(
-                            onTap: () {
-                              NS.pop(context);
-                            }, 
-                            height: 35.0,
-                            isBorder: false,
-                            isBorderRadius: true,
-                            btnColor: ColorResources.error,
-                            btnTxt: getTranslated("CANCEL", context)
-                          )
-                        ),
-    
-                        const SizedBox(width: 8.0),
-    
-                        Expanded(
-                          child: CustomButton(
-                            onTap: events[i].joined == true 
-                            ? () { }
-                            : () async {
-                              setState(() {
-                                getData();
-                              });
-                              await context.read<EventProvider>().joinEvent(
-                                context, 
-                                eventId: events[i].id.toString(),
-                              );
-                            }, 
-                            height: 35.0,
-                            isBorder: false,
-                            isBorderRadius: true,
-                            isLoading: context.watch<EventProvider>().eventJoinStatus == EventJoinStatus.loading 
-                              ? true 
-                              : false,
-                            btnColor: events[i].joined == true 
-                              ? ColorResources.backgroundDisabled : ColorResources.success,
-                            btnTxt: events[i].joined == true ? "Tergabung" : "Gabung",
-                          )
+                        CustomButton(
+                          onTap: events[i].joined == true 
+                          ? () { }
+                          : () async {
+                            setState(() {
+                              getData();
+                            });
+                            await context.read<EventProvider>().joinEvent(
+                              context, 
+                              eventId: events[i].id.toString(),
+                            );
+                          }, 
+                          height: 35.0,
+                          isBorder: false,
+                          isBorderRadius: true,
+                          isLoading: context.watch<EventProvider>().eventJoinStatus == EventJoinStatus.loading 
+                            ? true 
+                            : false,
+                          btnColor: events[i].joined == true 
+                            ? ColorResources.backgroundDisabled : ColorResources.success,
+                          btnTxt: events[i].joined == true ? "Tergabung" : "Gabung",
                         )
     
                       ],

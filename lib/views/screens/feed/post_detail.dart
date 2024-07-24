@@ -696,12 +696,15 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               ),
               onPressed: () async {
                 Future.delayed(const Duration(seconds: 1), () {
-                  sc.animateTo(
-                    sc.position.maxScrollExtent, 
-                    duration: const Duration(seconds: 1), 
-                    curve: Curves.bounceIn
-                  );
+                  if(sc.hasClients) {
+                    sc.animateTo(
+                      sc.position.maxScrollExtent, 
+                      duration: const Duration(seconds: 1), 
+                      curve: Curves.bounceIn
+                    );
+                  }
                 });
+                
                 await feedDetailProviderV2.postComment(context, widget.postId);
               }
             ),

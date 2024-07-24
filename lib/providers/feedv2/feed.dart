@@ -2,16 +2,23 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+
+import 'package:multi_image_picker_plus/multi_image_picker_plus.dart';
+
+import 'package:uuid/uuid.dart';
+
 import 'package:hp3ki/data/models/feedv2/feed.dart';
 import 'package:hp3ki/data/repository/auth/auth.dart';
 import 'package:hp3ki/data/repository/feedv2/feed.dart';
+
 import 'package:hp3ki/localization/language_constraints.dart';
+
 import 'package:hp3ki/services/navigation.dart';
+
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/exceptions.dart';
-import 'package:multi_image_picker_plus/multi_image_picker_plus.dart';
+
 import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
-import 'package:uuid/uuid.dart';
 
 enum FeedStatus { idle, loading, loaded, empty, error }
 enum WritePostStatus { idle, loading, loaded, empty, error }
@@ -224,19 +231,19 @@ class FeedProviderV2 with ChangeNotifier {
    
       for (File p in files) {
         Map<String, dynamic> d = await fr.uploadMedia(folder: "images", media: File(p.path));
-
-        await fr.post(
-          feedId: feedId,
-          appName: 'hp3ki', 
-          userId: ar.getUserId().toString(), 
-          feedType: type, 
-          media: d["data"]["path"],
-          link: '', 
-          caption: postC.text, 
-        );
       
         await fr.postMedia(feedId: feedId, path: d["data"]["path"], size: d["data"]["size"]);
       }
+
+      await fr.post(
+        feedId: feedId,
+        appName: 'hp3ki', 
+        userId: ar.getUserId().toString(), 
+        feedType: type, 
+        media: 'media.jpg',
+        link: '', 
+        caption: postC.text, 
+      );
     }
 
     setStateWritePost(WritePostStatus.loaded);

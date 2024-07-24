@@ -1,10 +1,12 @@
 import 'package:flutter/widgets.dart';
-import 'package:hp3ki/providers/profile/profile.dart';
 import 'package:provider/provider.dart';
+
+import 'package:hp3ki/providers/profile/profile.dart';
 
 import 'package:hp3ki/data/models/feedv2/feedDetail.dart';
 import 'package:hp3ki/data/repository/auth/auth.dart';
 import 'package:hp3ki/data/repository/feedv2/feed.dart';
+
 import 'package:hp3ki/utils/exceptions.dart';
 
 enum FeedDetailStatus { idle, loading, loaded, empty, error }
@@ -94,7 +96,7 @@ class FeedDetailProviderV2 with ChangeNotifier {
         CommentElement(
           id: feedId, 
           comment: commentVal, 
-          createdAt: DateTime.now().toLocal().toIso8601String().toString(), 
+          createdAt: "beberapa detik yang lalu", 
           user: User(
             id: context.read<ProfileProvider>().user!.id.toString(),
             avatar: context.read<ProfileProvider>().user!.avatar.toString(), 
@@ -120,7 +122,8 @@ class FeedDetailProviderV2 with ChangeNotifier {
     } on CustomException catch (e) {
       setStateFeedDetailStatus(FeedDetailStatus.error);
       debugPrint(e.toString());
-    } catch (_) {
+    } catch (e) {
+      debugPrint(e.toString());
       setStateFeedDetailStatus(FeedDetailStatus.error);
     }
   }

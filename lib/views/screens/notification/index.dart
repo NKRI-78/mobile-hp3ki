@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hp3ki/views/screens/notification/detail.dart';
 import 'package:provider/provider.dart';
 import 'package:badges/badges.dart' as b;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -24,11 +25,11 @@ class NotificationScreen extends StatefulWidget {
   const NotificationScreen({Key? key}) : super(key: key);
 
   @override
-  _NotificationScreenState createState() => _NotificationScreenState();
+  NotificationScreenState createState() => NotificationScreenState();
 }
 
-class _NotificationScreenState extends State<NotificationScreen>
-    with TickerProviderStateMixin {
+class NotificationScreenState extends State<NotificationScreen> with TickerProviderStateMixin {
+
   late ScrollController inboxInfoViewC;
   late ScrollController inboxPaymentViewC;
   late ScrollController inboxPanicViewC;
@@ -453,26 +454,22 @@ class _NotificationScreenState extends State<NotificationScreen>
   Widget buildUI() {
     return Scaffold(
       backgroundColor: ColorResources.greyDarkPrimary.withOpacity(0.2),
-      body: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          return NestedScrollView(
-              headerSliverBuilder:
-                  (BuildContext context, bool innerBoxIsScrolled) {
-                return [
-                  buildAppBar(context),
-                ];
-              },
-              body: TabBarView(
-                controller: tabC,
-                children: [
-                  index == 0 ? inboxWidgetPayment(context) : loadingWidget(),
-                  index == 1 ? inboxWidgetPanic(context) : loadingWidget(),
-                  index == 2 ? inboxWidgetInfo(context) : loadingWidget(),
-                  index == 3 ? const TransactionNotifList() : loadingWidget(),
-                ],
-              ));
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return [
+            buildAppBar(context),
+          ];
         },
-      ),
+        body: TabBarView(
+          controller: tabC,
+          children: [
+            index == 0 ? inboxWidgetPayment(context) : loadingWidget(),
+            index == 1 ? inboxWidgetPanic(context) : loadingWidget(),
+            index == 2 ? inboxWidgetInfo(context) : loadingWidget(),
+            index == 3 ? const TransactionNotifList() : loadingWidget(),
+          ],
+        )
+      )
     );
   }
 
@@ -570,10 +567,12 @@ class _NotificationScreenState extends State<NotificationScreen>
                     }
                     if (context.read<InboxProvider>().inboxInfo!.isNotEmpty) {
                       return buildNotificationItem(
-                          context.read<InboxProvider>().inboxInfo!,
-                          i,
-                          Icons.info,
-                          "info");
+                        context.read<InboxProvider>().inboxInfo!,
+                        i,
+                        Icons.info,
+                        inboxInfoViewC,
+                        "info"
+                      );
                     }
                     return Container();
                   },
@@ -602,59 +601,63 @@ class _NotificationScreenState extends State<NotificationScreen>
       child: CustomScrollView(
         controller: inboxPanicViewC,
         scrollDirection: Axis.vertical,
-        physics: const BouncingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics()),
+        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         slivers: [
-          if (context.watch<InboxProvider>().inboxPanicStatus ==
-              InboxPanicStatus.loading)
-            SliverFillRemaining(hasScrollBody: false, child: loadingWidget()),
-          if (context.watch<InboxProvider>().inboxPanicStatus ==
-              InboxPanicStatus.empty)
+      
+          if (context.watch<InboxProvider>().inboxPanicStatus == InboxPanicStatus.loading)
+            SliverFillRemaining(
+              hasScrollBody: false, 
+              child: loadingWidget()
+            ),
+      
+          if (context.watch<InboxProvider>().inboxPanicStatus == InboxPanicStatus.empty)
             SliverFillRemaining(
               hasScrollBody: false,
               child: Center(
-                  child: Text(
-                getTranslated("NO_INBOX_AVAILABLE", context),
+                child: Text(getTranslated("NO_INBOX_AVAILABLE", context),
                 style: robotoRegular.copyWith(
-                    fontSize: Dimensions.fontSizeDefault,
-                    color: ColorResources.black),
-              )),
+                  fontSize: Dimensions.fontSizeDefault,
+                  color: ColorResources.black),
+                )
+              ),
             ),
-          if (context.watch<InboxProvider>().inboxPanicStatus ==
-              InboxPanicStatus.error)
+      
+          if (context.watch<InboxProvider>().inboxPanicStatus == InboxPanicStatus.error)
             SliverFillRemaining(
               hasScrollBody: false,
               child: Center(
-                  child: Text(
-                getTranslated("THERE_WAS_PROBLEM", context),
+                child: Text(getTranslated("THERE_WAS_PROBLEM", context),
                 style: robotoRegular.copyWith(
-                    fontSize: Dimensions.fontSizeDefault,
-                    color: ColorResources.black),
+                  fontSize: Dimensions.fontSizeDefault,
+                  color: ColorResources.black
+                ),
               )),
             ),
-          if (context.watch<InboxProvider>().inboxPanicStatus ==
-              InboxPanicStatus.loaded)
+      
+          if (context.watch<InboxProvider>().inboxPanicStatus == InboxPanicStatus.loaded)
             SliverPadding(
-              padding: const EdgeInsets.only(bottom: 80.0),
+              padding: const EdgeInsets.only(bottom: 140.0),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (BuildContext context, int i) {
+                    
                     if (context.read<InboxProvider>().inboxPanic!.length == i) {
                       return loadingWidget();
                     }
+                    
                     if (context.read<InboxProvider>().inboxPanic!.isNotEmpty) {
                       return buildNotificationItem(
-                          context.read<InboxProvider>().inboxPanic!,
-                          i,
-                          Icons.warning,
-                          "sos");
+                        context.read<InboxProvider>().inboxPanic!, 
+                        i, Icons.warning, inboxPanicViewC, "sos"
+                      );
                     }
-                    return Container();
+                    
+                    return const SizedBox();
+      
                   },
-                  childCount:
-                      context.watch<InboxProvider>().isLoadInboxPanic == true
-                          ? context.read<InboxProvider>().inboxPanic!.length + 1
-                          : context.read<InboxProvider>().inboxPanic!.length,
+                  childCount: context.watch<InboxProvider>().isLoadInboxPanic == true
+                  ? context.read<InboxProvider>().inboxPanic!.length + 1
+                  : context.read<InboxProvider>().inboxPanic!.length,
                 ),
               ),
             )
@@ -752,29 +755,37 @@ class _NotificationScreenState extends State<NotificationScreen>
     );
   }
 
-  Widget buildNotificationItem(
-      List<InboxData>? inbox, int i, IconData icon, String type,
-      [List<InboxPaymentData>? inboxPayment]) {
+  Widget buildNotificationItem(List<InboxData>? inbox, int i, IconData icon, ScrollController scrollPosition, String type, [List<InboxPaymentData>? inboxPayment]) {
     return InkWell(
-      onDoubleTap: () {},
       onTap: () async {
+        final currentScrollPosition = scrollPosition.position.pixels;
+
         if (inbox?.isEmpty == true || inbox == null) {
-          await context
-              .read<InboxProvider>()
-              .getInboxDetailAndUpdateInboxPayment(
-                context,
-                inboxId: inboxPayment![i].id!,
-                type: type,
-                inboxSelected: inboxPayment[i],
-              );
+          await context.read<InboxProvider>().getInboxDetailAndUpdateInboxPayment(
+            context,
+            inboxId: inboxPayment![i].id!,
+            type: type,
+            inboxSelected: inboxPayment[i],
+          );
         } else {
           await context.read<InboxProvider>().getInboxDetailAndUpdateInbox(
-                context,
-                type: type,
-                inboxId: inbox[i].id!,
-                inboxSelected: inbox[i],
-              );
+            context,
+            type: type,
+            inboxId: inbox[i].id!,
+            inboxSelected: inbox[i],
+          );
         }
+
+        final isRefetch = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return DetailInboxScreen(type: type);
+        }));
+
+        if(isRefetch != null) {
+          Future.delayed(const Duration(milliseconds: 500), () {
+            scrollPosition.jumpTo(currentScrollPosition);
+          });
+        }
+
       },
       child: Material(
         color: ColorResources.transparent,

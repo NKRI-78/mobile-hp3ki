@@ -347,7 +347,7 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
               actions: [
                 IconButton(
                   onPressed: () {
-                    NS.push(context, NotificationScreen());
+                    NS.push(context, const NotificationScreen());
                   },
                   icon: const Icon(
                     Icons.notifications,
@@ -355,12 +355,6 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                   ),
                 ),
               ],
-              leading: CupertinoNavigationBarBackButton(
-                color: ColorResources.primary,
-                onPressed: () {
-                  NS.pop(context);
-                },
-              ),
               elevation: 0.0,
               forceElevated: true,
               pinned: true,

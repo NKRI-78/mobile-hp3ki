@@ -1,20 +1,21 @@
 import 'package:flutter/services.dart';
-import 'package:hp3ki/data/models/ppob_v2/payment_guide.dart';
 import 'package:hp3ki/providers/inbox/inbox.dart';
-import 'package:hp3ki/providers/internet/internet.dart';
-import 'package:hp3ki/providers/ppob/ppob.dart';
 import 'package:hp3ki/utils/helper.dart';
-import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
-import 'package:hp3ki/views/screens/connection/connection.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:hp3ki/services/navigation.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'package:hp3ki/data/models/ppob_v2/payment_guide.dart';
+
+import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
+
+import 'package:hp3ki/providers/ppob/ppob.dart';
+
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class DetailInboxScreen extends StatefulWidget {
   const DetailInboxScreen({Key? key, required this.type}) : super(key: key);
@@ -22,10 +23,10 @@ class DetailInboxScreen extends StatefulWidget {
   final String type;
 
   @override
-  _DetailInfoPageState createState() => _DetailInfoPageState();
+  DetailInfoPageState createState() => DetailInfoPageState();
 }
 
-class _DetailInfoPageState extends State<DetailInboxScreen> {
+class DetailInfoPageState extends State<DetailInboxScreen> {
   String? url;
   String? title;
   String? va;
@@ -52,31 +53,24 @@ class _DetailInfoPageState extends State<DetailInboxScreen> {
   }
 
   Future<void> getData() async {
-    if (mounted) {
+    if (!mounted) return;
       final provider = context.read<InboxProvider>();
-      title = provider.inboxDetail?.title ??
-          provider.inboxPaymentDetail?.title ??
-          "...";
+      title = provider.inboxDetail?.title ?? provider.inboxPaymentDetail?.title ?? "...";
 
       latitude = provider.inboxDetail?.latitude ?? 0;
       longitude = provider.inboxDetail?.longitude ?? 0;
 
-      content = provider.inboxDetail?.description ??
-          provider.inboxPaymentDetail?.description ??
-          "...";
+      content = provider.inboxDetail?.description ?? provider.inboxPaymentDetail?.description ?? "...";
+
       va = provider.inboxPaymentDetail?.field1 ?? "-";
-      date = Helper.formatDate(DateTime.parse(
-          ((provider.inboxDetail?.createdAt ??
-                  Helper.getFormatedDateTwo(
-                      provider.inboxPaymentDetail!.createdAt!))
-              .replaceAll('/', '-'))));
+
+      date = Helper.formatDate(DateTime.parse(((provider.inboxDetail?.createdAt ?? Helper.getFormatedDateTwo(provider.inboxPaymentDetail!.createdAt!)).replaceAll('/', '-'))));
+
       url = provider.inboxDetail?.link ?? provider.inboxPaymentDetail?.link;
-    }
-    if (mounted) {
+  
       if (url!.contains('howTo')) {
-        // context.read<PPOBProvider>().getPaymentGuide(context, url!);
+        context.read<PPOBProvider>().getPaymentGuide(context, url!);
       }
-    }
   }
 
   @override
@@ -107,43 +101,29 @@ class _DetailInfoPageState extends State<DetailInboxScreen> {
   }
 
   Widget buildUI() {
-    return Consumer<InternetProvider>(
-      builder: (BuildContext context, InternetProvider internetProvider,
-          Widget? child) {
-        return Scaffold(
-          backgroundColor: ColorResources.white,
-          body: internetProvider.internetStatus == InternetStatus.disconnected
-              ? const NoConnectionScreen()
-              : buildConnectionAvailableContent(context),
-        );
+    return PopScope(
+      canPop: false,  
+      onPopInvoked: (didPop) {
+        if (didPop) {
+          return;
+        }
+        
+        Navigator.pop(context, "refetch");
       },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: CustomScrollView(
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics()
+          ),
+          controller: scrollC,
+          slivers: [
+            buildAppBar(context), 
+            buildBodyContent()
+          ],
+        ),
+      ),
     );
-  }
-
-  Widget buildConnectionAvailableContent(BuildContext context) {
-    return Consumer<InboxProvider>(builder: (context, inboxProvider, child) {
-      if (inboxProvider.inboxDetailStatus == InboxDetailStatus.loading) {
-        return const Center(
-          child: CircularProgressIndicator(color: ColorResources.primary),
-        );
-      }
-      if (inboxProvider.inboxDetailStatus == InboxDetailStatus.empty) {
-        return const Center(
-          child: Text('Tidak ada detail inbox.'),
-        );
-      }
-      if (inboxProvider.inboxDetailStatus == InboxDetailStatus.error) {
-        return const Center(
-          child: Text('Ada yang bermasalah.'),
-        );
-      }
-      return CustomScrollView(
-        physics: const BouncingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics()),
-        controller: scrollC,
-        slivers: [buildAppBar(context), buildBodyContent()],
-      );
-    });
   }
 
   SliverAppBar buildAppBar(BuildContext context) {
@@ -151,35 +131,36 @@ class _DetailInfoPageState extends State<DetailInboxScreen> {
       elevation: 0,
       backgroundColor: ColorResources.white,
       pinned: true,
-      title: Text(
-        "Inbox Masuk",
+      title: Text("Inbox Masuk",
         style: poppinsRegular.copyWith(
-            color: ColorResources.black,
-            fontSize: Dimensions.fontSizeExtraLarge,
-            fontWeight: FontWeight.w600),
+          color: ColorResources.black,
+          fontSize: Dimensions.fontSizeExtraLarge,
+          fontWeight: FontWeight.w600
+        ),
       ),
       leading: Container(
-          margin: const EdgeInsets.all(8.0),
-          height: 40.0,
-          width: 40.0,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(50.0), color: Colors.black54),
-          child: IconButton(
-            color: ColorResources.white,
-            onPressed: () {
-              NS.pop(context);
-            },
-            icon: const Icon(
-              Icons.arrow_back,
-              size: Dimensions.iconSizeDefault,
-            ),
-          )),
+        margin: const EdgeInsets.all(8.0),
+        height: 40.0,
+        width: 40.0,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(50.0), color: Colors.black54),
+        child: IconButton(
+          color: ColorResources.white,
+          onPressed: () {
+            Navigator.pop(context, "refetch");
+          },
+          icon: const Icon(
+            Icons.arrow_back,
+            size: Dimensions.iconSizeDefault,
+          ),
+        )
+      ),
     );
   }
 
   SliverList buildBodyContent() {
     return SliverList(
-        delegate: SliverChildListDelegate([
+      delegate: SliverChildListDelegate([
       Container(
         margin: const EdgeInsets.all(Dimensions.marginSizeExtraLarge),
         width: double.infinity,
@@ -319,40 +300,46 @@ class _DetailInfoPageState extends State<DetailInboxScreen> {
         );
       } else {
         return Container(
-          margin: const EdgeInsets.only(left: 25.0, right: 25.0),
+          margin: const EdgeInsets.only(
+            left: 25.0, 
+            right: 25.0
+          ),
           child: ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.zero,
-              itemCount: provider.listPaymentGuide.length,
-              itemBuilder: (BuildContext context, int i) {
-                final PaymentGuideData data = provider.listPaymentGuide[i];
-                return ExpansionTile(
-                    initiallyExpanded: false,
-                    title: Text(data.name!,
-                        style: poppinsRegular.copyWith(
-                            color: ColorResources.black,
-                            fontSize: Dimensions.fontSizeDefault,
-                            fontWeight: FontWeight.w600)),
-                    childrenPadding: const EdgeInsets.all(10.0),
-                    tilePadding: EdgeInsets.zero,
-                    expandedCrossAxisAlignment: CrossAxisAlignment.start,
-                    expandedAlignment: Alignment.centerLeft,
-                    children: data.steps!
-                        .asMap()
-                        .map((int key, StepModel step) => MapEntry(
-                            key,
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                "${step.step}. ${step.description!}",
-                                style: robotoRegular.copyWith(
-                                    color: ColorResources.black),
-                              ),
-                            )))
-                        .values
-                        .toList());
-              }),
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.zero,
+            itemCount: provider.listPaymentGuide.length,
+            itemBuilder: (BuildContext context, int i) {
+              final PaymentGuideData data = provider.listPaymentGuide[i];
+
+              return ExpansionTile(
+                initiallyExpanded: false,
+                title: Text(data.name!,
+                  style: poppinsRegular.copyWith(
+                  color: ColorResources.black,
+                  fontSize: Dimensions.fontSizeDefault,
+                  fontWeight: FontWeight.w600)
+                ),
+                childrenPadding: const EdgeInsets.all(10.0),
+                tilePadding: EdgeInsets.zero,
+                expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                expandedAlignment: Alignment.centerLeft,
+                children: data.steps!
+                .asMap()
+                .map((int key, StepModel step) => MapEntry(key,
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        "${step.step}. ${step.description!}",
+                        style: robotoRegular.copyWith(
+                            color: ColorResources.black),
+                      ),
+                    )
+                  )
+                ).values.toList()
+              );
+            }
+          ),
         );
       }
     });
@@ -366,16 +353,17 @@ class _DetailInfoPageState extends State<DetailInboxScreen> {
           await launchUrlString(url!);
         },
         child: Html(
-            onLinkTap:
-                (String? url, Map<String, String> attributes, element) async {
-              await launchUrlString(url!);
-            },
-            style: {
-              'body': Style(
-                color: ColorResources.blueDrawerPrimary,
-              ),
-            },
-            data: url),
+          onLinkTap:
+              (String? url, Map<String, String> attributes, element) async {
+            await launchUrlString(url!);
+          },
+          style: {
+            'body': Style(
+              color: ColorResources.blueDrawerPrimary,
+            ),
+          },
+          data: url
+        ),
       ),
     );
   }

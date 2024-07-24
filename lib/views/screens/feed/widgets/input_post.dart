@@ -100,7 +100,7 @@ class _InputPostComponentState extends State<InputPostComponent> {
             selection: SelectionSetting(max: 8)
           )
         ),
-        androidOptions: AndroidOptions(
+        androidOptions: const AndroidOptions(
           maxImages: 8
         ),
         selectedAssets: images,
@@ -161,7 +161,7 @@ class _InputPostComponentState extends State<InputPostComponent> {
 
       thumbnail =  await VideoCompress.getByteThumbnail(fileVideo!.path);
 
-      Future.delayed(Duration(milliseconds: 1000), () async {
+      Future.delayed(const Duration(milliseconds: 1000), () async {
         Navigator.push(context, MaterialPageRoute(builder:  (context)  =>
           CreatePostVideoScreen(
             file: file,
@@ -228,7 +228,7 @@ class _InputPostComponentState extends State<InputPostComponent> {
                     Consumer<ProfileProvider>(
                       builder: (BuildContext context, ProfileProvider profileProvider, Widget? child) {
                         return CachedNetworkImage(
-                        imageUrl: "${profileProvider.user!.id}",
+                        imageUrl: "${profileProvider.user!.avatar}",
                           imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
                             backgroundColor: Colors.transparent,
                             backgroundImage: imageProvider,

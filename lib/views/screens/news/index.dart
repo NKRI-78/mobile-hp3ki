@@ -178,7 +178,7 @@ class NewsScreenState extends State<NewsScreen> {
                               height: 125.0,
                               decoration: BoxDecoration(
                                 image: DecorationImage(
-                                  fit: BoxFit.contain,
+                                  fit: BoxFit.fill,
                                   image: image
                                 )
                               ),

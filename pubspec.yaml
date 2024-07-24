@@ -102,7 +102,7 @@ dev_dependencies:
   http: ^0.13.5
   http_mock_adapter: ^0.3.3
   image_cropper: ^1.4.1
-  image_picker: ^0.8.4+2
+  image_picker: ^1.0.4
 
   #I
   intl: ^0.18.0

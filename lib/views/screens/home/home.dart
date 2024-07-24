@@ -135,10 +135,9 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
     }
   }
 
-  Future<void> getDataRemote() async {
-    if (mounted) {
-      context.read<ProfileProvider>().remote();
-    }
+  Future<void> getData() async {
+     if (!mounted) return;
+      await context.read<ProfileProvider>().remote();
   }
 
   @override
@@ -148,14 +147,14 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
     panelC = PanelController();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Future.delayed(const Duration(seconds: 1), () => getDataRemote());
-
       if (context.read<ProfileProvider>().isActive == 1) {
         getData1();
       } else {
         getData2();
       }
     });
+
+    Future.microtask(() => getData());
   }
 
   @override
@@ -675,23 +674,24 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> initShop() async {
     try {
       final client = DioManager.shared.getClient();
-      final res = await client
-          .get("${AppConstants.baseUrl}/api/v1/product/list?page=1&cat=");
+      final res = await client.get("${AppConstants.baseUrl}/api/v1/product/list?page=1&cat=");
       shops = ShopModel.fromJson(res.data["data"]);
     } catch (e) {
-      ///
+      debugPrint(e.toString());
     }
   }
 
   Future<void> getData() async {
+    debugPrint("masuk sini");
+    
     if (mounted) {
       await Geolocator.requestPermission();
     }
     if (mounted) {
-      await Permission.storage.request();
+      await Permission.notification.request();
     }
     if (mounted) {
-      await Permission.notification.request();
+      await Permission.photos.request();
     }
     if (mounted) {
       context.read<NewsProvider>().getNews(context);

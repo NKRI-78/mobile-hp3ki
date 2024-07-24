@@ -28,8 +28,8 @@ class _PostVideoState extends State<PostVideo> {
   ChewieController? chewieC;
   
   Future<void> getData() async {
-    if(mounted) {
-      if(io.Platform.isAndroid) {
+    if(!mounted) return;
+     if(io.Platform.isAndroid) {
         videoPlayerC = VideoPlayerController.networkUrl(Uri.parse(widget.media))
         ..setLooping(false)
         ..initialize().then((_) {
@@ -54,14 +54,14 @@ class _PostVideoState extends State<PostVideo> {
           looping: false,
         );
       }
-    }
+    
   }
 
   @override
   void initState() {
     super.initState();
      
-    getData();
+    Future.microtask(() => getData());
   }
 
   @override
@@ -94,7 +94,7 @@ class _PostVideoState extends State<PostVideo> {
                   clipBehavior: Clip.none,
                   children: [
                     AspectRatio(
-                      aspectRatio: videoPlayerC!.value.aspectRatio,
+                      aspectRatio: chewieC!.aspectRatio!,
                       child: Chewie(
                         controller: chewieC!,
                       )
