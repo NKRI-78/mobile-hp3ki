@@ -251,11 +251,92 @@ class _PostsState extends State<Posts> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('${widget.forum[widget.i].like!.total}', 
-                        style: robotoRegular.copyWith(
-                          color: ColorResources.black,
-                          fontSize: Dimensions.fontSizeSmall
-                        )
+                      InkWell(
+                        onTap: () {
+                          showModalBottomSheet(
+                            context: context, 
+                            builder: (context) {
+                              return Container(
+                                height: 300.0,
+                                decoration: const BoxDecoration(
+                                  color: Colors.white
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+
+                                    ListView.builder(
+                                      shrinkWrap: true,
+                                      padding: EdgeInsets.zero,
+                                      itemCount: widget.forum[widget.i].like!.likes.length,
+                                      itemBuilder: (_, int i) {
+
+                                        final like = widget.forum[widget.i].like!.likes[i];
+
+                                        return Padding(
+                                          padding: const EdgeInsets.all(20.0),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                          
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: [
+                                          
+                                                  CachedNetworkImage(
+                                                    imageUrl: like.user!.avatar.toString(),
+                                                    imageBuilder: (context, imageProvider) {
+                                                      return CircleAvatar(
+                                                        maxRadius: 25.0,
+                                                        backgroundImage: imageProvider,
+                                                      );
+                                                    },
+                                                    placeholder: (context, url) {
+                                                      return const CircleAvatar(
+                                                        maxRadius: 25.0,
+                                                        backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                                                      );
+                                                    },
+                                                    errorWidget: (context, url, error) {
+                                                      return const CircleAvatar(
+                                                        maxRadius: 25.0,
+                                                        backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                                                      );
+                                                    },
+                                                  ),
+                                          
+                                                  const SizedBox(width: 14.0),
+                                          
+                                                  Text(like.user!.username.toString(),
+                                                    style: const TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 18.0
+                                                    ),
+                                                  )
+                                          
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    )
+
+                                  ],
+                                )
+                              );
+                            },
+                          );
+                        },
+                        child: Text('${widget.forum[widget.i].like!.total}', 
+                          style: robotoRegular.copyWith(
+                            color: ColorResources.black,
+                            fontSize: Dimensions.fontSizeSmall
+                          )
+                        ),
                       ),
                       InkWell(
                         onTap: () async => context.read<FeedProviderV2>().toggleLike(context: context, feedId: widget.forum[widget.i].id!, feedLikes: widget.forum[widget.i].like!),

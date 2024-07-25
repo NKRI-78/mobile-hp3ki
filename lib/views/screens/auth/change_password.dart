@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:hp3ki/providers/auth/auth.dart';
+import 'package:provider/provider.dart';
+
+import 'package:hp3ki/localization/language_constraints.dart';
+
 import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
 import 'package:hp3ki/views/basewidgets/textfield/textfield_two.dart';
-import 'package:provider/provider.dart';
-import 'package:hp3ki/localization/language_constraints.dart';
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
 import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
+
+import 'package:hp3ki/providers/auth/auth.dart';
+
 import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
@@ -64,23 +68,37 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     String newPass = newPassC.text;
     String newPassConfirm = newPassConfirmC.text;
     if(formKey.currentState!.validate()){
+      
       if(newPassConfirm.trim() != newPass.trim() && newPass.trim() != newPassConfirm.trim()) {
         ShowSnackbar.snackbar(context, getTranslated("PASSWORD_DID_NOT_MATCH", context), "", ColorResources.error);
         return;
       }
+      
       if(oldPass.trim().length < 8) {
         oldPassFn.requestFocus();
         ShowSnackbar.snackbar(context, getTranslated("OLD_PASSWORD_8_REQUIRED", context), "", ColorResources.error);
         return;
       }
+
       if(newPass.trim().length < 8) {
         newPassFn.requestFocus();
         ShowSnackbar.snackbar(context, getTranslated("NEW_PASSWORD_8_REQUIRED", context), "", ColorResources.error);
         return;
       }
+      
       if(newPassConfirm.trim().length < 8) {
         newPassConfirmFn.requestFocus();
         ShowSnackbar.snackbar(context, getTranslated("NEW_PASSWORD_CONFIRM_8_REQUIRED", context), "", ColorResources.error);
+        return;
+      }
+
+      if(newPass.trim() != newPassConfirm.trim()) {
+        ShowSnackbar.snackbar(context, getTranslated("NEW_PASSWORD_CONFIRM_DID_NOT_MATCH", context), "", ColorResources.error);
+        return;
+      }
+
+      if(oldPass.trim() == newPass.trim()) {
+        ShowSnackbar.snackbar(context, getTranslated("NEW_PASSWORD_DIFFERENT_OLD_PASSWORD", context), "", ColorResources.error);
         return;
       }
 

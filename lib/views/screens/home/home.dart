@@ -8,10 +8,8 @@ import 'package:hp3ki/localization/language_constraints.dart';
 import 'package:hp3ki/views/basewidgets/button/bounce.dart';
 import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
 
-import 'package:hp3ki/utils/dio.dart';
 import 'package:hp3ki/utils/modal.dart';
 import 'package:hp3ki/utils/shared_preferences.dart';
-import 'package:hp3ki/utils/constant.dart';
 import 'package:hp3ki/utils/extension.dart';
 import 'package:hp3ki/utils/box_shadow.dart';
 import 'package:hp3ki/utils/color_resources.dart';
@@ -671,19 +669,18 @@ class _HomeScreenState extends State<HomeScreen> {
   int currentIndex = 0;
 
   ShopModel? shops;
-  Future<void> initShop() async {
-    try {
-      final client = DioManager.shared.getClient();
-      final res = await client.get("${AppConstants.baseUrl}/api/v1/product/list?page=1&cat=");
-      shops = ShopModel.fromJson(res.data["data"]);
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-  }
+
+  // Future<void> initShop() async {
+  //   try {
+  //     final client = DioManager.shared.getClient();
+  //     final res = await client.get("${AppConstants.baseUrl}/api/v1/product/list?page=1&cat=");
+  //     shops = ShopModel.fromJson(res.data["data"]);
+  //   } catch (e) {
+  //     debugPrint(e.toString());
+  //   }
+  // }
 
   Future<void> getData() async {
-    debugPrint("masuk sini");
-    
     if (mounted) {
       await Geolocator.requestPermission();
     }
@@ -740,7 +737,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     Future.wait([
       getData(),
-      initShop(),
+      // initShop(),
     ]);
 
     super.initState();

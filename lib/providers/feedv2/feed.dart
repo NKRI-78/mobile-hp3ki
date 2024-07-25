@@ -2,6 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hp3ki/providers/profile/profile.dart';
+
+import 'package:provider/provider.dart';
 
 import 'package:multi_image_picker_plus/multi_image_picker_plus.dart';
 
@@ -499,23 +502,31 @@ class FeedProviderV2 with ChangeNotifier {
     required FeedLikes feedLikes
   }) async {
     try {
+      
       int idxLikes = feedLikes.likes.indexWhere((el) => el.user!.id == ar.getUserId().toString());
+
       if (idxLikes != -1) {
         feedLikes.likes.removeAt(idxLikes);
         feedLikes.total = feedLikes.total - 1;
       } else {
         feedLikes.likes.add(UserLikes(
-            user: User(
-            id: ar.getUserId().toString(),
-            avatar: "-",
-            username: ar.getUserFullname())));
+          user: User(
+          id: context.read<ProfileProvider>().user!.id.toString(),
+          avatar: context.read<ProfileProvider>().user!.avatar.toString(),
+          username: context.read<ProfileProvider>().user!.fullname.toString()
+        )));
         feedLikes.total = feedLikes.total + 1;
       }
+
       await fr.toggleLike(context: context, feedId: feedId, userId: ar.getUserId().toString());
-      Future.delayed(Duration.zero, () => notifyListeners());
+
+      notifyListeners();
+
     } on CustomException catch (e) {
       debugPrint(e.toString());
-    } catch (_) {}
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   // Future<void> uploadPic(BuildContext context) async {

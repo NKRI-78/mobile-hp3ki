@@ -1,7 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
-
-import 'package:hp3ki/providers/profile/profile.dart';
 
 import 'package:hp3ki/data/models/feedv2/feedDetail.dart';
 import 'package:hp3ki/data/repository/auth/auth.dart';
@@ -92,31 +89,16 @@ class FeedDetailProviderV2 with ChangeNotifier {
 
       commentC.text = "";
 
-      _comments.add(
-        CommentElement(
-          id: feedId, 
-          comment: commentVal, 
-          createdAt: "beberapa detik yang lalu", 
-          user: User(
-            id: context.read<ProfileProvider>().user!.id.toString(),
-            avatar: context.read<ProfileProvider>().user!.avatar.toString(), 
-            username: context.read<ProfileProvider>().user!.fullname.toString()
-          ), 
-          reply: CommentReply(
-            total: 0,
-            replies: [],
-          ), 
-          like: FeedLikes(
-            total: 0, 
-            likes: []
-          )
-        )
-      );
-
       await fr.postComment(
         context: context, feedId: feedId, 
         comment: commentVal, userId: ar.getUserId().toString()
       );
+
+      FeedDetailModel? fdm = await fr.fetchDetail(context, 1, feedId);
+      _feedDetailData = fdm!.data;
+
+      _comments.clear();
+      _comments.addAll(fdm.data.forum!.comment!.comments);
 
       setStateFeedDetailStatus(FeedDetailStatus.loaded);
     } on CustomException catch (e) {

@@ -116,6 +116,7 @@ dev_dependencies:
 
   #M
   modal_bottom_sheet: ^2.0.1
+  multi_trigger_autocomplete: ^1.0.0
 
   #N
   new_version_plus: ^0.0.1+4

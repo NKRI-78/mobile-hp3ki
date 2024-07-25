@@ -403,6 +403,8 @@
     "TOPUP": "Isi Saldo",
     "TOPUP_PULSA": "Isi Ulang Pulsa",
     "SUPPORT": "Bantuan",
+    "NEW_PASSWORD_CONFIRM_DID_NOT_MATCH": "Konfirmasi Kata Sandi baru tidak sama",
+    "NEW_PASSWORD_DIFFERENT_OLD_PASSWORD": "Kata sandi baru harus berbeda dengan kata sandi lama",
     "PASSWORD_CONFIRM": "Konfirmasi Kata Sandi",
     "JOB_EXPERIENCES": "Riwayat Pekerjaan",
     "EMPLOYMENT_DATA": "Data Pekerjaan",

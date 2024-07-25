@@ -399,6 +399,8 @@
     "TOPUP_PULSA": "Top Up Pulsa",
     "SUPPORT": "Support",
     "PASSWORD_CONFIRM": "Password Confirm",
+    "NEW_PASSWORD_CONFIRM_DID_NOT_MATCH": "New Password Confirm doesn't match",
+    "NEW_PASSWORD_DIFFERENT_OLD_PASSWORD": "The new password must be different from the old password",
     "JOB_EXPERIENCES": "Job Experiences",
     "EMPLOYMENT_DATA": "Employment Data",
     "LAST_EDUCATION": "Last Education",
