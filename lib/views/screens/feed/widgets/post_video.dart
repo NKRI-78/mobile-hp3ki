@@ -1,14 +1,11 @@
 import 'dart:io' as io;
 
-
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-
 import 'package:hp3ki/utils/color_resources.dart';
-
 
 class PostVideo extends StatefulWidget {
   final String media;
@@ -19,10 +16,10 @@ class PostVideo extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _PostVideoState createState() => _PostVideoState();
+  PostVideoState createState() => PostVideoState();
 }
 
-class _PostVideoState extends State<PostVideo> {
+class PostVideoState extends State<PostVideo> {
 
   VideoPlayerController? videoPlayerC;
   ChewieController? chewieC;

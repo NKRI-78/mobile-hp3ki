@@ -41,10 +41,10 @@ class RepliesScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _RepliesScreenState createState() => _RepliesScreenState();
+  RepliesScreenState createState() => RepliesScreenState();
 }
 
-class _RepliesScreenState extends State<RepliesScreen> {
+class RepliesScreenState extends State<RepliesScreen> {
   TextEditingController replyTextEditingController = TextEditingController();
   FocusNode replyFocusNode = FocusNode();
   
@@ -54,18 +54,22 @@ class _RepliesScreenState extends State<RepliesScreen> {
   late FeedReplyProvider frv;
   late FeedDetailProviderV2 fdv2;
 
+  Future<void> getData() async {
+
+    if(!mounted) return;
+      await frv.getFeedReply(context: context, commentId: widget.id);
+
+  }
+
   @override
   void initState() {  
     super.initState();
+    
     frv = context.read<FeedReplyProvider>();
     fdv2 = context.read<FeedDetailProviderV2>();
     frv.commentC = TextEditingController();
 
-    Future.delayed(Duration.zero, () {
-      if(mounted) {
-        frv.getFeedReply(context: context, commentId: widget.id);
-      }
-    });
+    Future.microtask(() => getData());
   }
 
   Widget commentSticker(SingleCommentBody comment) {

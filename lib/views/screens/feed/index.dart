@@ -23,11 +23,10 @@ class FeedIndex extends StatefulWidget {
   const FeedIndex({Key? key}) : super(key: key);
 
   @override
-  _FeedIndexState createState() => _FeedIndexState();
+  FeedIndexState createState() => FeedIndexState();
 }
 
-class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
-  GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
+class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
 
   late TabController tabController;
   late FeedProviderV2 feedProviderV2;
@@ -35,6 +34,7 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
   GlobalKey g1Key = GlobalKey();
   GlobalKey g2Key = GlobalKey();
   GlobalKey g3Key = GlobalKey();
+
   GlobalKey<RefreshIndicatorState> refreshIndicatorKey1 = GlobalKey<RefreshIndicatorState>();
   GlobalKey<RefreshIndicatorState> refreshIndicatorKey2 = GlobalKey<RefreshIndicatorState>();
   GlobalKey<RefreshIndicatorState> refreshIndicatorKey3 = GlobalKey<RefreshIndicatorState>();
@@ -328,7 +328,6 @@ class _FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
 
   Widget buildUI() {
     return Scaffold(
-     key: globalKey,
      body: NestedScrollView(
        physics: const ScrollPhysics(),
        headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {

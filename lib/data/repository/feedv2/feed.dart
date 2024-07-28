@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hp3ki/data/models/feedv2/feed.dart';
 import 'package:hp3ki/data/models/feedv2/feedDetail.dart';
 import 'package:hp3ki/data/models/feedv2/feedReply.dart';
+import 'package:hp3ki/data/models/feedv2/user_mention.dart';
 
 import 'package:path/path.dart' as p;
 
@@ -20,6 +21,24 @@ class FeedRepoV2 {
   FeedRepoV2({ 
     required this.sp
   });
+
+  Future<List<UserMention>?> userMentions(context, username) async {
+    try {
+      Dio dio = DioManager.shared.getClient();
+      Response res = await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/user-mentions",
+        data: {
+          "app_name": "hp3ki",
+          "username": username
+        }
+      );
+      Map<String, dynamic> data = res.data;
+      UserMentionModel userMentionModel = UserMentionModel.fromJson(data);
+      return userMentionModel.data;
+    } catch(e, stacktrace) {
+      debugPrint(stacktrace.toString());
+    }
+    return null;
+  }
 
   Future<FeedModel?> fetchFeedMostRecent(BuildContext context, int pageKey, String userId) async {
     try {
@@ -199,13 +218,12 @@ class FeedRepoV2 {
     }
   }
 
-  Future<void> postComment(
-      {
-      required BuildContext context,
-      required String feedId,
-      required String userId,
-      required String comment,
-      }) async {
+  Future<void> postComment({
+    required BuildContext context,
+    required String feedId,
+    required String userId,
+    required String comment,
+  }) async {
     try {
       Dio dio = DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/create-comment", data: {
@@ -215,7 +233,7 @@ class FeedRepoV2 {
         "app_name": "hp3ki",
       });
     } on DioError catch(e) {
-      debugPrint(e.toString());
+      debugPrint(e.response!.data.toString());
       throw CustomException(e.toString());
     } catch(e) {
       debugPrint(e.toString());

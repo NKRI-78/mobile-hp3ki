@@ -26,10 +26,10 @@ class ReplyDetailScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ReplyDetailScreenState createState() => _ReplyDetailScreenState();
+  ReplyDetailScreenState createState() => ReplyDetailScreenState();
 }
 
-class _ReplyDetailScreenState extends State<ReplyDetailScreen> {
+class ReplyDetailScreenState extends State<ReplyDetailScreen> {
 
   Widget replyText(ReplyBody reply) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:hp3ki/providers/ppob/ppob.dart';
@@ -236,18 +235,18 @@ class ShopView extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          Text(
-            CurrencyTextInputFormatter(
-              locale: 'id_ID',
-              decimalDigits: 0,
-              symbol: 'Rp ',
-            ).format(
-              product.price.toString(),
-            ),
-            style: const TextStyle(
-              color: Colors.grey,
-            ),
-          ),
+          // Text(
+          //   CurrencyTextInputFormatter(
+          //     locale: 'id_ID',
+          //     decimalDigits: 0,
+          //     symbol: 'Rp ',
+          //   ).format(
+          //     product.price.toString(),
+          //   ),
+          //   style: const TextStyle(
+          //     color: Colors.grey,
+          //   ),
+          // ),
           Row(
             children: [
               const Icon(

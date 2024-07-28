@@ -16,10 +16,10 @@ class PostText extends StatefulWidget {
   ) : super(key: key);
 
   @override
-  _PostTextState createState() => _PostTextState();
+  PostTextState createState() => PostTextState();
 }
 
-class _PostTextState extends State<PostText> {
+class PostTextState extends State<PostText> {
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class _PostTextState extends State<PostText> {
   }
   
   Widget buildUI() {
-    return Container(
+    return SizedBox(
       width: 250.0,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

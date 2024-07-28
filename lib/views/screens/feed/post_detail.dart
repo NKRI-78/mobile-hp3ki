@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_mentions/flutter_mentions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:readmore/readmore.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
@@ -43,21 +47,27 @@ class PostDetailScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _PostDetailScreenState createState() => _PostDetailScreenState();
+  PostDetailScreenState createState() => PostDetailScreenState();
 }
 
-class _PostDetailScreenState extends State<PostDetailScreen> {
+class PostDetailScreenState extends State<PostDetailScreen> {
+
+  GlobalKey<FlutterMentionsState> key = GlobalKey<FlutterMentionsState>();
 
   late ScrollController sc;
   
   bool deletePostBtn = false;
+
+  Timer? debounce;
 
   late p.FeedDetailProviderV2 feedDetailProviderV2;
   
   FocusNode commentFn = FocusNode();
 
   Future<void> getData() async {
-  
+    if(!mounted) return; 
+      await feedDetailProviderV2.getUserMentions(context, '');
+
     if(!mounted) return;
       await feedDetailProviderV2.getFeedDetail(context, widget.postId);
   }
@@ -232,6 +242,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       mainAxisSize: MainAxisSize.max,
                                       children: [
+
                                         ElevatedButton(
                                           onPressed: () => Navigator.of(context).pop(),
                                           child: Text(getTranslated("NO", context),
@@ -240,6 +251,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                             )
                                           )
                                         ), 
+
                                         StatefulBuilder(
                                           builder: (BuildContext context, Function s) {
                                           return ElevatedButton(
@@ -258,6 +270,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                           ),                           
                                         );
                                       })
+
                                     ],
                                   ) 
                                 ])
@@ -300,6 +313,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+
                       SizedBox(
                         width: 40.0,
                         child: Row(
@@ -311,8 +325,11 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                               )
                             ),
                             InkWell(
-                              onTap: () async => context.read<p.FeedDetailProviderV2>().toggleLike(context: context, feedId: feedDetailProviderV2.feedDetailData.forum!.id!, feedLikes: feedDetailProviderV2.feedDetailData.forum!.like!)
-                              ,
+                              onTap: () async => context.read<p.FeedDetailProviderV2>().toggleLike(
+                                context: context, 
+                                feedId: feedDetailProviderV2.feedDetailData.forum!.id!, 
+                                feedLikes: feedDetailProviderV2.feedDetailData.forum!.like!
+                              ),
                               child: Container(
                                 padding: const EdgeInsets.all(5.0),
                                 child: Icon(Icons.thumb_up,
@@ -324,11 +341,13 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                           ],
                         ),
                       ),
+
                       Text('${feedDetailProviderV2.feedDetailData.forum!.comment!.total} ${getTranslated("COMMENT", context)}',
                         style: robotoRegular.copyWith(
                           fontSize: Dimensions.fontSizeSmall
                         ),
                       ),
+                      
                     ]
                   )
                 ),
@@ -666,46 +685,156 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
           mainAxisSize: MainAxisSize.max,
           children: [
             
-            const SizedBox(width: 16.0),
-
             Expanded(
-              child: TextField(
-                focusNode: commentFn,
-                controller: feedDetailProviderV2.commentC,
+              child: FlutterMentions(
+                key: key,
+                appendSpaceOnAdd: true,
+                suggestionPosition: SuggestionPosition.Top,
+                onSearchChanged: (String trigger, String val) async {
+                  await feedDetailProviderV2.getUserMentions(context, val);
+                },
                 onChanged: (String val) {
-                  feedDetailProviderV2.onChangeComment(val);
+                  feedDetailProviderV2.onListenComment(val);
                 },
                 style: robotoRegular.copyWith(
                   color: ColorResources.black,
-                  fontSize: Dimensions.fontSizeSmall
+                  fontSize: Dimensions.fontSizeDefault
                 ),
-                decoration: InputDecoration.collapsed(
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.only(
+                    left: 16.0,
+                    right: 16.0
+                  ),
                   hintText: '${getTranslated("WRITE_COMMENT", context)} ...',
                   hintStyle: robotoRegular.copyWith(
                     color: ColorResources.greyDarkPrimary,
-                    fontSize: Dimensions.fontSizeSmall
+                    fontSize: Dimensions.fontSizeDefault
                   ),
                 ),
+                mentions: [
+                  
+                  Mention(
+                    trigger: '@',
+                    style: const TextStyle(
+                      color: Colors.blue,
+                    ),
+                    data: context.watch<p.FeedDetailProviderV2>().userMentions,
+                    suggestionBuilder: (Map<String, dynamic> data) {
+
+                      return Container(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+
+                          CachedNetworkImage(
+                            imageUrl: data['photo'].toString(),
+                            imageBuilder: (context, imageProvider) {
+                              return CircleAvatar(
+                                backgroundImage: imageProvider,
+                              );
+                            },
+                            placeholder: (_, __) {
+                              return const CircleAvatar(
+                                backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                              );
+                            },
+                            errorWidget: (_, ___, __) {
+                              return const CircleAvatar(
+                                backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                              );
+                            },
+                          ),
+
+                          const SizedBox(
+                            width: 20.0,
+                          ),
+
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(data['fullname']),
+                              Text('@${data['display']}',
+                                style: robotoRegular.copyWith(
+                                  color: Colors.blue
+                                ),
+                              ),
+                            ],
+                          )
+
+                        ],
+                      ),
+                    );
+                  }),
+
+                ]
               ),
             ),
 
+            // Expanded(
+            //   child: MultiTriggerAutocomplete(
+            //     focusNode: commentFn,
+            //     textEditingController: feedDetailProviderV2.commentC,
+            //     optionsAlignment: OptionsAlignment.topStart,
+            //     autocompleteTriggers: [
+            //       AutocompleteTrigger(
+            //         trigger: '@',
+            //         optionsViewBuilder: (context, autocompleteQuery, controller) {
+                      
+            //           debugPrint(autocompleteQuery.query.toString());
+              
+            //           return const Text("hello");
+            //           // return MentionAutocompleteOptions(
+            //           //   query: autocompleteQuery.query,
+            //           //   onMentionUserTap: (user) {
+            //           //     final autocomplete = MultiTriggerAutocomplete.of(context);
+            //           //     return autocomplete.acceptAutocompleteOption(user.id);
+            //           //   },
+            //           // );
+            //         },
+            //       ),
+            //     ],
+            //     fieldViewBuilder: (context, controller, focusNode) {
+            //       return TextField(
+            //         focusNode: focusNode,
+            //         controller: controller,
+            //         onChanged: (String val) {
+            //           feedDetailProviderV2.onChangeComment(val);
+            //         },
+            //         style: robotoRegular.copyWith(
+            //           color: ColorResources.black,
+            //           fontSize: Dimensions.fontSizeSmall
+            //         ),
+            //         decoration: InputDecoration.collapsed(
+            //           hintText: '${getTranslated("WRITE_COMMENT", context)} ...',
+            //           hintStyle: robotoRegular.copyWith(
+            //             color: ColorResources.greyDarkPrimary,
+            //             fontSize: Dimensions.fontSizeSmall
+            //           ),
+            //         ),
+            //       );
+            //     },
+            //   ),
+            // ),
+            
             IconButton(
               icon: const Icon(
                 Icons.send,
                 color: ColorResources.black,
               ),
               onPressed: () async {
-                Future.delayed(const Duration(seconds: 1), () {
-                  if(sc.hasClients) {
-                    sc.animateTo(
-                      sc.position.maxScrollExtent, 
-                      duration: const Duration(seconds: 1), 
-                      curve: Curves.bounceIn
-                    );
-                  }
-                });
+                // Timer(const Duration(milliseconds: 500), () {
+                //   if(sc.hasClients) {
+                //     sc.animateTo(
+                //       sc.position.maxScrollExtent, 
+                //       duration: const Duration(milliseconds: 500), 
+                //       curve: Curves.bounceIn
+                //     );
+                //   }
+                // });
                 
-                await feedDetailProviderV2.postComment(context, widget.postId);
+                await feedDetailProviderV2.postComment(context, key, widget.postId);
               }
             ),
             

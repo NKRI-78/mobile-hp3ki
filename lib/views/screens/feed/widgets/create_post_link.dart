@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:hp3ki/providers/feedv2/feed.dart';
+
 import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
+
 import 'package:hp3ki/views/basewidgets/loader/circular.dart';
 
 class CreatePostLink extends StatefulWidget {
@@ -13,10 +15,10 @@ class CreatePostLink extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _CreatePostLinkState createState() => _CreatePostLinkState();
+  CreatePostLinkState createState() => CreatePostLinkState();
 }
 
-class _CreatePostLinkState extends State<CreatePostLink> {
+class CreatePostLinkState extends State<CreatePostLink> {
   GlobalKey<ScaffoldMessengerState> globalKey = GlobalKey<ScaffoldMessengerState>();
  
   late ScrollController scrollController;

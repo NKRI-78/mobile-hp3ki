@@ -28,10 +28,10 @@ class CreatePostVideoScreen extends StatefulWidget {
     this.videoSize
   }) : super(key: key);
   @override
-  _CreatePostVideoScreenState createState() => _CreatePostVideoScreenState();
+  CreatePostVideoScreenState createState() => CreatePostVideoScreenState();
 }
 
-class _CreatePostVideoScreenState extends State<CreatePostVideoScreen> {
+class CreatePostVideoScreenState extends State<CreatePostVideoScreen> {
   late VideoPlayerController videoPlayerController;
   late FeedProviderV2 fdv2;
 

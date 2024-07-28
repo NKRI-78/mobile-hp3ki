@@ -1,4 +1,3 @@
-import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:hp3ki/localization/language_constraints.dart';
 import 'package:hp3ki/utils/helper.dart';
@@ -187,20 +186,20 @@ class ShopCartView extends StatelessWidget {
               top: false,
               child: Row(
                 children: [
-                  Text(
-                    CurrencyTextInputFormatter(
-                      locale: 'id_ID',
-                      decimalDigits: 0,
-                      symbol: 'Rp ',
-                    ).format(
-                      (provider.carts?.totalPrice ?? 0).toString(),
-                    ),
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  // Text(
+                  //   CurrencyTextInputFormatter(
+                  //     locale: 'id_ID',
+                  //     decimalDigits: 0,
+                  //     symbol: 'Rp ',
+                  //   ).format(
+                  //     (provider.carts?.totalPrice ?? 0).toString(),
+                  //   ),
+                  //   style: const TextStyle(
+                  //     color: Colors.black,
+                  //     fontSize: 18,
+                  //     fontWeight: FontWeight.bold,
+                  //   ),
+                  // ),
                   const Spacer(),
                   SizedBox(
                     width: 100,

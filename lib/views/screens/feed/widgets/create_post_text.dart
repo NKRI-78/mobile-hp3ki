@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:hp3ki/localization/language_constraints.dart';
+
 import 'package:hp3ki/providers/feedv2/feed.dart';
+
 import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
@@ -16,10 +18,10 @@ class CreatePostText extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _CreatePostTextState createState() => _CreatePostTextState();
+  CreatePostTextState createState() => CreatePostTextState();
 }
 
-class _CreatePostTextState extends State<CreatePostText> {
+class CreatePostTextState extends State<CreatePostText> {
   GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
 
   late ScrollController scrollController;

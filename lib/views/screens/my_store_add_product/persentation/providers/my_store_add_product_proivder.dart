@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:hp3ki/localization/language_constraints.dart';
 import 'package:hp3ki/utils/modal.dart';
@@ -42,20 +41,20 @@ class MyStoreAddProductProvider with ChangeNotifier {
 
   bool loading = false;
 
-  var number = CurrencyTextInputFormatter(
-    locale: 'id_ID',
-    decimalDigits: 0,
-    symbol: '',
-  );
+  // var number = CurrencyTextInputFormatter(
+  //   locale: 'id_ID',
+  //   decimalDigits: 0,
+  //   symbol: '',
+  // );
 
   void init() {
     if (product != null) {
       images = product!.pictures.map((e) => e.path).toList();
       productName = product!.name;
-      productPrice = number.format(product!.price.toString());
-      stock = number.format(product!.stock.toString());
-      minOrder = number.format(product!.minOrder.toString());
-      weight = number.format(product!.weight.toString());
+      // productPrice = number.format(product!.price.toString());
+      // stock = number.format(product!.stock.toString());
+      // minOrder = number.format(product!.minOrder.toString());
+      // weight = number.format(product!.weight.toString());
       productDescription = product!.description;
       conditionId = product!.condition.id;
       status = product!.status == 1 ? true : false;

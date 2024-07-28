@@ -35,10 +35,10 @@ class Posts extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _PostsState createState() => _PostsState();
+  PostsState createState() => PostsState();
 }
 
-class _PostsState extends State<Posts> {
+class PostsState extends State<Posts> {
   bool deletePostBtn = false;
 
   @override 

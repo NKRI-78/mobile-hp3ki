@@ -15,10 +15,10 @@ class PostLink extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<PostLink> createState() => _PostLinkState();
+  State<PostLink> createState() => PostLinkState();
 }
 
-class _PostLinkState extends State<PostLink> {
+class PostLinkState extends State<PostLink> {
   Map<String, PreviewData> datas = {};
 
   @override

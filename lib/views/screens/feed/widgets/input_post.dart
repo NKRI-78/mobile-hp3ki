@@ -21,6 +21,7 @@ import 'package:hp3ki/views/screens/feed/widgets/create_post_video.dart';
 import 'package:hp3ki/views/screens/feed/widgets/create_post_image.dart';
 import 'package:hp3ki/views/screens/feed/widgets/create_post_doc.dart';
 import 'package:hp3ki/views/screens/feed/widgets/create_post_text.dart';
+
 import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
 
 import 'package:hp3ki/utils/dimensions.dart';
@@ -34,10 +35,10 @@ class InputPostComponent extends StatefulWidget {
     Key? key, 
   }) : super(key: key);
   @override
-  _InputPostComponentState createState() => _InputPostComponentState();
+  InputPostComponentState createState() => InputPostComponentState();
 }
 
-class _InputPostComponentState extends State<InputPostComponent> {
+class InputPostComponentState extends State<InputPostComponent> {
 
   ImageSource? imageSource;
   File? fileVideo;
