@@ -755,7 +755,7 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(data['fullname']),
-                              Text('@${data['display']}',
+                              Text('@${data['username']}',
                                 style: robotoRegular.copyWith(
                                   color: Colors.blue
                                 ),

@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:hp3ki/data/repository/firebase/firebase.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:hp3ki/providers/profile/profile.dart';
-import 'package:hp3ki/utils/exceptions.dart';
-import 'package:hp3ki/utils/shared_preferences.dart';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:soundpool/soundpool.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:rxdart/rxdart.dart';
+
+import 'package:hp3ki/providers/profile/profile.dart';
+
+import 'package:hp3ki/data/repository/firebase/firebase.dart';
+
+import 'package:hp3ki/utils/exceptions.dart';
+import 'package:hp3ki/utils/shared_preferences.dart';
+
 import 'package:hp3ki/services/database.dart';
 import 'package:hp3ki/services/notification.dart';
+
 import 'package:hp3ki/utils/helper.dart';
 
 enum InitFCMStatus { loading, loaded, error, idle }
@@ -39,8 +44,9 @@ class FirebaseProvider with ChangeNotifier {
   }
 
   static Future<void> firebaseBackgroundHandler(RemoteMessage message) async {
-    await Firebase.initializeApp();
+    
     Map<String, dynamic> data = message.data;
+
     if(data != {}) {
       if(data["type"] != null) {
         await DBHelper.setAccountActive("accounts", 
@@ -52,6 +58,7 @@ class FirebaseProvider with ChangeNotifier {
         );
       }
     }
+
     Soundpool soundpool = Soundpool.fromOptions(
       options: SoundpoolOptions.kDefault,
     );
@@ -63,7 +70,13 @@ class FirebaseProvider with ChangeNotifier {
 
   Future<void> setupInteractedMessage(BuildContext context) async {
     await FirebaseMessaging.instance.getInitialMessage();
+
     FirebaseMessaging.onBackgroundMessage(firebaseBackgroundHandler);
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+
+
+    });
   }
 
   Future<void> initFcm(BuildContext context) async {

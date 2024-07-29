@@ -32,25 +32,29 @@ class ReplyDetailScreen extends StatefulWidget {
 class ReplyDetailScreenState extends State<ReplyDetailScreen> {
 
   Widget replyText(ReplyBody reply) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      ReadMoreText(
-        reply.content!.text!,
-        trimLines: 2,
-        colorClickableText: ColorResources.black,
-        trimMode: TrimMode.Line,
-        trimCollapsedText: getTranslated("READ_MORE", context),
-        trimExpandedText:  getTranslated("LESS", context),
-        style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
-        moreStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.w600),
-        lessStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.w600),
-      ),
-    ]);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ReadMoreText(
+          reply.content!.text!,
+          trimLines: 2,
+          colorClickableText: ColorResources.black,
+          trimMode: TrimMode.Line,
+          trimCollapsedText: getTranslated("READ_MORE", context),
+          trimExpandedText:  getTranslated("LESS", context),
+          style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
+          moreStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.w600),
+          lessStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.w600),
+        ),
+      ]
+    );
   }
 
   Widget reply(BuildContext context) {
     return SliverToBoxAdapter(
       child: Consumer<FeedProvider>(
         builder: (BuildContext context, FeedProvider feedProvider, Widget? child) {
+
           if(feedProvider.replyStatus == ReplyStatus.loading) {
             return const SizedBox(
               height: 150.0,
@@ -60,6 +64,7 @@ class ReplyDetailScreenState extends State<ReplyDetailScreen> {
               ),
             ); 
           }
+
           if(feedProvider.replyStatus == ReplyStatus.empty) {
             return Center(
               child: Text(getTranslated("THERE_IS_NO_REPLY", context),
@@ -69,10 +74,12 @@ class ReplyDetailScreenState extends State<ReplyDetailScreen> {
               )
             );
           }
+
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
+
               ListTile(
                 title: Text(feedProvider.singleReply.body!.user!.nickname!,
                   style: robotoRegular.copyWith(
@@ -90,68 +97,72 @@ class ReplyDetailScreenState extends State<ReplyDetailScreen> {
                   ),
                 ),
               ),
-            SizedBox(
-              width: 250.0,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ReadMoreText(
-                    feedProvider.singleReply.body!.content!.text!,
-                    trimLines: 2,
-                    colorClickableText: ColorResources.black,
-                    trimMode: TrimMode.Line,
-                    trimCollapsedText: getTranslated("READ_MORE", context),
-                    trimExpandedText: getTranslated("LESS", context),
-                    style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
-                    moreStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.w600),
-                    lessStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.w600),
-                  ),
-                ],
-              )
-            ),
-            const SizedBox(height: 8.0),
-            Container(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                mainAxisSize: MainAxisSize.max, 
-                children: [
-                  SizedBox(
-                    width: 40.0,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(feedProvider.singleReply.body!.numOfLikes.toString(),
-                          style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeSmall
-                          )
-                        ),
-                        InkWell(
-                          onTap: () {
-                            feedProvider.like(context, feedProvider.singleReply.body!.id!, "REPLY");
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Icon(Icons.thumb_up,
-                              size: 16.0,
-                              color: feedProvider.singleReply.body!.liked!.isNotEmpty 
-                              ? ColorResources.blue 
-                              : ColorResources.black
+
+              SizedBox(
+                width: 250.0,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ReadMoreText(
+                      feedProvider.singleReply.body!.content!.text!,
+                      trimLines: 2,
+                      colorClickableText: ColorResources.black,
+                      trimMode: TrimMode.Line,
+                      trimCollapsedText: getTranslated("READ_MORE", context),
+                      trimExpandedText: getTranslated("LESS", context),
+                      style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
+                      moreStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.w600),
+                      lessStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                )
+              ),
+
+              const SizedBox(height: 8.0),
+
+              Container(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max, 
+                  children: [
+                    SizedBox(
+                      width: 40.0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(feedProvider.singleReply.body!.numOfLikes.toString(),
+                            style: robotoRegular.copyWith(
+                              fontSize: Dimensions.fontSizeSmall
+                            )
+                          ),
+                          InkWell(
+                            onTap: () {
+                              feedProvider.like(context, feedProvider.singleReply.body!.id!, "REPLY");
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Icon(Icons.thumb_up,
+                                size: 16.0,
+                                color: feedProvider.singleReply.body!.liked!.isNotEmpty 
+                                ? ColorResources.blue 
+                                : ColorResources.black
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ]
-              )
-            ),
-          ]
-        );
-      }
-    )
-  );
-}
+                  ]
+                )
+              ),
+
+            ]
+          );
+        }
+      )
+    );
+  }
 
   @override 
   void initState() {
