@@ -100,7 +100,7 @@ class FeedDetailProviderV2 with ChangeNotifier {
             "id": mention.id.toString(),
             "photo": mention.photo.toString(),
             "display": mention.display.toString(),
-            "fullname": mention.display.toString()
+            "fullname": mention.username.toString()
           });
           ids.add(mention.id);
 
