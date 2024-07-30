@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:provider/provider.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -16,8 +17,13 @@ import 'package:hp3ki/utils/shared_preferences.dart';
 
 import 'package:hp3ki/services/database.dart';
 import 'package:hp3ki/services/notification.dart';
+import 'package:hp3ki/services/navigation.dart';
+import 'package:hp3ki/services/services.dart';
 
 import 'package:hp3ki/utils/helper.dart';
+
+import 'package:hp3ki/views/screens/feed/post_detail.dart';
+import 'package:hp3ki/views/screens/feed/replies.dart';
 
 enum InitFCMStatus { loading, loaded, error, idle }
 
@@ -28,15 +34,14 @@ class FirebaseProvider with ChangeNotifier {
     required this.fr,
   });
 
-  InitFCMStatus _initFCMStatus = InitFCMStatus.idle;
-  InitFCMStatus get initFCMStatus => _initFCMStatus;
-
   static final notifications = FlutterLocalNotificationsPlugin();
   static final onNotifications = BehaviorSubject<String>();
   final soundpool = Soundpool.fromOptions(
     options: SoundpoolOptions.kDefault,
   );
 
+  InitFCMStatus _initFCMStatus = InitFCMStatus.idle;
+  InitFCMStatus get initFCMStatus => _initFCMStatus;
   
   void setStateInitFCMStatus(InitFCMStatus initFCMStatus) {
     _initFCMStatus = initFCMStatus;
@@ -75,6 +80,19 @@ class FirebaseProvider with ChangeNotifier {
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
 
+      if(message.data["forum_id"] != "-") {
+        NS.push(
+          navigatorKey.currentContext!, 
+          PostDetailScreen(postId: message.data["forum_id"])
+        );
+      }
+
+      if(message.data["comment_id"] != "-") {
+        NS.push(
+          navigatorKey.currentContext!,
+          RepliesScreen(id: message.data["comment_id"])
+        );
+      } 
 
     });
   }
@@ -104,20 +122,26 @@ class FirebaseProvider with ChangeNotifier {
   void listenNotification(BuildContext context) {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       RemoteNotification notification = message.notification!;
+      
       Map<String, dynamic> data = message.data;
+      
       int soundId = await rootBundle.load("assets/sounds/notification.mp3").then((ByteData soundData) {
         return soundpool.load(soundData);
       });
+      
       await soundpool.play(soundId);
+
       NotificationService.showNotification(
         id: Helper.createUniqueId(),
         title: notification.title,
         body: notification.body,
         payload: data,
       );
+
       if(data["type"] == "upgrade"){
         context.read<ProfileProvider>().getProfile(context);
       }
+
     });
   }
 

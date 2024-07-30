@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:hp3ki/views/screens/feed/replies.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import 'package:provider/provider.dart';
@@ -9,7 +10,6 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hp3ki/providers/feed/feed.dart';
 
 import 'package:hp3ki/views/screens/feed/comment_detail.dart';
-import 'package:hp3ki/views/screens/feed/reply_detail.dart';
 import 'package:hp3ki/views/screens/feed/post_detail.dart';
 
 import 'package:hp3ki/data/models/feed/notification.dart';
@@ -107,8 +107,8 @@ class NotificationScreenState extends State<NotificationScreen> {
                       if (feedProvider.notificationList[i].targetType == TargetType.reply) {
                         Navigator.push(context,
                           MaterialPageRoute(
-                            builder: (context) => ReplyDetailScreen(
-                              replyId: feedProvider.notificationList[i].targetId!,
+                            builder: (context) => RepliesScreen(
+                              id: feedProvider.notificationList[i].targetId!,
                             ),
                           ),
                         );

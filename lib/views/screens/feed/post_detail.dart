@@ -55,12 +55,14 @@ class PostDetailScreenState extends State<PostDetailScreen> {
   GlobalKey<FlutterMentionsState> key = GlobalKey<FlutterMentionsState>();
 
   late ScrollController sc;
+  late TextEditingController commentC;
+
+  late p.FeedDetailProviderV2 feedDetailProviderV2;
   
   bool deletePostBtn = false;
 
   Timer? debounce;
 
-  late p.FeedDetailProviderV2 feedDetailProviderV2;
   
   FocusNode commentFn = FocusNode();
 
@@ -77,9 +79,9 @@ class PostDetailScreenState extends State<PostDetailScreen> {
     super.initState();
 
     sc = ScrollController();
+    commentC = TextEditingController();
 
     feedDetailProviderV2 = context.read<p.FeedDetailProviderV2>();
-    feedDetailProviderV2.commentC = TextEditingController();
 
     Future.microtask(() => getData());
   }
@@ -648,8 +650,6 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                               onTap: () {
                                 Navigator.push(context, NS.fromLeft(RepliesScreen(
                                   id: comment.id,
-                                  postId: widget.postId,
-                                  index: i,
                                 ))).then((_) => setState(() {
                                   feedDetailProviderV2.getFeedDetail(context, widget.postId);
                                 }));

@@ -20,8 +20,6 @@ class FeedDetailProviderV2 with ChangeNotifier {
     required this.fr
   });
 
-  late TextEditingController commentC;
-
   String commentVal = "";
 
   Set<String> ids = {}; 

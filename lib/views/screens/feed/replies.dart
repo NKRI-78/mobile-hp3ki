@@ -31,13 +31,10 @@ import 'package:hp3ki/localization/language_constraints.dart';
 
 class RepliesScreen extends StatefulWidget {
   final String id;
-  final String postId;
-  final int index;
 
-  const RepliesScreen({Key? key, 
+  const RepliesScreen({
+    Key? key, 
     required this.id,
-    required this.postId,
-    required this.index
   }) : super(key: key);
 
   @override
@@ -45,19 +42,22 @@ class RepliesScreen extends StatefulWidget {
 }
 
 class RepliesScreenState extends State<RepliesScreen> {
-  TextEditingController replyTextEditingController = TextEditingController();
+
+  late TextEditingController commentC;
+  late TextEditingController replyC;
+
   FocusNode replyFocusNode = FocusNode();
   
   bool isExpanded = false;
   bool deletePostBtn = false;
 
-  late FeedReplyProvider frv;
-  late FeedDetailProviderV2 fdv2;
+  late FeedReplyProvider frp;
+  late FeedDetailProviderV2 fdp;
 
   Future<void> getData() async {
 
     if(!mounted) return;
-      await frv.getFeedReply(context: context, commentId: widget.id);
+      await frp.getFeedReply(context: context, commentId: widget.id);
 
   }
 
@@ -65,11 +65,22 @@ class RepliesScreenState extends State<RepliesScreen> {
   void initState() {  
     super.initState();
     
-    frv = context.read<FeedReplyProvider>();
-    fdv2 = context.read<FeedDetailProviderV2>();
-    frv.commentC = TextEditingController();
+    commentC = TextEditingController();
+    replyC = TextEditingController();
+
+    frp = context.read<FeedReplyProvider>();
+
+    fdp = context.read<FeedDetailProviderV2>();
 
     Future.microtask(() => getData());
+  }
+
+  @override 
+  void dispose() {
+    commentC.dispose();
+    replyC.dispose();
+
+    super.dispose();
   }
 
   Widget commentSticker(SingleCommentBody comment) {
@@ -366,32 +377,32 @@ class RepliesScreenState extends State<RepliesScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(fdv2.comments[widget.index].like.total.toString(),
-                            style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeSmall
-                            )
-                          ),
-                          InkWell(
-                            onTap: () {
-                              setState(() {
-                              fdv2.toggleLikeComment(
-                                context: context, 
-                                feedId: widget.postId, 
-                                commentId: fdv2.comments[widget.index].id, 
-                                feedLikes: fdv2.comments[widget.index].like
-                              );
-                              });
-                            }, 
-                            child: Container(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Icon(Icons.thumb_up,
-                                size: 16.0,
-                                color: fdv2.comments[widget.index].like.likes.where(
-                                  (el) => el.user!.id == fdv2.ar.getUserId()
-                                ).isEmpty ? Colors.black : ColorResources.blue,
-                              ),
-                            ),
-                          )
+                          // Text(fdv2.comments[widget.index].like.total.toString(),
+                          //   style: robotoRegular.copyWith(
+                          //     fontSize: Dimensions.fontSizeSmall
+                          //   )
+                          // ),
+                          // InkWell(
+                          //   onTap: () {
+                          //     setState(() {
+                          //     fdv2.toggleLikeComment(
+                          //       context: context, 
+                          //       feedId: widget.postId, 
+                          //       commentId: fdv2.comments[widget.index].id, 
+                          //       feedLikes: fdv2.comments[widget.index].like
+                          //     );
+                          //     });
+                          //   }, 
+                          //   child: Container(
+                          //     padding: const EdgeInsets.all(5.0),
+                          //     child: Icon(Icons.thumb_up,
+                          //       size: 16.0,
+                          //       color: fdv2.comments[widget.index].like.likes.where(
+                          //         (el) => el.user!.id == fdv2.ar.getUserId()
+                          //       ).isEmpty ? Colors.black : ColorResources.blue,
+                          //     ),
+                          //   ),
+                          // )
                         ],
                       ),
                     ),
@@ -604,7 +615,7 @@ class RepliesScreenState extends State<RepliesScreen> {
         Expanded(
           child: TextField(
             focusNode: replyFocusNode,
-            controller: frv.commentC,
+            controller: commentC,
             style: robotoRegular.copyWith(
               color: ColorResources.black,
               fontSize: Dimensions.fontSizeSmall
@@ -624,7 +635,7 @@ class RepliesScreenState extends State<RepliesScreen> {
             color: ColorResources.black
           ),
           onPressed: () async {
-            await frv.postReply(context, widget.postId, widget.id);
+            await frp.postReply(context, widget.id);
           }
         ),
       ],
@@ -691,7 +702,7 @@ class RepliesScreenState extends State<RepliesScreen> {
                           onPressed: () async { 
                           s(() => deletePostBtn = true);
                             try {         
-                              await frv.deleteReply(context: context, feedId: frv.feedReplyData.comment!.id!, deleteId: idComment);               
+                              await frp.deleteReply(context: context, feedId: frp.feedReplyData.comment!.id!, deleteId: idComment);               
                               s(() => deletePostBtn = false);
                               Navigator.of(context).pop();             
                             } catch(e) {

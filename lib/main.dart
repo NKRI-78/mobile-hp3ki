@@ -1,9 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:flutter_mentions/flutter_mentions.dart';
+import 'package:hp3ki/services/navigation.dart';
+import 'package:hp3ki/views/screens/feed/post_detail.dart';
+import 'package:hp3ki/views/screens/feed/replies.dart';
 
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:provider/provider.dart';
@@ -101,20 +106,23 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void listenOnClickNotifications() => NotificationService.onNotifications.stream.listen(onClickedNotification);
 
   void onClickedNotification(String? payload) {
-    // var data = json.decode(payload!);
+    var data = json.decode(payload!);
 
-    // if(data["forum_id"] != "-") {
-      // NS.push(
-      //   navigatorKey.currentContext!, 
-      //   PostDetailScreen(postId: data["forum_id"])
-      // );
-    // }
+    if(data["forum_id"] != "-") {
+      NS.push(
+        navigatorKey.currentContext!, 
+        PostDetailScreen(postId: data["forum_id"])
+      );
+    }
 
-    // if(data["comment_id"] == "-") {
-      // NS.push(
-      // 
-      // )
-    // } 
+    if(data["comment_id"] != "-") {
+      NS.push(
+        navigatorKey.currentContext!,
+        RepliesScreen(
+          id: data["comment_id"],
+        )
+      );
+    } 
   }
 
   @override

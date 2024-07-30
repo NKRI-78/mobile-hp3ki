@@ -137,10 +137,10 @@ class FeedRepoV2 {
   }
 
   Future<void> postMedia({
-      required String feedId,
-      required String path,
-      required String size
-    }) async {
+    required String feedId,
+    required String path,
+    required String size
+  }) async {
     try {
       Dio dio = DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/upload-media",
@@ -240,18 +240,15 @@ class FeedRepoV2 {
     }
   }
 
-  Future<void> postReply(
-      {
-      required BuildContext context,
-      required String feedId,
-      required String commentId,
-      required String userId,
-      required String reply,
-      }) async {
+  Future<void> postReply({
+    required BuildContext context,
+    required String commentId,
+    required String userId,
+    required String reply,
+  }) async {
     try {
       Dio dio = DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/create-reply", data: {
-        "forum_id": feedId,
         "comment_id": commentId,
         "user_id": userId,
         "reply": reply,
@@ -265,13 +262,11 @@ class FeedRepoV2 {
     }
   }
 
-  Future<FeedReplyModel> getReply(
-    {
+  Future<FeedReplyModel> getReply({
     required BuildContext context,
     required int pageKey, 
     required String commentId
-    }) async {
-      debugPrint("Id Comment : $commentId");
+  }) async {
     try {
       Dio dio = DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlFeedV2}/forums/v1/detail-reply?id=$commentId&page=$pageKey&limit=10&app_name=hp3ki");
@@ -287,12 +282,11 @@ class FeedRepoV2 {
     }
   }
 
-  Future<void> toggleLike(
-    {
+  Future<void> toggleLike({
     required BuildContext context,
     required String feedId,
     required String userId
-    }) async {
+  }) async {
     try {
       Object data = {
         "forum_id": feedId, 
@@ -310,13 +304,12 @@ class FeedRepoV2 {
       throw CustomException(e.toString());
     }
   }
-  Future<void> toggleLikeComment(
-    {
+  Future<void> toggleLikeComment({
     required BuildContext context,
     required String feedId,
     required String commentId,
     required String userId
-    }) async {
+  }) async {
     try {
       Object data = {
         "forum_id": feedId, 
