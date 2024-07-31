@@ -22,6 +22,8 @@ class FeedDetailProviderV2 with ChangeNotifier {
 
   String commentVal = "";
 
+  String highlightedIndex = "";
+
   Set<String> ids = {}; 
 
   bool hasMore = true;
@@ -140,7 +142,7 @@ class FeedDetailProviderV2 with ChangeNotifier {
         return;
       }
 
-      String? commentId = await fr.postComment(
+      await fr.postComment(
         context: context, forumId: forumId, 
         comment: commentVal, userId: ar.getUserId().toString(),
       );
@@ -153,14 +155,20 @@ class FeedDetailProviderV2 with ChangeNotifier {
       _comments.clear();
       _comments.addAll(fdm.data.forum!.comment!.comments);
 
-      int idx = comments.indexWhere((el) => el.id == commentId);
+       highlightedIndex = comments.last.id;
 
-      Future.delayed(const Duration(seconds: 1), () {
-        GlobalKey targetContext = comments[idx].key;
+      Future.delayed(const Duration(milliseconds: 100), () {
+        GlobalKey targetContext = comments.last.key;
         Scrollable.ensureVisible(targetContext.currentContext!,
-          duration: const Duration(milliseconds: 500),
+          duration: const Duration(milliseconds: 100),
           curve: Curves.easeOut,
         );
+      });
+
+      Future.delayed(const Duration(milliseconds: 1200), () {
+        highlightedIndex = "";
+
+        notifyListeners();
       });
 
       setStateFeedDetailStatus(FeedDetailStatus.loaded);

@@ -218,7 +218,7 @@ class FeedRepoV2 {
     }
   }
 
-  Future<String?> postComment({
+  Future<void> postComment({
     required BuildContext context,
     required String forumId,
     required String userId,
@@ -226,22 +226,18 @@ class FeedRepoV2 {
   }) async {
     try {
       Dio dio = DioManager.shared.getClient();
-      Response res =  await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/create-comment", data: {
+      await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/create-comment", data: {
         "forum_id": forumId,
         "user_id": userId,
         "comment": comment,
         "app_name": "hp3ki",
       });
-      Map<String, dynamic> data = res.data;
-      return data["comment_id"];
     } on DioError catch(e) {
       debugPrint(e.response!.data.toString());
       throw CustomException(e.toString());
     } catch(e) {
       debugPrint(e.toString());
     }
-
-    return "";
   }
 
   Future<void> postReply({

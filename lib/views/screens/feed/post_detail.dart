@@ -55,7 +55,6 @@ class PostDetailScreenState extends State<PostDetailScreen> {
 
   GlobalKey<FlutterMentionsState> key = GlobalKey<FlutterMentionsState>();
 
-  late ScrollController sc;
   late TextEditingController commentC;
 
   late p.FeedDetailProviderV2 feedDetailProvider;
@@ -399,7 +398,6 @@ class PostDetailScreenState extends State<PostDetailScreen> {
   void initState() {  
     super.initState();
 
-    sc = ScrollController();
     commentC = TextEditingController();
 
     feedDetailProvider = context.read<p.FeedDetailProviderV2>();
@@ -480,7 +478,6 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                       },
                       child: ListView.separated(
                         shrinkWrap: true,
-                        controller: sc,
                         separatorBuilder: (BuildContext context, int i) {
                           return const SizedBox(height: 8.0);
                         },
@@ -517,9 +514,11 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                                   ),
                                   title: Container(
                                     padding: const EdgeInsets.all(10.0),
-                                    decoration: const BoxDecoration(
-                                      color: ColorResources.blueGrey,
-                                      borderRadius: BorderRadius.all(
+                                    decoration: BoxDecoration(
+                                      color: context.watch<p.FeedDetailProviderV2>().highlightedIndex == comment.id 
+                                      ? ColorResources.greyLightPrimary
+                                      : ColorResources.blueGrey,
+                                      borderRadius: const BorderRadius.all(
                                         Radius.circular(8.0)
                                       )
                                     ),
@@ -1033,16 +1032,6 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                 color: ColorResources.black,
               ),
               onPressed: () async {
-                // Timer(const Duration(milliseconds: 500), () {
-                //   if(sc.hasClients) {
-                //     sc.animateTo(
-                //       sc.position.maxScrollExtent, 
-                //       duration: const Duration(milliseconds: 500), 
-                //       curve: Curves.bounceIn
-                //     );
-                //   }
-                // });
-                
                 await feedDetailProvider.postComment(context, key, widget.forumId);
               }
             ),
