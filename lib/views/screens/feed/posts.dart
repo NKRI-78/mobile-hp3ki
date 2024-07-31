@@ -675,7 +675,7 @@ class PostsState extends State<Posts> {
                           onPressed: () async { 
                           s(() => deletePostBtn = true);
                             try {         
-                              await context.read<FeedDetailProviderV2>().deleteComment(context: context, feedId:  context.read<FeedDetailProviderV2>().feedDetailData.forum!.id!, deleteId: idComment);               
+                              await context.read<FeedDetailProviderV2>().deleteComment(context: context, forumId: context.read<FeedDetailProviderV2>().feedDetailData.forum!.id!, deleteId: idComment);               
                               s(() => deletePostBtn = false);
                               Navigator.of(context).pop();             
                             } catch(e) {

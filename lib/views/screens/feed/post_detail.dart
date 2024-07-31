@@ -337,8 +337,8 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                       onPressed: () {
                         context.read<p.FeedDetailProviderV2>().toggleLike(
                           context: context, 
-                          feedId: feedDetailProviderV2.feedDetailData.forum!.id!, 
-                          feedLikes: feedDetailProviderV2.feedDetailData.forum!.like!
+                          forumId: feedDetailProviderV2.feedDetailData.forum!.id!, 
+                          forumLikes: feedDetailProviderV2.feedDetailData.forum!.like!
                         );
                       }, 
                       child: Text(getTranslated("LIKE", context),
@@ -673,9 +673,9 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                                         onTap: () {
                                           feedDetailProviderV2.toggleLikeComment(
                                             context: context, 
-                                            feedId: widget.forumId, 
+                                            forumId: widget.forumId, 
                                             commentId: comment.id, 
-                                            feedLikes: comment.like
+                                            forumLikes: comment.like
                                           );
                                         },
                                         child: Container(
@@ -729,184 +729,187 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                                       itemBuilder: (BuildContext context, int i) {
                                       ReplyElement reply = comment.reply.replies[i];
                                   
-                                      return ListTile(
-                                        leading: CachedNetworkImage(
-                                        imageUrl: reply.user.avatar.toString(),
-                                          imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
-                                            backgroundColor: Colors.transparent,
-                                            backgroundImage: imageProvider,
-                                            radius: 20.0,
-                                          ),
-                                          placeholder: (BuildContext context, String url) => const CircleAvatar(
-                                            backgroundColor: Colors.transparent,
-                                            backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
-                                            radius: 20.0,
-                                          ),
-                                          errorWidget: (BuildContext context, String url, dynamic error) => const CircleAvatar(
-                                            backgroundColor: Colors.transparent,
-                                            backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
-                                            radius: 20.0,
-                                          )
-                                        ),
-                                        title: Container(
-                                          padding: const EdgeInsets.all(10.0),
-                                          decoration: const BoxDecoration(
-                                            color: ColorResources.blueGrey,
-                                            borderRadius: BorderRadius.all(
-                                              Radius.circular(8.0)
+                                      return Container(
+                                        key: reply.key,
+                                        child: ListTile(
+                                          leading: CachedNetworkImage(
+                                          imageUrl: reply.user.avatar.toString(),
+                                            imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
+                                              backgroundColor: Colors.transparent,
+                                              backgroundImage: imageProvider,
+                                              radius: 20.0,
+                                            ),
+                                            placeholder: (BuildContext context, String url) => const CircleAvatar(
+                                              backgroundColor: Colors.transparent,
+                                              backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                                              radius: 20.0,
+                                            ),
+                                            errorWidget: (BuildContext context, String url, dynamic error) => const CircleAvatar(
+                                              backgroundColor: Colors.transparent,
+                                              backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                                              radius: 20.0,
                                             )
                                           ),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                  
-                                              Text(reply.user.username.toString(),
-                                                style: robotoRegular.copyWith(
-                                                  fontSize: Dimensions.fontSizeDefault,
-                                                ),
-                                              ),
-                                              
-                                              const SizedBox(height: 8.0),
-                                
-                                              Text(DateHelper.formatDateTime(reply.createdAt.toString(), context),
-                                                style: robotoRegular.copyWith(
-                                                  fontSize: Dimensions.fontSizeExtraSmall,
-                                                  color: ColorResources.dimGrey
-                                                ),
-                                              ),
-                                                
-                                              const SizedBox(height: 8.0),
-                                
-                                              commentText(context, reply.reply.toString()),
-
-                                              const SizedBox(height: 20.0),
-
-                                              Row(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: [
-                                              
-                                                  Text(getTranslated("REPLY",context),
-                                                    style: robotoRegular.copyWith(
-                                                      fontSize: Dimensions.fontSizeDefault,
-                                                      fontWeight: FontWeight.bold
-                                                    )
+                                          title: Container(
+                                            padding: const EdgeInsets.all(10.0),
+                                            decoration: const BoxDecoration(
+                                              color: ColorResources.blueGrey,
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(8.0)
+                                              )
+                                            ),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                                          
+                                                Text(reply.user.username.toString(),
+                                                  style: robotoRegular.copyWith(
+                                                    fontSize: Dimensions.fontSizeDefault,
                                                   ),
-                                              
-                                                ]
-                                              ),
-                                
-                                            ]
+                                                ),
+                                                
+                                                const SizedBox(height: 8.0),
+                                                                        
+                                                Text(DateHelper.formatDateTime(reply.createdAt.toString(), context),
+                                                  style: robotoRegular.copyWith(
+                                                    fontSize: Dimensions.fontSizeExtraSmall,
+                                                    color: ColorResources.dimGrey
+                                                  ),
+                                                ),
+                                                  
+                                                const SizedBox(height: 8.0),
+                                                                        
+                                                commentText(context, reply.reply.toString()),
+                                        
+                                                // const SizedBox(height: 20.0),
+                                        
+                                                // Row(
+                                                //   crossAxisAlignment: CrossAxisAlignment.center,
+                                                //   mainAxisAlignment: MainAxisAlignment.start,
+                                                //   children: [
+                                                
+                                                //     Text(getTranslated("REPLY",context),
+                                                //       style: robotoRegular.copyWith(
+                                                //         fontSize: Dimensions.fontSizeDefault,
+                                                //         fontWeight: FontWeight.bold
+                                                //       )
+                                                //     ),
+                                                
+                                                //   ]
+                                                // ),
+                                                                        
+                                              ]
+                                            ),
                                           ),
-                                        ),
-                                        trailing: context.read<ProfileProvider>().user!.id == reply.user.id 
-                                        ? grantedDeleteReply(context, reply.id)
-                                        : PopupMenuButton(
-                                            itemBuilder: (BuildContext buildContext) { 
-                                              return [
-                                                PopupMenuItem(
-                                                  child: Text("block user",
-                                                    style: robotoRegular.copyWith(
-                                                      color: ColorResources.error,
-                                                      fontSize: Dimensions.fontSizeSmall
-                                                    )
-                                                  ), 
-                                                  value: "/report-user"
-                                                ),
-                                                PopupMenuItem(
-                                                  child: Text("It's spam",
-                                                    style: robotoRegular.copyWith(
-                                                      color: ColorResources.error,
-                                                      fontSize: Dimensions.fontSizeSmall
-                                                    )
-                                                  ), 
-                                                  value: "/report-user"
-                                                ),
-                                                PopupMenuItem(
-                                                  child: Text("Nudity or sexual activity",
-                                                    style: robotoRegular.copyWith(
-                                                      color: ColorResources.error,
-                                                      fontSize: Dimensions.fontSizeSmall
-                                                    )
-                                                  ), 
-                                                  value: "/report-user"
-                                                ),
-                                                PopupMenuItem(
-                                                  child: Text("False Information",
-                                                    style: robotoRegular.copyWith(
-                                                      color: ColorResources.error,
-                                                      fontSize: Dimensions.fontSizeSmall
-                                                    )
-                                                  ), 
-                                                  value: "/report-user"
-                                                )
-                                              ];
-                                            },
-                                            onSelected: (route) {
-                                              if(route == "/report-user") {
-                                                showAnimatedDialog(
-                                                  context: context,
-                                                  builder: (context) {
-                                                    return Dialog(
-                                                      child: Container(
-                                                      height: 150.0,
-                                                      padding: const EdgeInsets.all(10.0),
-                                                      margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                        children: [
-                                                          const SizedBox(height: 10.0),
-                                                          const Icon(Icons.delete,
-                                                            color: ColorResources.black,
-                                                          ),
-                                                          const SizedBox(height: 10.0),
-                                                          Text(getTranslated("ARE_YOU_SURE_REPORT", context),
-                                                            style: robotoRegular.copyWith(
-                                                              fontSize: Dimensions.fontSizeSmall,
-                                                              fontWeight: FontWeight.w600
+                                          trailing: context.read<ProfileProvider>().user!.id == reply.user.id 
+                                          ? grantedDeleteReply(context, reply.id)
+                                          : PopupMenuButton(
+                                              itemBuilder: (BuildContext buildContext) { 
+                                                return [
+                                                  PopupMenuItem(
+                                                    child: Text("block user",
+                                                      style: robotoRegular.copyWith(
+                                                        color: ColorResources.error,
+                                                        fontSize: Dimensions.fontSizeSmall
+                                                      )
+                                                    ), 
+                                                    value: "/report-user"
+                                                  ),
+                                                  PopupMenuItem(
+                                                    child: Text("It's spam",
+                                                      style: robotoRegular.copyWith(
+                                                        color: ColorResources.error,
+                                                        fontSize: Dimensions.fontSizeSmall
+                                                      )
+                                                    ), 
+                                                    value: "/report-user"
+                                                  ),
+                                                  PopupMenuItem(
+                                                    child: Text("Nudity or sexual activity",
+                                                      style: robotoRegular.copyWith(
+                                                        color: ColorResources.error,
+                                                        fontSize: Dimensions.fontSizeSmall
+                                                      )
+                                                    ), 
+                                                    value: "/report-user"
+                                                  ),
+                                                  PopupMenuItem(
+                                                    child: Text("False Information",
+                                                      style: robotoRegular.copyWith(
+                                                        color: ColorResources.error,
+                                                        fontSize: Dimensions.fontSizeSmall
+                                                      )
+                                                    ), 
+                                                    value: "/report-user"
+                                                  )
+                                                ];
+                                              },
+                                              onSelected: (route) {
+                                                if(route == "/report-user") {
+                                                  showAnimatedDialog(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return Dialog(
+                                                        child: Container(
+                                                        height: 150.0,
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                                          children: [
+                                                            const SizedBox(height: 10.0),
+                                                            const Icon(Icons.delete,
+                                                              color: ColorResources.black,
                                                             ),
-                                                          ),
-                                                          const SizedBox(height: 10.0),
-                                                          Row(
-                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                            mainAxisSize: MainAxisSize.max,
-                                                            children: [
-                                                              ElevatedButton(
-                                                                onPressed: () => Navigator.of(context).pop(),
-                                                                child: Text(getTranslated("NO", context),
-                                                                  style: robotoRegular.copyWith(
-                                                                    fontSize: Dimensions.fontSizeSmall
+                                                            const SizedBox(height: 10.0),
+                                                            Text(getTranslated("ARE_YOU_SURE_REPORT", context),
+                                                              style: robotoRegular.copyWith(
+                                                                fontSize: Dimensions.fontSizeSmall,
+                                                                fontWeight: FontWeight.w600
+                                                              ),
+                                                            ),
+                                                            const SizedBox(height: 10.0),
+                                                            Row(
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              mainAxisSize: MainAxisSize.max,
+                                                              children: [
+                                                                ElevatedButton(
+                                                                  onPressed: () => Navigator.of(context).pop(),
+                                                                  child: Text(getTranslated("NO", context),
+                                                                    style: robotoRegular.copyWith(
+                                                                      fontSize: Dimensions.fontSizeSmall
+                                                                    )
                                                                   )
-                                                                )
-                                                              ), 
-                                                              StatefulBuilder(
-                                                                builder: (BuildContext context, Function s) {
-                                                                return ElevatedButton(
-                                                                style: ButtonStyle(
-                                                                  backgroundColor: MaterialStateProperty.all(
-                                                                    ColorResources.error
+                                                                ), 
+                                                                StatefulBuilder(
+                                                                  builder: (BuildContext context, Function s) {
+                                                                  return ElevatedButton(
+                                                                  style: ButtonStyle(
+                                                                    backgroundColor: MaterialStateProperty.all(
+                                                                      ColorResources.error
+                                                                    ),
                                                                   ),
-                                                                ),
-                                                                onPressed: () async { 
-                                                                  Navigator.of(context, rootNavigator: true).pop(); 
-                                                                },
-                                                                child: Text(getTranslated("YES", context), 
-                                                                  style: robotoRegular.copyWith(
-                                                                    fontSize: Dimensions.fontSizeSmall
-                                                                  ),
-                                                                ),                           
-                                                              );
-                                                            })
-                                                          ],
-                                                        ) 
-                                                      ])
-                                                    )
-                                                  );
-                                                },
-                                              );
-                                            }
-                                          },
-                                        )
+                                                                  onPressed: () async { 
+                                                                    Navigator.of(context, rootNavigator: true).pop(); 
+                                                                  },
+                                                                  child: Text(getTranslated("YES", context), 
+                                                                    style: robotoRegular.copyWith(
+                                                                      fontSize: Dimensions.fontSizeSmall
+                                                                    ),
+                                                                  ),                           
+                                                                );
+                                                              })
+                                                            ],
+                                                          ) 
+                                                        ])
+                                                      )
+                                                    );
+                                                  },
+                                                );
+                                              }
+                                            },
+                                          )
+                                        ),
                                       );
                                     },
                                   ),
@@ -1148,7 +1151,7 @@ class PostDetailScreenState extends State<PostDetailScreen> {
           PopupMenuItem(
             child: Text(getTranslated("DELETE_REPLY", context),
               style: robotoRegular.copyWith(
-                color: ColorResources.primary,
+                color: ColorResources.black,
                 fontSize: Dimensions.fontSizeSmall
               )
             ), 
@@ -1361,7 +1364,11 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                           onPressed: () async { 
                           s(() => deletePostBtn = true);
                             try {         
-                              await context.read<p.FeedDetailProviderV2>().deleteComment(context: context, feedId: feedDetailProvider.feedDetailData.forum!.id!, deleteId: idComment);               
+                              await context.read<p.FeedDetailProviderV2>().deleteComment(
+                                context: context, 
+                                forumId: feedDetailProvider.feedDetailData.forum!.id!, 
+                                deleteId: idComment
+                              );               
                               s(() => deletePostBtn = false);
                               Navigator.of(context).pop();             
                             } catch(e) {

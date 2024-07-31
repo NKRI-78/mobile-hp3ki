@@ -69,19 +69,7 @@ class FeedDetailProviderV2 with ChangeNotifier {
       _feedDetailData = fdm!.data;
 
       _comments = [];
-
-      for (CommentElement el in fdm.data.forum!.comment!.comments) {
-         
-        _comments.add(CommentElement(
-          id: el.id, 
-          comment: el.comment, 
-          createdAt: el.createdAt, 
-          user: el.user, 
-          reply: el.reply, 
-          like: el.like, 
-          key: el.key
-        ));
-      }
+      _comments.addAll(fdm.data.forum!.comment!.comments);
 
       setStateFeedDetailStatus(FeedDetailStatus.loaded);
 
@@ -143,7 +131,7 @@ class FeedDetailProviderV2 with ChangeNotifier {
   Future<void> postComment(
     BuildContext context,
     GlobalKey<FlutterMentionsState> key,
-    String feedId,
+    String forumId,
     ) async {
     try {
 
@@ -152,18 +140,28 @@ class FeedDetailProviderV2 with ChangeNotifier {
         return;
       }
 
-      await fr.postComment(
-        context: context, feedId: feedId, 
+      String? commentId = await fr.postComment(
+        context: context, forumId: forumId, 
         comment: commentVal, userId: ar.getUserId().toString(),
       );
 
       key.currentState!.controller!.text = "";
 
-      FeedDetailModel? fdm = await fr.fetchDetail(context, 1, feedId);
+      FeedDetailModel? fdm = await fr.fetchDetail(context, 1, forumId);
       _feedDetailData = fdm!.data;
 
       _comments.clear();
       _comments.addAll(fdm.data.forum!.comment!.comments);
+
+      int idx = comments.indexWhere((el) => el.id == commentId);
+
+      Future.delayed(const Duration(seconds: 1), () {
+        GlobalKey targetContext = comments[idx].key;
+        Scrollable.ensureVisible(targetContext.currentContext!,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeOut,
+        );
+      });
 
       setStateFeedDetailStatus(FeedDetailStatus.loaded);
 
@@ -178,24 +176,24 @@ class FeedDetailProviderV2 with ChangeNotifier {
 
   Future<void> toggleLike({
     required BuildContext context,
-    required String feedId, 
-    required FeedLikes feedLikes
+    required String forumId, 
+    required FeedLikes forumLikes
   }) async {
     try {
-      int idxLikes = feedLikes.likes.indexWhere((el) => el.user!.id == ar.getUserId().toString());
+      int idxLikes = forumLikes.likes.indexWhere((el) => el.user!.id == ar.getUserId().toString());
       if (idxLikes != -1) {
-        feedLikes.likes.removeAt(idxLikes);
-        feedLikes.total = feedLikes.total - 1;
+        forumLikes.likes.removeAt(idxLikes);
+        forumLikes.total = forumLikes.total - 1;
       } else {
-        feedLikes.likes.add(UserLikes(
+        forumLikes.likes.add(UserLikes(
           user: User(
           id: ar.getUserId().toString(),
           avatar: "-",
           username: ar.getUserFullname())
         ));
-        feedLikes.total = feedLikes.total + 1;
+        forumLikes.total = forumLikes.total + 1;
       }
-      await fr.toggleLike(context: context, feedId: feedId, userId: ar.getUserId().toString());
+      await fr.toggleLike(context: context, feedId: forumId, userId: ar.getUserId().toString());
       Future.delayed(Duration.zero, () => notifyListeners());
     } on CustomException catch (e) {
       debugPrint(e.toString());
@@ -207,25 +205,25 @@ class FeedDetailProviderV2 with ChangeNotifier {
   Future<void> toggleLikeComment(
       {
       required BuildContext context,
-      required String feedId, 
+      required String forumId, 
       required String commentId, 
-      required FeedLikes feedLikes}) async {
+      required FeedLikes forumLikes}) async {
     try {
-      int idxLikes = feedLikes.likes.indexWhere((el) => el.user!.id == ar.getUserId().toString());
+      int idxLikes = forumLikes.likes.indexWhere((el) => el.user!.id == ar.getUserId().toString());
       if (idxLikes != -1) {
-        feedLikes.likes.removeAt(idxLikes);
-        feedLikes.total = feedLikes.total - 1;
+        forumLikes.likes.removeAt(idxLikes);
+        forumLikes.total = forumLikes.total - 1;
       } else {
-        feedLikes.likes.add(UserLikes(
+        forumLikes.likes.add(UserLikes(
           user: User(
             id: ar.getUserId().toString(),
             avatar: "-",
             username: ar.getUserFullname()
           )
         ));
-        feedLikes.total = feedLikes.total + 1;
+        forumLikes.total = forumLikes.total + 1;
       }
-      await fr.toggleLikeComment(context: context, feedId: feedId, userId: ar.getUserId().toString(), commentId: commentId);
+      await fr.toggleLikeComment(context: context, feedId: forumId, userId: ar.getUserId().toString(), commentId: commentId);
       Future.delayed(Duration.zero, () => notifyListeners());
     } on CustomException catch (e) {
       debugPrint("Error like : ${e.toString()}");
@@ -236,13 +234,13 @@ class FeedDetailProviderV2 with ChangeNotifier {
 
   Future<void> deleteComment({
     required BuildContext context, 
-    required String feedId, 
+    required String forumId, 
     required String deleteId
   }) async {
     try {
       await fr.deleteComment(context, deleteId);
 
-      FeedDetailModel? fdm = await fr.fetchDetail(context, 1, feedId);
+      FeedDetailModel? fdm = await fr.fetchDetail(context, 1, forumId);
       _feedDetailData = fdm!.data;
 
       _comments.clear();
