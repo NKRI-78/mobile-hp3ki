@@ -108,21 +108,27 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void onClickedNotification(String? payload) {
     var data = json.decode(payload!);
 
-    if(data["forum_id"] != "-") {
+    if(data["forum_id"] != "-" && data["comment_id"] != "-") {
       NS.push(
         navigatorKey.currentContext!, 
-        PostDetailScreen(postId: data["forum_id"])
+        PostDetailScreen(
+          forumId: data["forum_id"],
+          commentId: data["comment_id"],
+        )
       );
     }
 
-    if(data["comment_id"] != "-") {
+    if(data["reply_id"] != "-" && data["comment_id"] != "-") {
+
       NS.push(
         navigatorKey.currentContext!,
         RepliesScreen(
-          id: data["comment_id"],
+          commentId: data["comment_id"],
         )
       );
-    } 
+
+    }
+
   }
 
   @override

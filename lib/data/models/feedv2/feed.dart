@@ -88,6 +88,7 @@ class ForumComment {
 class CommentElement {
     String? id;
     String? comment;
+    String? createdAt;
     User? user;
     CommentReply? reply;
     FeedLikes? like;
@@ -95,6 +96,7 @@ class CommentElement {
     CommentElement({
         this.id,
         this.comment,
+        this.createdAt,
         this.user,
         this.reply,
         this.like,
@@ -103,6 +105,7 @@ class CommentElement {
     factory CommentElement.fromJson(Map<String, dynamic> json) => CommentElement(
         id: json["id"],
         comment: json["comment"],
+        createdAt: json["created_at"],
         user: User.fromJson(json["user"]),
         reply: CommentReply.fromJson(json["reply"]),
         like: FeedLikes.fromJson(json["like"]),

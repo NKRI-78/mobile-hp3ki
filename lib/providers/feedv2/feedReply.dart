@@ -21,6 +21,8 @@ class FeedReplyProvider with ChangeNotifier {
   bool hasMore = true;
   int pageKey = 1;
 
+  String valReply = "";
+
   FeedReplyStatus _feedReplyStatus = FeedReplyStatus.loading;
   FeedReplyStatus get feedReplyStatus => _feedReplyStatus;
 
@@ -42,6 +44,12 @@ class FeedReplyProvider with ChangeNotifier {
 
   final List<ReplyElement> _reply = [];
   List<ReplyElement> get reply => [..._reply];
+
+  void changeReply(String val) {
+    valReply = val;
+    
+    notifyListeners();
+  }
 
   Future<void> getFeedReply({required BuildContext context,required String commentId}) async {
     pageKey = 1;
@@ -84,28 +92,33 @@ class FeedReplyProvider with ChangeNotifier {
 
   Future<void> postReply(
     BuildContext context,
+    TextEditingController replyC, 
     String commentId,
     ) async {
     try {
-      // if (commentC.text.trim() == "") {
-      //   commentC.text = "";
-      //   return;
-      // }
+      if (valReply.trim() == "") {
+        return;
+      }
 
-      // await fr.postReply(
-      //   context: context, 
-      //   reply: commentC.text, 
-      //   userId: ar.getUserId().toString(), 
-      //   commentId: commentId
-      // );
+      replyC.text = "";
 
-      // FeedReplyModel frm = await fr.getReply(commentId: commentId, pageKey: 1, context: context);
-      // _feedReplyData = frm.data;
+      await fr.postReply(
+        context: context, 
+        reply: valReply, 
+        userId: ar.getUserId().toString(), 
+        commentId: commentId
+      );
 
-      // _reply.clear();
-      // _reply.addAll(frm.data.comment!.reply!.replies);
+      FeedReplyModel frm = await fr.getReply(
+        context: context, 
+        commentId: commentId, 
+        pageKey: 1
+      );
+      
+      _feedReplyData = frm.data;
 
-      // commentC.text = "";
+      _reply.clear();
+      _reply.addAll(frm.data.comment!.reply!.replies);
 
       setStateFeedReplyStatus(FeedReplyStatus.loaded);
     } on CustomException catch (e) {

@@ -108,7 +108,7 @@ class NotificationScreenState extends State<NotificationScreen> {
                         Navigator.push(context,
                           MaterialPageRoute(
                             builder: (context) => RepliesScreen(
-                              id: feedProvider.notificationList[i].targetId!,
+                              commentId: feedProvider.notificationList[i].targetId!,
                             ),
                           ),
                         );
@@ -127,7 +127,8 @@ class NotificationScreenState extends State<NotificationScreen> {
                         Navigator.push(context,
                           MaterialPageRoute(
                             builder: (context) => PostDetailScreen(
-                              postId: feedProvider.notificationList[i].targetId!,
+                              forumId: feedProvider.notificationList[i].targetId!,
+                              commentId: '',
                             ),
                           ),
                         );

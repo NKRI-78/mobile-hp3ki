@@ -86,7 +86,7 @@ class FeedRepoV2 {
   Future<FeedDetailModel?> fetchDetail(BuildContext context, int pageKey, String postId) async {
     try{ 
       Dio dio = DioManager.shared.getClient();
-      Response res = await dio.get("${AppConstants.baseUrlFeedV2}/forums/v1/detail?id=$postId&page=$pageKey&limit=10&app_name=hp3ki");
+      Response res = await dio.get("${AppConstants.baseUrlFeedV2}/forums/v1/detail?id=$postId&page=$pageKey&limit=50&app_name=hp3ki");
       Map<String, dynamic> data = res.data;
       FeedDetailModel fm = FeedDetailModel.fromJson(data);
       return fm;
@@ -247,6 +247,7 @@ class FeedRepoV2 {
     required String reply,
   }) async {
     try {
+
       Dio dio = DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/create-reply", data: {
         "comment_id": commentId,
@@ -254,6 +255,7 @@ class FeedRepoV2 {
         "reply": reply,
         "app_name": "hp3ki",
       });
+
     } on DioError catch(e) {
       debugPrint(e.toString());
       throw CustomException(e.toString());
@@ -269,7 +271,7 @@ class FeedRepoV2 {
   }) async {
     try {
       Dio dio = DioManager.shared.getClient();
-      Response res = await dio.get("${AppConstants.baseUrlFeedV2}/forums/v1/detail-reply?id=$commentId&page=$pageKey&limit=10&app_name=hp3ki");
+      Response res = await dio.get("${AppConstants.baseUrlFeedV2}/forums/v1/detail-reply?id=$commentId&page=$pageKey&limit=50&app_name=hp3ki");
       Map<String, dynamic> data = res.data;
       FeedReplyModel fm = FeedReplyModel.fromJson(data);
       return fm;

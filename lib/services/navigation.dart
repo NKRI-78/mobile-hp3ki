@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 class NS {
   NS._();
   
-  static push(BuildContext context, Widget pushNav) {
-    Navigator.push(context,
+  static Future<void> push(BuildContext context, Widget pushNav) {
+    return Navigator.push(context,
       PageRouteBuilder(pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
         return pushNav;
       },
@@ -38,8 +38,8 @@ class NS {
   }
 
 
-  static pushDown(BuildContext context, Widget pushNav) {
-    Navigator.push(context,
+  static Future<void> pushDown(BuildContext context, Widget pushNav) {
+    return Navigator.push(context,
       PageRouteBuilder(pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
         return pushNav;
       },
@@ -56,8 +56,8 @@ class NS {
       })
     );
   }
-  static pushReplacementUp(BuildContext context, Widget pushNav) {
-    Navigator.pushReplacement(context,
+  static Future<void> pushReplacementUp(BuildContext context, Widget pushNav) {
+    return Navigator.pushReplacement(context,
       PageRouteBuilder(pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
         return pushNav;
       },
@@ -74,8 +74,8 @@ class NS {
       })
     );
   }
-  static pushReplacement(BuildContext context, Widget pushNav) {
-    Navigator.pushReplacement(context,
+  static Future<void> pushReplacement(BuildContext context, Widget pushNav) {
+    return Navigator.pushReplacement(context,
       PageRouteBuilder(pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
         return pushNav;
       },
@@ -91,8 +91,8 @@ class NS {
       })
     );
   }
-  static pushReplacementUntil(BuildContext context, Widget pushNav) {
-    Navigator.pushAndRemoveUntil(context,
+  static Future<void> pushReplacementUntil(BuildContext context, Widget pushNav) {
+    return Navigator.pushAndRemoveUntil(context,
       PageRouteBuilder(pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
         return pushNav;
       },
@@ -107,8 +107,8 @@ class NS {
       );
     }), (route) => false);
   }
-  static pushBackReplacement(BuildContext context, Widget pushNav) {
-    Navigator.pushReplacement(context,
+  static Future<void> pushBackReplacement(BuildContext context, Widget pushNav) {
+    return Navigator.pushReplacement(context,
       PageRouteBuilder(pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
         return pushNav;
       },

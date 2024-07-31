@@ -30,6 +30,12 @@ class FeedDetailProviderV2 with ChangeNotifier {
   final List<Map<String, dynamic>> _userMentions = [];
   List<Map<String, dynamic>> get userMentions  => [..._userMentions];
 
+  List<CommentElement> _comments = [];
+  List<CommentElement> get comments => [..._comments];
+
+  FeedDetailData _feedDetailData = FeedDetailData();
+  FeedDetailData get feedDetailData => _feedDetailData;
+
   FeedDetailStatus _feedDetailStatus = FeedDetailStatus.loading;
   FeedDetailStatus get feedDetailStatus => _feedDetailStatus;
 
@@ -48,12 +54,6 @@ class FeedDetailProviderV2 with ChangeNotifier {
     notifyListeners();
   } 
 
-  FeedDetailData _feedDetailData = FeedDetailData();
-  FeedDetailData get feedDetailData => _feedDetailData;
-
-  final List<CommentElement> _comments = [];
-  List<CommentElement> get comments => [..._comments];
-
   void onListenComment(String val) {
     commentVal = val;
 
@@ -68,13 +68,27 @@ class FeedDetailProviderV2 with ChangeNotifier {
       FeedDetailModel? fdm = await fr.fetchDetail(context, pageKey, postId);
       _feedDetailData = fdm!.data;
 
-      _comments.clear();
-      _comments.addAll(fdm.data.forum!.comment!.comments);
+      _comments = [];
+
+      for (CommentElement el in fdm.data.forum!.comment!.comments) {
+         
+        _comments.add(CommentElement(
+          id: el.id, 
+          comment: el.comment, 
+          createdAt: el.createdAt, 
+          user: el.user, 
+          reply: el.reply, 
+          like: el.like, 
+          key: el.key
+        ));
+      }
+
       setStateFeedDetailStatus(FeedDetailStatus.loaded);
 
       if (comments.isEmpty) {
         setStateFeedDetailStatus(FeedDetailStatus.empty);
       }
+
     } on CustomException catch (e) {
       setStateFeedDetailStatus(FeedDetailStatus.error);
       debugPrint(e.toString());
@@ -220,12 +234,11 @@ class FeedDetailProviderV2 with ChangeNotifier {
     }
   }
 
-  Future<void> deleteComment( 
-      {
-        required BuildContext context, 
-        required String feedId, 
-        required String deleteId
-      }) async {
+  Future<void> deleteComment({
+    required BuildContext context, 
+    required String feedId, 
+    required String deleteId
+  }) async {
     try {
       await fr.deleteComment(context, deleteId);
 

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +9,6 @@ import 'package:hp3ki/services/navigation.dart';
 import 'package:hp3ki/views/screens/feed/post_detail.dart';
 
 import 'package:hp3ki/views/screens/feed/widgets/input_post.dart';
-import 'package:hp3ki/views/screens/feed/notification.dart';
 import 'package:hp3ki/views/screens/feed/posts.dart';
 
 import 'package:hp3ki/localization/language_constraints.dart';
@@ -29,7 +27,7 @@ class FeedIndex extends StatefulWidget {
 class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
 
   late TabController tabController;
-  late FeedProviderV2 feedProviderV2;
+  late FeedProviderV2 feedProvider;
 
   GlobalKey g1Key = GlobalKey();
   GlobalKey g2Key = GlobalKey();
@@ -44,29 +42,33 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
 
   Future refresh(BuildContext context) async {
     Future.sync((){
-      feedProviderV2.fetchFeedMostRecent(context);
-      feedProviderV2.fetchFeedPopuler(context);
-      feedProviderV2.fetchFeedSelf(context);
+      feedProvider.fetchFeedMostRecent(context);
+      feedProvider.fetchFeedPopuler(context);
+      feedProvider.fetchFeedSelf(context);
     });
   }
 
   @override
   void initState() {
     super.initState();
-    feedProviderV2 = context.read<FeedProviderV2>();
+    
+    feedProvider = context.read<FeedProviderV2>();
+    
     Future.delayed(Duration.zero, () {
       if(mounted) {
-        feedProviderV2.fetchFeedMostRecent(context);
-        feedProviderV2.fetchFeedPopuler(context);
-        feedProviderV2.fetchFeedSelf(context);    
+        feedProvider.fetchFeedMostRecent(context);
+        feedProvider.fetchFeedPopuler(context);
+        feedProvider.fetchFeedSelf(context);    
       }
     });
+
     tabController = TabController(length: 3, vsync: this, initialIndex: 0);
   }
   
   @override
   void dispose() {
     tabController.dispose();
+
     super.dispose();
   }
 
@@ -102,8 +104,8 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
       children: [
 
         Consumer<FeedProviderV2>(
-          builder: (BuildContext context, FeedProviderV2 feedProviderv2, Widget? child) {
-            if (feedProviderv2.feedRecentStatus == FeedRecentStatus.loading) {
+          builder: (BuildContext context, FeedProviderV2 feedProvider, Widget? child) {
+            if (feedProvider.feedRecentStatus == FeedRecentStatus.loading) {
               return const Center(
                 child: SpinKitThreeBounce(
                   size: 20.0,
@@ -111,23 +113,40 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                 ),
               );
             }
-            if (feedProviderv2.feedRecentStatus == FeedRecentStatus.empty) {
+            if (feedProvider.feedRecentStatus == FeedRecentStatus.empty) {
               return Center(
-                child: Text(getTranslated("THERE_IS_NO_POST", context), style: robotoRegular)
+                child: Text(
+                  getTranslated("THERE_IS_NO_POST", context), 
+                  style: robotoRegular
+                )
               );
             }
-            if (feedProviderv2.feedRecentStatus == FeedRecentStatus.error) {
+            if (feedProvider.feedRecentStatus == FeedRecentStatus.error) {
               return Center(
-                child: Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular)
+                child: Text(
+                  getTranslated("THERE_WAS_PROBLEM", context), 
+                  style: robotoRegular
+                )
               );
             }
             return NotificationListener<ScrollNotification>(
+              onNotification: (ScrollNotification notification) {
+                if (notification is ScrollEndNotification) {
+                  if (notification.metrics.pixels == notification.metrics.maxScrollExtent) {
+                    if (feedProvider.hasMore) {
+                      feedProvider.loadMoreRecent(context: context);
+                    }
+                  }
+                }
+                return false;
+              },
               child: RefreshIndicator(
                 backgroundColor: ColorResources.primary,
                 color: ColorResources.white,
                 key: refreshIndicatorKey1,
                   onRefresh: () => refresh(context),
                   child: ListView.separated(
+                    shrinkWrap: true,
                     separatorBuilder: (BuildContext context, int i) {
                       return Container(
                         color: Colors.blueGrey[50],
@@ -136,9 +155,9 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                     },
                     physics: const AlwaysScrollableScrollPhysics(),
                     key: g1Key,
-                    itemCount: feedProviderv2.forum1.length,
+                    itemCount: feedProvider.forum1.length,
                     itemBuilder: (BuildContext content, int i) {
-                    if (feedProviderv2.forum1.length == i) {
+                    if (feedProvider.forum1.length == i) {
                       return const Center(
                         child: SpinKitThreeBounce(
                           size: 20.0,
@@ -148,28 +167,22 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                     }
                     return InkWell(
                       onTap: () {
-                        Navigator.push(context, NS.fromLeft(PostDetailScreen(postId: feedProviderV2.forum1[i].id!))).then((_) => setState(() {
-                          feedProviderV2.fetchFeedMostRecent(context);
-                        }));
+
+                        NS.push(context, PostDetailScreen(
+                          forumId: feedProvider.forum1[i].id!, 
+                          commentId: ""
+                        )).then((_) {
+                          feedProvider.fetchFeedMostRecent(context);
+                        });
+
                       },
                       child: Posts(
-                        i: i,
-                        forum: feedProviderV2.forum1,
+                        forum: feedProvider.forum1[i],
                       ),
                     );
                   }
                 ),
               ),
-              onNotification: (ScrollNotification notification) {
-                if (notification is ScrollEndNotification) {
-                  if (notification.metrics.pixels == notification.metrics.maxScrollExtent) {
-                    if (feedProviderv2.hasMore) {
-                      feedProviderv2.loadMoreRecent(context: context);
-                    }
-                  }
-                }
-                return false;
-              },
             );
           },
         ),
@@ -195,9 +208,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
               );
             }
             return NotificationListener<ScrollNotification>(
-              child: RefreshIndicator(
-                backgroundColor: ColorResources.primary,
-                color: ColorResources.white,
+              child: RefreshIndicator.adaptive(
                 key: refreshIndicatorKey2,
                   onRefresh: () => refresh(context),
                   child: ListView.separated(
@@ -221,13 +232,16 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                     }
                     return InkWell(
                       onTap: () {
-                        Navigator.push(context, NS.fromLeft(PostDetailScreen(postId: feedProviderV2.forum1[i].id!))).then((_) => setState(() {
-                          feedProviderV2.fetchFeedPopuler(context);
+                        Navigator.push(context, NS.fromLeft(
+                          PostDetailScreen(
+                            forumId: feedProvider.forum1[i].id!,
+                            commentId: "",
+                          ))).then((_) => setState(() {
+                          feedProvider.fetchFeedPopuler(context);
                         }));
                       },
                       child: Posts(
-                        i: i,
-                        forum: feedProviderv2.forum2,
+                        forum: feedProviderv2.forum2[i],
                       ),
                     );
                   }
@@ -292,13 +306,17 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                     }
                     return InkWell(
                       onTap: () {
-                        Navigator.push(context, NS.fromLeft(PostDetailScreen(postId: feedProviderV2.forum1[i].id!))).then((_) => setState(() {
-                          feedProviderV2.fetchFeedSelf(context);
+                        Navigator.push(context, NS.fromLeft(
+                          PostDetailScreen(
+                            forumId: feedProvider.forum1[i].id!,
+                            commentId: "",
+                          )
+                        )).then((_) => setState(() {
+                          feedProvider.fetchFeedSelf(context);
                         }));
                       },
                       child: Posts(
-                        i: i,
-                        forum: feedProviderv2.forum3,
+                        forum: feedProviderv2.forum3[i],
                       ),
                     );
                   }
@@ -332,36 +350,55 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
        physics: const ScrollPhysics(),
        headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
           return [
+
             SliverAppBar(
               systemOverlayStyle: SystemUiOverlayStyle.dark,
               backgroundColor: ColorResources.white,
               automaticallyImplyLeading: false,
-              title: Text('Community Feed',
-                style: robotoRegular.copyWith(
-                  color: ColorResources.primary,
-                  fontWeight: FontWeight.w600,
-                  fontSize: Dimensions.fontSizeDefault
-                )
-              ),
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    NS.push(context, const NotificationScreen());
-                  },
-                  icon: const Icon(
-                    Icons.notifications,
-                    color: ColorResources.primary
+              toolbarHeight: 150.0,
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+
+                  Image.asset('assets/images/logo/logo.png',
+                    width: 70.0,
                   ),
-                ),
-              ],
+
+                  const SizedBox(height: 8.0),
+
+                  Text('Forum',
+                    style: robotoRegular.copyWith(
+                      color: ColorResources.black,
+                      fontWeight: FontWeight.w600,
+                      fontSize: Dimensions.fontSizeOverLarge
+                    )
+                  ),
+
+                  const SizedBox(height: 8.0),
+
+                  const Text("HP3KI",
+                    style: TextStyle(
+                      color: ColorResources.black,
+                      fontWeight: FontWeight.w600,
+                      fontSize: Dimensions.fontSizeLarge
+                    ),
+                  )
+
+                ],
+              )
+              ,
               elevation: 0.0,
               forceElevated: true,
               pinned: true,
               centerTitle: true,
               floating: true,
             ),
-            const InputPostComponent(),
-            tabSection(context)
+            
+            const InputPostWidget(),
+
+            // tabSection(context)
+
           ];
          },
         body: tabbarviewsection(context),

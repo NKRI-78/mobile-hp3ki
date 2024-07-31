@@ -1,8 +1,14 @@
 
 import 'package:flutter/material.dart';
+import 'package:hp3ki/providers/feedv2/feedDetail.dart';
+import 'package:hp3ki/views/basewidgets/loader/circular.dart';
+
+import 'package:readmore/readmore.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:hp3ki/data/models/feedv2/feed.dart';
 import 'package:hp3ki/providers/feedv2/feed.dart';
+import 'package:hp3ki/services/navigation.dart';
+import 'package:hp3ki/views/screens/feed/post_detail.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -26,11 +32,9 @@ import 'package:hp3ki/views/screens/feed/widgets/post_link.dart';
 import 'package:hp3ki/views/screens/feed/widgets/post_text.dart';
 
 class Posts extends StatefulWidget {
-  final int i;
-  final List<Forum> forum;
+  final Forum forum;
    
   const Posts({Key? key, 
-    required this.i,
     required this.forum,
   }) : super(key: key);
 
@@ -49,15 +53,16 @@ class PostsState extends State<Posts> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: Dimensions.marginSizeDefault),
+      margin: const EdgeInsets.only(top: 15.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [ 
+
           ListTile(
             dense: true,
             leading: CachedNetworkImage(
-            imageUrl: widget.forum[widget.i].user!.avatar!,
+            imageUrl: widget.forum.user!.avatar!,
               imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
                 backgroundColor: Colors.transparent,
                 backgroundImage: imageProvider,
@@ -74,19 +79,19 @@ class PostsState extends State<Posts> {
                 radius: 20.0,
               )
             ),
-            title: Text(widget.forum[widget.i].user!.username!,
+            title: Text(widget.forum.user!.username!,
               style: robotoRegular.copyWith(
                 fontSize: Dimensions.fontSizeDefault,
                 color: ColorResources.black
               ),
             ),
-            subtitle: Text(DateHelper.formatDateTime(widget.forum[widget.i].createdAt!, context),
+            subtitle: Text(DateHelper.formatDateTime(widget.forum.createdAt!, context),
               style: robotoRegular.copyWith(
                 fontSize: Dimensions.fontSizeExtraSmall,
                 color: ColorResources.dimGrey
               ),
             ),
-            trailing: context.read<ProfileProvider>().user!.id == widget.forum[widget.i].user!.id! 
+            trailing: context.read<ProfileProvider>().user!.id == widget.forum.user!.id! 
             ? grantedDeletePost(context) 
             : PopupMenuButton(
                 itemBuilder: (BuildContext buildContext) { 
@@ -211,46 +216,65 @@ class PostsState extends State<Posts> {
             )
           ),
     
-          const SizedBox(height: 5.0),
-          Container(
-            margin: const EdgeInsets.only(left: Dimensions.marginSizeDefault),
-            child: PostText(widget.forum[widget.i].caption!)
-          ),
-          if(widget.forum[widget.i].type == "link")
-            PostLink(url: widget.forum[widget.i].link ?? "-"),
-          if(widget.forum[widget.i].type == "document")
-            widget.forum[widget.i].media!.isNotEmpty ?
-            PostDoc(
-              medias: widget.forum[widget.i].media!, 
-            ) : Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
-          if(widget.forum[widget.i].type == "image")
-            widget.forum[widget.i].media!.isNotEmpty ? 
-            PostImage(
-              false,
-              widget.forum[widget.i].media!, 
-            ) : Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
-          if(widget.forum[widget.i].type == "video")
-            widget.forum[widget.i].media!.isNotEmpty ? 
-            PostVideo(
-              media: widget.forum[widget.i].media![0].path!,
-            ): Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
-        
+ 
           Container(
             margin: const EdgeInsets.only(
-              top: Dimensions.marginSizeExtraSmall, 
-              bottom: Dimensions.marginSizeDefault, 
-              left: Dimensions.marginSizeDefault, 
-              right: Dimensions.marginSizeDefault
+              left: 15.0,
+              right: 15.0
+            ),
+            child: PostText(widget.forum.caption!)
+          ),
+
+          const SizedBox(height: 8.0),
+          
+          if(widget.forum.type == "link")
+            PostLink(url: widget.forum.link ?? "-"),
+          if(widget.forum.type == "document")
+            widget.forum.media!.isNotEmpty ?
+            PostDoc(
+              medias: widget.forum.media!, 
+            ) : Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
+          if(widget.forum.type == "image")
+            widget.forum.media!.isNotEmpty ? 
+            PostImage(
+              false,
+              widget.forum.media!, 
+            ) : Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
+          if(widget.forum.type == "video")
+            widget.forum.media!.isNotEmpty ? 
+            PostVideo(
+              media: widget.forum.media![0].path!,
+            ): Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
+        
+          const SizedBox(height: 10.0),
+
+          Container(
+            margin: const EdgeInsets.only(
+              bottom: 15.0, 
+              left: 15.0, 
+              right: 15.0
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               mainAxisSize: MainAxisSize.max,
               children: [
+
                 SizedBox(
                   width: 40.0,
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+       
+                      Container(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Icon(
+                          Icons.thumb_up,
+                          size: 18.0,
+                          color: widget.forum.like!.likes.where((el) => el.user!.id == context.read<FeedProviderV2>().ar.getUserId()).isEmpty ? ColorResources.black : ColorResources.blue
+                        ),
+                      ),
+
                       InkWell(
                         onTap: () {
                           showModalBottomSheet(
@@ -269,10 +293,10 @@ class PostsState extends State<Posts> {
                                     ListView.builder(
                                       shrinkWrap: true,
                                       padding: EdgeInsets.zero,
-                                      itemCount: widget.forum[widget.i].like!.likes.length,
+                                      itemCount: widget.forum.like!.likes.length,
                                       itemBuilder: (_, int i) {
 
-                                        final like = widget.forum[widget.i].like!.likes[i];
+                                        final like = widget.forum.like!.likes[i];
 
                                         return Padding(
                                           padding: const EdgeInsets.all(20.0),
@@ -331,40 +355,372 @@ class PostsState extends State<Posts> {
                             },
                           );
                         },
-                        child: Text('${widget.forum[widget.i].like!.total}', 
+                        child: Text('${widget.forum.like!.total}', 
                           style: robotoRegular.copyWith(
                             color: ColorResources.black,
-                            fontSize: Dimensions.fontSizeSmall
+                            fontSize: Dimensions.fontSizeDefault
                           )
                         ),
                       ),
-                      InkWell(
-                        onTap: () async => context.read<FeedProviderV2>().toggleLike(context: context, feedId: widget.forum[widget.i].id!, feedLikes: widget.forum[widget.i].like!),
-                        child: Container(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Icon(
-                            Icons.thumb_up,
-                            size: 16.0,
-                            color: widget.forum[widget.i].like!.likes.where((el) => el.user!.id == context.read<FeedProviderV2>().ar.getUserId()).isEmpty ? ColorResources.black : ColorResources.blue
-                          ),
-                        ),
-                      )
+
                     ],
                   ),
                 ),
-                Text('${widget.forum[widget.i].comment!.total.toString()} ${getTranslated("COMMENT", context)}',
+
+                Text('${widget.forum.comment!.total.toString()} ${getTranslated("COMMENT", context)}',
                   style: robotoRegular.copyWith(
-                    fontSize: Dimensions.fontSizeSmall
+                    fontSize: Dimensions.fontSizeDefault
                   ),
-                )
+                ),
+
               ]
             )
           ), 
-          
+
+          Container(
+            margin: const EdgeInsets.only(
+              top: 15.0,
+              bottom: 15.0,
+              left: 15.0, 
+              right: 15.0
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      context.read<FeedProviderV2>().toggleLike(context: context, feedId: widget.forum.id!, feedLikes: widget.forum.like!);
+                    }, 
+                    child: Text(getTranslated("LIKE", context),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: Dimensions.fontSizeDefault
+                      ),
+                    )
+                  ),
+                ),
+
+                const SizedBox(width: 12.0),
+
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                       NS.push(context, PostDetailScreen(
+                          forumId: widget.forum.id!, 
+                          commentId: ""
+                        )).then((_) {
+                          context.read<FeedProviderV2>().fetchFeedMostRecent(context);
+                        });
+                    }, 
+                    child: Text(getTranslated("COMMENT", context),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: Dimensions.fontSizeDefault
+                      ),
+                    )
+                  ),
+                ),
+
+              ],
+            ),
+          ),
+
+          widget.forum.comment!.comments!.isEmpty 
+          ? const SizedBox()
+          : Container(
+            margin: const EdgeInsets.only(
+              top: 10.0,
+              bottom: 15.0,
+              left: 15.0, 
+              right: 15.0
+            ),
+            child: Column(
+              children: [
+
+                ListTile(
+                  leading: CachedNetworkImage(
+                  imageUrl: widget.forum.comment!.comments!.last.user!.avatar.toString(),
+                    imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      backgroundImage: imageProvider,
+                      radius: 20.0,
+                    ),
+                    placeholder: (BuildContext context, String url) => const CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                      radius: 20.0,
+                    ),
+                    errorWidget: (BuildContext context, String url, dynamic error) => const CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                      radius: 20.0,
+                    )
+                  ),
+                  title: Container(
+                    padding: const EdgeInsets.all(10.0),
+                    decoration: const BoxDecoration(
+                      color: ColorResources.blueGrey,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(8.0)
+                      )
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(widget.forum.comment!.comments!.last.user!.username.toString(),
+                            style: robotoRegular.copyWith(
+                              fontSize: Dimensions.fontSizeDefault,
+                            ),
+                          ),
+                          
+                          const SizedBox(height: 8.0),
+
+                          Text(DateHelper.formatDateTime(widget.forum.comment!.comments!.last.createdAt.toString(), context),
+                            style: robotoRegular.copyWith(
+                              fontSize: Dimensions.fontSizeExtraSmall,
+                              color: ColorResources.dimGrey
+                            ),
+                          ),
+                            
+                          const SizedBox(height: 8.0),
+
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              commentText(context, widget.forum.comment!.comments!.last.comment.toString())
+                            ],
+                          ),
+                        ]
+                      ),
+                    ),
+                    trailing: context.read<ProfileProvider>().user!.id == widget.forum.comment!.comments!.last.user!.id.toString()
+                    ? grantedDeleteComment(context, widget.forum.comment!.comments!.last.id.toString())
+                    : PopupMenuButton(
+                      itemBuilder: (BuildContext buildContext) { 
+                        return [
+                          PopupMenuItem(
+                            child: Text("block user",
+                              style: robotoRegular.copyWith(
+                                color: ColorResources.error,
+                                fontSize: Dimensions.fontSizeSmall
+                              )
+                            ), 
+                            value: "/report-user"
+                          ),
+                          PopupMenuItem(
+                            child: Text("It's spam",
+                              style: robotoRegular.copyWith(
+                                color: ColorResources.error,
+                                fontSize: Dimensions.fontSizeSmall
+                              )
+                            ), 
+                            value: "/report-user"
+                          ),
+                          PopupMenuItem(
+                            child: Text("Nudity or sexual activity",
+                              style: robotoRegular.copyWith(
+                                color: ColorResources.error,
+                                fontSize: Dimensions.fontSizeSmall
+                              )
+                            ), 
+                            value: "/report-user"
+                          ),
+                          PopupMenuItem(
+                            child: Text("False Information",
+                              style: robotoRegular.copyWith(
+                                color: ColorResources.error,
+                                fontSize: Dimensions.fontSizeSmall
+                              )
+                            ), 
+                            value: "/report-user"
+                          )
+                        ];
+                      },
+                      onSelected: (route) {
+                        if(route == "/report-user") {
+                          showAnimatedDialog(
+                            context: context,
+                            builder: (context) {
+                              return Dialog(
+                                child: Container(
+                                height: 150.0,
+                                padding: const EdgeInsets.all(10.0),
+                                margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const SizedBox(height: 10.0),
+                                    const Icon(Icons.delete,
+                                      color: ColorResources.black,
+                                    ),
+                                    const SizedBox(height: 10.0),
+                                    Text(getTranslated("ARE_YOU_SURE_REPORT", context),
+                                      style: robotoRegular.copyWith(
+                                        fontSize: Dimensions.fontSizeSmall,
+                                        fontWeight: FontWeight.w600
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10.0),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: () => Navigator.of(context).pop(),
+                                          child: Text(getTranslated("NO", context),
+                                            style: robotoRegular.copyWith(
+                                              fontSize: Dimensions.fontSizeSmall
+                                            )
+                                          )
+                                        ), 
+                                        StatefulBuilder(
+                                          builder: (BuildContext context, Function s) {
+                                          return ElevatedButton(
+                                          style: ButtonStyle(
+                                            backgroundColor: MaterialStateProperty.all(
+                                              ColorResources.error
+                                            ),
+                                          ),
+                                          onPressed: () async { 
+                                            Navigator.of(context, rootNavigator: true).pop(); 
+                                          },
+                                          child: Text(getTranslated("YES", context), 
+                                            style: robotoRegular.copyWith(
+                                              fontSize: Dimensions.fontSizeSmall
+                                            ),
+                                          ),                           
+                                        );
+                                      })
+                                    ],
+                                  ) 
+                                ])
+                              )
+                            );
+                          },
+                        );
+                      }
+                    },
+                  )
+                ),
+
+              ],
+            )
+          )
+
       ],
     ),
-        );
+  );
 }
+
+
+  Widget grantedDeleteComment(context, String idComment) {
+    return PopupMenuButton(
+      itemBuilder: (BuildContext buildContext) { 
+        return [
+          PopupMenuItem(
+            child: Text(getTranslated("DELETE_COMMENT", context),
+              style: robotoRegular.copyWith(
+                color: ColorResources.black,
+                fontSize: Dimensions.fontSizeSmall
+              )
+            ), 
+            value: "/delete-post"
+          )
+        ];
+      },
+      onSelected: (route) {
+        if(route == "/delete-post") {
+          showAnimatedDialog(
+            context: context,
+            builder: (context) {
+              return Dialog(
+                child: Container(
+                height: 150.0,
+                padding: const EdgeInsets.all(10.0),
+                margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 10.0),
+                    const Icon(
+                      Icons.delete,
+                      color: ColorResources.white,
+                    ),
+                    const SizedBox(height: 10.0),
+                    Text(getTranslated("DELETE_COMMENT", context),
+                      style: robotoRegular.copyWith(
+                        fontSize: Dimensions.fontSizeSmall,
+                        fontWeight: FontWeight.w600
+                      ),
+                    ),
+                    const SizedBox(height: 10.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: Text(getTranslated("NO", context),
+                            style: robotoRegular,
+                          )
+                        ), 
+                        StatefulBuilder(
+                          builder: (BuildContext context, Function s) {
+                          return ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: ColorResources.error
+                          ),
+                          onPressed: () async { 
+                          s(() => deletePostBtn = true);
+                            try {         
+                              await context.read<FeedDetailProviderV2>().deleteComment(context: context, feedId:  context.read<FeedDetailProviderV2>().feedDetailData.forum!.id!, deleteId: idComment);               
+                              s(() => deletePostBtn = false);
+                              Navigator.of(context).pop();             
+                            } catch(e) {
+                              s(() => deletePostBtn = false);
+                              debugPrint(e.toString()); 
+                            }
+                          },
+                          child: deletePostBtn 
+                          ? const Loader(
+                              color: ColorResources.white,
+                            )
+                          : Text(getTranslated("YES", context),
+                              style: robotoRegular.copyWith(
+                                fontSize: Dimensions.fontSizeSmall
+                              ),
+                            )
+                          );
+                        })
+                      ],
+                    ) 
+                  ])
+                )
+              );
+            },
+          );
+        }
+      },
+    );
+  }
+
+  Widget commentText(BuildContext context, String comment) {
+    return ReadMoreText(
+      comment,
+      style: robotoRegular.copyWith(
+        fontSize: Dimensions.fontSizeDefault
+      ),
+      trimLines: 2,
+      colorClickableText: ColorResources.black,
+      trimMode: TrimMode.Line,
+      trimCollapsedText: getTranslated("READ_MORE", context),
+      trimExpandedText: getTranslated("LESS_MORE", context),
+      moreStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.w600),
+      lessStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.w600),
+    );
+  }
 
   Widget grantedDeletePost(context) {
     return PopupMenuButton(
@@ -486,7 +842,7 @@ class PostsState extends State<Posts> {
                                                       onTap: () async {
                                                         setState(() => deletePostBtn = true);
                                                         try {         
-                                                          await context.read<FeedProviderV2>().deletePost(context, widget.forum[widget.i].id!);               
+                                                          await context.read<FeedProviderV2>().deletePost(context, widget.forum.id!);               
                                                           setState(() => deletePostBtn = false);        
                                                         } catch(e, stacktrace) {
                                                           setState(() => deletePostBtn = false);

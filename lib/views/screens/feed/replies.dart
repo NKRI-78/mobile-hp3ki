@@ -30,11 +30,11 @@ import 'package:hp3ki/views/screens/feed/widgets/post_text.dart';
 import 'package:hp3ki/localization/language_constraints.dart';
 
 class RepliesScreen extends StatefulWidget {
-  final String id;
+  final String commentId;
 
   const RepliesScreen({
     Key? key, 
-    required this.id,
+    required this.commentId,
   }) : super(key: key);
 
   @override
@@ -57,7 +57,7 @@ class RepliesScreenState extends State<RepliesScreen> {
   Future<void> getData() async {
 
     if(!mounted) return;
-      await frp.getFeedReply(context: context, commentId: widget.id);
+      await frp.getFeedReply(context: context, commentId: widget.commentId);
 
   }
 
@@ -221,7 +221,8 @@ class RepliesScreenState extends State<RepliesScreen> {
                                                         setState(() => deletePostBtn = true);
                                                         try {         
                                                           await context.read<FeedProviderV2>().deleteReply(context, replyId);               
-                                                          setState(() => deletePostBtn = false);        
+                                                          setState(() => deletePostBtn = false);     
+                                                          Navigator.of(context).pop();       
                                                         } catch(e, stacktrace) {
                                                           setState(() => deletePostBtn = false);
                                                           debugPrint(stacktrace.toString()); 
@@ -324,7 +325,7 @@ class RepliesScreenState extends State<RepliesScreen> {
             children: [
             ListTile(
               leading: CachedNetworkImage(
-              imageUrl: "${frv.feedReplyData.comment!.user?.avatar ?? "-"}",
+              imageUrl: frv.feedReplyData.comment!.user?.avatar ?? "-",
                 imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
                   backgroundColor: Colors.transparent,
                   backgroundImage: imageProvider,
@@ -425,6 +426,7 @@ class RepliesScreenState extends State<RepliesScreen> {
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
         return [
+          
           SliverAppBar(
             systemOverlayStyle: SystemUiOverlayStyle.light,
             backgroundColor: ColorResources.white,
@@ -432,21 +434,22 @@ class RepliesScreenState extends State<RepliesScreen> {
             style: robotoRegular.copyWith(
               fontSize: Dimensions.fontSizeDefault,
               color: ColorResources.black
-            )
-          ),
-          leading: IconButton(
-            icon: Icon(
-              Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back,
-              color: ColorResources.black,
+            )),
+            leading: IconButton(
+              icon: Icon(
+                Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back,
+                color: ColorResources.black,
+              ),
+              onPressed: () => Navigator.of(context).pop()
             ),
-            onPressed: () => Navigator.of(context).pop()
+            elevation: 0.0,
+            pinned: false,
+            centerTitle: false,
+            floating: true,
           ),
-          elevation: 0.0,
-          pinned: false,
-          centerTitle: false,
-          floating: true,
-        ),
+          
           comment(context)
+
         ];
       }, 
       body: Consumer<FeedReplyProvider>(
@@ -471,7 +474,7 @@ class RepliesScreenState extends State<RepliesScreen> {
           return RefreshIndicator(
             onRefresh: () {
               return Future.sync(() {
-                frv.getFeedReply(context: context, commentId: widget.id);
+                frv.getFeedReply(context: context, commentId: widget.commentId);
               });
             },
             child: NotificationListener(
@@ -479,7 +482,7 @@ class RepliesScreenState extends State<RepliesScreen> {
               if (notification is ScrollEndNotification) {
                   if (notification.metrics.pixels == notification.metrics.maxScrollExtent) {
                     if (frv.hasMore) {
-                      frv.loadMoreReply(context: context, commentId: widget.id);
+                      frv.loadMoreReply(context: context, commentId: widget.commentId);
                     }
                   }
                 }
@@ -510,7 +513,7 @@ class RepliesScreenState extends State<RepliesScreen> {
                         ? grantedDeleteReply(context, reply.id) 
                         : const SizedBox(),
                         leading: CachedNetworkImage(
-                        imageUrl: "${reply.user.avatar}",
+                        imageUrl: reply.user.avatar,
                           imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
                             backgroundColor: Colors.transparent,
                             backgroundImage: imageProvider,
@@ -616,6 +619,9 @@ class RepliesScreenState extends State<RepliesScreen> {
           child: TextField(
             focusNode: replyFocusNode,
             controller: commentC,
+            onChanged: (val) {
+              frp.changeReply(val);
+            },
             style: robotoRegular.copyWith(
               color: ColorResources.black,
               fontSize: Dimensions.fontSizeSmall
@@ -635,8 +641,8 @@ class RepliesScreenState extends State<RepliesScreen> {
             color: ColorResources.black
           ),
           onPressed: () async {
-            await frp.postReply(context, widget.id);
-          }
+            await frp.postReply(context, commentC, widget.commentId);
+          } 
         ),
       ],
     )));

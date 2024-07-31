@@ -80,19 +80,26 @@ class FirebaseProvider with ChangeNotifier {
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
 
-      if(message.data["forum_id"] != "-") {
+      if(message.data["forum_id"] != "-" && message.data["comment_id"] != "-") {
         NS.push(
           navigatorKey.currentContext!, 
-          PostDetailScreen(postId: message.data["forum_id"])
+          PostDetailScreen(
+            forumId: message.data["forum_id"],
+            commentId: message.data["comment_id"],
+          )
         );
       }
 
-      if(message.data["comment_id"] != "-") {
+      if(message.data["reply_id"] != "-" && message.data["comment_id"] != "-") {
+
         NS.push(
           navigatorKey.currentContext!,
-          RepliesScreen(id: message.data["comment_id"])
+          RepliesScreen(
+            commentId: message.data["comment_id"],
+          )
         );
-      } 
+
+      }
 
     });
   }

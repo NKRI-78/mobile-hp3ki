@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+
 class FeedDetailModel {
     int status;
     bool error;
@@ -71,93 +74,96 @@ class Forum {
 }
 
 class ForumComment {
-    int total;
-    List<CommentElement> comments;
+  int total;
+  List<CommentElement> comments;
 
-    ForumComment({
-        required this.total,
-        required this.comments,
-    });
+  ForumComment({
+    required this.total,
+    required this.comments,
+  });
 
-    factory ForumComment.fromJson(Map<String, dynamic> json) => ForumComment(
-        total: json["total"],
-        comments: List<CommentElement>.from(json["comments"].map((x) => CommentElement.fromJson(x))),
-    );
+  factory ForumComment.fromJson(Map<String, dynamic> json) => ForumComment(
+    total: json["total"],
+    comments: List<CommentElement>.from(json["comments"].map((x) => CommentElement.fromJson(x))),
+  );
 }
 
 class CommentElement {
-    String id;
-    String comment;
-    String createdAt;
-    User user;
-    CommentReply reply;
-    FeedLikes like;
+  String id;
+  String comment;
+  String createdAt;
+  User user;
+  CommentReply reply;
+  FeedLikes like;
+  GlobalKey key;
 
-    CommentElement({
-        required this.id,
-        required this.comment,
-        required this.createdAt,
-        required this.user,
-        required this.reply,
-        required this.like,
-    });
+  CommentElement({
+    required this.id,
+    required this.comment,
+    required this.createdAt,
+    required this.user,
+    required this.reply,
+    required this.like,
+    required this.key
+  });
 
-    factory CommentElement.fromJson(Map<String, dynamic> json) => CommentElement(
-        id: json["id"],
-        comment: json["comment"],
-        createdAt: json["created_at"],
-        user: User.fromJson(json["user"]),
-        reply: CommentReply.fromJson(json["reply"]),
-        like: FeedLikes.fromJson(json["like"]),
-    );
+  factory CommentElement.fromJson(Map<String, dynamic> json) => CommentElement(
+    id: json["id"],
+    comment: json["comment"],
+    createdAt: json["created_at"],
+    user: User.fromJson(json["user"]),
+    reply: CommentReply.fromJson(json["reply"]),
+    like: FeedLikes.fromJson(json["like"]),
+    key: GlobalKey()
+  );
 }
 
 class FeedLikes {
-    int total;
-    List<UserLikes> likes;
+  int total;
+  List<UserLikes> likes;
 
-    FeedLikes({
-        required this.total,
-        required this.likes,
-    });
+  FeedLikes({
+    required this.total,
+    required this.likes,
+  });
 
-    factory FeedLikes.fromJson(Map<String, dynamic> json) => FeedLikes(
-        total: json["total"],
-        likes: List<UserLikes>.from(json["likes"].map((x) => UserLikes.fromJson(x))),
-    );
+  factory FeedLikes.fromJson(Map<String, dynamic> json) => FeedLikes(
+    total: json["total"],
+    likes: List<UserLikes>.from(json["likes"].map((x) => UserLikes.fromJson(x))),
+  );
 }
 
 class UserLikes {
-    String? id;
-    User? user;
+  String? id;
+  User? user;
 
-    UserLikes({
-        this.id,
-        this.user,
-    });
+  UserLikes({
+    this.id,
+    this.user,
+  });
 
-    factory UserLikes.fromJson(Map<String, dynamic> json) => UserLikes(
-        id: json["id"],
-        user: User.fromJson(json["user"]),
-    );
+  factory UserLikes.fromJson(Map<String, dynamic> json) => UserLikes(
+    id: json["id"],
+    user: User.fromJson(json["user"]),
+  );
 }
 
 class User {
-    String id;
-    String avatar;
-    String username;
+  String id;
+  String avatar;
+  String username;
 
-    User({
-        required this.id,
-        required this.avatar,
-        required this.username,
-    });
+  User({
+    required this.id,
+    required this.avatar,
+    required this.username,
+  });
 
-    factory User.fromJson(Map<String, dynamic> json) => User(
-        id: json["id"],
-        avatar: json["avatar"],
-        username: json["username"],
-    );
+  factory User.fromJson(Map<String, dynamic> json) => User(
+    id: json["id"],
+    avatar: json["avatar"],
+    username: json["username"],
+  );
 }
 
 class CommentReply {
@@ -178,17 +184,20 @@ class CommentReply {
 class ReplyElement {
     String id;
     String reply;
+    String createdAt;
     User user;
 
     ReplyElement({
         required this.id,
         required this.reply,
+        required this.createdAt,
         required this.user,
     });
 
     factory ReplyElement.fromJson(Map<String, dynamic> json) => ReplyElement(
         id: json["id"],
         reply: json["reply"],
+        createdAt: json["created_at"],
         user: User.fromJson(json["user"]),
     );
 }
