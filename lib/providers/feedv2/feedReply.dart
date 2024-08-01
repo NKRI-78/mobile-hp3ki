@@ -1,5 +1,8 @@
 import 'package:flutter/widgets.dart';
 
+
+import 'package:flutter_mentions/flutter_mentions.dart';
+
 import 'package:hp3ki/data/models/feedv2/feedReply.dart';
 import 'package:hp3ki/data/repository/auth/auth.dart';
 import 'package:hp3ki/data/repository/feedv2/feed.dart';
@@ -61,12 +64,11 @@ class FeedReplyProvider with ChangeNotifier {
         pageKey: pageKey, 
         context: context
       );
-      
+
       _feedReplyData = frm.data;
 
       _reply.clear();
       _reply.addAll(frm.data.comment!.reply!.replies);
-      setStateFeedReplyDetailStatus(FeedReplyDetailStatus.loaded);
       setStateFeedReplyStatus(FeedReplyStatus.loaded);
 
       if (reply.isEmpty) {
@@ -92,22 +94,26 @@ class FeedReplyProvider with ChangeNotifier {
 
   Future<void> postReply(
     BuildContext context,
-    TextEditingController replyC, 
+    GlobalKey<FlutterMentionsState> mentionKey,
+    String commentVal,
     String commentId,
     ) async {
     try {
-      if (valReply.trim() == "") {
+
+      if (mentionKey.currentState!.controller!.text.trim() == "") {
+        mentionKey.currentState!.controller!.text = "";
         return;
       }
 
-      replyC.text = "";
-
       await fr.postReply(
-        context: context, 
-        reply: valReply, 
+        context: context,
+        replyId: "", 
+        reply: commentVal, 
+        commentId: commentId,
         userId: ar.getUserId().toString(), 
-        commentId: commentId
       );
+
+      mentionKey.currentState!.controller!.text = "";
 
       FeedReplyModel frm = await fr.getReply(
         context: context, 

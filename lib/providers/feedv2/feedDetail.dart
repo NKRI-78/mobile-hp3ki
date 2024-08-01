@@ -1,11 +1,16 @@
 import 'package:flutter/widgets.dart';
+import 'package:hp3ki/providers/profile/profile.dart';
+
+import 'package:provider/provider.dart';
 
 import 'package:flutter_mentions/flutter_mentions.dart';
 
 import 'package:hp3ki/data/models/feedv2/feedDetail.dart';
 import 'package:hp3ki/data/models/feedv2/user_mention.dart';
+
 import 'package:hp3ki/data/repository/auth/auth.dart';
 import 'package:hp3ki/data/repository/feedv2/feed.dart';
+import 'package:hp3ki/maps/src/utils/uuid.dart';
 
 import 'package:hp3ki/utils/exceptions.dart';
 
@@ -20,9 +25,10 @@ class FeedDetailProviderV2 with ChangeNotifier {
     required this.fr
   });
 
-  String commentVal = "";
+  String inputVal = "";
 
-  String highlightedIndex = "";
+  String highlightedComment = "";
+  String highlightedReply = "";
 
   Set<String> ids = {}; 
 
@@ -57,17 +63,17 @@ class FeedDetailProviderV2 with ChangeNotifier {
   } 
 
   void onListenComment(String val) {
-    commentVal = val;
+    inputVal = val;
 
     notifyListeners();
   }
 
-  Future<void> getFeedDetail(BuildContext context, String postId) async {
+  Future<void> getFeedDetail(BuildContext context, String forumId) async {
     pageKey = 1;
     hasMore = true;
 
     try {
-      FeedDetailModel? fdm = await fr.fetchDetail(context, pageKey, postId);
+      FeedDetailModel? fdm = await fr.fetchDetail(context, pageKey, forumId);
       _feedDetailData = fdm!.data;
 
       _comments = [];
@@ -101,8 +107,8 @@ class FeedDetailProviderV2 with ChangeNotifier {
           _userMentions.add({
             "id": mention.id.toString(),
             "photo": mention.photo.toString(),
-            "display": mention.display.toString(),
-            "fullname": mention.username.toString()
+            "display": mention.username.toString(),
+            "fullname": mention.display.toString()
           });
           ids.add(mention.id);
 
@@ -132,44 +138,103 @@ class FeedDetailProviderV2 with ChangeNotifier {
 
   Future<void> postComment(
     BuildContext context,
-    GlobalKey<FlutterMentionsState> key,
+    GlobalKey<FlutterMentionsState> mentionKey,
+    String isReplyId,
     String forumId,
     ) async {
     try {
 
-      if (key.currentState!.controller!.text.trim() == "") {
-        key.currentState!.controller!.text = "";
+      if (mentionKey.currentState!.controller!.text.trim() == "") {
+        mentionKey.currentState!.controller!.text = "";
         return;
       }
 
-      await fr.postComment(
-        context: context, forumId: forumId, 
-        comment: commentVal, userId: ar.getUserId().toString(),
-      );
+      if(isReplyId != "") {
 
-      key.currentState!.controller!.text = "";
+        String replyId = Uuid().generateV4();
 
-      FeedDetailModel? fdm = await fr.fetchDetail(context, 1, forumId);
-      _feedDetailData = fdm!.data;
-
-      _comments.clear();
-      _comments.addAll(fdm.data.forum!.comment!.comments);
-
-       highlightedIndex = comments.last.id;
-
-      Future.delayed(const Duration(milliseconds: 100), () {
-        GlobalKey targetContext = comments.last.key;
-        Scrollable.ensureVisible(targetContext.currentContext!,
-          duration: const Duration(milliseconds: 100),
-          curve: Curves.easeOut,
+        await fr.postReply(
+          context: context, replyId: replyId, commentId: isReplyId, 
+          reply: inputVal, userId: ar.getUserId().toString(),
         );
-      });
 
-      Future.delayed(const Duration(milliseconds: 1200), () {
-        highlightedIndex = "";
+        int i = comments.indexWhere((el) => el.id == isReplyId);
 
-        notifyListeners();
-      });
+        _comments[i].reply.replies.add(ReplyElement(
+          id: replyId, 
+          reply: inputVal, 
+          createdAt: "beberapa detik yang lalu", 
+          user: UserReply(
+            id: context.read<ProfileProvider>().user!.id.toString(), 
+            avatar: context.read<ProfileProvider>().user!.avatar.toString(), 
+            username: context.read<ProfileProvider>().user!.fullname.toString()
+          ), 
+          key: GlobalKey()
+        ));
+
+        mentionKey.currentState!.controller!.text = "";
+
+        highlightedReply = comments[i].reply.replies.last.id;
+
+        Future.delayed(const Duration(milliseconds: 100), () {
+          GlobalKey targetContext = comments[i].reply.replies.last.key;
+          Scrollable.ensureVisible(targetContext.currentContext!,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.easeOut,
+          );
+        });
+
+        Future.delayed(const Duration(milliseconds: 1000), () {
+          highlightedReply = "";
+
+          notifyListeners();
+        });
+
+      } else {
+
+        String commentId = Uuid().generateV4();
+
+        await fr.postComment(
+          context: context, commentId: commentId, forumId: forumId, 
+          comment: inputVal, userId: ar.getUserId().toString(),
+        );
+
+        _comments.add(
+          CommentElement(
+            id: commentId, 
+            comment: inputVal, 
+            createdAt: "beberapa detik yang lalu", 
+            user: User(
+              id: context.read<ProfileProvider>().user!.id.toString(), 
+              avatar: context.read<ProfileProvider>().user!.avatar.toString(), 
+              username: context.read<ProfileProvider>().user!.fullname.toString(),
+              mention: ar.getUserEmail().split('@')[0]
+            ),
+            reply: CommentReply(total: 0, replies: []), 
+            like: CommentLike(total: 0, likes: []),
+            key: GlobalKey()
+          )
+        );
+
+        mentionKey.currentState!.controller!.text = "";
+
+        highlightedComment = comments.last.id;
+
+        Future.delayed(const Duration(milliseconds: 100), () {
+          GlobalKey targetContext = comments.last.key;
+          Scrollable.ensureVisible(targetContext.currentContext!,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.easeOut,
+          );
+        });
+
+        Future.delayed(const Duration(milliseconds: 1000), () {
+          highlightedComment = "";
+
+          notifyListeners();
+        });
+
+      }
 
       setStateFeedDetailStatus(FeedDetailStatus.loaded);
 
@@ -185,7 +250,7 @@ class FeedDetailProviderV2 with ChangeNotifier {
   Future<void> toggleLike({
     required BuildContext context,
     required String forumId, 
-    required FeedLikes forumLikes
+    required ForumLike forumLikes
   }) async {
     try {
       int idxLikes = forumLikes.likes.indexWhere((el) => el.user!.id == ar.getUserId().toString());
@@ -194,10 +259,12 @@ class FeedDetailProviderV2 with ChangeNotifier {
         forumLikes.total = forumLikes.total - 1;
       } else {
         forumLikes.likes.add(UserLikes(
-          user: User(
-          id: ar.getUserId().toString(),
-          avatar: "-",
-          username: ar.getUserFullname())
+          user: UserLike(
+          id: ar.getUserId(),
+          avatar: '-',
+          username: ar.getUserFullname(),
+        ),
+          
         ));
         forumLikes.total = forumLikes.total + 1;
       }
@@ -215,28 +282,28 @@ class FeedDetailProviderV2 with ChangeNotifier {
       required BuildContext context,
       required String forumId, 
       required String commentId, 
-      required FeedLikes forumLikes}) async {
+      required CommentLike commentLikes}) async {
     try {
-      int idxLikes = forumLikes.likes.indexWhere((el) => el.user!.id == ar.getUserId().toString());
+      int idxLikes = commentLikes.likes.indexWhere((el) => el.user!.id == ar.getUserId().toString());
       if (idxLikes != -1) {
-        forumLikes.likes.removeAt(idxLikes);
-        forumLikes.total = forumLikes.total - 1;
+        commentLikes.likes.removeAt(idxLikes);
+        commentLikes.total = commentLikes.total - 1;
       } else {
-        forumLikes.likes.add(UserLikes(
-          user: User(
+        commentLikes.likes.add(UserLikes(
+          user: UserLike(
             id: ar.getUserId().toString(),
             avatar: "-",
-            username: ar.getUserFullname()
+            username: ar.getUserFullname(),
           )
         ));
-        forumLikes.total = forumLikes.total + 1;
+        commentLikes.total = commentLikes.total + 1;
       }
       await fr.toggleLikeComment(context: context, feedId: forumId, userId: ar.getUserId().toString(), commentId: commentId);
       Future.delayed(Duration.zero, () => notifyListeners());
     } on CustomException catch (e) {
-      debugPrint("Error like : ${e.toString()}");
+      debugPrint(e.toString());
     } catch (e) {
-      debugPrint("Error like : ${e.toString()}");
+      debugPrint(e.toString());
     }
   }
 
@@ -247,6 +314,27 @@ class FeedDetailProviderV2 with ChangeNotifier {
   }) async {
     try {
       await fr.deleteComment(context, deleteId);
+
+      FeedDetailModel? fdm = await fr.fetchDetail(context, 1, forumId);
+      _feedDetailData = fdm!.data;
+
+      _comments.clear();
+      _comments.addAll(fdm.data.forum!.comment!.comments);
+      
+      setStateFeedDetailStatus(FeedDetailStatus.loaded);
+    } on CustomException catch (e) {
+      debugPrint(e.toString());
+    } catch (_) {}
+  }
+
+
+  Future<void> deleteReply({
+    required BuildContext context,
+    required String forumId, 
+    required String replyId
+  }) async {
+    try {
+      await fr.deleteReply(context, replyId);
 
       FeedDetailModel? fdm = await fr.fetchDetail(context, 1, forumId);
       _feedDetailData = fdm!.data;

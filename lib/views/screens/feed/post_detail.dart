@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hp3ki/data/models/feedv2/feedDetail.dart';
+import 'package:hp3ki/providers/feedv2/feedReply.dart';
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -53,10 +54,17 @@ class PostDetailScreen extends StatefulWidget {
 
 class PostDetailScreenState extends State<PostDetailScreen> {
 
-  GlobalKey<FlutterMentionsState> key = GlobalKey<FlutterMentionsState>();
+  GlobalKey<FlutterMentionsState> mentionKey = GlobalKey<FlutterMentionsState>();
 
-  late TextEditingController commentC;
+  ValueNotifier<TextStyle> textStyleNotifier = ValueNotifier<TextStyle>(robotoRegular.copyWith(
+    color: ColorResources.black,
+    fontSize: Dimensions.fontSizeDefault
+  ));
 
+  String previousText = "";
+  String isReplyId = "";
+
+  late FeedReplyProvider frp;
   late p.FeedDetailProviderV2 feedDetailProvider;
   
   bool deletePostBtn = false;
@@ -398,8 +406,7 @@ class PostDetailScreenState extends State<PostDetailScreen> {
   void initState() {  
     super.initState();
 
-    commentC = TextEditingController();
-
+    frp = context.read<FeedReplyProvider>();
     feedDetailProvider = context.read<p.FeedDetailProviderV2>();
 
     Future.microtask(() => getData());
@@ -515,7 +522,7 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                                   title: Container(
                                     padding: const EdgeInsets.all(10.0),
                                     decoration: BoxDecoration(
-                                      color: context.watch<p.FeedDetailProviderV2>().highlightedIndex == comment.id 
+                                      color: context.watch<p.FeedDetailProviderV2>().highlightedComment == comment.id 
                                       ? ColorResources.greyLightPrimary
                                       : ColorResources.blueGrey,
                                       borderRadius: const BorderRadius.all(
@@ -674,7 +681,7 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                                             context: context, 
                                             forumId: widget.forumId, 
                                             commentId: comment.id, 
-                                            forumLikes: comment.like
+                                            commentLikes: comment.like
                                           );
                                         },
                                         child: Container(
@@ -699,13 +706,22 @@ class PostDetailScreenState extends State<PostDetailScreen> {
 
                                       const SizedBox(width: 8.0),
 
-                                      Container(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(getTranslated("REPLY",context),
-                                          style: robotoRegular.copyWith(
-                                            fontSize: Dimensions.fontSizeDefault,
-                                            fontWeight: FontWeight.bold
-                                          )
+                                      InkWell(
+                                        onTap: () {
+
+                                          mentionKey.currentState!.controller!.text = "@${comment.user.mention} ";
+                                          previousText = "@${comment.user.mention} ";
+                                          isReplyId = comment.id;
+
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(getTranslated("REPLY",context),
+                                            style: robotoRegular.copyWith(
+                                              fontSize: Dimensions.fontSizeDefault,
+                                              fontWeight: FontWeight.bold
+                                            )
+                                          ),
                                         ),
                                       ),
 
@@ -751,9 +767,11 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                                           ),
                                           title: Container(
                                             padding: const EdgeInsets.all(10.0),
-                                            decoration: const BoxDecoration(
-                                              color: ColorResources.blueGrey,
-                                              borderRadius: BorderRadius.all(
+                                            decoration: BoxDecoration(
+                                            color: context.watch<p.FeedDetailProviderV2>().highlightedReply == reply.id 
+                                              ? ColorResources.greyLightPrimary
+                                              : ColorResources.blueGrey,
+                                              borderRadius: const BorderRadius.all(
                                                 Radius.circular(8.0)
                                               )
                                             ),
@@ -780,28 +798,11 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                                                                         
                                                 commentText(context, reply.reply.toString()),
                                         
-                                                // const SizedBox(height: 20.0),
-                                        
-                                                // Row(
-                                                //   crossAxisAlignment: CrossAxisAlignment.center,
-                                                //   mainAxisAlignment: MainAxisAlignment.start,
-                                                //   children: [
-                                                
-                                                //     Text(getTranslated("REPLY",context),
-                                                //       style: robotoRegular.copyWith(
-                                                //         fontSize: Dimensions.fontSizeDefault,
-                                                //         fontWeight: FontWeight.bold
-                                                //       )
-                                                //     ),
-                                                
-                                                //   ]
-                                                // ),
-                                                                        
                                               ]
                                             ),
                                           ),
                                           trailing: context.read<ProfileProvider>().user!.id == reply.user.id 
-                                          ? grantedDeleteReply(context, reply.id)
+                                          ? grantedDeleteReply(context, widget.forumId, reply.id)
                                           : PopupMenuButton(
                                               itemBuilder: (BuildContext buildContext) { 
                                                 return [
@@ -940,90 +941,109 @@ class PostDetailScreenState extends State<PostDetailScreen> {
           children: [
             
             Expanded(
-              child: FlutterMentions(
-                key: key,
-                appendSpaceOnAdd: true,
-                suggestionPosition: SuggestionPosition.Top,
-                onSearchChanged: (String trigger, String val) async {
-                  await feedDetailProvider.getUserMentions(context, val);
-                },
-                onChanged: (String val) {
-                  feedDetailProvider.onListenComment(val);
-                },
-                style: robotoRegular.copyWith(
-                  color: ColorResources.black,
-                  fontSize: Dimensions.fontSizeDefault
-                ),
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.only(
-                    left: 16.0,
-                    right: 16.0
-                  ),
-                  hintText: '${getTranslated("WRITE_COMMENT", context)} ...',
-                  hintStyle: robotoRegular.copyWith(
-                    color: ColorResources.greyDarkPrimary,
-                    fontSize: Dimensions.fontSizeDefault
-                  ),
-                ),
-                mentions: [
-                  
-                  Mention(
-                    trigger: '@',
-                    style: const TextStyle(
-                      color: Colors.blue,
-                    ),
-                    data: context.watch<p.FeedDetailProviderV2>().userMentions,
-                    suggestionBuilder: (Map<String, dynamic> data) {
+              child: ValueListenableBuilder<TextStyle>(
+                valueListenable: textStyleNotifier,
+                builder: (context, textStyle, child) {
+                  return FlutterMentions(
+                    key: mentionKey,
+                    appendSpaceOnAdd: true,
+                    suggestionPosition: SuggestionPosition.Top,
+                    onSearchChanged: (String trigger, String val) async {
+                      await feedDetailProvider.getUserMentions(context, val);
+                    },
+                    onChanged: (String val) {
+                      feedDetailProvider.onListenComment(val);
 
-                      return Container(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
+                      if (val.contains('@')) {
+                        textStyleNotifier.value =robotoRegular.copyWith(
+                          color: ColorResources.blue,
+                          fontSize: Dimensions.fontSizeDefault
+                        );
+                      } else {
+                        textStyleNotifier.value =robotoRegular.copyWith(
+                          color: ColorResources.black,
+                          fontSize: Dimensions.fontSizeDefault
+                        );
+                      }
+        
+                      final currentText = mentionKey.currentState!.controller!.text;
 
-                          CachedNetworkImage(
-                            imageUrl: data['photo'].toString(),
-                            imageBuilder: (context, imageProvider) {
-                              return CircleAvatar(
-                                backgroundImage: imageProvider,
-                              );
-                            },
-                            placeholder: (_, __) {
-                              return const CircleAvatar(
-                                backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
-                              );
-                            },
-                            errorWidget: (_, ___, __) {
-                              return const CircleAvatar(
-                                backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
-                              );
-                            },
-                          ),
-
-                          const SizedBox(
-                            width: 20.0,
-                          ),
-
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(data['display']),
-                              Text('@${data['fullname']}',
-                                style: robotoRegular.copyWith(
-                                  color: Colors.blue
-                                ),
-                              ),
-                            ],
-                          )
-
-                        ],
+                      if (previousText.length - currentText.length == 1) {
+                        isReplyId = "";
+                      }
+                    },
+                    style: textStyle,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.only(
+                        left: 16.0,
+                        right: 16.0
                       ),
-                    );
-                  }),
+                      hintText: '${getTranslated("WRITE_COMMENT", context)} ...',
+                      hintStyle: robotoRegular.copyWith(
+                        color: ColorResources.greyDarkPrimary,
+                        fontSize: Dimensions.fontSizeDefault
+                      ),
+                    ),
+                    mentions: [
+                      
+                      Mention(
+                        trigger: '@',
+                        style: const TextStyle(
+                          color: Colors.blue,
+                        ),
+                        data: context.watch<p.FeedDetailProviderV2>().userMentions,
+                        suggestionBuilder: (Map<String, dynamic> data) {
 
-                ]
-              ),
+                          return Container(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+
+                              CachedNetworkImage(
+                                imageUrl: data['photo'].toString(),
+                                imageBuilder: (context, imageProvider) {
+                                  return CircleAvatar(
+                                    backgroundImage: imageProvider,
+                                  );
+                                },
+                                placeholder: (_, __) {
+                                  return const CircleAvatar(
+                                    backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                                  );
+                                },
+                                errorWidget: (_, ___, __) {
+                                  return const CircleAvatar(
+                                    backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                                  );
+                                },
+                              ),
+
+                              const SizedBox(
+                                width: 20.0,
+                              ),
+
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(data['fullname']),
+                                  Text('@${data['display']}',
+                                    style: robotoRegular.copyWith(
+                                      color: Colors.blue
+                                    ),
+                                  ),
+                                ],
+                              )
+
+                            ],
+                          ),
+                        );
+                      }),
+
+                    ]
+                  );
+              }),
             ),
             
             IconButton(
@@ -1032,8 +1052,15 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                 color: ColorResources.black,
               ),
               onPressed: () async {
-                await feedDetailProvider.postComment(context, key, widget.forumId);
-              }
+                // if(type == "POST_COMMENT") {
+                await feedDetailProvider.postComment(
+                  context, mentionKey, isReplyId, widget.forumId
+                );
+                // } else {
+                //   await frp.postReply(context, mentionKey, feedDetailProvider.commentVal, postCommentId);
+                //   feedDetailProvider.getFeedDetail(context, widget.forumId);
+                // }
+              } 
             ),
             
           ],
@@ -1133,7 +1160,11 @@ class PostDetailScreenState extends State<PostDetailScreen> {
     );
   }
 
-  Widget grantedDeleteReply(context, replyId) {
+  Widget grantedDeleteReply(
+    context, 
+    forumId,
+    replyId
+  ) {
     return PopupMenuButton(
       itemBuilder: (BuildContext buildContext) { 
         return [
@@ -1253,7 +1284,11 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                                                       onTap: () async {
                                                         setState(() => deletePostBtn = true);
                                                         try {         
-                                                          await context.read<FeedProviderV2>().deleteReply(context, replyId);               
+                                                          await context.read<p.FeedDetailProviderV2>().deleteReply(
+                                                            context: context,
+                                                            forumId: forumId,
+                                                            replyId: replyId,
+                                                          );               
                                                           setState(() => deletePostBtn = false);     
                                                           Navigator.of(context).pop();       
                                                         } catch(e, stacktrace) {

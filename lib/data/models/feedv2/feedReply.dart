@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+
 class FeedReplyModel {
     int status;
     bool error;
@@ -74,24 +76,27 @@ class CommentReply {
 }
 
 class ReplyElement {
-    String id;
-    String reply;
-    String createdAt;
-    User user;
+  String id;
+  String reply;
+  String createdAt;
+  User user;
+  GlobalKey key;
 
-    ReplyElement({
-        required this.id,
-        required this.reply,
-        required this.createdAt,
-        required this.user,
-    });
+  ReplyElement({
+    required this.id,
+    required this.reply,
+    required this.createdAt,
+    required this.user,
+    required this.key
+  });
 
-    factory ReplyElement.fromJson(Map<String, dynamic> json) => ReplyElement(
-        id: json["id"],
-        reply: json["reply"],
-        createdAt: json["created_at"],
-        user: User.fromJson(json["user"]),
-    );
+  factory ReplyElement.fromJson(Map<String, dynamic> json) => ReplyElement(
+    id: json["id"],
+    reply: json["reply"],
+    createdAt: json["created_at"],
+    user: User.fromJson(json["user"]),
+    key: GlobalKey()
+  );
 }
 
 class User {

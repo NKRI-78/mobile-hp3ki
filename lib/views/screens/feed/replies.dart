@@ -641,7 +641,7 @@ class RepliesScreenState extends State<RepliesScreen> {
             color: ColorResources.black
           ),
           onPressed: () async {
-            await frp.postReply(context, commentC, widget.commentId);
+            // await frp.postReply(context, commentC, widget.commentId);
           } 
         ),
       ],

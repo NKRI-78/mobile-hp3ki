@@ -204,4 +204,8 @@ class AuthRepo {
   String getUserFullname() {
     return SharedPrefs.getUserName();
   }
+
+  String getUserEmail() {
+    return SharedPrefs.getUserEmail();
+  }
 }
