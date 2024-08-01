@@ -14,16 +14,14 @@ import 'package:hp3ki/data/repository/firebase/firebase.dart';
 
 import 'package:hp3ki/utils/exceptions.dart';
 import 'package:hp3ki/utils/shared_preferences.dart';
+import 'package:hp3ki/utils/helper.dart';
 
 import 'package:hp3ki/services/database.dart';
 import 'package:hp3ki/services/notification.dart';
 import 'package:hp3ki/services/navigation.dart';
 import 'package:hp3ki/services/services.dart';
 
-import 'package:hp3ki/utils/helper.dart';
-
 import 'package:hp3ki/views/screens/feed/post_detail.dart';
-import 'package:hp3ki/views/screens/feed/replies.dart';
 
 enum InitFCMStatus { loading, loaded, error, idle }
 
@@ -80,22 +78,29 @@ class FirebaseProvider with ChangeNotifier {
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
 
-      if(message.data["forum_id"] != "-" && message.data["comment_id"] != "-") {
+      if(message.data["type"] == "create-comment") {
+       
         NS.push(
           navigatorKey.currentContext!, 
           PostDetailScreen(
             forumId: message.data["forum_id"],
             commentId: message.data["comment_id"],
+            replyId: "",
+            from: "notification-comment",
           )
         );
+
       }
 
-      if(message.data["reply_id"] != "-" && message.data["comment_id"] != "-") {
+      if(message.data["type"] == "create-reply") {
 
         NS.push(
-          navigatorKey.currentContext!,
-          RepliesScreen(
+          navigatorKey.currentContext!, 
+          PostDetailScreen(
+            forumId: message.data["forum_id"],
             commentId: message.data["comment_id"],
+            replyId: message.data["reply_id"],
+            from: "notification-reply",
           )
         );
 

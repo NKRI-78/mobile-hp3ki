@@ -170,7 +170,9 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
 
                         NS.push(context, PostDetailScreen(
                           forumId: feedProvider.forum1[i].id!, 
-                          commentId: ""
+                          replyId: "",
+                          commentId: "",
+                          from: "click",
                         )).then((_) {
                           feedProvider.fetchFeedMostRecent(context);
                         });
@@ -235,7 +237,9 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                         Navigator.push(context, NS.fromLeft(
                           PostDetailScreen(
                             forumId: feedProvider.forum1[i].id!,
+                            replyId: "",
                             commentId: "",
+                            from: "click",
                           ))).then((_) => setState(() {
                           feedProvider.fetchFeedPopuler(context);
                         }));
@@ -310,6 +314,8 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                           PostDetailScreen(
                             forumId: feedProvider.forum1[i].id!,
                             commentId: "",
+                            replyId: "",
+                            from: "click",
                           )
                         )).then((_) => setState(() {
                           feedProvider.fetchFeedSelf(context);

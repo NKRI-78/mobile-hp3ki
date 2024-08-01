@@ -41,11 +41,15 @@ import 'package:hp3ki/views/screens/feed/widgets/post_text.dart';
 class PostDetailScreen extends StatefulWidget {
   final String forumId;
   final String commentId;
+  final String replyId;
+  final String from;
 
   const PostDetailScreen({
     Key? key, 
     required this.forumId,
-    required this.commentId
+    required this.commentId,
+    required this.replyId,
+    required this.from
   }) : super(key: key);
 
   @override
@@ -62,7 +66,6 @@ class PostDetailScreenState extends State<PostDetailScreen> {
   ));
 
   String previousText = "";
-  String isReplyId = "";
 
   late FeedReplyProvider frp;
   late p.FeedDetailProviderV2 feedDetailProvider;
@@ -341,6 +344,12 @@ class PostDetailScreenState extends State<PostDetailScreen> {
 
                   Expanded(
                     child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: feedDetailProviderV2.feedDetailData.forum!.like!.likes.where(
+                        (el) => el.user!.id == feedDetailProviderV2.ar.getUserId()).isEmpty 
+                        ? ColorResources.primary 
+                        : ColorResources.error
+                      ),
                       onPressed: () {
                         context.read<p.FeedDetailProviderV2>().toggleLike(
                           context: context, 
@@ -391,15 +400,48 @@ class PostDetailScreenState extends State<PostDetailScreen> {
     if(!mounted) return;
       await feedDetailProvider.getFeedDetail(context, widget.forumId);
 
-      // int index = feedDetailProvider.comments.indexWhere((el) => el.id == "41c1f917-2ea8-4ca0-9c08-3898043551d1");
+    if(widget.from == "notification-comment") {
 
-      // Future.delayed(const Duration(seconds: 1), () {
-      //   GlobalKey targetContext = feedDetailProvider.comments[idx].key;
-      //   Scrollable.ensureVisible(targetContext.currentContext!,
-      //     duration: const Duration(milliseconds: 500),
-      //     curve: Curves.easeOut,
-      //   );
-      // });
+      int index = feedDetailProvider.comments.indexWhere((el) => el.id == widget.commentId);
+
+      feedDetailProvider.onUpdateHighlightComment(widget.commentId);
+
+      Future.delayed(const Duration(milliseconds: 100), () {
+        GlobalKey targetContext = feedDetailProvider.comments[index].key;
+        Scrollable.ensureVisible(targetContext.currentContext!,
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.easeOut,
+        );
+      });
+
+      Future.delayed(const Duration(milliseconds: 1000), () {
+        feedDetailProvider.onUpdateHighlightComment("");
+      });
+
+    }
+
+    if(widget.from == "notification-reply") {
+
+      int indexC = feedDetailProvider.comments.indexWhere((el) => el.id == widget.commentId);
+
+      feedDetailProvider.onUpdateHighlightReply(widget.replyId);
+
+      Future.delayed(const Duration(milliseconds: 100), () {
+        if(feedDetailProvider.comments[indexC].reply.replies.isNotEmpty) {
+          GlobalKey targetContext = feedDetailProvider.comments[indexC].reply.replies.last.key;
+          Scrollable.ensureVisible(targetContext.currentContext!,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.easeOut,
+          );
+        }
+      });
+
+      Future.delayed(const Duration(milliseconds: 1000), () {
+        feedDetailProvider.onUpdateHighlightReply("");
+      });
+
+    }
+
   }
 
   @override
@@ -523,7 +565,7 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                                     padding: const EdgeInsets.all(10.0),
                                     decoration: BoxDecoration(
                                       color: context.watch<p.FeedDetailProviderV2>().highlightedComment == comment.id 
-                                      ? ColorResources.greyLightPrimary
+                                      ? ColorResources.backgroundLive
                                       : ColorResources.blueGrey,
                                       borderRadius: const BorderRadius.all(
                                         Radius.circular(8.0)
@@ -711,7 +753,8 @@ class PostDetailScreenState extends State<PostDetailScreen> {
 
                                           mentionKey.currentState!.controller!.text = "@${comment.user.mention} ";
                                           previousText = "@${comment.user.mention} ";
-                                          isReplyId = comment.id;
+
+                                          feedDetailProvider.onUpdateIsReplyId(comment.id);
 
                                         },
                                         child: Container(
@@ -769,7 +812,7 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                                             padding: const EdgeInsets.all(10.0),
                                             decoration: BoxDecoration(
                                             color: context.watch<p.FeedDetailProviderV2>().highlightedReply == reply.id 
-                                              ? ColorResources.greyLightPrimary
+                                              ? ColorResources.backgroundLive
                                               : ColorResources.blueGrey,
                                               borderRadius: const BorderRadius.all(
                                                 Radius.circular(8.0)
@@ -954,22 +997,22 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                     onChanged: (String val) {
                       feedDetailProvider.onListenComment(val);
 
-                      if (val.contains('@')) {
-                        textStyleNotifier.value =robotoRegular.copyWith(
-                          color: ColorResources.blue,
-                          fontSize: Dimensions.fontSizeDefault
-                        );
-                      } else {
-                        textStyleNotifier.value =robotoRegular.copyWith(
-                          color: ColorResources.black,
-                          fontSize: Dimensions.fontSizeDefault
-                        );
-                      }
+                      // if (val.contains('@')) {
+                      //   textStyleNotifier.value =robotoRegular.copyWith(
+                      //     color: ColorResources.blue,
+                      //     fontSize: Dimensions.fontSizeDefault
+                      //   );
+                      // } else {
+                      //   textStyleNotifier.value =robotoRegular.copyWith(
+                      //     color: ColorResources.black,
+                      //     fontSize: Dimensions.fontSizeDefault
+                      //   );
+                      // }
         
                       final currentText = mentionKey.currentState!.controller!.text;
 
                       if (previousText.length - currentText.length == 1) {
-                        isReplyId = "";
+                        feedDetailProvider.onUpdateIsReplyId("");
                       }
                     },
                     style: textStyle,
@@ -1052,14 +1095,9 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                 color: ColorResources.black,
               ),
               onPressed: () async {
-                // if(type == "POST_COMMENT") {
                 await feedDetailProvider.postComment(
-                  context, mentionKey, isReplyId, widget.forumId
+                  context, mentionKey, widget.forumId
                 );
-                // } else {
-                //   await frp.postReply(context, mentionKey, feedDetailProvider.commentVal, postCommentId);
-                //   feedDetailProvider.getFeedDetail(context, widget.forumId);
-                // }
               } 
             ),
             

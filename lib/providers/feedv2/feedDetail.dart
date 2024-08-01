@@ -25,6 +25,7 @@ class FeedDetailProviderV2 with ChangeNotifier {
     required this.fr
   });
 
+  String isReplyId = "";
   String inputVal = "";
 
   String highlightedComment = "";
@@ -68,6 +69,24 @@ class FeedDetailProviderV2 with ChangeNotifier {
     notifyListeners();
   }
 
+  void onUpdateHighlightComment(String val) {
+    highlightedComment = val;
+
+    notifyListeners();
+  }
+
+  void onUpdateHighlightReply(String val) {
+    highlightedReply = val;
+
+    notifyListeners();
+  }
+
+  void onUpdateIsReplyId(String val) {
+    isReplyId = val;
+
+    notifyListeners();
+  }
+
   Future<void> getFeedDetail(BuildContext context, String forumId) async {
     pageKey = 1;
     hasMore = true;
@@ -93,7 +112,7 @@ class FeedDetailProviderV2 with ChangeNotifier {
     }
   }
 
-  Future<void> getUserMentions(context, username) async {
+  Future<void> getUserMentions(BuildContext context, String username) async {
     setStateUserMentionStatus(UserMentionStatus.loading);
 
     try {
@@ -139,9 +158,8 @@ class FeedDetailProviderV2 with ChangeNotifier {
   Future<void> postComment(
     BuildContext context,
     GlobalKey<FlutterMentionsState> mentionKey,
-    String isReplyId,
     String forumId,
-    ) async {
+  ) async {
     try {
 
       if (mentionKey.currentState!.controller!.text.trim() == "") {
@@ -173,6 +191,8 @@ class FeedDetailProviderV2 with ChangeNotifier {
         ));
 
         mentionKey.currentState!.controller!.text = "";
+
+        onUpdateIsReplyId("");
 
         highlightedReply = comments[i].reply.replies.last.id;
 
@@ -277,12 +297,12 @@ class FeedDetailProviderV2 with ChangeNotifier {
     }
   }
 
-  Future<void> toggleLikeComment(
-      {
-      required BuildContext context,
-      required String forumId, 
-      required String commentId, 
-      required CommentLike commentLikes}) async {
+  Future<void> toggleLikeComment({
+    required BuildContext context,
+    required String forumId, 
+    required String commentId, 
+    required CommentLike commentLikes
+  }) async {
     try {
       int idxLikes = commentLikes.likes.indexWhere((el) => el.user!.id == ar.getUserId().toString());
       if (idxLikes != -1) {

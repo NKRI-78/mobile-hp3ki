@@ -409,7 +409,9 @@ class PostsState extends State<Posts> {
                     onPressed: () {
                        NS.push(context, PostDetailScreen(
                           forumId: widget.forum.id!, 
-                          commentId: ""
+                          commentId: "",
+                          replyId: "",
+                          from: "click",
                         )).then((_) {
                           context.read<FeedProviderV2>().fetchFeedMostRecent(context);
                         });

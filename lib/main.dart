@@ -8,7 +8,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_mentions/flutter_mentions.dart';
 import 'package:hp3ki/services/navigation.dart';
 import 'package:hp3ki/views/screens/feed/post_detail.dart';
-import 'package:hp3ki/views/screens/feed/replies.dart';
 
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:provider/provider.dart';
@@ -108,22 +107,29 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void onClickedNotification(String? payload) {
     var data = json.decode(payload!);
 
-    if(data["forum_id"] != "-" && data["comment_id"] != "-") {
+    if(data["type"] == "create-comment") {
+
       NS.push(
         navigatorKey.currentContext!, 
         PostDetailScreen(
           forumId: data["forum_id"],
           commentId: data["comment_id"],
+          replyId: "",
+          from: "notification-comment",
         )
       );
+
     }
 
-    if(data["reply_id"] != "-" && data["comment_id"] != "-") {
+    if(data["type"] == "create-reply") {
 
       NS.push(
-        navigatorKey.currentContext!,
-        RepliesScreen(
+        navigatorKey.currentContext!, 
+        PostDetailScreen(
+          forumId: data["forum_id"],
           commentId: data["comment_id"],
+          replyId: data["reply_id"],
+          from: "notification-reply",
         )
       );
 

@@ -128,7 +128,9 @@ class NotificationScreenState extends State<NotificationScreen> {
                           MaterialPageRoute(
                             builder: (context) => PostDetailScreen(
                               forumId: feedProvider.notificationList[i].targetId!,
-                              commentId: '',
+                              commentId: "",
+                              replyId: "",
+                              from: "click",
                             ),
                           ),
                         );
