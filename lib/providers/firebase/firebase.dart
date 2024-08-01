@@ -78,9 +78,8 @@ class FirebaseProvider with ChangeNotifier {
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
 
-      if(message.data["type"] == "create-comment") {
-       
-        NS.push(
+      if(message.data["type"] == "create-comment") {       
+        NS.pushReplacement(
           navigatorKey.currentContext!, 
           PostDetailScreen(
             forumId: message.data["forum_id"],
@@ -89,12 +88,10 @@ class FirebaseProvider with ChangeNotifier {
             from: "notification-comment",
           )
         );
-
       }
 
       if(message.data["type"] == "create-reply") {
-
-        NS.push(
+        NS.pushReplacement(
           navigatorKey.currentContext!, 
           PostDetailScreen(
             forumId: message.data["forum_id"],
@@ -103,7 +100,6 @@ class FirebaseProvider with ChangeNotifier {
             from: "notification-reply",
           )
         );
-
       }
 
     });

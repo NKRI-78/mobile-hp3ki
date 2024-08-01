@@ -185,7 +185,8 @@ class FeedDetailProviderV2 with ChangeNotifier {
           user: UserReply(
             id: context.read<ProfileProvider>().user!.id.toString(), 
             avatar: context.read<ProfileProvider>().user!.avatar.toString(), 
-            username: context.read<ProfileProvider>().user!.fullname.toString()
+            username: context.read<ProfileProvider>().user!.fullname.toString(),
+            mention: ar.getUserEmail().split('@')[0]
           ), 
           key: GlobalKey()
         ));
@@ -330,10 +331,10 @@ class FeedDetailProviderV2 with ChangeNotifier {
   Future<void> deleteComment({
     required BuildContext context, 
     required String forumId, 
-    required String deleteId
+    required String commentId
   }) async {
     try {
-      await fr.deleteComment(context, deleteId);
+      await fr.deleteComment(context, commentId);
 
       FeedDetailModel? fdm = await fr.fetchDetail(context, 1, forumId);
       _feedDetailData = fdm!.data;

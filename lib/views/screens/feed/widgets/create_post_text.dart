@@ -130,7 +130,7 @@ class CreatePostTextState extends State<CreatePostText> {
     
     if(files.isNotEmpty) {
       Future.delayed(const Duration(seconds: 1),() {
-        NS.push(context,  CreatePostImageScreen(
+        NS.push(context, CreatePostImageScreen(
           files: files,
         ));
       });
@@ -283,13 +283,14 @@ class CreatePostTextState extends State<CreatePostText> {
         centerTitle: false,
       ),
       bottomNavigationBar: SizedBox(
-        height: 56.0,
+        height: 80.0,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(
               onPressed: uploadPic,
               icon: const Icon(
+                size: 30.0,
                 Icons.image,
                 color: ColorResources.primary
               ),
@@ -297,6 +298,7 @@ class CreatePostTextState extends State<CreatePostText> {
             IconButton(
               onPressed: uploadVid,
               icon: const Icon(
+                size: 30.0,
                 Icons.video_call,
                 color: ColorResources.primary,
               ),
@@ -304,6 +306,7 @@ class CreatePostTextState extends State<CreatePostText> {
             IconButton(
               onPressed: postLink, 
               icon: const Icon(
+                size: 30.0,
                 Icons.attach_file,
                 color: ColorResources.primary,
               ),
@@ -312,6 +315,7 @@ class CreatePostTextState extends State<CreatePostText> {
             IconButton(
               onPressed: uploadDoc,
               icon: const Icon(
+                size: 30.0,
                 Icons.picture_as_pdf,
                 color: ColorResources.primary,
               ),

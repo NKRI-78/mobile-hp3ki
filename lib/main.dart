@@ -108,8 +108,7 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
     var data = json.decode(payload!);
 
     if(data["type"] == "create-comment") {
-
-      NS.push(
+      NS.pushReplacement(
         navigatorKey.currentContext!, 
         PostDetailScreen(
           forumId: data["forum_id"],
@@ -118,12 +117,10 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
           from: "notification-comment",
         )
       );
-
     }
 
     if(data["type"] == "create-reply") {
-
-      NS.push(
+      NS.pushReplacement(
         navigatorKey.currentContext!, 
         PostDetailScreen(
           forumId: data["forum_id"],
@@ -132,7 +129,6 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
           from: "notification-reply",
         )
       );
-
     }
 
   }

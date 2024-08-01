@@ -206,17 +206,20 @@ class UserReply {
   String id;
   String avatar;
   String username;
+  String mention;
 
   UserReply({
     required this.id,
     required this.avatar,
     required this.username,
+    required this.mention
   });
 
   factory UserReply.fromJson(Map<String, dynamic> json) => UserReply(
     id: json["id"],
     avatar: json["avatar"],
     username: json["username"],
+    mention: json["mention"]
   );
 }
 

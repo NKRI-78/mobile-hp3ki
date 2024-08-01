@@ -617,7 +617,7 @@ class PostsState extends State<Posts> {
 }
 
 
-  Widget grantedDeleteComment(context, String idComment) {
+  Widget grantedDeleteComment(context, String commentId) {
     return PopupMenuButton(
       itemBuilder: (BuildContext buildContext) { 
         return [
@@ -677,7 +677,11 @@ class PostsState extends State<Posts> {
                           onPressed: () async { 
                           s(() => deletePostBtn = true);
                             try {         
-                              await context.read<FeedDetailProviderV2>().deleteComment(context: context, forumId: context.read<FeedDetailProviderV2>().feedDetailData.forum!.id!, deleteId: idComment);               
+                              await context.read<FeedDetailProviderV2>().deleteComment(
+                                context: context, 
+                                forumId: context.read<FeedDetailProviderV2>().feedDetailData.forum!.id!, 
+                                commentId: commentId
+                              );
                               s(() => deletePostBtn = false);
                               Navigator.of(context).pop();             
                             } catch(e) {
@@ -846,6 +850,7 @@ class PostsState extends State<Posts> {
                                                         try {         
                                                           await context.read<FeedProviderV2>().deletePost(context, widget.forum.id!);               
                                                           setState(() => deletePostBtn = false);        
+                                                          Navigator.of(context).pop();     
                                                         } catch(e, stacktrace) {
                                                           setState(() => deletePostBtn = false);
                                                           debugPrint(stacktrace.toString()); 

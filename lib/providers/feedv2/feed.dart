@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:hp3ki/providers/profile/profile.dart';
 
 import 'package:provider/provider.dart';
 
@@ -10,13 +9,13 @@ import 'package:multi_image_picker_plus/multi_image_picker_plus.dart';
 
 import 'package:uuid/uuid.dart';
 
+import 'package:hp3ki/providers/profile/profile.dart';
+
 import 'package:hp3ki/data/models/feedv2/feed.dart';
 import 'package:hp3ki/data/repository/auth/auth.dart';
 import 'package:hp3ki/data/repository/feedv2/feed.dart';
 
 import 'package:hp3ki/localization/language_constraints.dart';
-
-import 'package:hp3ki/services/navigation.dart';
 
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/exceptions.dart';
@@ -228,6 +227,9 @@ class FeedProviderV2 with ChangeNotifier {
         caption: postC.text, 
         link: '', 
       );
+
+      Navigator.of(context).pop();
+
     }
 
     if (feedType == "image") {
@@ -247,13 +249,14 @@ class FeedProviderV2 with ChangeNotifier {
         link: '', 
         caption: postC.text, 
       );
+
+      for (int i = 0; i < 2; i++) {
+        Navigator.of(context).pop();
+      }
+
     }
 
     setStateWritePost(WritePostStatus.loaded);
-
-    Future.delayed(Duration.zero, () {
-      NS.pop(context);
-    });
 
     Future.delayed(Duration.zero, () {
       fetchFeedSelf(context);
@@ -292,13 +295,14 @@ class FeedProviderV2 with ChangeNotifier {
       );
 
       await fr.postMedia(feedId: feedId, path: d["data"]["path"], size: d["data"]["size"]);
+
+    }
+
+    for (int i = 0; i < 2; i++) {
+      Navigator.of(context).pop();
     }
 
     setStateWritePost(WritePostStatus.loaded);
-
-    Future.delayed(Duration.zero, () {
-      NS.pop(context);
-    });
 
     Future.delayed(Duration.zero, () {
       fetchFeedSelf(context);
@@ -348,12 +352,12 @@ class FeedProviderV2 with ChangeNotifier {
       
     }
 
+    for (int i = 0; i < 2; i++) {
+      Navigator.of(context).pop();
+    }
+
     setStateWritePost(WritePostStatus.loaded);
     
-    Future.delayed(Duration.zero, () {
-      NS.pop(context);
-    });
-
     Future.delayed(Duration.zero, () {
       fetchFeedSelf(context);
       fetchFeedMostRecent(context);
@@ -362,6 +366,7 @@ class FeedProviderV2 with ChangeNotifier {
   }
 
   Future<void> postLink(BuildContext context,String type, String link) async {
+
     setStateWritePost(WritePostStatus.loading);
     String feedId = const Uuid().v4();
     
@@ -391,6 +396,7 @@ class FeedProviderV2 with ChangeNotifier {
     } 
 
     bool validURL = Uri.parse(link.trim()).isAbsolute;
+
     if(!validURL) {
       setStateWritePost(WritePostStatus.error);
       ShowSnackbar.snackbar(context, getTranslated("URL_FORMAT", context), "", ColorResources.error);
@@ -411,9 +417,7 @@ class FeedProviderV2 with ChangeNotifier {
 
     setStateWritePost(WritePostStatus.loaded);
 
-    Future.delayed(Duration.zero, () {
-      NS.pop(context);
-    });
+    Navigator.pop(context);
 
     Future.delayed(Duration.zero, () {
       fetchFeedSelf(context);
@@ -457,9 +461,7 @@ class FeedProviderV2 with ChangeNotifier {
 
     setStateWritePost(WritePostStatus.loaded);
 
-    Future.delayed(Duration.zero, () {
-      NS.pop(context);
-    });
+    Navigator.pop(context);
     
     Future.delayed(Duration.zero, () {
       fetchFeedSelf(context);
@@ -472,10 +474,6 @@ class FeedProviderV2 with ChangeNotifier {
     await fr.deletePost(context, postId);
 
     Future.delayed(Duration.zero, () {
-      NS.pop(context);
-    });
-
-    Future.delayed(Duration.zero, () {
       fetchFeedSelf(context);
       fetchFeedMostRecent(context);
       fetchFeedPopuler(context);
@@ -484,10 +482,6 @@ class FeedProviderV2 with ChangeNotifier {
 
   Future<void> deleteReply(BuildContext context, String replyId) async {
     await fr.deleteReply(context, replyId);
-
-    Future.delayed(Duration.zero, () {
-      NS.pop(context);
-    });
 
     Future.delayed(Duration.zero, () {
       fetchFeedSelf(context);

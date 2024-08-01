@@ -3,9 +3,6 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hp3ki/data/models/feedv2/feedDetail.dart';
-import 'package:hp3ki/providers/feedv2/feedReply.dart';
-import 'package:hp3ki/views/basewidgets/button/custom.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_mentions/flutter_mentions.dart';
@@ -14,10 +11,12 @@ import 'package:readmore/readmore.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 
 import 'package:hp3ki/data/models/feedv2/feedDetail.dart' as m;
+import 'package:hp3ki/data/models/feedv2/feedDetail.dart';
 
 import 'package:hp3ki/providers/feedv2/feed.dart';
 import 'package:hp3ki/providers/feedv2/feedDetail.dart' as p;
 import 'package:hp3ki/providers/profile/profile.dart';
+import 'package:hp3ki/providers/feedv2/feedReply.dart';
 
 import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/utils/color_resources.dart';
@@ -35,6 +34,7 @@ import 'package:hp3ki/services/navigation.dart';
 import 'package:hp3ki/localization/language_constraints.dart';
 
 import 'package:hp3ki/views/basewidgets/loader/circular.dart';
+import 'package:hp3ki/views/basewidgets/button/custom.dart';
 
 import 'package:hp3ki/views/screens/feed/widgets/post_text.dart';
 
@@ -574,6 +574,7 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
+
                                           Text(comment.user.username,
                                             style: robotoRegular.copyWith(
                                               fontSize: Dimensions.fontSizeDefault,
@@ -597,7 +598,7 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                                       ),
                                     ),
                                     trailing: context.read<ProfileProvider>().user!.id == comment.user.id 
-                                    ? grantedDeleteComment(context, comment.id)
+                                    ? grantedDeleteComment(context, comment.id, widget.forumId)
                                     : PopupMenuButton(
                                       itemBuilder: (BuildContext buildContext) { 
                                         return [
@@ -717,6 +718,15 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
 
+                                       Text(comment.like.total.toString(),
+                                        style: robotoRegular.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: Dimensions.fontSizeDefault
+                                        ),
+                                      ),
+
+                                      const SizedBox(width: 5.0),
+
                                       InkWell(
                                         onTap: () {
                                           feedDetailProviderV2.toggleLikeComment(
@@ -726,23 +736,18 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                                             commentLikes: comment.like
                                           );
                                         },
-                                        child: Container(
+                                        child: Padding(
                                           padding: const EdgeInsets.all(5.0),
-                                          child: Icon(Icons.thumb_up,
-                                            size: 18.0,
-                                            color: comment.like.likes.where(
-                                            (el) => el.user!.id == feedDetailProviderV2.ar.getUserId()
-                                            ).isEmpty ? ColorResources.black : ColorResources.blue
+                                          child: Text(
+                                            getTranslated("LIKE", context),
+                                            style: TextStyle(
+                                              color:  comment.like.likes.where(
+                                              (el) => el.user!.id == feedDetailProviderV2.ar.getUserId()
+                                              ).isEmpty ? ColorResources.black : ColorResources.blue,
+                                                   fontSize: Dimensions.fontSizeDefault,
+                                              fontWeight: FontWeight.bold
+                                            ),
                                           ),
-                                        ),
-                                      ),
-
-                                      const SizedBox(width: 8.0),
-                                                                          
-                                      Text(comment.like.total.toString(),
-                                        style: robotoRegular.copyWith(
-                                          color: ColorResources.black,
-                                          fontSize: Dimensions.fontSizeDefault
                                         ),
                                       ),
 
@@ -751,14 +756,15 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                                       InkWell(
                                         onTap: () {
 
-                                          mentionKey.currentState!.controller!.text = "@${comment.user.mention} ";
+                                          mentionKey.currentState!.controller!.text = "@${comment.user.mention.trim()} ";
+
                                           previousText = "@${comment.user.mention} ";
 
                                           feedDetailProvider.onUpdateIsReplyId(comment.id);
 
                                         },
-                                        child: Container(
-                                          padding: const EdgeInsets.all(8.0),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(5.0),
                                           child: Text(getTranslated("REPLY",context),
                                             style: robotoRegular.copyWith(
                                               fontSize: Dimensions.fontSizeDefault,
@@ -785,6 +791,7 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                                       physics: const NeverScrollableScrollPhysics(),
                                       itemCount: comment.reply.replies.length,
                                       itemBuilder: (BuildContext context, int i) {
+
                                       ReplyElement reply = comment.reply.replies[i];
                                   
                                       return Container(
@@ -840,6 +847,76 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                                                 const SizedBox(height: 8.0),
                                                                         
                                                 commentText(context, reply.reply.toString()),
+
+                                                Container(
+                                                  width: 140.0,
+                                                  margin: const EdgeInsets.only(
+                                                    top: 5.0
+                                                  ),
+                                                  child: Row(
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    children: [
+
+                                                      Text(comment.like.total.toString(),
+                                                        style: robotoRegular.copyWith(
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: Dimensions.fontSizeDefault
+                                                        ),
+                                                      ),
+
+                                                      const SizedBox(width: 5.0),
+
+                                                      InkWell(
+                                                        onTap: () {
+                                                          feedDetailProviderV2.toggleLikeComment(
+                                                            context: context, 
+                                                            forumId: widget.forumId, 
+                                                            commentId: comment.id, 
+                                                            commentLikes: comment.like
+                                                          );
+                                                        },
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.all(5.0),
+                                                          child: Text(
+                                                            getTranslated("LIKE", context),
+                                                            style: TextStyle(
+                                                              color:  comment.like.likes.where(
+                                                              (el) => el.user!.id == feedDetailProviderV2.ar.getUserId()
+                                                              ).isEmpty ? ColorResources.black : ColorResources.blue,
+                                                                  fontSize: Dimensions.fontSizeDefault,
+                                                              fontWeight: FontWeight.bold
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+
+                                                      const SizedBox(width: 8.0),
+
+                                                      InkWell(
+                                                        onTap: () {
+
+                                                          mentionKey.currentState!.controller!.text = "@${reply.user.mention.trim()} ";
+
+                                                          previousText = "@${reply.user.mention} ";
+
+                                                          feedDetailProvider.onUpdateIsReplyId(comment.id);
+
+                                                        },
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.all(5.0),
+                                                          child: Text(getTranslated("REPLY",context),
+                                                            style: robotoRegular.copyWith(
+                                                              fontSize: Dimensions.fontSizeDefault,
+                                                              fontWeight: FontWeight.bold
+                                                            )
+                                                          ),
+                                                        ),
+                                                      ),
+
+                                                    ]
+                                                  ),
+                                                ),
                                         
                                               ]
                                             ),
@@ -1199,9 +1276,9 @@ class PostDetailScreenState extends State<PostDetailScreen> {
   }
 
   Widget grantedDeleteReply(
-    context, 
-    forumId,
-    replyId
+    BuildContext context, 
+    String forumId,
+    String replyId
   ) {
     return PopupMenuButton(
       itemBuilder: (BuildContext buildContext) { 
@@ -1366,7 +1443,11 @@ class PostDetailScreenState extends State<PostDetailScreen> {
     );
   }
 
-  Widget grantedDeleteComment(context, String idComment) {
+  Widget grantedDeleteComment(
+    BuildContext context,
+    String commentId,  
+    String forumId
+  ) {
     return PopupMenuButton(
       itemBuilder: (BuildContext buildContext) { 
         return [
@@ -1420,35 +1501,36 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                         StatefulBuilder(
                           builder: (BuildContext context, Function s) {
                           return ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: ColorResources.error
-                          ),
-                          onPressed: () async { 
-                          s(() => deletePostBtn = true);
-                            try {         
-                              await context.read<p.FeedDetailProviderV2>().deleteComment(
-                                context: context, 
-                                forumId: feedDetailProvider.feedDetailData.forum!.id!, 
-                                deleteId: idComment
-                              );               
-                              s(() => deletePostBtn = false);
-                              Navigator.of(context).pop();             
-                            } catch(e) {
-                              s(() => deletePostBtn = false);
-                              debugPrint(e.toString()); 
-                            }
-                          },
-                          child: deletePostBtn 
-                          ? const Loader(
-                              color: ColorResources.white,
-                            )
-                          : Text(getTranslated("YES", context),
-                              style: robotoRegular.copyWith(
-                                fontSize: Dimensions.fontSizeSmall
-                              ),
-                            )
-                          );
-                        })
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: ColorResources.error
+                            ),
+                            onPressed: () async { 
+                              s(() => deletePostBtn = true);
+                              try {         
+                                await context.read<p.FeedDetailProviderV2>().deleteComment(
+                                  context: context, 
+                                  forumId: forumId, 
+                                  commentId: commentId
+                                );               
+                                s(() => deletePostBtn = false);
+                                Navigator.of(context).pop();             
+                              } catch(e) {
+                                s(() => deletePostBtn = false);
+                                debugPrint(e.toString()); 
+                              }
+                            },
+                            child: deletePostBtn 
+                            ? const Loader(
+                                color: ColorResources.white,
+                              )
+                            : Text(getTranslated("YES", context),
+                                style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeSmall
+                                ),
+                              )
+                            );
+                          }
+                        )
                       ],
                     ) 
                   ])

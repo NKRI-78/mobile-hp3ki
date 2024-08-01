@@ -83,31 +83,31 @@ class FeedRepoV2 {
     return null;
   }
 
-  Future<FeedDetailModel?> fetchDetail(BuildContext context, int pageKey, String postId) async {
+  Future<FeedDetailModel?> fetchDetail(BuildContext context, int pageKey, String forumId) async {
     try{ 
       Dio dio = DioManager.shared.getClient();
-      Response res = await dio.get("${AppConstants.baseUrlFeedV2}/forums/v1/detail?id=$postId&page=$pageKey&limit=100&app_name=hp3ki");
+      Response res = await dio.get("${AppConstants.baseUrlFeedV2}/forums/v1/detail?id=$forumId&page=$pageKey&limit=100&app_name=hp3ki");
       Map<String, dynamic> data = res.data;
       FeedDetailModel fm = FeedDetailModel.fromJson(data);
       return fm;
     } on DioError catch(e) {
-      debugPrint("Fetch Feed (${e.error.toString()})");
+      debugPrint("Fetch Feed Detail (${e.error.toString()})");
     } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());
     }
     return null;
   }
 
-  Future<FeedDetailModel?> fetchReply(BuildContext context, int pageKey, String postId) async {
+  Future<FeedDetailModel?> fetchReply(BuildContext context, int pageKey, String forumId) async {
     try{ 
       Dio dio = DioManager.shared.getClient();
-      Response res = await dio.get("${AppConstants.baseUrlFeedV2}/forums/v1/detail-reply?id=$postId&page=$pageKey&limit=10&app_name=hp3ki");
+      Response res = await dio.get("${AppConstants.baseUrlFeedV2}/forums/v1/detail-reply?id=$forumId&page=$pageKey&limit=10&app_name=hp3ki");
       Map<String, dynamic> data = res.data
       ;
       FeedDetailModel fm = FeedDetailModel.fromJson(data);
       return fm;
     } on DioError catch(e) {
-      debugPrint("Fetch Feed (${e.error.toString()})");
+      debugPrint("Fetch Feed Reply (${e.error.toString()})");
     } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());
     }
