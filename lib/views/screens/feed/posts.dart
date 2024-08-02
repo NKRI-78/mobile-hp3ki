@@ -391,7 +391,11 @@ class PostsState extends State<Posts> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      context.read<FeedProviderV2>().toggleLike(context: context, feedId: widget.forum.id!, feedLikes: widget.forum.like!);
+                      context.read<FeedProviderV2>().toggleLike(
+                        context: context, 
+                        forumId: widget.forum.id!, 
+                        feedLikes: widget.forum.like!
+                      );
                     }, 
                     child: Text(getTranslated("LIKE", context),
                       style: const TextStyle(

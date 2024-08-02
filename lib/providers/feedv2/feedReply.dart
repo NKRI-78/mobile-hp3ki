@@ -59,13 +59,13 @@ class FeedReplyProvider with ChangeNotifier {
     hasMore = true;
 
     try {
-      FeedReplyModel frm = await fr.getReply(
+      FeedReplyModel? frm = await fr.getReply(
         commentId: commentId, 
         pageKey: pageKey, 
         context: context
       );
 
-      _feedReplyData = frm.data;
+      _feedReplyData = frm!.data;
 
       _reply.clear();
       _reply.addAll(frm.data.comment!.reply!.replies);
@@ -84,9 +84,9 @@ class FeedReplyProvider with ChangeNotifier {
   Future<void> loadMoreReply({required BuildContext context, required String commentId}) async {
     pageKey++;
 
-    FeedReplyModel frm = await fr.getReply(commentId: commentId, pageKey: pageKey, context: context);
+    FeedReplyModel? frm = await fr.getReply(commentId: commentId, pageKey: pageKey, context: context);
 
-    hasMore = frm.data.pageDetail!.hasMore;
+    hasMore = frm!.data.pageDetail!.hasMore;
     _reply.addAll(frm.data.comment!.reply!.replies);
 
     Future.delayed(Duration.zero, () => notifyListeners());
@@ -115,13 +115,13 @@ class FeedReplyProvider with ChangeNotifier {
 
       mentionKey.currentState!.controller!.text = "";
 
-      FeedReplyModel frm = await fr.getReply(
+      FeedReplyModel? frm = await fr.getReply(
         context: context, 
         commentId: commentId, 
         pageKey: 1
       );
       
-      _feedReplyData = frm.data;
+      _feedReplyData = frm!.data;
 
       _reply.clear();
       _reply.addAll(frm.data.comment!.reply!.replies);
@@ -143,8 +143,8 @@ class FeedReplyProvider with ChangeNotifier {
     try {
       await fr.deleteReply(context, deleteId);
 
-      FeedReplyModel frm = await fr.getReply(commentId: feedId, pageKey: pageKey, context: context);
-      _feedReplyData = frm.data;
+      FeedReplyModel? frm = await fr.getReply(commentId: feedId, pageKey: pageKey, context: context);
+      _feedReplyData = frm!.data;
 
       _reply.clear();
       _reply.addAll(frm.data.comment!.reply!.replies);

@@ -173,7 +173,7 @@ class FeedDetailProviderV2 with ChangeNotifier {
 
         await fr.postReply(
           context: context, replyId: replyId, commentId: isReplyId, 
-          reply: inputVal, userId: ar.getUserId().toString(),
+          reply: inputVal, userId: ar.getUserId(),
         );
 
         int i = comments.indexWhere((el) => el.id == isReplyId);
@@ -188,6 +188,10 @@ class FeedDetailProviderV2 with ChangeNotifier {
             username: context.read<ProfileProvider>().user!.fullname.toString(),
             mention: ar.getUserEmail().split('@')[0]
           ), 
+          like: ReplyLike(
+            total: 0, 
+            likes: []
+          ),
           key: GlobalKey()
         ));
 
@@ -217,7 +221,7 @@ class FeedDetailProviderV2 with ChangeNotifier {
 
         await fr.postComment(
           context: context, commentId: commentId, forumId: forumId, 
-          comment: inputVal, userId: ar.getUserId().toString(),
+          comment: inputVal, userId: ar.getUserId(),
         );
 
         _comments.add(
@@ -274,7 +278,7 @@ class FeedDetailProviderV2 with ChangeNotifier {
     required ForumLike forumLikes
   }) async {
     try {
-      int idxLikes = forumLikes.likes.indexWhere((el) => el.user!.id == ar.getUserId().toString());
+      int idxLikes = forumLikes.likes.indexWhere((el) => el.user!.id == ar.getUserId());
       if (idxLikes != -1) {
         forumLikes.likes.removeAt(idxLikes);
         forumLikes.total = forumLikes.total - 1;
@@ -289,7 +293,7 @@ class FeedDetailProviderV2 with ChangeNotifier {
         ));
         forumLikes.total = forumLikes.total + 1;
       }
-      await fr.toggleLike(context: context, feedId: forumId, userId: ar.getUserId().toString());
+      await fr.toggleLike(context: context, forumId: forumId, userId: ar.getUserId());
       Future.delayed(Duration.zero, () => notifyListeners());
     } on CustomException catch (e) {
       debugPrint(e.toString());
@@ -305,27 +309,80 @@ class FeedDetailProviderV2 with ChangeNotifier {
     required CommentLike commentLikes
   }) async {
     try {
-      int idxLikes = commentLikes.likes.indexWhere((el) => el.user!.id == ar.getUserId().toString());
+      int idxLikes = commentLikes.likes.indexWhere((el) => el.user!.id == ar.getUserId());
       if (idxLikes != -1) {
         commentLikes.likes.removeAt(idxLikes);
         commentLikes.total = commentLikes.total - 1;
       } else {
         commentLikes.likes.add(UserLikes(
           user: UserLike(
-            id: ar.getUserId().toString(),
+            id: ar.getUserId(),
             avatar: "-",
             username: ar.getUserFullname(),
           )
         ));
         commentLikes.total = commentLikes.total + 1;
       }
-      await fr.toggleLikeComment(context: context, feedId: forumId, userId: ar.getUserId().toString(), commentId: commentId);
+      await fr.toggleLikeComment(
+        context: context, 
+        forumId: forumId, 
+        userId: ar.getUserId(), 
+        commentId: commentId
+      );
       Future.delayed(Duration.zero, () => notifyListeners());
     } on CustomException catch (e) {
       debugPrint(e.toString());
     } catch (e) {
       debugPrint(e.toString());
     }
+  }
+
+  Future<void> toggleLikeReply({
+    required BuildContext context,
+    required String replyId, 
+    required String commentId
+  }) async {
+
+    try {
+      int idxComment = _comments.indexWhere((el) => el.id == commentId);
+      int idxReply = _comments[idxComment].reply.replies.indexWhere((el) => el.id == replyId);
+      int idxLikes = _comments[idxComment].reply.replies[idxReply].like.likes.indexWhere((el) => el.user!.id == ar.getUserId());
+
+      debugPrint(idxLikes.toString());
+
+      if (idxLikes != -1) {
+
+        _comments[idxComment].reply.replies[idxReply].like.likes.removeAt(idxLikes);
+        _comments[idxComment].reply.replies[idxReply].like.total = _comments[idxComment].reply.replies[idxReply].like.total - 1;
+
+      } else {
+
+        _comments[idxComment].reply.replies[idxReply].like.likes.add(
+          UserLikes(
+            id: Uuid().generateV4(),
+            user: UserLike(
+              id: ar.getUserId(), 
+              avatar: context.read<ProfileProvider>().user!.avatar.toString(), 
+              username: context.read<ProfileProvider>().user!.fullname.toString()
+            )
+          )
+        );
+
+        _comments[idxComment].reply.replies[idxReply].like.total = _comments[idxComment].reply.replies[idxReply].like.total + 1;
+      
+      }
+
+      await fr.toggleLikeReplyComment(
+        replyId: replyId, 
+        userId: ar.getUserId()
+      );
+   
+      Future.delayed(Duration.zero, () => notifyListeners());
+
+    } catch(e) {
+      debugPrint(e.toString());
+    }
+
   }
 
   Future<void> deleteComment({

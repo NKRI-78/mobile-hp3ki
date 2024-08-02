@@ -858,7 +858,7 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                                                     mainAxisAlignment: MainAxisAlignment.start,
                                                     children: [
 
-                                                      Text(comment.like.total.toString(),
+                                                      Text(reply.like.total.toString(),
                                                         style: robotoRegular.copyWith(
                                                           fontWeight: FontWeight.bold,
                                                           fontSize: Dimensions.fontSizeDefault
@@ -869,22 +869,20 @@ class PostDetailScreenState extends State<PostDetailScreen> {
 
                                                       InkWell(
                                                         onTap: () {
-                                                          feedDetailProviderV2.toggleLikeComment(
+                                                          feedDetailProviderV2.toggleLikeReply(
                                                             context: context, 
-                                                            forumId: widget.forumId, 
-                                                            commentId: comment.id, 
-                                                            commentLikes: comment.like
+                                                            commentId: comment.id,
+                                                            replyId: reply.id, 
                                                           );
                                                         },
                                                         child: Padding(
                                                           padding: const EdgeInsets.all(5.0),
-                                                          child: Text(
-                                                            getTranslated("LIKE", context),
+                                                          child: Text(getTranslated("LIKE", context),
                                                             style: TextStyle(
-                                                              color:  comment.like.likes.where(
+                                                              color: reply.like.likes.where(
                                                               (el) => el.user!.id == feedDetailProviderV2.ar.getUserId()
                                                               ).isEmpty ? ColorResources.black : ColorResources.blue,
-                                                                  fontSize: Dimensions.fontSizeDefault,
+                                                              fontSize: Dimensions.fontSizeDefault,
                                                               fontWeight: FontWeight.bold
                                                             ),
                                                           ),

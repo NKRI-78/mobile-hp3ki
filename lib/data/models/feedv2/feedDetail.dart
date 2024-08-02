@@ -148,6 +148,21 @@ class CommentLike {
   );
 }
 
+class ReplyLike {
+  int total;
+  List<UserLikes> likes;
+
+  ReplyLike({
+    required this.total,
+    required this.likes,
+  });
+
+  factory ReplyLike.fromJson(Map<String, dynamic> json) => ReplyLike(
+    total: json["total"],
+    likes: List<UserLikes>.from(json["likes"].map((x) => UserLikes.fromJson(x))),
+  );
+}
+
 class UserLikes {
   String? id;
   UserLike? user;
@@ -243,6 +258,7 @@ class ReplyElement {
   String reply;
   String createdAt;
   UserReply user;
+  ReplyLike like;
   GlobalKey key;
 
   ReplyElement({
@@ -250,6 +266,7 @@ class ReplyElement {
     required this.reply,
     required this.createdAt,
     required this.user,
+    required this.like,
     required this.key
   });
 
@@ -258,6 +275,7 @@ class ReplyElement {
     reply: json["reply"],
     createdAt: json["created_at"],
     user: UserReply.fromJson(json["user"]),
+    like: ReplyLike.fromJson(json["like"]),
     key: GlobalKey()
   );
 }

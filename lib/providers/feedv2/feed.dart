@@ -202,7 +202,7 @@ class FeedProviderV2 with ChangeNotifier {
   }
 
   Future<void> post(BuildContext context,String type, List<File> files) async {
-    String feedId = const Uuid().v4();
+    String forumId = const Uuid().v4();
     
     if (postC.text.trim().isEmpty) {
       setStateWritePost(WritePostStatus.error);
@@ -219,7 +219,7 @@ class FeedProviderV2 with ChangeNotifier {
 
     if (feedType == "text") {
       await fr.post(
-        feedId: feedId,
+        forumId: forumId,
         appName: 'hp3ki', 
         userId: ar.getUserId().toString(), 
         feedType: type, 
@@ -235,13 +235,13 @@ class FeedProviderV2 with ChangeNotifier {
     if (feedType == "image") {
    
       for (File p in files) {
-        Map<String, dynamic> d = await fr.uploadMedia(folder: "images", media: File(p.path));
+        Map<String, dynamic>? d = await fr.uploadMedia(folder: "images", media: File(p.path));
       
-        await fr.postMedia(feedId: feedId, path: d["data"]["path"], size: d["data"]["size"]);
+        await fr.postMedia(forumId: forumId, path: d!["data"]["path"], size: d["data"]["size"]);
       }
 
       await fr.post(
-        feedId: feedId,
+        forumId: forumId,
         appName: 'hp3ki', 
         userId: ar.getUserId().toString(), 
         feedType: type, 
@@ -266,7 +266,7 @@ class FeedProviderV2 with ChangeNotifier {
   }
 
   Future<void> postImageCamera(BuildContext context,String type, File files) async {
-    String feedId = const Uuid().v4();
+    String forumId = const Uuid().v4();
     
     if (postC.text.trim().isEmpty) {
       setStateWritePost(WritePostStatus.error);
@@ -282,19 +282,19 @@ class FeedProviderV2 with ChangeNotifier {
     setStateWritePost(WritePostStatus.loading);
 
     if (feedType == "image") {
-      Map<String, dynamic> d = await fr.uploadMedia(folder: "images", media: File(files.path));
+      Map<String, dynamic>? d = await fr.uploadMedia(folder: "images", media: File(files.path));
       
       await fr.post(
-        feedId: feedId,
+        forumId: forumId,
         appName: 'hp3ki', 
         userId: ar.getUserId().toString(), 
         feedType: type, 
-        media: d["data"]["path"], 
+        media: d!["data"]["path"], 
         link: '',
         caption: postC.text, 
       );
 
-      await fr.postMedia(feedId: feedId, path: d["data"]["path"], size: d["data"]["size"]);
+      await fr.postMedia(forumId: forumId, path: d["data"]["path"], size: d["data"]["size"]);
 
     }
 
@@ -313,7 +313,7 @@ class FeedProviderV2 with ChangeNotifier {
 
   Future<void> postVideo(BuildContext context,String type, File files) async {
     setStateWritePost(WritePostStatus.loading);
-    String feedId = const Uuid().v4();
+    String forumId = const Uuid().v4();
     
     if (postC.text.trim().isEmpty) {
       setStateWritePost(WritePostStatus.error);
@@ -330,19 +330,19 @@ class FeedProviderV2 with ChangeNotifier {
 
       try {
 
-        Map<String, dynamic> d = await fr.uploadMedia(folder: "videos", media: files);
+        Map<String, dynamic>? d = await fr.uploadMedia(folder: "videos", media: files);
         
         await fr.post(
-          feedId: feedId,
+          forumId: forumId,
           appName: 'hp3ki', 
           userId: ar.getUserId().toString(), 
           feedType: type, 
-          media: d["data"]["path"], 
+          media: d!["data"]["path"], 
           link: '',
           caption: postC.text, 
         );
 
-        await fr.postMedia(feedId: feedId, path: d["data"]["path"], size: d["data"]["size"]);
+        await fr.postMedia(forumId: forumId, path: d["data"]["path"], size: d["data"]["size"]);
 
       } catch(e) {
 
@@ -368,7 +368,7 @@ class FeedProviderV2 with ChangeNotifier {
   Future<void> postLink(BuildContext context,String type, String link) async {
 
     setStateWritePost(WritePostStatus.loading);
-    String feedId = const Uuid().v4();
+    String forumId = const Uuid().v4();
     
     if (postC.text.trim().isEmpty) {
       setStateWritePost(WritePostStatus.error);
@@ -405,7 +405,7 @@ class FeedProviderV2 with ChangeNotifier {
 
     if (feedType == "link") {
       await fr.post(
-        feedId: feedId,
+        forumId: forumId,
         appName: 'hp3ki', 
         userId: ar.getUserId().toString(), 
         feedType: type, 
@@ -428,7 +428,7 @@ class FeedProviderV2 with ChangeNotifier {
 
   Future<void> postVDoc(BuildContext context, String caption ,String type, File files) async {
     setStateWritePost(WritePostStatus.loading);
-    String feedId = const Uuid().v4();
+    String forumId = const Uuid().v4();
     
     if (caption.trim().isEmpty) {
       setStateWritePost(WritePostStatus.error);
@@ -441,20 +441,20 @@ class FeedProviderV2 with ChangeNotifier {
       return;
     }
 
-    Map<String, dynamic> d = await fr.uploadMedia(folder: "documents", media: files);
+    Map<String, dynamic>? d = await fr.uploadMedia(folder: "documents", media: files);
 
     await fr.post(
-      feedId: feedId,
+      forumId: forumId,
       appName: 'hp3ki', 
       userId: ar.getUserId().toString(), 
       feedType: type, 
       media: "media.jpg", 
-      link: d["data"]["path"],
+      link: d!["data"]["path"],
       caption: caption, 
     );
     
     await fr.postMedia( 
-      feedId: feedId, 
+      forumId: forumId, 
       path: d["data"]["path"], 
       size: d["data"]["size"]
     );
@@ -492,8 +492,8 @@ class FeedProviderV2 with ChangeNotifier {
 
   Future<void> toggleLike({
     required BuildContext context,
-    required String feedId, 
-    required FeedLikes feedLikes
+    required String forumId, 
+    required ForumLikes feedLikes
   }) async {
     try {
       
@@ -512,7 +512,7 @@ class FeedProviderV2 with ChangeNotifier {
         feedLikes.total = feedLikes.total + 1;
       }
 
-      await fr.toggleLike(context: context, feedId: feedId, userId: ar.getUserId().toString());
+      await fr.toggleLike(context: context, forumId: forumId, userId: ar.getUserId().toString());
 
       notifyListeners();
 

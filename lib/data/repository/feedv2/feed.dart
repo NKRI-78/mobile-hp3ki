@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:hp3ki/data/models/feedv2/feed.dart';
@@ -11,7 +12,6 @@ import 'package:path/path.dart' as p;
 
 import 'package:hp3ki/utils/constant.dart';
 import 'package:hp3ki/utils/dio.dart';
-import 'package:hp3ki/utils/exceptions.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
@@ -34,10 +34,13 @@ class FeedRepoV2 {
       Map<String, dynamic> data = res.data;
       UserMentionModel userMentionModel = UserMentionModel.fromJson(data);
       return userMentionModel.data;
-    } catch(e, stacktrace) {
-      debugPrint(stacktrace.toString());
+    } on DioError catch(e) {
+      debugPrint(e.response!.data.toString());
+    } catch(e) {
+      debugPrint(e.toString());
     }
-    return null;
+
+    return [];
   }
 
   Future<FeedModel?> fetchFeedMostRecent(BuildContext context, int pageKey, String userId) async {
@@ -48,12 +51,15 @@ class FeedRepoV2 {
       FeedModel fm = FeedModel.fromJson(data);
       return fm;
     } on DioError catch(e) {
-      debugPrint("Fetch Feed (${e.response!.data.toString()})");
-    } catch(e, stacktrace) {
-      debugPrint(stacktrace.toString());
+      debugPrint(e.response!.data.toString());
+    } catch(e) {
+      debugPrint(e.toString());
     }
+
     return null;
+  
   }
+
   Future<FeedModel?> fetchFeedPopuler(BuildContext context, int pageKey, String userId) async {
     try {
       Dio dio = DioManager.shared.getClient();
@@ -62,12 +68,14 @@ class FeedRepoV2 {
       FeedModel fm = FeedModel.fromJson(data);
       return fm;
     } on DioError catch(e) {
-      debugPrint("Fetch Feed (${e.error.toString()})");
-    } catch(e, stacktrace) {
-      debugPrint(stacktrace.toString());
+      debugPrint(e.response!.data.toString());
+    } catch(e) {
+      debugPrint(EdgeInsets.only.toString());
     }
+
     return null;
   }
+
   Future<FeedModel?> fetchFeedSelf(BuildContext context, int pageKey, String userId) async {
     try {
       Dio dio = DioManager.shared.getClient();
@@ -76,10 +84,11 @@ class FeedRepoV2 {
       FeedModel fm = FeedModel.fromJson(data);
       return fm;
     } on DioError catch(e) {
-      debugPrint("Fetch Feed (${e.error.toString()})");
-    } catch(e, stacktrace) {
-      debugPrint(stacktrace.toString());
+      debugPrint(e.response!.data.toString());
+    } catch(e) {
+      debugPrint(e.toString());
     }
+
     return null;
   }
 
@@ -91,10 +100,11 @@ class FeedRepoV2 {
       FeedDetailModel fm = FeedDetailModel.fromJson(data);
       return fm;
     } on DioError catch(e) {
-      debugPrint("Fetch Feed Detail (${e.error.toString()})");
-    } catch(e, stacktrace) {
-      debugPrint(stacktrace.toString());
+      debugPrint(e.response!.data.toString());
+    } catch(e) {
+      debugPrint(e.toString());
     }
+
     return null;
   }
 
@@ -102,19 +112,19 @@ class FeedRepoV2 {
     try{ 
       Dio dio = DioManager.shared.getClient();
       Response res = await dio.get("${AppConstants.baseUrlFeedV2}/forums/v1/detail-reply?id=$forumId&page=$pageKey&limit=10&app_name=hp3ki");
-      Map<String, dynamic> data = res.data
-      ;
+      Map<String, dynamic> data = res.data;
       FeedDetailModel fm = FeedDetailModel.fromJson(data);
       return fm;
     } on DioError catch(e) {
-      debugPrint("Fetch Feed Reply (${e.error.toString()})");
-    } catch(e, stacktrace) {
-      debugPrint(stacktrace.toString());
+      debugPrint(e.response!.data.toString());
+    } catch(e) {
+      debugPrint(e.toString());
     }
+
     return null;
   }
 
-  Future<Map<String, dynamic>> uploadMedia({
+  Future<Map<String, dynamic>?> uploadMedia({
     required String folder, 
     required File media
   }) async {
@@ -129,33 +139,37 @@ class FeedRepoV2 {
       return data;
     } on DioError catch(e) {
       debugPrint(e.response!.data.toString());
-      throw CustomException(e.toString());
-    }  catch(e) {
+    } catch(e) {
       debugPrint(e.toString());
-      throw CustomException(e.toString());
     }
+    
+    return {};
   }
 
   Future<void> postMedia({
-    required String feedId,
+    required String forumId,
     required String path,
     required String size
   }) async {
     try {
+      Object data = {
+        "forum_id": forumId, 
+        "path": path, 
+        "size": size
+      };
       Dio dio = DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/upload-media",
-      data: {"forum_id": feedId, "path": path, "size": size});
+        data: data
+      );
     } on DioError catch(e) {
       debugPrint(e.response!.data.toString());
-      throw CustomException(e.toString());
-    }  catch(e) {
+    } catch(e) {
       debugPrint(e.toString());
-      throw CustomException(e.toString());
     }
   }
 
   Future<void> post({
-    required String feedId,
+    required String forumId,
     required String appName,
     required String userId,
     required String feedType,
@@ -165,7 +179,7 @@ class FeedRepoV2 {
   }) async {
     try {
       Object data = {
-        "id": feedId,
+        "id": forumId,
         "app_name": appName,
         "user_id": userId,
         "forum_type": feedType,
@@ -177,42 +191,48 @@ class FeedRepoV2 {
       await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/create", data: data);
     } on DioError catch (e) {
       debugPrint(e.response!.data.toString());
-      throw CustomException(e.toString());
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      throw CustomException(e.toString());
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 
-  Future<void> deletePost(BuildContext context, String postId) async {
+  Future<void> deletePost(BuildContext context, String forumId) async {
     try {
+      Object data = {
+        "id": forumId
+      };
       Dio dio = DioManager.shared.getClient();
-      await dio.delete("${AppConstants.baseUrlFeedV2}/forums/v1/delete-forum", data: {"id": postId});
+      await dio.delete("${AppConstants.baseUrlFeedV2}/forums/v1/delete-forum", data: data);
    } on DioError catch(e) {
-      debugPrint(e.toString());
-      throw CustomException(e.toString());
+      debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());
     }
   }
-  Future<void> deleteComment(BuildContext context, String id) async {
+
+  Future<void> deleteComment(BuildContext context, String commentId) async {
     try {
+      Object data = {
+        "id": commentId
+      };
       Dio dio = DioManager.shared.getClient();
-      await dio.delete("${AppConstants.baseUrlFeedV2}/forums/v1/delete-comment", data: {"id": id});
+      await dio.delete("${AppConstants.baseUrlFeedV2}/forums/v1/delete-comment", data: data);
    } on DioError catch(e) {
-      debugPrint(e.toString());
-      throw CustomException(e.toString());
+      debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());
     }
   }
+
   Future<void> deleteReply(BuildContext context, String id) async {
     try {
+      Object data = {
+        "id": id
+      };
       Dio dio = DioManager.shared.getClient();
-      await dio.delete("${AppConstants.baseUrlFeedV2}/forums/v1/delete-reply", data: {"id": id});
+      await dio.delete("${AppConstants.baseUrlFeedV2}/forums/v1/delete-reply", data: data);
    } on DioError catch(e) {
-      debugPrint(e.toString());
-      throw CustomException(e.toString());
+      debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());
     }
@@ -226,17 +246,17 @@ class FeedRepoV2 {
     required String comment,
   }) async {
     try {
-      Dio dio = DioManager.shared.getClient();
-      await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/create-comment", data: {
-        "comment_id": commentId,
+      Object data = {
+"       comment_id": commentId,
         "forum_id": forumId,
         "user_id": userId,
         "comment": comment,
         "app_name": "hp3ki",
-      });
+      };
+      Dio dio = DioManager.shared.getClient();
+      await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/create-comment", data: data);
     } on DioError catch(e) {
       debugPrint(e.response!.data.toString());
-      throw CustomException(e.toString());
     } catch(e) {
       debugPrint(e.toString());
     }
@@ -250,25 +270,23 @@ class FeedRepoV2 {
     required String reply,
   }) async {
     try {
-
-      Dio dio = DioManager.shared.getClient();
-      await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/create-reply", data: {
+      Object data = {
         "reply_id": replyId,
         "comment_id": commentId,
         "user_id": userId,
         "reply": reply,
         "app_name": "hp3ki",
-      });
-
+      };
+      Dio dio = DioManager.shared.getClient();
+      await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/create-reply", data: data);
     } on DioError catch(e) {
-      debugPrint(e.toString());
-      throw CustomException(e.toString());
+      debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());
     }
   }
 
-  Future<FeedReplyModel> getReply({
+  Future<FeedReplyModel?> getReply({
     required BuildContext context,
     required int pageKey, 
     required String commentId
@@ -280,58 +298,73 @@ class FeedRepoV2 {
       FeedReplyModel fm = FeedReplyModel.fromJson(data);
       return fm;
     } on DioError catch(e) {
-      debugPrint(e.toString());
-      throw CustomException(e.toString());
+      debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());
-      throw CustomException(e.toString());
     }
+    
+    return null;
   }
 
   Future<void> toggleLike({
     required BuildContext context,
-    required String feedId,
+    required String forumId,
     required String userId
   }) async {
     try {
       Object data = {
-        "forum_id": feedId, 
+        "forum_id": forumId, 
         "user_id": userId,
         "app_name": "hp3ki",
       };
-
       Dio dio = DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/like", data: data);
     } on DioError catch(e) {
-      debugPrint(e.toString());
-      throw CustomException(e.toString());
+      debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());
-      throw CustomException(e.toString());
     }
   }
+  
   Future<void> toggleLikeComment({
     required BuildContext context,
-    required String feedId,
+    required String forumId,
     required String commentId,
     required String userId
   }) async {
     try {
       Object data = {
-        "forum_id": feedId, 
+        "forum_id": forumId, 
         "comment_id": commentId, 
         "user_id": userId,
         "app_name": "hp3ki",
       };
-
       Dio dio = DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/comment-like", data: data);
     } on DioError catch(e) {
-      debugPrint(e.toString());
-      throw CustomException(e.toString());
+      debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());
-      throw CustomException(e.toString());
+    }
+  }
+
+  Future<void> toggleLikeReplyComment({
+    required String replyId,
+    required String userId
+  }) async {
+    try {
+      Object data = {
+        "reply_id": replyId,
+        "user_id": userId
+      };
+      Dio dio = DioManager.shared.getClient();
+      await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/comment-reply-like",
+        data: data
+      );
+    } on DioError catch(e) {
+      debugPrint(e.response!.data.toString());
+    } catch(e) {
+      debugPrint(e.toString());
     }
   }
   
