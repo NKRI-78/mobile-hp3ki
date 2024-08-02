@@ -19,17 +19,15 @@ class PostLink extends StatefulWidget {
 }
 
 class PostLinkState extends State<PostLink> {
-  Map<String, PreviewData> datas = {};
+  Map<String, PreviewData> previewData = {};
 
   @override
   Widget build(BuildContext context) {
-    return buildUI(); 
-  } 
-  
-  Widget buildUI() {
+    
     List<String?> urls =  [
       widget.url
     ];
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -51,13 +49,13 @@ class PostLinkState extends State<PostLink> {
             enableAnimation: true,
             onPreviewDataFetched: (data) {
               setState(() {
-                datas = {
-                  ...datas,
+                previewData = {
+                  ...previewData,
                   urls[0]!: data,
                 };
               });
             },
-            previewData: datas[urls[0]],
+            previewData: previewData[urls[0]],
             text: urls[0]!,
             width: MediaQuery.of(context).size.width,
           ),
@@ -65,6 +63,7 @@ class PostLinkState extends State<PostLink> {
 
       ],
     );
-  }
+  } 
+  
   
 }

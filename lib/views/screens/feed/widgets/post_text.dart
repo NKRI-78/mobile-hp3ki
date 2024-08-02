@@ -27,33 +27,30 @@ class PostTextState extends State<PostText> {
   }
   
   Widget buildUI() {
-    return SizedBox(
-      width: 250.0,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ReadMoreText(
-            widget.text,
-            style: robotoRegular.copyWith(
-              fontSize: Dimensions.fontSizeDefault,
-            ),
-            trimLines: 2,
-            colorClickableText: ColorResources.black,
-            trimMode: TrimMode.Line,
-            trimCollapsedText: getTranslated("READ_MORE", context),
-            trimExpandedText: getTranslated("LESS_MORE", context),
-            moreStyle: robotoRegular.copyWith(
-              fontSize: Dimensions.fontSizeSmall, 
-              fontWeight: FontWeight.w600
-            ),
-            lessStyle: robotoRegular.copyWith(
-              fontSize: Dimensions.fontSizeSmall, 
-              fontWeight: FontWeight.w600
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ReadMoreText(
+          widget.text,
+          style: robotoRegular.copyWith(
+            fontSize: Dimensions.fontSizeDefault,
           ),
-        ],
-      ) 
+          trimLines: 3,
+          colorClickableText: ColorResources.black,
+          trimMode: TrimMode.Line,
+          trimCollapsedText: getTranslated("READ_MORE", context),
+          trimExpandedText: getTranslated("LESS_MORE", context),
+          moreStyle: robotoRegular.copyWith(
+            fontSize: Dimensions.fontSizeSmall, 
+            fontWeight: FontWeight.w600
+          ),
+          lessStyle: robotoRegular.copyWith(
+            fontSize: Dimensions.fontSizeSmall, 
+            fontWeight: FontWeight.w600
+          ),
+        ),
+      ],
     );
   }
 

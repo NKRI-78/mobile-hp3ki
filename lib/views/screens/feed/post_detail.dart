@@ -56,7 +56,7 @@ class PostDetailScreen extends StatefulWidget {
   PostDetailScreenState createState() => PostDetailScreenState();
 }
 
-class PostDetailScreenState extends State<PostDetailScreen> {
+class PostDetailScreenState extends State<PostDetailScreen>  with TickerProviderStateMixin {
 
   GlobalKey<FlutterMentionsState> mentionKey = GlobalKey<FlutterMentionsState>();
 
@@ -276,6 +276,8 @@ class PostDetailScreenState extends State<PostDetailScreen> {
               if (feedDetailProviderV2.feedDetailData.forum!.type == "image")
                 feedDetailProviderV2.feedDetailData.forum!.media!.isNotEmpty ? 
               PostImage(
+                feedDetailProviderV2.feedDetailData.forum!.user!.username,
+                feedDetailProviderV2.feedDetailData.forum!.caption!,
                 true,
                 feedDetailProviderV2.feedDetailData.forum!.media!, 
               ): Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
@@ -454,6 +456,7 @@ class PostDetailScreenState extends State<PostDetailScreen> {
     Future.microtask(() => getData());
   }
 
+ 
   @override
   Widget build(BuildContext context) {
 
@@ -754,9 +757,9 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                                       const SizedBox(width: 8.0),
 
                                       InkWell(
-                                        onTap: () {
+                                        onTap: () async {
 
-                                          mentionKey.currentState!.controller!.text = "@${comment.user.mention.trim()} ";
+                                          mentionKey.currentState!.controller!.text = "@${comment.user.mention} ";
 
                                           previousText = "@${comment.user.mention} ";
 
@@ -1064,6 +1067,8 @@ class PostDetailScreenState extends State<PostDetailScreen> {
                 builder: (context, textStyle, child) {
                   return FlutterMentions(
                     key: mentionKey,
+                    maxLines: 5,
+                    minLines: 1,
                     appendSpaceOnAdd: true,
                     suggestionPosition: SuggestionPosition.Top,
                     onSearchChanged: (String trigger, String val) async {
@@ -1181,6 +1186,29 @@ class PostDetailScreenState extends State<PostDetailScreen> {
       )
     );
   }
+
+  // FlutterTagger(
+  //   controller: controller,
+  //   animationController: animationController,
+  //   onSearch: (query, triggerChar) {
+  //     if (triggerChar == "@") {
+  //       debugPrint("masuk sini");
+  //       // searchViewModel.searchUser(query);
+  //     }
+  //   },
+  //   triggerCharacterAndStyles: const {
+  //     "@": TextStyle(color: Colors.pinkAccent),
+  //     "#": TextStyle(color: Colors.blueAccent),
+  //   },
+  //   tagTextFormatter: (id, tag, triggerCharacter) {
+  //     return "$triggerCharacter$id#$tag#";
+  //   },
+  //   overlayHeight: 380.0,
+  //   overlay: Container(),
+  //   builder: (context, containerKey) {
+  //     return TextField();
+  //   },
+  // ),
 
   Widget grantedDeletePost(context) {
     return PopupMenuButton(

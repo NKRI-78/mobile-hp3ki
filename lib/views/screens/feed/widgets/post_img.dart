@@ -18,10 +18,14 @@ import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 
 class PostImage extends StatefulWidget {
+  final String username;
+  final String caption;
   final bool isDetail;
   final List medias;
 
   const PostImage(
+    this.username,
+    this.caption,
     this.isDetail,
     this.medias,
     {Key? key}
@@ -228,8 +232,10 @@ class PostImageState extends State<PostImage> {
           items: widget.medias.map((i) {
             return InkWell(
               onTap: () {
-                NS.push(context, PreviewImageScreen(
-                  id: current,
+                NS.push(context, PreviewForumImageScreen(
+                  id: current,  
+                  username: widget.username,
+                  caption: widget.caption,
                   medias: widget.medias,
                 ));
               },

@@ -237,6 +237,8 @@ class PostsState extends State<Posts> {
           if(widget.forum.type == "image")
             widget.forum.media!.isNotEmpty ? 
             PostImage(
+              widget.forum.user!.username!,
+              widget.forum.caption!,
               false,
               widget.forum.media!, 
             ) : Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
