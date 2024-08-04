@@ -25,7 +25,10 @@ class FeedDetailProviderV2 with ChangeNotifier {
     required this.fr
   });
 
-  String isReplyId = "";
+  String type = "COMMENT";
+  String commentId = "";
+  String replyId = "";
+
   String inputVal = "";
 
   String highlightedComment = "";
@@ -81,8 +84,18 @@ class FeedDetailProviderV2 with ChangeNotifier {
     notifyListeners();
   }
 
-  void onUpdateIsReplyId(String val) {
-    isReplyId = val;
+  void onUpdateType(String val) {{
+    type = val;
+
+    notifyListeners();
+  }}
+
+  void onSelectedReply({
+    required String valReply,
+    required String valComment
+  }) {
+    replyId = valReply;
+    commentId = valComment;
 
     notifyListeners();
   }
@@ -167,19 +180,21 @@ class FeedDetailProviderV2 with ChangeNotifier {
         return;
       }
 
-      if(isReplyId != "") {
+      if(type == "REPLY") {
 
-        String replyId = Uuid().generateV4();
+        String replyIdStore = Uuid().generateV4();
 
         await fr.postReply(
-          context: context, replyId: replyId, commentId: isReplyId, 
+          context: context, 
+          replyIdStore: replyIdStore,
+          replyId: replyId, commentId: commentId, 
           reply: inputVal, userId: ar.getUserId(),
         );
 
-        int i = comments.indexWhere((el) => el.id == isReplyId);
+        int i = comments.indexWhere((el) => el.id == commentId);
 
         _comments[i].reply.replies.add(ReplyElement(
-          id: replyId, 
+          id: replyIdStore, 
           reply: inputVal, 
           createdAt: "beberapa detik yang lalu", 
           user: UserReply(
@@ -197,8 +212,6 @@ class FeedDetailProviderV2 with ChangeNotifier {
 
         mentionKey.currentState!.controller!.text = "";
 
-        onUpdateIsReplyId("");
-
         highlightedReply = comments[i].reply.replies.last.id;
 
         Future.delayed(const Duration(milliseconds: 100), () {
@@ -215,18 +228,20 @@ class FeedDetailProviderV2 with ChangeNotifier {
           notifyListeners();
         });
 
+        onUpdateType("COMMENT");
+
       } else {
 
-        String commentId = Uuid().generateV4();
+        String commentIdStore = Uuid().generateV4();
 
         await fr.postComment(
-          context: context, commentId: commentId, forumId: forumId, 
+          context: context, commentId: commentIdStore, forumId: forumId, 
           comment: inputVal, userId: ar.getUserId(),
         );
 
         _comments.add(
           CommentElement(
-            id: commentId, 
+            id: commentIdStore, 
             comment: inputVal, 
             createdAt: "beberapa detik yang lalu", 
             user: User(
@@ -339,16 +354,14 @@ class FeedDetailProviderV2 with ChangeNotifier {
 
   Future<void> toggleLikeReply({
     required BuildContext context,
-    required String replyId, 
-    required String commentId
+    required String replyIdP, 
+    required String commentIdP
   }) async {
 
     try {
-      int idxComment = _comments.indexWhere((el) => el.id == commentId);
-      int idxReply = _comments[idxComment].reply.replies.indexWhere((el) => el.id == replyId);
+      int idxComment = _comments.indexWhere((el) => el.id == commentIdP);
+      int idxReply = _comments[idxComment].reply.replies.indexWhere((el) => el.id == replyIdP);
       int idxLikes = _comments[idxComment].reply.replies[idxReply].like.likes.indexWhere((el) => el.user!.id == ar.getUserId());
-
-      debugPrint(idxLikes.toString());
 
       if (idxLikes != -1) {
 
@@ -373,7 +386,7 @@ class FeedDetailProviderV2 with ChangeNotifier {
       }
 
       await fr.toggleLikeReplyComment(
-        replyId: replyId, 
+        replyId: replyIdP, 
         userId: ar.getUserId()
       );
    

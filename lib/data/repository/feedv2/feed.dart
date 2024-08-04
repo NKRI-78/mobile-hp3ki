@@ -264,6 +264,7 @@ class FeedRepoV2 {
 
   Future<void> postReply({
     required BuildContext context,
+    required String replyIdStore,
     required String replyId,
     required String commentId,
     required String userId,
@@ -271,6 +272,7 @@ class FeedRepoV2 {
   }) async {
     try {
       Object data = {
+        "reply_id_store": replyIdStore,
         "reply_id": replyId,
         "comment_id": commentId,
         "user_id": userId,
@@ -355,7 +357,8 @@ class FeedRepoV2 {
     try {
       Object data = {
         "reply_id": replyId,
-        "user_id": userId
+        "user_id": userId,
+        "app_name": "hp3ki"
       };
       Dio dio = DioManager.shared.getClient();
       await dio.post("${AppConstants.baseUrlFeedV2}/forums/v1/comment-reply-like",

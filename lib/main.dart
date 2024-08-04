@@ -35,69 +35,10 @@ import 'package:hp3ki/utils/shared_preferences.dart';
 import 'package:hp3ki/views/screens/feed/post_detail.dart';
 import 'package:hp3ki/views/screens/splash/splash.dart';
 
-
-// @pragma('vm:entry-point')
-// Future<void> firebaseBackgroundHandler(RemoteMessage message) async {
-  
-  // if(message.data["click_action"] == "create-comment") {       
-  //   NS.pushUntil(
-  //     navigatorKey.currentContext!, 
-  //     TestingBackgroundScreen(
-  //       data: message.data,
-  //     )
-      // PostDetailScreen(
-      //   forumId: message.data["forum_id"],
-      //   commentId: message.data["comment_id"],
-      //   replyId: "",
-      //   from: "notification-comment",
-      // )
-  //   );
-  // }
-
-  // if(message.data["click_action"] == "create-reply") {
-  //   NS.pushUntil(
-  //     navigatorKey.currentContext!, 
-  //     PostDetailScreen(
-  //       data: {
-  //         "forum_id": message.data["forum_id"],
-  //         "comment_id": message.data["comment_id"],
-  //         "reply_id": message.data["reply_id"],
-  //         "from": "notification-reply",
-  //       },
-       
-  //     )
-  //   );
-  // }
-
-  // if(data != {}) {
-    // if(data["type"] != null) {
-    //   await DBHelper.setAccountActive("accounts", 
-    //     data: {
-    //       "id": 1,
-    //       "status": "approval",
-    //       "createdAt": DateTime.now().toIso8601String()
-    //     }
-    //   );
-    // }
-  // }
-
-//   Soundpool soundpool = Soundpool.fromOptions(
-//     options: SoundpoolOptions.kDefault,
-//   );
-//   int soundId = await rootBundle.load("assets/sounds/notification.mp3").then((ByteData soundData) {
-//     return soundpool.load(soundData);
-//   });
-//   await soundpool.play(soundId);
-// }
-
-
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp();
-
-  // FirebaseMessaging.onBackgroundMessage(firebaseBackgroundHandler);
 
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
 

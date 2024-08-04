@@ -107,6 +107,7 @@ class FeedReplyProvider with ChangeNotifier {
 
       await fr.postReply(
         context: context,
+        replyIdStore: "",
         replyId: "", 
         reply: commentVal, 
         commentId: commentId,

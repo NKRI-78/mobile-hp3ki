@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hp3ki/maps/src/utils/uuid.dart';
 import 'package:hp3ki/views/screens/home/home.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -413,12 +414,16 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
 
       feedDetailProvider.onUpdateHighlightComment(widget.data["comment_id"]);
 
-      Future.delayed(const Duration(milliseconds: 100), () {
+      Future.delayed(const Duration(milliseconds: 1000), () {
         GlobalKey targetContext = feedDetailProvider.comments[index].key;
-        Scrollable.ensureVisible(targetContext.currentContext!,
-          duration: const Duration(milliseconds: 100),
-          curve: Curves.easeOut,
-        );
+
+        if(targetContext.currentContext != null) {
+          Scrollable.ensureVisible(targetContext.currentContext!,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeOut,
+          );
+        }
+
       });
 
       Future.delayed(const Duration(milliseconds: 1000), () {
@@ -433,13 +438,17 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
 
       feedDetailProvider.onUpdateHighlightReply(widget.data["reply_id"]);
 
-      Future.delayed(const Duration(milliseconds: 100), () {
+      Future.delayed(const Duration(milliseconds: 1000), () {
         if(feedDetailProvider.comments[index].reply.replies.isNotEmpty) {
           GlobalKey targetContext = feedDetailProvider.comments[index].reply.replies.last.key;
-          Scrollable.ensureVisible(targetContext.currentContext!,
-            duration: const Duration(milliseconds: 100),
-            curve: Curves.easeOut,
-          );
+
+          if(targetContext.currentContext != null) {
+            Scrollable.ensureVisible(targetContext.currentContext!,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeOut,
+            );
+          }
+
         }
       });
 
@@ -460,7 +469,6 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
 
     Future.microtask(() => getData());
   }
-
  
   @override
   Widget build(BuildContext context) {
@@ -779,18 +787,21 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
                                         const SizedBox(width: 8.0),
       
                                         InkWell(
-                                          onTap: () async {
-      
+                                          onTap: comment.user.id == feedDetailProvider.ar.getUserId()
+                                          ? () {} 
+                                          : () async {
                                             mentionKey.currentState!.controller!.text = "@${comment.user.mention} ";
       
                                             mentionFn.requestFocus();
       
                                             previousText = "@${comment.user.mention} ";
+
+                                            feedDetailProvider.onUpdateType("REPLY");
       
-                                            feedDetailProvider.onUpdateIsReplyId(comment.id);
-      
-                                            setState(() {});
-      
+                                            feedDetailProvider.onSelectedReply(
+                                              valComment: comment.id,
+                                              valReply: Uuid().generateV4()
+                                            );
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.all(5.0),
@@ -900,8 +911,8 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
                                                           onTap: () {
                                                             feedDetailProvider.toggleLikeReply(
                                                               context: context, 
-                                                              commentId: comment.id,
-                                                              replyId: reply.id, 
+                                                              commentIdP: comment.id,
+                                                              replyIdP: reply.id, 
                                                             );
                                                           },
                                                           child: Padding(
@@ -921,16 +932,21 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
                                                         const SizedBox(width: 8.0),
       
                                                         InkWell(
-                                                          onTap: () {
+                                                          onTap: reply.user.id == feedDetailProvider.ar.getUserId() 
+                                                          ? () {} 
+                                                          : () {
                                                             mentionKey.currentState!.controller!.text = "@${reply.user.mention} ";
       
                                                             mentionFn.requestFocus();
                                                             
                                                             previousText = "@${reply.user.mention} ";
+
+                                                            feedDetailProvider.onUpdateType("REPLY");
       
-                                                            feedDetailProvider.onUpdateIsReplyId(comment.id);
-      
-                                                            setState(() {});
+                                                            feedDetailProvider.onSelectedReply(
+                                                              valComment: comment.id,
+                                                              valReply: reply.id
+                                                            );
                                                           },
                                                           child: Padding(
                                                             padding: const EdgeInsets.all(5.0),
@@ -1121,7 +1137,7 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
                         final currentText = mentionKey.currentState!.controller!.text;
       
                         if (previousText.length - currentText.length == 1) {
-                          feedDetailProvider.onUpdateIsReplyId("");
+                          feedDetailProvider.onUpdateType("COMMENT");
                         }
                       },
                       style: textStyle,

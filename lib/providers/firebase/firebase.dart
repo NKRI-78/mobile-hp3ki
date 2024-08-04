@@ -52,13 +52,14 @@ class FirebaseProvider with ChangeNotifier {
   }
 
   Future<void> handleMessage(message) async {
+
     if(message.data["click_action"] == "create-comment") {       
       NS.pushUntil(
         navigatorKey.currentContext!, 
-        const PostDetailScreen(
+        PostDetailScreen(
           data: {
-            "forum_id": "aa252c41-3734-4fef-9083-fbd9f9982a8b",
-            "comment_id": "ccb2aece-6672-4fd4-8040-36404bd45c65",
+            "forum_id": message.data["forum_id"],
+            "comment_id": message.data["comment_id"],
             "reply_id": "-",
             "from": "notification-comment",
           },
@@ -79,6 +80,7 @@ class FirebaseProvider with ChangeNotifier {
         )
       );
     }
+    
   }
 
   Future<void> initFcm(BuildContext context) async {
