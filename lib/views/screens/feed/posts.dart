@@ -1,30 +1,30 @@
 
 import 'package:flutter/material.dart';
-import 'package:hp3ki/providers/feedv2/feedDetail.dart';
-import 'package:hp3ki/views/basewidgets/loader/circular.dart';
 
 import 'package:readmore/readmore.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-import 'package:hp3ki/data/models/feedv2/feed.dart';
-import 'package:hp3ki/providers/feedv2/feed.dart';
-import 'package:hp3ki/services/navigation.dart';
-import 'package:hp3ki/views/screens/feed/post_detail.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-import 'package:hp3ki/utils/date_util.dart';
+import 'package:hp3ki/services/navigation.dart';
+
+import 'package:hp3ki/views/basewidgets/loader/circular.dart';
+
+import 'package:hp3ki/data/models/feedv2/feed.dart';
 
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
 
 import 'package:hp3ki/localization/language_constraints.dart';
 
+import 'package:hp3ki/providers/feedv2/feedDetail.dart';
+import 'package:hp3ki/providers/feedv2/feed.dart';
 
-import 'package:hp3ki/providers/profile/profile.dart';
-
+import 'package:hp3ki/utils/date_util.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 
+import 'package:hp3ki/views/screens/feed/post_detail.dart';
 import 'package:hp3ki/views/screens/feed/widgets/post_video.dart';
 import 'package:hp3ki/views/screens/feed/widgets/post_doc.dart';
 import 'package:hp3ki/views/screens/feed/widgets/post_img.dart';
@@ -43,11 +43,21 @@ class Posts extends StatefulWidget {
 }
 
 class PostsState extends State<Posts> {
+
+  late FeedProviderV2 feedProviderV2;
+
   bool deletePostBtn = false;
 
   @override 
   void initState() {
     super.initState();
+
+    feedProviderV2 = context.read<FeedProviderV2>();
+  }
+
+  @override 
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -91,7 +101,7 @@ class PostsState extends State<Posts> {
                 color: ColorResources.dimGrey
               ),
             ),
-            trailing: context.read<ProfileProvider>().user!.id == widget.forum.user!.id! 
+            trailing: feedProviderV2.ar.getUserId() == widget.forum.user!.id! 
             ? grantedDeletePost(context) 
             : PopupMenuButton(
                 itemBuilder: (BuildContext buildContext) { 
@@ -414,13 +424,15 @@ class PostsState extends State<Posts> {
                   child: ElevatedButton(
                     onPressed: () {
                        NS.push(context, PostDetailScreen(
-                          forumId: widget.forum.id!, 
-                          commentId: "",
-                          replyId: "",
-                          from: "click",
-                        )).then((_) {
-                          context.read<FeedProviderV2>().fetchFeedMostRecent(context);
-                        });
+                        data: {
+                          "forum_id": widget.forum.id,
+                          "comment_id": "",
+                          "reply_id": "",
+                          "from": "click"
+                        },
+                      )).then((_) {
+                        context.read<FeedProviderV2>().fetchFeedMostRecent(context);
+                      });
                     }, 
                     child: Text(getTranslated("COMMENT", context),
                       style: const TextStyle(
@@ -503,7 +515,7 @@ class PostsState extends State<Posts> {
                         ]
                       ),
                     ),
-                    trailing: context.read<ProfileProvider>().user!.id == widget.forum.comment!.comments!.last.user!.id.toString()
+                    trailing: feedProviderV2.ar.getUserId() == widget.forum.comment!.comments!.last.user!.id.toString()
                     ? grantedDeleteComment(context, widget.forum.comment!.comments!.last.id.toString())
                     : PopupMenuButton(
                       itemBuilder: (BuildContext buildContext) { 

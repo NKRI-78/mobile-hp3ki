@@ -1,14 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:provider/provider.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:soundpool/soundpool.dart';
-import 'package:rxdart/rxdart.dart';
-
-import 'package:hp3ki/providers/profile/profile.dart';
 
 import 'package:hp3ki/data/repository/firebase/firebase.dart';
 
@@ -16,7 +10,6 @@ import 'package:hp3ki/utils/exceptions.dart';
 import 'package:hp3ki/utils/shared_preferences.dart';
 import 'package:hp3ki/utils/helper.dart';
 
-import 'package:hp3ki/services/database.dart';
 import 'package:hp3ki/services/notification.dart';
 import 'package:hp3ki/services/navigation.dart';
 import 'package:hp3ki/services/services.dart';
@@ -32,77 +25,60 @@ class FirebaseProvider with ChangeNotifier {
     required this.fr,
   });
 
-  static final notifications = FlutterLocalNotificationsPlugin();
-  static final onNotifications = BehaviorSubject<String>();
+  InitFCMStatus _initFCMStatus = InitFCMStatus.idle;
+  InitFCMStatus get initFCMStatus => _initFCMStatus;
+
   final soundpool = Soundpool.fromOptions(
     options: SoundpoolOptions.kDefault,
   );
-
-  InitFCMStatus _initFCMStatus = InitFCMStatus.idle;
-  InitFCMStatus get initFCMStatus => _initFCMStatus;
   
   void setStateInitFCMStatus(InitFCMStatus initFCMStatus) {
     _initFCMStatus = initFCMStatus;
     Future.delayed(Duration.zero, () =>  notifyListeners());
   }
 
-  static Future<void> firebaseBackgroundHandler(RemoteMessage message) async {
-    
-    Map<String, dynamic> data = message.data;
-
-    if(data != {}) {
-      if(data["type"] != null) {
-        await DBHelper.setAccountActive("accounts", 
-          data: {
-            "id": 1,
-            "status": "approval",
-            "createdAt": DateTime.now().toIso8601String()
-          }
-        );
-      }
-    }
-
-    Soundpool soundpool = Soundpool.fromOptions(
-      options: SoundpoolOptions.kDefault,
-    );
-    int soundId = await rootBundle.load("assets/sounds/notification.mp3").then((ByteData soundData) {
-      return soundpool.load(soundData);
-    });
-    await soundpool.play(soundId);
-  }
-
   Future<void> setupInteractedMessage(BuildContext context) async {
-    await FirebaseMessaging.instance.getInitialMessage();
 
-    FirebaseMessaging.onBackgroundMessage(firebaseBackgroundHandler);
+    FirebaseMessaging.instance.getInitialMessage().then((message) {
+      if(message != null) {
+        handleMessage(message);
+      }
+    });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-
-      if(message.data["type"] == "create-comment") {       
-        NS.pushReplacement(
-          navigatorKey.currentContext!, 
-          PostDetailScreen(
-            forumId: message.data["forum_id"],
-            commentId: message.data["comment_id"],
-            replyId: "",
-            from: "notification-comment",
-          )
-        );
-      }
-
-      if(message.data["type"] == "create-reply") {
-        NS.pushReplacement(
-          navigatorKey.currentContext!, 
-          PostDetailScreen(
-            forumId: message.data["forum_id"],
-            commentId: message.data["comment_id"],
-            replyId: message.data["reply_id"],
-            from: "notification-reply",
-          )
-        );
-      }
-
+      handleMessage(message);
     });
+
+  }
+
+  Future<void> handleMessage(message) async {
+    if(message.data["click_action"] == "create-comment") {       
+      NS.pushUntil(
+        navigatorKey.currentContext!, 
+        const PostDetailScreen(
+          data: {
+            "forum_id": "aa252c41-3734-4fef-9083-fbd9f9982a8b",
+            "comment_id": "ccb2aece-6672-4fd4-8040-36404bd45c65",
+            "reply_id": "-",
+            "from": "notification-comment",
+          },
+        )
+      );
+    }
+
+    if(message.data["click_action"] == "create-reply") {
+      NS.pushUntil(
+        navigatorKey.currentContext!, 
+        PostDetailScreen(
+          data: {
+            "forum_id": message.data["forum_id"],
+            "comment_id": message.data["comment_id"],
+            "reply_id": message.data["reply_id"],
+            "from": "notification-reply",
+          },
+        )
+      );
+    }
   }
 
   Future<void> initFcm(BuildContext context) async {
@@ -117,12 +93,9 @@ class FirebaseProvider with ChangeNotifier {
       setStateInitFCMStatus(InitFCMStatus.loaded);
     } on CustomException catch (e) {
       debugPrint(e.toString());
-      // CustomDialog.showUnexpectedError(context, errorCode: 'FBR01');
       setStateInitFCMStatus(InitFCMStatus.error);
-    } catch(e, stacktrace) {
+    } catch(e) {
       debugPrint(e.toString());
-      debugPrint(stacktrace.toString());
-      // CustomDialog.showUnexpectedError(context, errorCode: 'FBP01');
       setStateInitFCMStatus(InitFCMStatus.error);
     }
   }
@@ -146,9 +119,9 @@ class FirebaseProvider with ChangeNotifier {
         payload: data,
       );
 
-      if(data["type"] == "upgrade"){
-        context.read<ProfileProvider>().getProfile(context);
-      }
+      // if(data["type"] == "upgrade"){
+      //   context.read<ProfileProvider>().getProfile(context);
+      // }
 
     });
   }

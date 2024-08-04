@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:hp3ki/services/navigation.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
 
 import 'package:hp3ki/localization/language_constraints.dart';
+
 import 'package:hp3ki/views/screens/feed/widgets/create_post_text.dart';
 
+import 'package:hp3ki/services/navigation.dart';
 
 import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/utils/color_resources.dart';
@@ -42,7 +43,7 @@ class InputPostWidgetState extends State<InputPostWidget> {
                 Consumer<ProfileProvider>(
                   builder: (BuildContext context, ProfileProvider profileProvider, Widget? child) {
                     return CachedNetworkImage(
-                    imageUrl: "${profileProvider.user!.avatar}",
+                      imageUrl: profileProvider.ap.ar.getUserAvatar(),
                       imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
                         backgroundColor: Colors.transparent,
                         backgroundImage: imageProvider,

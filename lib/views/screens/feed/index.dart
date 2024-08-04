@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hp3ki/providers/profile/profile.dart';
 import 'package:provider/provider.dart';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:hp3ki/providers/feedv2/feed.dart';
 
 import 'package:hp3ki/services/navigation.dart';
 import 'package:hp3ki/views/screens/feed/post_detail.dart';
+
+import 'package:hp3ki/providers/feedv2/feed.dart';
 
 import 'package:hp3ki/views/screens/feed/widgets/input_post.dart';
 import 'package:hp3ki/views/screens/feed/posts.dart';
@@ -28,6 +30,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
 
   late TabController tabController;
   late FeedProviderV2 feedProvider;
+  late ProfileProvider profileProvider;
 
   GlobalKey g1Key = GlobalKey();
   GlobalKey g2Key = GlobalKey();
@@ -48,19 +51,27 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
     });
   }
 
+  Future<void> getData() async {
+    if(!mounted) return;
+      await feedProvider.fetchFeedMostRecent(context);
+
+    if(!mounted) return;
+      await feedProvider.fetchFeedPopuler(context);
+      
+    if(!mounted) return;
+      await feedProvider.fetchFeedSelf(context);  
+
+    if(!mounted) return;  
+      await profileProvider.getProfile(context);
+  }
+
   @override
   void initState() {
     super.initState();
     
     feedProvider = context.read<FeedProviderV2>();
-    
-    Future.delayed(Duration.zero, () {
-      if(mounted) {
-        feedProvider.fetchFeedMostRecent(context);
-        feedProvider.fetchFeedPopuler(context);
-        feedProvider.fetchFeedSelf(context);    
-      }
-    });
+
+    Future.microtask(() => getData());
 
     tabController = TabController(length: 3, vsync: this, initialIndex: 0);
   }
@@ -150,7 +161,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                     separatorBuilder: (BuildContext context, int i) {
                       return Container(
                         color: Colors.blueGrey[50],
-                        height: 40.0,
+                        height: 10.0,
                       );
                     },
                     physics: const AlwaysScrollableScrollPhysics(),
@@ -167,12 +178,13 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                     }
                     return InkWell(
                       onTap: () {
-
                         NS.push(context, PostDetailScreen(
-                          forumId: feedProvider.forum1[i].id!, 
-                          replyId: "",
-                          commentId: "",
-                          from: "click",
+                          data: {
+                            "forum_id": feedProvider.forum1[i].id,
+                            "comment_id": "",
+                            "reply_id": "",
+                            "from": "click",
+                          },
                         )).then((_) {
                           feedProvider.fetchFeedMostRecent(context);
                         });
@@ -236,10 +248,12 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                       onTap: () {
                         Navigator.push(context, NS.fromLeft(
                           PostDetailScreen(
-                            forumId: feedProvider.forum1[i].id!,
-                            replyId: "",
-                            commentId: "",
-                            from: "click",
+                          data: {
+                            "forum_id": feedProvider.forum1[i].id,
+                            "comment_id": "",
+                            "reply_id": "",
+                            "from": "click",
+                          },
                           ))).then((_) => setState(() {
                           feedProvider.fetchFeedPopuler(context);
                         }));
@@ -312,10 +326,12 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                       onTap: () {
                         Navigator.push(context, NS.fromLeft(
                           PostDetailScreen(
-                            forumId: feedProvider.forum1[i].id!,
-                            commentId: "",
-                            replyId: "",
-                            from: "click",
+                            data: {
+                              "forum_id": feedProvider.forum1[i].id,
+                              "comment_id": "",
+                              "reply_id": "",
+                              "from": "click"
+                            },
                           )
                         )).then((_) => setState(() {
                           feedProvider.fetchFeedSelf(context);

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:hp3ki/views/screens/feed/replies.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import 'package:provider/provider.dart';
@@ -8,12 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:hp3ki/providers/feed/feed.dart';
-
-import 'package:hp3ki/views/screens/feed/comment_detail.dart';
-import 'package:hp3ki/views/screens/feed/post_detail.dart';
-
-import 'package:hp3ki/data/models/feed/notification.dart';
-
 import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/color_resources.dart';
@@ -104,37 +97,7 @@ class NotificationScreenState extends State<NotificationScreen> {
                   }
                   return InkWell(
                     onTap: () {
-                      if (feedProvider.notificationList[i].targetType == TargetType.reply) {
-                        Navigator.push(context,
-                          MaterialPageRoute(
-                            builder: (context) => RepliesScreen(
-                              commentId: feedProvider.notificationList[i].targetId!,
-                            ),
-                          ),
-                        );
-                      }
-                      if (feedProvider.notificationList[i].targetType == TargetType.comment) {
-                        Navigator.push(context,
-                          MaterialPageRoute(
-                            builder: (context) => CommentDetailScreen(
-                              postId: "",
-                              commentId: feedProvider.notificationList[i].targetId!,
-                            ),
-                          ),
-                        );
-                      }
-                      if (feedProvider.notificationList[i].targetType == TargetType.post) {
-                        Navigator.push(context,
-                          MaterialPageRoute(
-                            builder: (context) => PostDetailScreen(
-                              forumId: feedProvider.notificationList[i].targetId!,
-                              commentId: "",
-                              replyId: "",
-                              from: "click",
-                            ),
-                          ),
-                        );
-                      }
+                     
                     },
                     child: ListTile(
                       leading: CircleAvatar(

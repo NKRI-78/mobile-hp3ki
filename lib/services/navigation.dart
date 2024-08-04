@@ -20,24 +20,6 @@ class NS {
       })
     );
   }
-
-  static fromLeft(Widget pushNav) {
-    return PageRouteBuilder(pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-      return pushNav;
-    },
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      const begin = Offset(1.0, 0.0);
-      const end = Offset.zero;
-      const curve = Curves.ease;
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-      return SlideTransition(
-        position: animation.drive(tween),
-        child: child,
-      );
-    });
-  }
-
-
   static Future<void> pushDown(BuildContext context, Widget pushNav) {
     return Navigator.push(context,
       PageRouteBuilder(pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
@@ -55,6 +37,37 @@ class NS {
         );
       })
     );
+  }
+  static Future<void> pushUntil(BuildContext context, Widget pushNav) {
+    return Navigator.pushAndRemoveUntil(context,
+      PageRouteBuilder(pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+        return pushNav;
+      },
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(1.0, 0.0);
+      const end = Offset.zero;
+      const curve = Curves.ease;
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    }), (route) => false);
+  }
+  static fromLeft(Widget pushNav) {
+    return PageRouteBuilder(pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+      return pushNav;
+    },
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(1.0, 0.0);
+      const end = Offset.zero;
+      const curve = Curves.ease;
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    });
   }
   static Future<void> pushReplacementUp(BuildContext context, Widget pushNav) {
     return Navigator.pushReplacement(context,
@@ -90,22 +103,6 @@ class NS {
         );
       })
     );
-  }
-  static Future<void> pushReplacementUntil(BuildContext context, Widget pushNav) {
-    return Navigator.pushAndRemoveUntil(context,
-      PageRouteBuilder(pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-        return pushNav;
-      },
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      const begin = Offset(1.0, 0.0);
-      const end = Offset.zero;
-      const curve = Curves.ease;
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-      return SlideTransition(
-        position: animation.drive(tween),
-        child: child,
-      );
-    }), (route) => false);
   }
   static Future<void> pushBackReplacement(BuildContext context, Widget pushNav) {
     return Navigator.pushReplacement(context,

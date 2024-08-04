@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hp3ki/views/screens/home/home.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_mentions/flutter_mentions.dart';
@@ -15,7 +16,6 @@ import 'package:hp3ki/data/models/feedv2/feedDetail.dart';
 
 import 'package:hp3ki/providers/feedv2/feed.dart';
 import 'package:hp3ki/providers/feedv2/feedDetail.dart' as p;
-import 'package:hp3ki/providers/profile/profile.dart';
 import 'package:hp3ki/providers/feedv2/feedReply.dart';
 
 import 'package:hp3ki/utils/dimensions.dart';
@@ -39,17 +39,11 @@ import 'package:hp3ki/views/basewidgets/button/custom.dart';
 import 'package:hp3ki/views/screens/feed/widgets/post_text.dart';
 
 class PostDetailScreen extends StatefulWidget {
-  final String forumId;
-  final String commentId;
-  final String replyId;
-  final String from;
+  final dynamic data;
 
   const PostDetailScreen({
-    Key? key, 
-    required this.forumId,
-    required this.commentId,
-    required this.replyId,
-    required this.from
+    Key? key,    
+    required this.data,
   }) : super(key: key);
 
   @override
@@ -59,8 +53,10 @@ class PostDetailScreen extends StatefulWidget {
 class PostDetailScreenState extends State<PostDetailScreen>  with TickerProviderStateMixin {
 
   GlobalKey<FlutterMentionsState> mentionKey = GlobalKey<FlutterMentionsState>();
+  FocusNode mentionFn = FocusNode();
 
-  ValueNotifier<TextStyle> textStyleNotifier = ValueNotifier<TextStyle>(robotoRegular.copyWith(
+  ValueNotifier<TextStyle> textStyleNotifier = ValueNotifier<TextStyle>(
+    robotoRegular.copyWith(
     color: ColorResources.black,
     fontSize: Dimensions.fontSizeDefault
   ));
@@ -94,9 +90,9 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
 
   Widget post(BuildContext context) {
     return Consumer<p.FeedDetailProviderV2>(
-      builder: (BuildContext context, p.FeedDetailProviderV2 feedDetailProviderV2, Widget? child) {
+      builder: (BuildContext context, p.FeedDetailProviderV2 feedDetailProvider, Widget? child) {
 
-        if (feedDetailProviderV2.feedDetailStatus == p.FeedDetailStatus.loading) {
+        if (feedDetailProvider.feedDetailStatus == p.FeedDetailStatus.loading) {
           return const SizedBox(
             height: 100.0,
             child: Center(
@@ -104,6 +100,15 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
                 size: 20.0,
                 color: ColorResources.primary,
               )
+            ),
+          );
+        }
+
+        if (feedDetailProvider.feedDetailStatus == p.FeedDetailStatus.error) {
+          return const SizedBox(
+            height: 100.0,
+            child: Center(
+              child: Text("Oops! there was problem")
             ),
           );
         }
@@ -118,7 +123,7 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
               ListTile(
                 dense: true,
                 leading: CachedNetworkImage(
-                imageUrl: feedDetailProviderV2.feedDetailData.forum!.user?.avatar ?? "-",
+                imageUrl: feedDetailProvider.feedDetailData.forum!.user?.avatar ?? "-",
                   imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
                     backgroundColor: Colors.transparent,
                     backgroundImage: imageProvider,
@@ -135,19 +140,19 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
                     radius: 20.0,
                   )
                 ),
-                title: Text(feedDetailProviderV2.feedDetailData.forum!.user!.username.toString(),
+                title: Text(feedDetailProvider.feedDetailData.forum!.user!.username.toString(),
                   style: robotoRegular.copyWith(
                     fontSize: Dimensions.fontSizeDefault,
                     color: ColorResources.black
                   ),
                 ),
-                subtitle: Text(DateHelper.formatDateTime(feedDetailProviderV2.feedDetailData.forum!.createdAt!, context),
+                subtitle: Text(DateHelper.formatDateTime(feedDetailProvider.feedDetailData.forum!.createdAt!, context),
                   style: robotoRegular.copyWith(
                     fontSize: Dimensions.fontSizeExtraSmall,
                     color: ColorResources.dimGrey
                   ),
                 ),
-                trailing: context.read<ProfileProvider>().user!.id == feedDetailProviderV2.feedDetailData.forum!.user?.id
+                trailing: feedDetailProvider.ar.getUserId() == feedDetailProvider.feedDetailData.forum!.user?.id
                 ? grantedDeletePost(context) 
                 :  PopupMenuButton(
                     itemBuilder: (BuildContext buildContext) { 
@@ -264,27 +269,27 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
               
               Container(
                 margin: const EdgeInsets.only(left: 15.0),
-                child: PostText(feedDetailProviderV2.feedDetailData.forum!.caption ?? "-")
+                child: PostText(feedDetailProvider.feedDetailData.forum!.caption ?? "-")
               ),
-              if(feedDetailProviderV2.feedDetailData.forum!.type == "link")
-                PostLink(url: feedDetailProviderV2.feedDetailData.forum!.link ?? "-"),
-              if (feedDetailProviderV2.feedDetailData.forum!.type == "document")
-                feedDetailProviderV2.feedDetailData.forum!.media!.isNotEmpty ? 
+              if(feedDetailProvider.feedDetailData.forum!.type == "link")
+                PostLink(url: feedDetailProvider.feedDetailData.forum!.link ?? "-"),
+              if (feedDetailProvider.feedDetailData.forum!.type == "document")
+                feedDetailProvider.feedDetailData.forum!.media!.isNotEmpty ? 
                 PostDoc(
-                  medias: feedDetailProviderV2.feedDetailData.forum!.media!, 
+                  medias: feedDetailProvider.feedDetailData.forum!.media!, 
                 ) : Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
-              if (feedDetailProviderV2.feedDetailData.forum!.type == "image")
-                feedDetailProviderV2.feedDetailData.forum!.media!.isNotEmpty ? 
+              if (feedDetailProvider.feedDetailData.forum!.type == "image")
+                feedDetailProvider.feedDetailData.forum!.media!.isNotEmpty ? 
               PostImage(
-                feedDetailProviderV2.feedDetailData.forum!.user!.username,
-                feedDetailProviderV2.feedDetailData.forum!.caption!,
+                feedDetailProvider.feedDetailData.forum!.user!.username,
+                feedDetailProvider.feedDetailData.forum!.caption!,
                 true,
-                feedDetailProviderV2.feedDetailData.forum!.media!, 
+                feedDetailProvider.feedDetailData.forum!.media!, 
               ): Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
-              if (feedDetailProviderV2.feedDetailData.forum!.type == "video")
-                feedDetailProviderV2.feedDetailData.forum!.media!.isNotEmpty ? 
+              if (feedDetailProvider.feedDetailData.forum!.type == "video")
+                feedDetailProvider.feedDetailData.forum!.media!.isNotEmpty ? 
                 PostVideo(
-                  media: feedDetailProviderV2.feedDetailData.forum!.media![0].path,
+                  media: feedDetailProvider.feedDetailData.forum!.media![0].path,
                 ): Text(getTranslated("THERE_WAS_PROBLEM", context), style: robotoRegular),
           
               Container(
@@ -308,11 +313,11 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
                             padding: const EdgeInsets.all(5.0),
                             child: Icon(Icons.thumb_up,
                               size: 18.0,
-                              color: feedDetailProviderV2.feedDetailData.forum!.like!.likes.where((el) => el.user!.id ==  feedDetailProviderV2.ar.getUserId()).isEmpty ? ColorResources.black : ColorResources.blue
+                              color: feedDetailProvider.feedDetailData.forum!.like!.likes.where((el) => el.user!.id == feedDetailProvider.ar.getUserId()).isEmpty ? ColorResources.black : ColorResources.blue
                             ),
                           ),
                           
-                          Text("${feedDetailProviderV2.feedDetailData.forum!.like!.total}",
+                          Text("${feedDetailProvider.feedDetailData.forum!.like!.total}",
                             style: robotoRegular.copyWith(
                               color: ColorResources.black,
                               fontSize: Dimensions.fontSizeDefault
@@ -323,7 +328,7 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
                       ),
                     ),
     
-                    Text('${feedDetailProviderV2.feedDetailData.forum!.comment!.total} ${getTranslated("COMMENT", context)}',
+                    Text('${feedDetailProvider.feedDetailData.forum!.comment!.total} ${getTranslated("COMMENT", context)}',
                       style: robotoRegular.copyWith(
                         fontSize: Dimensions.fontSizeDefault
                       ),
@@ -347,16 +352,16 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
                   Expanded(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: feedDetailProviderV2.feedDetailData.forum!.like!.likes.where(
-                        (el) => el.user!.id == feedDetailProviderV2.ar.getUserId()).isEmpty 
+                        backgroundColor: feedDetailProvider.feedDetailData.forum!.like!.likes.where(
+                        (el) => el.user!.id == feedDetailProvider.ar.getUserId()).isEmpty 
                         ? ColorResources.primary 
                         : ColorResources.error
                       ),
                       onPressed: () {
                         context.read<p.FeedDetailProviderV2>().toggleLike(
                           context: context, 
-                          forumId: feedDetailProviderV2.feedDetailData.forum!.id!, 
-                          forumLikes: feedDetailProviderV2.feedDetailData.forum!.like!
+                          forumId: feedDetailProvider.feedDetailData.forum!.id!, 
+                          forumLikes: feedDetailProvider.feedDetailData.forum!.like!
                         );
                       }, 
                       child: Text(getTranslated("LIKE", context),
@@ -373,7 +378,7 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        
+                        mentionFn.requestFocus();
                       }, 
                       child: Text(getTranslated("COMMENT", context),
                         style: const TextStyle(
@@ -400,13 +405,13 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
       await feedDetailProvider.getUserMentions(context, '');
 
     if(!mounted) return;
-      await feedDetailProvider.getFeedDetail(context, widget.forumId);
+      await feedDetailProvider.getFeedDetail(context, widget.data["forum_id"]);
 
-    if(widget.from == "notification-comment") {
+    if(widget.data["from"] == "notification-comment") {
 
-      int index = feedDetailProvider.comments.indexWhere((el) => el.id == widget.commentId);
+      int index = feedDetailProvider.comments.indexWhere((el) => el.id == widget.data["comment_id"]);
 
-      feedDetailProvider.onUpdateHighlightComment(widget.commentId);
+      feedDetailProvider.onUpdateHighlightComment(widget.data["comment_id"]);
 
       Future.delayed(const Duration(milliseconds: 100), () {
         GlobalKey targetContext = feedDetailProvider.comments[index].key;
@@ -422,15 +427,15 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
 
     }
 
-    if(widget.from == "notification-reply") {
+    if(widget.data["from"] == "notification-reply") {
 
-      int indexC = feedDetailProvider.comments.indexWhere((el) => el.id == widget.commentId);
+      int index = feedDetailProvider.comments.indexWhere((el) => el.id == widget.data["comment_id"]);
 
-      feedDetailProvider.onUpdateHighlightReply(widget.replyId);
+      feedDetailProvider.onUpdateHighlightReply(widget.data["reply_id"]);
 
       Future.delayed(const Duration(milliseconds: 100), () {
-        if(feedDetailProvider.comments[indexC].reply.replies.isNotEmpty) {
-          GlobalKey targetContext = feedDetailProvider.comments[indexC].reply.replies.last.key;
+        if(feedDetailProvider.comments[index].reply.replies.isNotEmpty) {
+          GlobalKey targetContext = feedDetailProvider.comments[index].reply.replies.last.key;
           Scrollable.ensureVisible(targetContext.currentContext!,
             duration: const Duration(milliseconds: 100),
             curve: Curves.easeOut,
@@ -460,730 +465,770 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
-      body: RefreshIndicator.adaptive(
-        onRefresh: () {
-          return Future.sync(() {
-            feedDetailProvider.getFeedDetail(context, widget.forumId);
-          });
-        },
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-          slivers: [
-        
-            SliverAppBar(
-              systemOverlayStyle: SystemUiOverlayStyle.light,
-              backgroundColor: ColorResources.white,
-              title: Text('Post', 
-                style: robotoRegular.copyWith(
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        if (didPop) {
+          return;
+        }
+        NS.pushUntil(
+          context, 
+          const DashboardScreen(index: 2)
+        );
+      },
+      child: Scaffold(
+        body: RefreshIndicator.adaptive(
+          onRefresh: () {
+            return Future.sync(() {
+              feedDetailProvider.getFeedDetail(context, widget.data["forum_id"]);
+            });
+          },
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+            slivers: [
+          
+              SliverAppBar(
+                systemOverlayStyle: SystemUiOverlayStyle.light,
+                backgroundColor: ColorResources.white,
+                title: Text('Post', 
+                  style: robotoRegular.copyWith(
+                    color: ColorResources.black,
+                    fontWeight: FontWeight.w600,
+                    fontSize: Dimensions.fontSizeLarge
+                  )
+                ),
+                leading: CupertinoNavigationBarBackButton(
                   color: ColorResources.black,
-                  fontWeight: FontWeight.w600,
-                  fontSize: Dimensions.fontSizeDefault
-                )
-              ),
-              leading: CupertinoNavigationBarBackButton(
-                color: ColorResources.black,
-                onPressed: () {
-                  NS.pop(context);
-                },
-              ),
-              elevation: 0.0,
-              pinned: false,
-              centerTitle: false,
-              floating: true,
-            ),
-        
-            SliverList(
-              delegate: SliverChildListDelegate([
-        
-                post(context),
-                
-                Consumer<p.FeedDetailProviderV2>(
-                  builder: (BuildContext context, p.FeedDetailProviderV2 feedDetailProviderV2, Widget? child) {
-                    if (feedDetailProviderV2.feedDetailStatus == p.FeedDetailStatus.loading) {
-                      return const Center(
-                        child: SpinKitThreeBounce(
-                          size: 20.0,
-                          color: ColorResources.primary,
-                        )
-                      );
-                    } 
-                    if (feedDetailProviderV2.feedDetailStatus == p.FeedDetailStatus.empty) {
-                      return Center(
-                        child: Text(getTranslated("THERE_IS_NO_COMMENT", context),
-                          style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault
-                          ),
-                        )
-                      );
-                    }
-                    return NotificationListener(
-                      onNotification: (notification) {
-                        if (notification is ScrollEndNotification) {
-                          if (notification.metrics.pixels == notification.metrics.maxScrollExtent) {
-                            if (feedDetailProviderV2.hasMore) {
-                              feedDetailProviderV2.loadMoreComment(context: context, postId: widget.forumId);
-                            }
-                          }
-                        }
-                        return false;
-                      },
-                      child: ListView.separated(
-                        shrinkWrap: true,
-                        separatorBuilder: (BuildContext context, int i) {
-                          return const SizedBox(height: 8.0);
-                        },
-                        physics: const BouncingScrollPhysics(),
-                        itemCount: feedDetailProviderV2.comments.length,
-                        itemBuilder: (BuildContext context, int i) {
-
-                          m.CommentElement comment = feedDetailProviderV2.comments[i];
-                                          
-                          return Container(
-                            key: comment.key,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                ListTile(
-                                  leading: CachedNetworkImage(
-                                  imageUrl: comment.user.avatar,
-                                    imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
-                                      backgroundColor: Colors.transparent,
-                                      backgroundImage: imageProvider,
-                                      radius: 20.0,
-                                    ),
-                                    placeholder: (BuildContext context, String url) => const CircleAvatar(
-                                      backgroundColor: Colors.transparent,
-                                      backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
-                                      radius: 20.0,
-                                    ),
-                                    errorWidget: (BuildContext context, String url, dynamic error) => const CircleAvatar(
-                                      backgroundColor: Colors.transparent,
-                                      backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
-                                      radius: 20.0,
-                                    )
-                                  ),
-                                  title: Container(
-                                    padding: const EdgeInsets.all(10.0),
-                                    decoration: BoxDecoration(
-                                      color: context.watch<p.FeedDetailProviderV2>().highlightedComment == comment.id 
-                                      ? ColorResources.backgroundLive
-                                      : ColorResources.blueGrey,
-                                      borderRadius: const BorderRadius.all(
-                                        Radius.circular(8.0)
-                                      )
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-
-                                          Text(comment.user.username,
-                                            style: robotoRegular.copyWith(
-                                              fontSize: Dimensions.fontSizeDefault,
-                                            ),
-                                          ),
-
-                                          const SizedBox(height: 8.0),
-                                          
-                                          Text(DateHelper.formatDateTime(comment.createdAt, context),
-                                            style: robotoRegular.copyWith(
-                                              fontSize: Dimensions.fontSizeExtraSmall,
-                                              color: ColorResources.dimGrey
-                                            ),
-                                          ),
-                                          
-                                          const SizedBox(height: 8.0),
-
-                                          commentText(context, comment.comment),
-                                          
-                                        ]
-                                      ),
-                                    ),
-                                    trailing: context.read<ProfileProvider>().user!.id == comment.user.id 
-                                    ? grantedDeleteComment(context, comment.id, widget.forumId)
-                                    : PopupMenuButton(
-                                      itemBuilder: (BuildContext buildContext) { 
-                                        return [
-                                          PopupMenuItem(
-                                            child: Text("block user",
-                                              style: robotoRegular.copyWith(
-                                                color: ColorResources.error,
-                                                fontSize: Dimensions.fontSizeSmall
-                                              )
-                                            ), 
-                                            value: "/report-user"
-                                          ),
-                                          PopupMenuItem(
-                                            child: Text("It's spam",
-                                              style: robotoRegular.copyWith(
-                                                color: ColorResources.error,
-                                                fontSize: Dimensions.fontSizeSmall
-                                              )
-                                            ), 
-                                            value: "/report-user"
-                                          ),
-                                          PopupMenuItem(
-                                            child: Text("Nudity or sexual activity",
-                                              style: robotoRegular.copyWith(
-                                                color: ColorResources.error,
-                                                fontSize: Dimensions.fontSizeSmall
-                                              )
-                                            ), 
-                                            value: "/report-user"
-                                          ),
-                                          PopupMenuItem(
-                                            child: Text("False Information",
-                                              style: robotoRegular.copyWith(
-                                                color: ColorResources.error,
-                                                fontSize: Dimensions.fontSizeSmall
-                                              )
-                                            ), 
-                                            value: "/report-user"
-                                          )
-                                        ];
-                                      },
-                                      onSelected: (route) {
-                                        if(route == "/report-user") {
-                                          showAnimatedDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return Dialog(
-                                                child: Container(
-                                                height: 150.0,
-                                                padding: const EdgeInsets.all(10.0),
-                                                margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    const SizedBox(height: 10.0),
-                                                    const Icon(Icons.delete,
-                                                      color: ColorResources.black,
-                                                    ),
-                                                    const SizedBox(height: 10.0),
-                                                    Text(getTranslated("ARE_YOU_SURE_REPORT", context),
-                                                      style: robotoRegular.copyWith(
-                                                        fontSize: Dimensions.fontSizeSmall,
-                                                        fontWeight: FontWeight.w600
-                                                      ),
-                                                    ),
-                                                    const SizedBox(height: 10.0),
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      mainAxisSize: MainAxisSize.max,
-                                                      children: [
-                                                        ElevatedButton(
-                                                          onPressed: () => Navigator.of(context).pop(),
-                                                          child: Text(getTranslated("NO", context),
-                                                            style: robotoRegular.copyWith(
-                                                              fontSize: Dimensions.fontSizeSmall
-                                                            )
-                                                          )
-                                                        ), 
-                                                        StatefulBuilder(
-                                                          builder: (BuildContext context, Function s) {
-                                                          return ElevatedButton(
-                                                          style: ButtonStyle(
-                                                            backgroundColor: MaterialStateProperty.all(
-                                                              ColorResources.error
-                                                            ),
-                                                          ),
-                                                          onPressed: () async { 
-                                                            Navigator.of(context, rootNavigator: true).pop(); 
-                                                          },
-                                                          child: Text(getTranslated("YES", context), 
-                                                            style: robotoRegular.copyWith(
-                                                              fontSize: Dimensions.fontSizeSmall
-                                                            ),
-                                                          ),                           
-                                                        );
-                                                      })
-                                                    ],
-                                                  ) 
-                                                ])
-                                              )
-                                            );
-                                          },
-                                        );
-                                      }
-                                    },
-                                  )
-                                ),
-
-                                Container(
-                                  width: 140.0,
-                                  margin: const EdgeInsets.only(
-                                    left: 65.0,
-                                    right: 65.0
-                                  ),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-
-                                       Text(comment.like.total.toString(),
-                                        style: robotoRegular.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: Dimensions.fontSizeDefault
-                                        ),
-                                      ),
-
-                                      const SizedBox(width: 5.0),
-
-                                      InkWell(
-                                        onTap: () {
-                                          feedDetailProviderV2.toggleLikeComment(
-                                            context: context, 
-                                            forumId: widget.forumId, 
-                                            commentId: comment.id, 
-                                            commentLikes: comment.like
-                                          );
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(5.0),
-                                          child: Text(
-                                            getTranslated("LIKE", context),
-                                            style: TextStyle(
-                                              color:  comment.like.likes.where(
-                                              (el) => el.user!.id == feedDetailProviderV2.ar.getUserId()
-                                              ).isEmpty ? ColorResources.black : ColorResources.blue,
-                                                   fontSize: Dimensions.fontSizeDefault,
-                                              fontWeight: FontWeight.bold
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-
-                                      const SizedBox(width: 8.0),
-
-                                      InkWell(
-                                        onTap: () async {
-
-                                          mentionKey.currentState!.controller!.text = "@${comment.user.mention} ";
-
-                                          previousText = "@${comment.user.mention} ";
-
-                                          feedDetailProvider.onUpdateIsReplyId(comment.id);
-
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(5.0),
-                                          child: Text(getTranslated("REPLY",context),
-                                            style: robotoRegular.copyWith(
-                                              fontSize: Dimensions.fontSizeDefault,
-                                              fontWeight: FontWeight.bold
-                                            )
-                                          ),
-                                        ),
-                                      ),
-
-                                    ]
-                                  ),
-                                ),
-
-                                comment.reply.replies.isEmpty 
-                                ? const SizedBox() 
-                                : Container(
-                                    padding: const EdgeInsets.only(
-                                      top: 10.0,
-                                      bottom: 10.0,
-                                      left: 40.0
-                                    ),
-                                    child: ListView.builder(
-                                      shrinkWrap: true,
-                                      physics: const NeverScrollableScrollPhysics(),
-                                      itemCount: comment.reply.replies.length,
-                                      itemBuilder: (BuildContext context, int i) {
-
-                                      ReplyElement reply = comment.reply.replies[i];
-                                  
-                                      return Container(
-                                        key: reply.key,
-                                        child: ListTile(
-                                          leading: CachedNetworkImage(
-                                          imageUrl: reply.user.avatar.toString(),
-                                            imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
-                                              backgroundColor: Colors.transparent,
-                                              backgroundImage: imageProvider,
-                                              radius: 20.0,
-                                            ),
-                                            placeholder: (BuildContext context, String url) => const CircleAvatar(
-                                              backgroundColor: Colors.transparent,
-                                              backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
-                                              radius: 20.0,
-                                            ),
-                                            errorWidget: (BuildContext context, String url, dynamic error) => const CircleAvatar(
-                                              backgroundColor: Colors.transparent,
-                                              backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
-                                              radius: 20.0,
-                                            )
-                                          ),
-                                          title: Container(
-                                            padding: const EdgeInsets.all(10.0),
-                                            decoration: BoxDecoration(
-                                            color: context.watch<p.FeedDetailProviderV2>().highlightedReply == reply.id 
-                                              ? ColorResources.backgroundLive
-                                              : ColorResources.blueGrey,
-                                              borderRadius: const BorderRadius.all(
-                                                Radius.circular(8.0)
-                                              )
-                                            ),
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                                          
-                                                Text(reply.user.username.toString(),
-                                                  style: robotoRegular.copyWith(
-                                                    fontSize: Dimensions.fontSizeDefault,
-                                                  ),
-                                                ),
-                                                
-                                                const SizedBox(height: 8.0),
-                                                                        
-                                                Text(DateHelper.formatDateTime(reply.createdAt.toString(), context),
-                                                  style: robotoRegular.copyWith(
-                                                    fontSize: Dimensions.fontSizeExtraSmall,
-                                                    color: ColorResources.dimGrey
-                                                  ),
-                                                ),
-                                                  
-                                                const SizedBox(height: 8.0),
-                                                                        
-                                                commentText(context, reply.reply.toString()),
-
-                                                Container(
-                                                  width: 140.0,
-                                                  margin: const EdgeInsets.only(
-                                                    top: 5.0
-                                                  ),
-                                                  child: Row(
-                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    children: [
-
-                                                      Text(reply.like.total.toString(),
-                                                        style: robotoRegular.copyWith(
-                                                          fontWeight: FontWeight.bold,
-                                                          fontSize: Dimensions.fontSizeDefault
-                                                        ),
-                                                      ),
-
-                                                      const SizedBox(width: 5.0),
-
-                                                      InkWell(
-                                                        onTap: () {
-                                                          feedDetailProviderV2.toggleLikeReply(
-                                                            context: context, 
-                                                            commentId: comment.id,
-                                                            replyId: reply.id, 
-                                                          );
-                                                        },
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.all(5.0),
-                                                          child: Text(getTranslated("LIKE", context),
-                                                            style: TextStyle(
-                                                              color: reply.like.likes.where(
-                                                              (el) => el.user!.id == feedDetailProviderV2.ar.getUserId()
-                                                              ).isEmpty ? ColorResources.black : ColorResources.blue,
-                                                              fontSize: Dimensions.fontSizeDefault,
-                                                              fontWeight: FontWeight.bold
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-
-                                                      const SizedBox(width: 8.0),
-
-                                                      InkWell(
-                                                        onTap: () {
-
-                                                          mentionKey.currentState!.controller!.text = "@${reply.user.mention.trim()} ";
-
-                                                          previousText = "@${reply.user.mention} ";
-
-                                                          feedDetailProvider.onUpdateIsReplyId(comment.id);
-
-                                                        },
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.all(5.0),
-                                                          child: Text(getTranslated("REPLY",context),
-                                                            style: robotoRegular.copyWith(
-                                                              fontSize: Dimensions.fontSizeDefault,
-                                                              fontWeight: FontWeight.bold
-                                                            )
-                                                          ),
-                                                        ),
-                                                      ),
-
-                                                    ]
-                                                  ),
-                                                ),
-                                        
-                                              ]
-                                            ),
-                                          ),
-                                          trailing: context.read<ProfileProvider>().user!.id == reply.user.id 
-                                          ? grantedDeleteReply(context, widget.forumId, reply.id)
-                                          : PopupMenuButton(
-                                              itemBuilder: (BuildContext buildContext) { 
-                                                return [
-                                                  PopupMenuItem(
-                                                    child: Text("block user",
-                                                      style: robotoRegular.copyWith(
-                                                        color: ColorResources.error,
-                                                        fontSize: Dimensions.fontSizeSmall
-                                                      )
-                                                    ), 
-                                                    value: "/report-user"
-                                                  ),
-                                                  PopupMenuItem(
-                                                    child: Text("It's spam",
-                                                      style: robotoRegular.copyWith(
-                                                        color: ColorResources.error,
-                                                        fontSize: Dimensions.fontSizeSmall
-                                                      )
-                                                    ), 
-                                                    value: "/report-user"
-                                                  ),
-                                                  PopupMenuItem(
-                                                    child: Text("Nudity or sexual activity",
-                                                      style: robotoRegular.copyWith(
-                                                        color: ColorResources.error,
-                                                        fontSize: Dimensions.fontSizeSmall
-                                                      )
-                                                    ), 
-                                                    value: "/report-user"
-                                                  ),
-                                                  PopupMenuItem(
-                                                    child: Text("False Information",
-                                                      style: robotoRegular.copyWith(
-                                                        color: ColorResources.error,
-                                                        fontSize: Dimensions.fontSizeSmall
-                                                      )
-                                                    ), 
-                                                    value: "/report-user"
-                                                  )
-                                                ];
-                                              },
-                                              onSelected: (route) {
-                                                if(route == "/report-user") {
-                                                  showAnimatedDialog(
-                                                    context: context,
-                                                    builder: (context) {
-                                                      return Dialog(
-                                                        child: Container(
-                                                        height: 150.0,
-                                                        padding: const EdgeInsets.all(10.0),
-                                                        margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
-                                                        child: Column(
-                                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                                          children: [
-                                                            const SizedBox(height: 10.0),
-                                                            const Icon(Icons.delete,
-                                                              color: ColorResources.black,
-                                                            ),
-                                                            const SizedBox(height: 10.0),
-                                                            Text(getTranslated("ARE_YOU_SURE_REPORT", context),
-                                                              style: robotoRegular.copyWith(
-                                                                fontSize: Dimensions.fontSizeSmall,
-                                                                fontWeight: FontWeight.w600
-                                                              ),
-                                                            ),
-                                                            const SizedBox(height: 10.0),
-                                                            Row(
-                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                              mainAxisSize: MainAxisSize.max,
-                                                              children: [
-                                                                ElevatedButton(
-                                                                  onPressed: () => Navigator.of(context).pop(),
-                                                                  child: Text(getTranslated("NO", context),
-                                                                    style: robotoRegular.copyWith(
-                                                                      fontSize: Dimensions.fontSizeSmall
-                                                                    )
-                                                                  )
-                                                                ), 
-                                                                StatefulBuilder(
-                                                                  builder: (BuildContext context, Function s) {
-                                                                  return ElevatedButton(
-                                                                  style: ButtonStyle(
-                                                                    backgroundColor: MaterialStateProperty.all(
-                                                                      ColorResources.error
-                                                                    ),
-                                                                  ),
-                                                                  onPressed: () async { 
-                                                                    Navigator.of(context, rootNavigator: true).pop(); 
-                                                                  },
-                                                                  child: Text(getTranslated("YES", context), 
-                                                                    style: robotoRegular.copyWith(
-                                                                      fontSize: Dimensions.fontSizeSmall
-                                                                    ),
-                                                                  ),                           
-                                                                );
-                                                              })
-                                                            ],
-                                                          ) 
-                                                        ])
-                                                      )
-                                                    );
-                                                  },
-                                                );
-                                              }
-                                            },
-                                          )
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-
-                              ]
-                            ),
-                          );
-                        },
-                      ),
+                  onPressed: () {
+                    NS.pushUntil(
+                      context, 
+                      const DashboardScreen(index: 2)
                     );
                   },
                 ),
-        
-              ])
-            )
-        
-          ],
-        ),
-      ),
-      bottomNavigationBar: Container(
-        padding: MediaQuery.of(context).viewInsets,
-        decoration: const BoxDecoration(
-          color: ColorResources.white
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            
-            Expanded(
-              child: ValueListenableBuilder<TextStyle>(
-                valueListenable: textStyleNotifier,
-                builder: (context, textStyle, child) {
-                  return FlutterMentions(
-                    key: mentionKey,
-                    maxLines: 5,
-                    minLines: 1,
-                    appendSpaceOnAdd: true,
-                    suggestionPosition: SuggestionPosition.Top,
-                    onSearchChanged: (String trigger, String val) async {
-                      await feedDetailProvider.getUserMentions(context, val);
-                    },
-                    onChanged: (String val) {
-                      feedDetailProvider.onListenComment(val);
-
-                      // if (val.contains('@')) {
-                      //   textStyleNotifier.value =robotoRegular.copyWith(
-                      //     color: ColorResources.blue,
-                      //     fontSize: Dimensions.fontSizeDefault
-                      //   );
-                      // } else {
-                      //   textStyleNotifier.value =robotoRegular.copyWith(
-                      //     color: ColorResources.black,
-                      //     fontSize: Dimensions.fontSizeDefault
-                      //   );
-                      // }
-        
-                      final currentText = mentionKey.currentState!.controller!.text;
-
-                      if (previousText.length - currentText.length == 1) {
-                        feedDetailProvider.onUpdateIsReplyId("");
+                elevation: 0.0,
+                centerTitle: true,
+                pinned: false,
+                floating: true,
+              ),
+          
+              SliverList(
+                delegate: SliverChildListDelegate([
+          
+                  post(context),
+                  
+                  Consumer<p.FeedDetailProviderV2>(
+                    builder: (BuildContext context, p.FeedDetailProviderV2 feedDetailProvider, Widget? child) {
+                      if (feedDetailProvider.feedDetailStatus == p.FeedDetailStatus.loading) {
+                        return const Center(
+                          child: SpinKitThreeBounce(
+                            size: 20.0,
+                            color: ColorResources.primary,
+                          )
+                        );
+                      } 
+                      if (feedDetailProvider.feedDetailStatus == p.FeedDetailStatus.empty) {
+                        return Center(
+                          child: Text(getTranslated("THERE_IS_NO_COMMENT", context),
+                            style: robotoRegular.copyWith(
+                              fontSize: Dimensions.fontSizeDefault
+                            ),
+                          )
+                        );
                       }
-                    },
-                    style: textStyle,
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.only(
-                        left: 16.0,
-                        right: 16.0
-                      ),
-                      hintText: '${getTranslated("WRITE_COMMENT", context)} ...',
-                      hintStyle: robotoRegular.copyWith(
-                        color: ColorResources.greyDarkPrimary,
-                        fontSize: Dimensions.fontSizeDefault
-                      ),
-                    ),
-                    mentions: [
-                      
-                      Mention(
-                        trigger: '@',
-                        style: const TextStyle(
-                          color: Colors.blue,
-                        ),
-                        data: context.watch<p.FeedDetailProviderV2>().userMentions,
-                        suggestionBuilder: (Map<String, dynamic> data) {
-
-                          return Container(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-
-                              CachedNetworkImage(
-                                imageUrl: data['photo'].toString(),
-                                imageBuilder: (context, imageProvider) {
-                                  return CircleAvatar(
-                                    backgroundImage: imageProvider,
-                                  );
-                                },
-                                placeholder: (_, __) {
-                                  return const CircleAvatar(
-                                    backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
-                                  );
-                                },
-                                errorWidget: (_, ___, __) {
-                                  return const CircleAvatar(
-                                    backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
-                                  );
-                                },
-                              ),
-
-                              const SizedBox(
-                                width: 20.0,
-                              ),
-
-                              Column(
+                      return NotificationListener(
+                        onNotification: (notification) {
+                          if (notification is ScrollEndNotification) {
+                            if (notification.metrics.pixels == notification.metrics.maxScrollExtent) {
+                              if (feedDetailProvider.hasMore) {
+                                feedDetailProvider.loadMoreComment(context: context, postId: widget.data["forum_id"]);
+                              }
+                            }
+                          }
+                          return false;
+                        },
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          separatorBuilder: (BuildContext context, int i) {
+                            return const SizedBox(height: 8.0);
+                          },
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: feedDetailProvider.comments.length,
+                          itemBuilder: (BuildContext context, int i) {
+      
+                            m.CommentElement comment = feedDetailProvider.comments[i];
+                                            
+                            return Container(
+                              key: comment.key,
+                              child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Text(data['fullname']),
-                                  Text('@${data['display']}',
-                                    style: robotoRegular.copyWith(
-                                      color: Colors.blue
+      
+                                  ListTile(
+                                    leading: CachedNetworkImage(
+                                    imageUrl: comment.user.avatar,
+                                      imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
+                                        backgroundColor: Colors.transparent,
+                                        backgroundImage: imageProvider,
+                                        radius: 20.0,
+                                      ),
+                                      placeholder: (BuildContext context, String url) => const CircleAvatar(
+                                        backgroundColor: Colors.transparent,
+                                        backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                                        radius: 20.0,
+                                      ),
+                                      errorWidget: (BuildContext context, String url, dynamic error) => const CircleAvatar(
+                                        backgroundColor: Colors.transparent,
+                                        backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                                        radius: 20.0,
+                                      )
+                                    ),
+                                    title: Container(
+                                      padding: const EdgeInsets.all(10.0),
+                                      decoration: BoxDecoration(
+                                        color: context.watch<p.FeedDetailProviderV2>().highlightedComment == comment.id 
+                                        ? ColorResources.backgroundLive
+                                        : ColorResources.blueGrey,
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(8.0)
+                                        )
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+      
+                                            Text(comment.user.username,
+                                              style: robotoRegular.copyWith(
+                                                fontSize: Dimensions.fontSizeDefault,
+                                              ),
+                                            ),
+      
+                                            const SizedBox(height: 8.0),
+                                            
+                                            Text(DateHelper.formatDateTime(comment.createdAt, context),
+                                              style: robotoRegular.copyWith(
+                                                fontSize: Dimensions.fontSizeExtraSmall,
+                                                color: ColorResources.dimGrey
+                                              ),
+                                            ),
+                                            
+                                            const SizedBox(height: 8.0),
+      
+                                            commentText(context, comment.comment),
+                                            
+                                          ]
+                                        ),
+                                      ),
+                                      trailing: feedDetailProvider.ar.getUserId() == comment.user.id 
+                                      ? grantedDeleteComment(context, comment.id, widget.data["forum_id"])
+                                      : PopupMenuButton(
+                                        itemBuilder: (BuildContext buildContext) { 
+                                          return [
+                                            PopupMenuItem(
+                                              child: Text("block user",
+                                                style: robotoRegular.copyWith(
+                                                  color: ColorResources.error,
+                                                  fontSize: Dimensions.fontSizeSmall
+                                                )
+                                              ), 
+                                              value: "/report-user"
+                                            ),
+                                            PopupMenuItem(
+                                              child: Text("It's spam",
+                                                style: robotoRegular.copyWith(
+                                                  color: ColorResources.error,
+                                                  fontSize: Dimensions.fontSizeSmall
+                                                )
+                                              ), 
+                                              value: "/report-user"
+                                            ),
+                                            PopupMenuItem(
+                                              child: Text("Nudity or sexual activity",
+                                                style: robotoRegular.copyWith(
+                                                  color: ColorResources.error,
+                                                  fontSize: Dimensions.fontSizeSmall
+                                                )
+                                              ), 
+                                              value: "/report-user"
+                                            ),
+                                            PopupMenuItem(
+                                              child: Text("False Information",
+                                                style: robotoRegular.copyWith(
+                                                  color: ColorResources.error,
+                                                  fontSize: Dimensions.fontSizeSmall
+                                                )
+                                              ), 
+                                              value: "/report-user"
+                                            )
+                                          ];
+                                        },
+                                        onSelected: (route) {
+                                          if(route == "/report-user") {
+                                            showAnimatedDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return Dialog(
+                                                  child: Container(
+                                                  height: 150.0,
+                                                  padding: const EdgeInsets.all(10.0),
+                                                  margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: [
+                                                      const SizedBox(height: 10.0),
+                                                      const Icon(Icons.delete,
+                                                        color: ColorResources.black,
+                                                      ),
+                                                      const SizedBox(height: 10.0),
+                                                      Text(getTranslated("ARE_YOU_SURE_REPORT", context),
+                                                        style: robotoRegular.copyWith(
+                                                          fontSize: Dimensions.fontSizeSmall,
+                                                          fontWeight: FontWeight.w600
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 10.0),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        mainAxisSize: MainAxisSize.max,
+                                                        children: [
+                                                          ElevatedButton(
+                                                            onPressed: () => Navigator.of(context).pop(),
+                                                            child: Text(getTranslated("NO", context),
+                                                              style: robotoRegular.copyWith(
+                                                                fontSize: Dimensions.fontSizeSmall
+                                                              )
+                                                            )
+                                                          ), 
+                                                          StatefulBuilder(
+                                                            builder: (BuildContext context, Function s) {
+                                                              return ElevatedButton(
+                                                                style: ButtonStyle(
+                                                                  backgroundColor: MaterialStateProperty.all(
+                                                                    ColorResources.error
+                                                                  ),
+                                                                ),
+                                                                onPressed: () async { 
+                                                                  Navigator.of(context, rootNavigator: true).pop(); 
+                                                                },
+                                                                child: Text(getTranslated("YES", context), 
+                                                                  style: robotoRegular.copyWith(
+                                                                    fontSize: Dimensions.fontSizeSmall
+                                                                  ),
+                                                                ),                           
+                                                              );
+                                                            }
+                                                          )
+                                                        ],
+                                                      ) 
+                                                    ]
+                                                  )
+                                                )
+                                              );
+                                            },
+                                          );
+                                        }
+                                      },
+                                    )
+                                  ),
+      
+                                  Container(
+                                    width: 140.0,
+                                    margin: const EdgeInsets.only(
+                                      left: 65.0,
+                                      right: 65.0
+                                    ),
+                                    child: Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+      
+                                         Text(comment.like.total.toString(),
+                                          style: robotoRegular.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: Dimensions.fontSizeDefault
+                                          ),
+                                        ),
+      
+                                        const SizedBox(width: 5.0),
+      
+                                        InkWell(
+                                          onTap: () {
+                                            feedDetailProvider.toggleLikeComment(
+                                              context: context, 
+                                              forumId: widget.data["forum_id"], 
+                                              commentId: comment.id, 
+                                              commentLikes: comment.like
+                                            );
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(5.0),
+                                            child: Text(
+                                              getTranslated("LIKE", context),
+                                              style: TextStyle(
+                                                color:  comment.like.likes.where(
+                                                (el) => el.user!.id == feedDetailProvider.ar.getUserId()
+                                                ).isEmpty ? ColorResources.black : ColorResources.blue,
+                                                     fontSize: Dimensions.fontSizeDefault,
+                                                fontWeight: FontWeight.bold
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+      
+                                        const SizedBox(width: 8.0),
+      
+                                        InkWell(
+                                          onTap: () async {
+      
+                                            mentionKey.currentState!.controller!.text = "@${comment.user.mention} ";
+      
+                                            mentionFn.requestFocus();
+      
+                                            previousText = "@${comment.user.mention} ";
+      
+                                            feedDetailProvider.onUpdateIsReplyId(comment.id);
+      
+                                            setState(() {});
+      
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(5.0),
+                                            child: Text(getTranslated("REPLY",context),
+                                              style: robotoRegular.copyWith(
+                                                fontSize: Dimensions.fontSizeDefault,
+                                                fontWeight: FontWeight.bold
+                                              )
+                                            ),
+                                          ),
+                                        ),
+      
+                                      ]
                                     ),
                                   ),
-                                ],
-                              )
-
-                            ],
-                          ),
-                        );
-                      }),
-
-                    ]
-                  );
-              }),
-            ),
-            
-            IconButton(
-              icon: const Icon(
-                Icons.send,
-                color: ColorResources.black,
-              ),
-              onPressed: () async {
-                await feedDetailProvider.postComment(
-                  context, mentionKey, widget.forumId
-                );
-              } 
-            ),
-            
-          ],
+      
+                                  comment.reply.replies.isEmpty 
+                                  ? const SizedBox() 
+                                  : Container(
+                                      padding: const EdgeInsets.only(
+                                        top: 10.0,
+                                        bottom: 10.0,
+                                        left: 40.0
+                                      ),
+                                      child: ListView.builder(
+                                        shrinkWrap: true,
+                                        physics: const NeverScrollableScrollPhysics(),
+                                        itemCount: comment.reply.replies.length,
+                                        itemBuilder: (BuildContext context, int i) {
+      
+                                        ReplyElement reply = comment.reply.replies[i];
+                                    
+                                        return Container(
+                                          key: reply.key,
+                                          child: ListTile(
+                                            leading: CachedNetworkImage(
+                                            imageUrl: reply.user.avatar.toString(),
+                                              imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
+                                                backgroundColor: Colors.transparent,
+                                                backgroundImage: imageProvider,
+                                                radius: 20.0,
+                                              ),
+                                              placeholder: (BuildContext context, String url) => const CircleAvatar(
+                                                backgroundColor: Colors.transparent,
+                                                backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                                                radius: 20.0,
+                                              ),
+                                              errorWidget: (BuildContext context, String url, dynamic error) => const CircleAvatar(
+                                                backgroundColor: Colors.transparent,
+                                                backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                                                radius: 20.0,
+                                              )
+                                            ),
+                                            title: Container(
+                                              padding: const EdgeInsets.all(10.0),
+                                              decoration: BoxDecoration(
+                                              color: context.watch<p.FeedDetailProviderV2>().highlightedReply == reply.id 
+                                                ? ColorResources.backgroundLive
+                                                : ColorResources.blueGrey,
+                                                borderRadius: const BorderRadius.all(
+                                                  Radius.circular(8.0)
+                                                )
+                                              ),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                                            
+                                                  Text(reply.user.username.toString(),
+                                                    style: robotoRegular.copyWith(
+                                                      fontSize: Dimensions.fontSizeDefault,
+                                                    ),
+                                                  ),
+                                                  
+                                                  const SizedBox(height: 8.0),
+                                                                          
+                                                  Text(DateHelper.formatDateTime(reply.createdAt.toString(), context),
+                                                    style: robotoRegular.copyWith(
+                                                      fontSize: Dimensions.fontSizeExtraSmall,
+                                                      color: ColorResources.dimGrey
+                                                    ),
+                                                  ),
+                                                    
+                                                  const SizedBox(height: 8.0),
+                                                                          
+                                                  commentText(context, reply.reply.toString()),
+      
+                                                  Container(
+                                                    width: 140.0,
+                                                    margin: const EdgeInsets.only(
+                                                      top: 5.0
+                                                    ),
+                                                    child: Row(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      children: [
+      
+                                                        Text(reply.like.total.toString(),
+                                                          style: robotoRegular.copyWith(
+                                                            fontWeight: FontWeight.bold,
+                                                            fontSize: Dimensions.fontSizeDefault
+                                                          ),
+                                                        ),
+      
+                                                        const SizedBox(width: 5.0),
+      
+                                                        InkWell(
+                                                          onTap: () {
+                                                            feedDetailProvider.toggleLikeReply(
+                                                              context: context, 
+                                                              commentId: comment.id,
+                                                              replyId: reply.id, 
+                                                            );
+                                                          },
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.all(5.0),
+                                                            child: Text(getTranslated("LIKE", context),
+                                                              style: TextStyle(
+                                                                color: reply.like.likes.where(
+                                                                (el) => el.user!.id == feedDetailProvider.ar.getUserId()
+                                                                ).isEmpty ? ColorResources.black : ColorResources.blue,
+                                                                fontSize: Dimensions.fontSizeDefault,
+                                                                fontWeight: FontWeight.bold
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+      
+                                                        const SizedBox(width: 8.0),
+      
+                                                        InkWell(
+                                                          onTap: () {
+                                                            mentionKey.currentState!.controller!.text = "@${reply.user.mention} ";
+      
+                                                            mentionFn.requestFocus();
+                                                            
+                                                            previousText = "@${reply.user.mention} ";
+      
+                                                            feedDetailProvider.onUpdateIsReplyId(comment.id);
+      
+                                                            setState(() {});
+                                                          },
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.all(5.0),
+                                                            child: Text(getTranslated("REPLY",context),
+                                                              style: robotoRegular.copyWith(
+                                                                fontSize: Dimensions.fontSizeDefault,
+                                                                fontWeight: FontWeight.bold
+                                                              )
+                                                            ),
+                                                          ),
+                                                        ),
+      
+                                                      ]
+                                                    ),
+                                                  ),
+                                          
+                                                ]
+                                              ),
+                                            ),
+                                            trailing: feedDetailProvider.ar.getUserId() == reply.user.id 
+                                            ? grantedDeleteReply(context, widget.data["forum_id"], reply.id)
+                                            : PopupMenuButton(
+                                                itemBuilder: (BuildContext buildContext) { 
+                                                  return [
+                                                    PopupMenuItem(
+                                                      child: Text("block user",
+                                                        style: robotoRegular.copyWith(
+                                                          color: ColorResources.error,
+                                                          fontSize: Dimensions.fontSizeSmall
+                                                        )
+                                                      ), 
+                                                      value: "/report-user"
+                                                    ),
+                                                    PopupMenuItem(
+                                                      child: Text("It's spam",
+                                                        style: robotoRegular.copyWith(
+                                                          color: ColorResources.error,
+                                                          fontSize: Dimensions.fontSizeSmall
+                                                        )
+                                                      ), 
+                                                      value: "/report-user"
+                                                    ),
+                                                    PopupMenuItem(
+                                                      child: Text("Nudity or sexual activity",
+                                                        style: robotoRegular.copyWith(
+                                                          color: ColorResources.error,
+                                                          fontSize: Dimensions.fontSizeSmall
+                                                        )
+                                                      ), 
+                                                      value: "/report-user"
+                                                    ),
+                                                    PopupMenuItem(
+                                                      child: Text("False Information",
+                                                        style: robotoRegular.copyWith(
+                                                          color: ColorResources.error,
+                                                          fontSize: Dimensions.fontSizeSmall
+                                                        )
+                                                      ), 
+                                                      value: "/report-user"
+                                                    )
+                                                  ];
+                                                },
+                                                onSelected: (route) {
+                                                  if(route == "/report-user") {
+                                                    showAnimatedDialog(
+                                                      context: context,
+                                                      builder: (context) {
+                                                        return Dialog(
+                                                          child: Container(
+                                                          height: 150.0,
+                                                          padding: const EdgeInsets.all(10.0),
+                                                          margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
+                                                          child: Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                                            children: [
+                                                              const SizedBox(height: 10.0),
+                                                              const Icon(Icons.delete,
+                                                                color: ColorResources.black,
+                                                              ),
+                                                              const SizedBox(height: 10.0),
+                                                              Text(getTranslated("ARE_YOU_SURE_REPORT", context),
+                                                                style: robotoRegular.copyWith(
+                                                                  fontSize: Dimensions.fontSizeSmall,
+                                                                  fontWeight: FontWeight.w600
+                                                                ),
+                                                              ),
+                                                              const SizedBox(height: 10.0),
+                                                              Row(
+                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                mainAxisSize: MainAxisSize.max,
+                                                                children: [
+                                                                  ElevatedButton(
+                                                                    onPressed: () => Navigator.of(context).pop(),
+                                                                    child: Text(getTranslated("NO", context),
+                                                                      style: robotoRegular.copyWith(
+                                                                        fontSize: Dimensions.fontSizeSmall
+                                                                      )
+                                                                    )
+                                                                  ), 
+                                                                  StatefulBuilder(
+                                                                    builder: (BuildContext context, Function s) {
+                                                                    return ElevatedButton(
+                                                                    style: ButtonStyle(
+                                                                      backgroundColor: MaterialStateProperty.all(
+                                                                        ColorResources.error
+                                                                      ),
+                                                                    ),
+                                                                    onPressed: () async { 
+                                                                      Navigator.of(context, rootNavigator: true).pop(); 
+                                                                    },
+                                                                    child: Text(getTranslated("YES", context), 
+                                                                      style: robotoRegular.copyWith(
+                                                                        fontSize: Dimensions.fontSizeSmall
+                                                                      ),
+                                                                    ),                           
+                                                                  );
+                                                                })
+                                                              ],
+                                                            ) 
+                                                          ])
+                                                        )
+                                                      );
+                                                    },
+                                                  );
+                                                }
+                                              },
+                                            )
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+      
+                                ]
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
+          
+                ])
+              )
+          
+            ],
+          ),
         ),
-      )
+        bottomNavigationBar: Container(
+          padding: MediaQuery.of(context).viewInsets,
+          decoration: const BoxDecoration(
+            color: ColorResources.white
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              
+              Expanded(
+                child: ValueListenableBuilder<TextStyle>(
+                  valueListenable: textStyleNotifier,
+                  builder: (context, textStyle, child) {
+                    return FlutterMentions(
+                      key: mentionKey,
+                      focusNode: mentionFn,
+                      maxLines: 5,
+                      minLines: 1,
+                      appendSpaceOnAdd: true,
+                      suggestionPosition: SuggestionPosition.Top,
+                      onSearchChanged: (String trigger, String val) async {
+                        await feedDetailProvider.getUserMentions(context, val);
+                      },
+                      onChanged: (String val) {
+                        feedDetailProvider.onListenComment(val);
+      
+                        // if (val.contains('@')) {
+                        //   textStyleNotifier.value =robotoRegular.copyWith(
+                        //     color: ColorResources.blue,
+                        //     fontSize: Dimensions.fontSizeDefault
+                        //   );
+                        // } else {
+                        //   textStyleNotifier.value =robotoRegular.copyWith(
+                        //     color: ColorResources.black,
+                        //     fontSize: Dimensions.fontSizeDefault
+                        //   );
+                        // }
+          
+                        final currentText = mentionKey.currentState!.controller!.text;
+      
+                        if (previousText.length - currentText.length == 1) {
+                          feedDetailProvider.onUpdateIsReplyId("");
+                        }
+                      },
+                      style: textStyle,
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.only(
+                          left: 16.0,
+                          right: 16.0
+                        ),
+                        hintText: '${getTranslated("WRITE_COMMENT", context)} ...',
+                        hintStyle: robotoRegular.copyWith(
+                          color: ColorResources.greyDarkPrimary,
+                          fontSize: Dimensions.fontSizeDefault
+                        ),
+                      ),
+                      mentions: [
+                        
+                        Mention(
+                          trigger: '@',
+                          style: const TextStyle(
+                            color: Colors.blue,
+                          ),
+                          data: context.watch<p.FeedDetailProviderV2>().userMentions,
+                          suggestionBuilder: (Map<String, dynamic> data) {
+      
+                            return Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                IgnorePointer(
+                                  ignoring: true,
+                                  child: Container(
+                                    color: ColorResources.white,
+                                    width: double.infinity,
+                                    height: 60,
+                                    child: const SizedBox(),
+                                  ),
+                                ),
+                                Positioned.fill(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      mentionKey.currentState!.controller!.text = "@${data['display']}";
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                                                
+                                          CachedNetworkImage(
+                                            imageUrl: data['photo'].toString(),
+                                            imageBuilder: (context, imageProvider) {
+                                              return CircleAvatar(
+                                                backgroundImage: imageProvider,
+                                              );
+                                            },
+                                            placeholder: (_, __) {
+                                              return const CircleAvatar(
+                                                backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                                              );
+                                            },
+                                            errorWidget: (_, ___, __) {
+                                              return const CircleAvatar(
+                                                backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                                              );
+                                            },
+                                          ),
+                                                                  
+                                          const SizedBox(
+                                            width: 20.0,
+                                          ),
+                                                                  
+                                          Text('@${data['display']}',
+                                            style: robotoRegular.copyWith(
+                                              color:Colors.blue
+                                            ),
+                                          )
+                                                                
+                                        ],
+                                      ),
+                                    )
+                                  ),
+                                ),
+                              ],
+                            );
+      
+                        }),
+      
+                      ]
+                    );
+                }),
+              ),
+              
+              IconButton(
+                icon: const Icon(
+                  Icons.send,
+                  color: ColorResources.black,
+                ),
+                onPressed: () async {
+                  await feedDetailProvider.postComment(
+                    context, mentionKey, widget.data["forum_id"]
+                  );
+                } 
+              ),
+              
+            ],
+          ),
+        )
+      ),
     );
   }
 

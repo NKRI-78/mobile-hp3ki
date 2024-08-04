@@ -144,6 +144,8 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
 
     panelC = PanelController();
 
+    selectedIndex = widget.index == null ? 0 : widget.index!;
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (context.read<ProfileProvider>().isActive == 1) {
         getData1();

@@ -563,7 +563,7 @@ class AuthProvider with ChangeNotifier {
     FirebaseAuth.instance.signOut();
     deleteData();
     Future.delayed(const Duration(milliseconds: 500), () {
-      NS.pushReplacementUntil(context, const SignInScreen());
+      NS.pushUntil(context, const SignInScreen());
     });
   }
 }

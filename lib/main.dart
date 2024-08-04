@@ -6,8 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:flutter_mentions/flutter_mentions.dart';
-import 'package:hp3ki/services/navigation.dart';
-import 'package:hp3ki/views/screens/feed/post_detail.dart';
+
 
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +22,7 @@ import 'package:hp3ki/providers.dart';
 import 'package:hp3ki/providers/firebase/firebase.dart';
 import 'package:hp3ki/providers/localization/localization.dart';
 
+import 'package:hp3ki/services/navigation.dart';
 import 'package:hp3ki/services/notification.dart';
 import 'package:hp3ki/services/services.dart';
 
@@ -32,11 +32,72 @@ import 'package:hp3ki/utils/constant.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/shared_preferences.dart';
 
+import 'package:hp3ki/views/screens/feed/post_detail.dart';
 import 'package:hp3ki/views/screens/splash/splash.dart';
+
+
+// @pragma('vm:entry-point')
+// Future<void> firebaseBackgroundHandler(RemoteMessage message) async {
+  
+  // if(message.data["click_action"] == "create-comment") {       
+  //   NS.pushUntil(
+  //     navigatorKey.currentContext!, 
+  //     TestingBackgroundScreen(
+  //       data: message.data,
+  //     )
+      // PostDetailScreen(
+      //   forumId: message.data["forum_id"],
+      //   commentId: message.data["comment_id"],
+      //   replyId: "",
+      //   from: "notification-comment",
+      // )
+  //   );
+  // }
+
+  // if(message.data["click_action"] == "create-reply") {
+  //   NS.pushUntil(
+  //     navigatorKey.currentContext!, 
+  //     PostDetailScreen(
+  //       data: {
+  //         "forum_id": message.data["forum_id"],
+  //         "comment_id": message.data["comment_id"],
+  //         "reply_id": message.data["reply_id"],
+  //         "from": "notification-reply",
+  //       },
+       
+  //     )
+  //   );
+  // }
+
+  // if(data != {}) {
+    // if(data["type"] != null) {
+    //   await DBHelper.setAccountActive("accounts", 
+    //     data: {
+    //       "id": 1,
+    //       "status": "approval",
+    //       "createdAt": DateTime.now().toIso8601String()
+    //     }
+    //   );
+    // }
+  // }
+
+//   Soundpool soundpool = Soundpool.fromOptions(
+//     options: SoundpoolOptions.kDefault,
+//   );
+//   int soundId = await rootBundle.load("assets/sounds/notification.mp3").then((ByteData soundData) {
+//     return soundpool.load(soundData);
+//   });
+//   await soundpool.play(soundId);
+// }
+
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp();
+
+  // FirebaseMessaging.onBackgroundMessage(firebaseBackgroundHandler);
 
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
 
@@ -54,6 +115,12 @@ Future<void> main() async {
   ]);
 
   timeago.setLocaleMessages('id', CustomLocalDate());
+
+  FlutterError.onError = (details) {
+    FlutterError.presentError(details);
+    debugPrint(details.stack.toString());
+    // if (kReleaseMode) exit(1);
+  };
 
   runApp(MultiProvider(
     providers: providers,
@@ -107,31 +174,36 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void onClickedNotification(String? payload) {
     var data = json.decode(payload!);
 
-    if(data["type"] == "create-comment") {
-      NS.pushReplacement(
+    if(data["click_action"] == "create-comment") {
+      NS.pushUntil(
         navigatorKey.currentContext!, 
         PostDetailScreen(
-          forumId: data["forum_id"],
-          commentId: data["comment_id"],
-          replyId: "",
-          from: "notification-comment",
+          data: {
+            "forum_id": data["forum_id"],
+            "comment_id": data["comment_id"],
+            "reply_id": data["reply_id"],
+            "from": "notification-comment",
+          },
         )
       );
     }
 
-    if(data["type"] == "create-reply") {
-      NS.pushReplacement(
+    if(data["click_action"] == "create-reply") {
+      NS.pushUntil(
         navigatorKey.currentContext!, 
         PostDetailScreen(
-          forumId: data["forum_id"],
-          commentId: data["comment_id"],
-          replyId: data["reply_id"],
-          from: "notification-reply",
+          data: {
+            "forum_id": data["forum_id"],
+            "comment_id": data["comment_id"],
+            "reply_id": data["reply_id"],
+            "from": "notification-reply",
+          },
         )
       );
     }
 
   }
+
 
   @override
   void initState() {
@@ -142,6 +214,7 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
     Future.microtask(() => getData()); 
 
     context.read<FirebaseProvider>().listenNotification(context);
+
     listenOnClickNotifications();
   }
 

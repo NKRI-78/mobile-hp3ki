@@ -201,6 +201,10 @@ class AuthRepo {
     return SharedPrefs.getUserId();
   }
 
+  String getUserAvatar() {
+    return SharedPrefs.getUserAvatar();
+  }
+
   String getUserFullname() {
     return SharedPrefs.getUserName();
   }
