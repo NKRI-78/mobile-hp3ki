@@ -55,7 +55,7 @@ import 'package:flutter_glow/flutter_glow.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:badges/badges.dart' as b;
+// import 'package:badges/badges.dart' as b;
 
 class DashboardScreen extends StatefulWidget {
   final int? index;
@@ -586,33 +586,29 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
   }
 
   Consumer<InboxProvider> buildNotificationItem() {
-    return Consumer<InboxProvider>(builder:
-        (BuildContext context, InboxProvider inboxProvider, Widget? child) {
+    return Consumer<InboxProvider>(builder: (BuildContext context, InboxProvider inboxProvider, Widget? child) {
       if (inboxProvider.inboxCountStatus == InboxCountStatus.loading) {
-        return buildNavbarItem(
-            index: 3, image: "navbar-notif", label: "NOTIFICATION");
+        return buildNavbarItem(index: 3, image: "navbar-notif", label: "NOTIFICATION");
       } else if (inboxProvider.inboxCountStatus == InboxCountStatus.empty) {
-        return buildNavbarItem(
-            index: 3, image: "navbar-notif", label: "NOTIFICATION");
+        return buildNavbarItem(index: 3, image: "navbar-notif", label: "NOTIFICATION");
       } else if (inboxProvider.inboxCountStatus == InboxCountStatus.error) {
-        return buildNavbarItem(
-            index: 3, image: "navbar-notif", label: "NOTIFICATION");
+        return buildNavbarItem(index: 3, image: "navbar-notif", label: "NOTIFICATION");
       } else {
-        return b.Badge(
-            position: const b.BadgePosition(
-              end: 15.0,
-              top: 0.0,
-            ),
-            badgeColor: ColorResources.error,
-            badgeContent: Text(
-              inboxProvider.readCount?.toString() ?? "...",
-              style: poppinsRegular.copyWith(
-                fontWeight: FontWeight.w600,
-                color: ColorResources.white,
-              ),
-            ),
-            child: buildNavbarItem(
-                index: 3, image: "navbar-notif", label: "NOTIFICATION"));
+        return buildNavbarItem(index: 3, image: "navbar-notif", label: "NOTIFICATION");
+        // b.Badge(
+        //  position: const b.BadgePosition(
+        //    end: 15.0,
+        //    top: 0.0,
+        //  ),
+        //  badgeColor: ColorResources.error,
+        //  badgeContent: Text(
+        //  inboxProvider.readCount?.toString() ?? "...",
+        //   style: poppinsRegular.copyWith(
+        //     fontWeight: FontWeight.w600,
+        //     color: ColorResources.white,
+        //   ),
+        // ),
+        // child: );
       }
     });
   }

@@ -20,10 +20,13 @@ enum UserMentionStatus { idle, loading, loaded, empty, error }
 class FeedDetailProviderV2 with ChangeNotifier {
   final AuthRepo ar;
   final FeedRepoV2 fr;
+
   FeedDetailProviderV2({
     required this.ar,
     required this.fr
   });
+
+  GlobalKey<FlutterMentionsState> mentionKey =  GlobalKey<FlutterMentionsState>();
 
   String type = "COMMENT";
   String commentId = "";
@@ -170,7 +173,6 @@ class FeedDetailProviderV2 with ChangeNotifier {
 
   Future<void> postComment(
     BuildContext context,
-    GlobalKey<FlutterMentionsState> mentionKey,
     String forumId,
   ) async {
     try {

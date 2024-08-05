@@ -501,6 +501,7 @@ class FeedProviderV2 with ChangeNotifier {
 
       if (idxLikes != -1) {
         feedLikes.likes.removeAt(idxLikes);
+
         feedLikes.total = feedLikes.total - 1;
       } else {
         feedLikes.likes.add(UserLikes(
@@ -509,6 +510,7 @@ class FeedProviderV2 with ChangeNotifier {
           avatar: context.read<ProfileProvider>().user!.avatar.toString(),
           username: context.read<ProfileProvider>().user!.fullname.toString()
         )));
+        
         feedLikes.total = feedLikes.total + 1;
       }
 

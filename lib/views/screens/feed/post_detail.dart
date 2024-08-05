@@ -53,7 +53,6 @@ class PostDetailScreen extends StatefulWidget {
 
 class PostDetailScreenState extends State<PostDetailScreen>  with TickerProviderStateMixin {
 
-  GlobalKey<FlutterMentionsState> mentionKey = GlobalKey<FlutterMentionsState>();
   FocusNode mentionFn = FocusNode();
 
   ValueNotifier<TextStyle> textStyleNotifier = ValueNotifier<TextStyle>(
@@ -313,8 +312,10 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
                           Container(
                             padding: const EdgeInsets.all(5.0),
                             child: Icon(Icons.thumb_up,
-                              size: 18.0,
-                              color: feedDetailProvider.feedDetailData.forum!.like!.likes.where((el) => el.user!.id == feedDetailProvider.ar.getUserId()).isEmpty ? ColorResources.black : ColorResources.blue
+                              size: 18.0, 
+                              color: feedDetailProvider.feedDetailData.forum!.like!.likes.where((el) => el.user!.id == feedDetailProvider.ar.getUserId()).isEmpty 
+                              ? ColorResources.black
+                              : ColorResources.blue
                             ),
                           ),
                           
@@ -790,7 +791,7 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
                                           onTap: comment.user.id == feedDetailProvider.ar.getUserId()
                                           ? () {} 
                                           : () async {
-                                            mentionKey.currentState!.controller!.text = "@${comment.user.mention} ";
+                                            feedDetailProvider.mentionKey.currentState!.controller!.text = "@${comment.user.mention} ";
       
                                             mentionFn.requestFocus();
       
@@ -935,7 +936,7 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
                                                           onTap: reply.user.id == feedDetailProvider.ar.getUserId() 
                                                           ? () {} 
                                                           : () {
-                                                            mentionKey.currentState!.controller!.text = "@${reply.user.mention} ";
+                                                            feedDetailProvider.mentionKey.currentState!.controller!.text = "@${reply.user.mention} ";
       
                                                             mentionFn.requestFocus();
                                                             
@@ -1110,7 +1111,7 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
                   valueListenable: textStyleNotifier,
                   builder: (context, textStyle, child) {
                     return FlutterMentions(
-                      key: mentionKey,
+                      key: feedDetailProvider.mentionKey,
                       focusNode: mentionFn,
                       maxLines: 5,
                       minLines: 1,
@@ -1134,7 +1135,7 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
                         //   );
                         // }
           
-                        final currentText = mentionKey.currentState!.controller!.text;
+                        final currentText = feedDetailProvider.mentionKey.currentState!.controller!.text;
       
                         if (previousText.length - currentText.length == 1) {
                           feedDetailProvider.onUpdateType("COMMENT");
@@ -1177,7 +1178,7 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
                                 Positioned.fill(
                                   child: GestureDetector(
                                     onTap: () {
-                                      mentionKey.currentState!.controller!.text = "@${data['display']}";
+                                      feedDetailProvider.mentionKey.currentState!.controller!.text = "@${data['display']}";
                                     },
                                     child: Container(
                                       padding: const EdgeInsets.all(10.0),
@@ -1236,7 +1237,8 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
                 ),
                 onPressed: () async {
                   await feedDetailProvider.postComment(
-                    context, mentionKey, widget.data["forum_id"]
+                    context, 
+                    widget.data["forum_id"]
                   );
                 } 
               ),

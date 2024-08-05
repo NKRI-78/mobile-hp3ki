@@ -283,7 +283,9 @@ class PostsState extends State<Posts> {
                         child: Icon(
                           Icons.thumb_up,
                           size: 18.0,
-                          color: widget.forum.like!.likes.where((el) => el.user!.id == context.read<FeedProviderV2>().ar.getUserId()).isEmpty ? ColorResources.black : ColorResources.blue
+                          color: widget.forum.like!.likes.where((el) => el.user!.id == context.read<FeedProviderV2>().ar.getUserId()).isEmpty 
+                          ? ColorResources.black 
+                          : ColorResources.blue
                         ),
                       ),
 

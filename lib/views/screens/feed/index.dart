@@ -71,6 +71,8 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
     
     feedProvider = context.read<FeedProviderV2>();
 
+    profileProvider = context.read<ProfileProvider>();
+
     Future.microtask(() => getData());
 
     tabController = TabController(length: 3, vsync: this, initialIndex: 0);
