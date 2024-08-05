@@ -7,7 +7,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:flutter_mentions/flutter_mentions.dart';
 
-
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -32,6 +31,7 @@ import 'package:hp3ki/utils/constant.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/shared_preferences.dart';
 
+import 'package:hp3ki/views/screens/home/home.dart';
 import 'package:hp3ki/views/screens/feed/post_detail.dart';
 import 'package:hp3ki/views/screens/splash/splash.dart';
 
@@ -115,6 +115,18 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void onClickedNotification(String? payload) {
     var data = json.decode(payload!);
 
+    if(data["click_action"] == "like") {
+      NS.push(navigatorKey.currentContext!,
+        const DashboardScreen(index: 2)
+      );
+    }
+
+    if(data["click_action"] == "comment-like") {
+      NS.push(navigatorKey.currentContext!,
+        const DashboardScreen(index: 2)
+      );
+    }
+
     if(data["click_action"] == "create-comment") {
       NS.pushUntil(
         navigatorKey.currentContext!, 
@@ -122,7 +134,7 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
           data: {
             "forum_id": data["forum_id"],
             "comment_id": data["comment_id"],
-            "reply_id": data["reply_id"],
+            "reply_id": "-",
             "from": "notification-comment",
           },
         )
@@ -142,7 +154,6 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
         )
       );
     }
-
   }
 
 

@@ -14,6 +14,7 @@ import 'package:hp3ki/services/notification.dart';
 import 'package:hp3ki/services/navigation.dart';
 import 'package:hp3ki/services/services.dart';
 
+import 'package:hp3ki/views/screens/home/home.dart';
 import 'package:hp3ki/views/screens/feed/post_detail.dart';
 
 enum InitFCMStatus { loading, loaded, error, idle }
@@ -53,6 +54,18 @@ class FirebaseProvider with ChangeNotifier {
 
   Future<void> handleMessage(message) async {
 
+    if(message.data["click_action"] == "like") {
+      NS.push(navigatorKey.currentContext!,
+        const DashboardScreen(index: 2)
+      );
+    }
+
+    if(message.data["click_action"] == "comment-like") {
+      NS.push(navigatorKey.currentContext!,
+        const DashboardScreen(index: 2)
+      );
+    }
+
     if(message.data["click_action"] == "create-comment") {       
       NS.pushUntil(
         navigatorKey.currentContext!, 
@@ -80,7 +93,7 @@ class FirebaseProvider with ChangeNotifier {
         )
       );
     }
-    
+
   }
 
   Future<void> initFcm(BuildContext context) async {
