@@ -1,9 +1,9 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:readmore/readmore.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:provider/provider.dart';
+import 'package:detectable_text_field/detectable_text_field.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:hp3ki/services/navigation.dart';
@@ -511,7 +511,14 @@ class PostsState extends State<Posts> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              commentText(context, widget.forum.comment!.comments!.last.comment.toString())
+                              DetectableText(
+                                text: widget.forum.comment!.comments!.last.comment!,
+                                detectionRegExp: atSignRegExp,
+                                detectedStyle: robotoRegular.copyWith(
+                                  color: Colors.blue
+                                ),
+                                basicStyle: robotoRegular
+                              )
                             ],
                           ),
                         ]
@@ -732,21 +739,21 @@ class PostsState extends State<Posts> {
     );
   }
 
-  Widget commentText(BuildContext context, String comment) {
-    return ReadMoreText(
-      comment,
-      style: robotoRegular.copyWith(
-        fontSize: Dimensions.fontSizeDefault
-      ),
-      trimLines: 2,
-      colorClickableText: ColorResources.black,
-      trimMode: TrimMode.Line,
-      trimCollapsedText: getTranslated("READ_MORE", context),
-      trimExpandedText: getTranslated("LESS_MORE", context),
-      moreStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.w600),
-      lessStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.w600),
-    );
-  }
+  // Widget commentText(BuildContext context, String comment) {
+  //   return ReadMoreText(
+  //     comment,
+  //     style: robotoRegular.copyWith(
+  //       fontSize: Dimensions.fontSizeDefault
+  //     ),
+  //     trimLines: 2,
+  //     colorClickableText: ColorResources.black,
+  //     trimMode: TrimMode.Line,
+  //     trimCollapsedText: getTranslated("READ_MORE", context),
+  //     trimExpandedText: getTranslated("LESS_MORE", context),
+  //     moreStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.w600),
+  //     lessStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.w600),
+  //   );
+  // }
 
   Widget grantedDeletePost(context) {
     return PopupMenuButton(

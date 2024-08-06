@@ -428,15 +428,17 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
     inboxPanicViewC = ScrollController();
     inboxPanicViewC.addListener(inboxPanicControllerListener);
 
-    Future.wait([getData()]);
+    Future.microtask(() => getData());
   }
 
   @override
   void dispose() {
     inboxInfoViewC.removeListener(inboxInfoControllerListener);
     inboxInfoViewC.dispose();
+    
     inboxPaymentViewC.removeListener(inboxPaymentControllerListener);
     inboxPaymentViewC.dispose();
+    
     inboxPanicViewC.removeListener(inboxPanicControllerListener);
     inboxPanicViewC.dispose();
 
@@ -448,10 +450,6 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
 
   @override
   Widget build(BuildContext context) {
-    return buildUI();
-  }
-
-  Widget buildUI() {
     return Scaffold(
       backgroundColor: ColorResources.greyDarkPrimary.withOpacity(0.2),
       body: NestedScrollView(
@@ -463,10 +461,30 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
         body: TabBarView(
           controller: tabC,
           children: [
-            index == 0 ? inboxWidgetPayment(context) : loadingWidget(),
-            index == 1 ? inboxWidgetPanic(context) : loadingWidget(),
-            index == 2 ? inboxWidgetInfo(context) : loadingWidget(),
-            index == 3 ? const TransactionNotifList() : loadingWidget(),
+            index == 0 ? inboxWidgetPayment(context) : const Center(
+              child: SpinKitThreeBounce(
+                size: 20.0,
+                color: ColorResources.primary,
+              ),
+            ),
+            index == 1 ? inboxWidgetPanic(context) : const Center(
+              child: SpinKitThreeBounce(
+                size: 20.0,
+                color: ColorResources.primary,
+              ),
+            ),
+            index == 2 ? inboxWidgetInfo(context) : const Center(
+              child: SpinKitThreeBounce(
+                size: 20.0,
+                color: ColorResources.primary,
+              ),
+            ),
+            index == 3 ? const TransactionNotifList() : const Center(
+              child: SpinKitThreeBounce(
+                size: 20.0,
+                color: ColorResources.primary,
+              ),
+            ),
           ],
         )
       )
@@ -478,31 +496,24 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
       backgroundColor: ColorResources.white,
       toolbarHeight: 60.0,
       leading: Container(),
-      title: Text(
-        getTranslated("NOTIFICATION", context),
+      title: Text(getTranslated("NOTIFICATION", context),
         style: robotoRegular.copyWith(
-            color: ColorResources.black,
-            fontSize: Dimensions.fontSizeExtraLarge,
-            fontWeight: FontWeight.bold),
+          color: ColorResources.black,
+          fontSize: Dimensions.fontSizeExtraLarge,
+          fontWeight: FontWeight.bold
+        ),
       ),
       centerTitle: true,
       systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarBrightness: Brightness.light,
-          statusBarColor: ColorResources.primary),
+        statusBarBrightness: Brightness.light,
+        statusBarColor: ColorResources.primary
+      ),
       bottom: PreferredSize(
-          preferredSize: tabBar.preferredSize,
-          child: ColoredBox(
-            color: ColorResources.white,
-            child: tabBar,
-          )),
-    );
-  }
-
-  Widget loadingWidget() {
-    return const Center(
-      child: SpinKitThreeBounce(
-        size: 20.0,
-        color: ColorResources.primary,
+        preferredSize: tabBar.preferredSize,
+        child: ColoredBox(
+          color: ColorResources.white,
+          child: tabBar,
+        )
       ),
     );
   }
@@ -520,17 +531,19 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
       child: CustomScrollView(
         controller: inboxInfoViewC,
         scrollDirection: Axis.vertical,
-        physics: const BouncingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics()),
+        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         slivers: [
-          if (context.watch<InboxProvider>().inboxInfoStatus ==
-              InboxInfoStatus.loading)
-            SliverFillRemaining(
+          if (context.watch<InboxProvider>().inboxInfoStatus == InboxInfoStatus.loading)
+            const SliverFillRemaining(
               hasScrollBody: false,
-              child: loadingWidget(),
+              child: Center(
+                child: SpinKitThreeBounce(
+                  size: 20.0,
+                  color: ColorResources.primary,
+                ),
+              ),
             ),
-          if (context.watch<InboxProvider>().inboxInfoStatus ==
-              InboxInfoStatus.empty)
+          if (context.watch<InboxProvider>().inboxInfoStatus == InboxInfoStatus.empty)
             SliverFillRemaining(
               hasScrollBody: false,
               child: Center(
@@ -542,28 +555,30 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
                 ),
               )),
             ),
-          if (context.watch<InboxProvider>().inboxInfoStatus ==
-              InboxInfoStatus.error)
+          if (context.watch<InboxProvider>().inboxInfoStatus == InboxInfoStatus.error)
             SliverFillRemaining(
               hasScrollBody: false,
               child: Center(
-                  child: Text(
-                getTranslated("THERE_WAS_PROBLEM", context),
+                child: Text(getTranslated("THERE_WAS_PROBLEM", context),
                 style: robotoRegular.copyWith(
                   fontSize: Dimensions.fontSizeDefault,
                   color: ColorResources.black,
                 ),
               )),
             ),
-          if (context.watch<InboxProvider>().inboxInfoStatus ==
-              InboxInfoStatus.loaded)
+          if (context.watch<InboxProvider>().inboxInfoStatus == InboxInfoStatus.loaded)
             SliverPadding(
               padding: const EdgeInsets.only(bottom: 80.0),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (BuildContext context, int i) {
                     if (context.read<InboxProvider>().inboxInfo!.length == i) {
-                      return loadingWidget();
+                      return const Center(
+                        child: SpinKitThreeBounce(
+                          size: 20.0,
+                          color: ColorResources.primary,
+                        ),
+                      );
                     }
                     if (context.read<InboxProvider>().inboxInfo!.isNotEmpty) {
                       return buildNotificationItem(
@@ -576,10 +591,9 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
                     }
                     return Container();
                   },
-                  childCount:
-                      context.watch<InboxProvider>().isLoadInboxInfo == true
-                          ? context.read<InboxProvider>().inboxInfo!.length + 1
-                          : context.read<InboxProvider>().inboxInfo!.length,
+                  childCount: context.watch<InboxProvider>().isLoadInboxInfo == true
+                  ? context.read<InboxProvider>().inboxInfo!.length + 1
+                  : context.read<InboxProvider>().inboxInfo!.length,
                 ),
               ),
             )
@@ -605,9 +619,14 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
         slivers: [
       
           if (context.watch<InboxProvider>().inboxPanicStatus == InboxPanicStatus.loading)
-            SliverFillRemaining(
+            const SliverFillRemaining(
               hasScrollBody: false, 
-              child: loadingWidget()
+              child: Center(
+                child: SpinKitThreeBounce(
+                  size: 20.0,
+                  color: ColorResources.primary,
+                ),
+              ),
             ),
       
           if (context.watch<InboxProvider>().inboxPanicStatus == InboxPanicStatus.empty)
@@ -642,7 +661,12 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
                   (BuildContext context, int i) {
                     
                     if (context.read<InboxProvider>().inboxPanic!.length == i) {
-                      return loadingWidget();
+                      return const Center(
+                        child: SpinKitThreeBounce(
+                          size: 20.0,
+                          color: ColorResources.primary,
+                        ),
+                      );
                     }
                     
                     if (context.read<InboxProvider>().inboxPanic!.isNotEmpty) {
@@ -755,29 +779,26 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
     );
   }
 
-  Widget buildNotificationItem(List<InboxData>? inbox, int i, IconData icon, ScrollController scrollPosition, String type, [List<InboxPaymentData>? inboxPayment]) {
+  Widget buildNotificationItem(
+    List<InboxData>? inbox, i, IconData icon, 
+    ScrollController scrollPosition, 
+    String type, [List<InboxPaymentData>? inboxPayment]
+  ) {
     return InkWell(
       onTap: () async {
         final currentScrollPosition = scrollPosition.position.pixels;
 
-        if (inbox?.isEmpty == true || inbox == null) {
-          await context.read<InboxProvider>().getInboxDetailAndUpdateInboxPayment(
-            context,
-            inboxId: inboxPayment![i].id!,
-            type: type,
-            inboxSelected: inboxPayment[i],
-          );
-        } else {
-          await context.read<InboxProvider>().getInboxDetailAndUpdateInbox(
-            context,
-            type: type,
-            inboxId: inbox[i].id!,
-            inboxSelected: inbox[i],
-          );
-        }
+        await context.read<InboxProvider>().getInboxDetailAndUpdateInbox(
+          context,
+          type: type,
+          inboxId: inbox![i].id!,
+        );
 
         final isRefetch = await Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return DetailInboxScreen(type: type);
+          return DetailInboxScreen(
+            inboxId: inbox[i].id!,
+            type: type
+          );
         }));
 
         if(isRefetch != null) {

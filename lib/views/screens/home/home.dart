@@ -31,7 +31,7 @@ import 'package:hp3ki/services/navigation.dart';
 
 import 'package:hp3ki/views/screens/about/about_menu.dart';
 import 'package:hp3ki/views/screens/auth/sign_in.dart';
-import 'package:hp3ki/views/screens/calender/calender.dart';
+import 'package:hp3ki/views/screens/calendar/calendar.dart';
 import 'package:hp3ki/views/screens/checkin/checkin.dart';
 import 'package:hp3ki/views/screens/feed/index.dart';
 import 'package:hp3ki/views/screens/maintain/maintain.dart';
@@ -39,6 +39,7 @@ import 'package:hp3ki/views/screens/media/media.dart';
 import 'package:hp3ki/views/screens/membernear/membernear.dart';
 import 'package:hp3ki/views/screens/my_store/persentation/pages/my_store_page.dart';
 import 'package:hp3ki/views/screens/my_store_create/persentation/pages/store_open_page.dart';
+import 'package:hp3ki/views/screens/news/detail.dart';
 import 'package:hp3ki/views/screens/notification/index.dart';
 import 'package:hp3ki/views/screens/ppob/confirm_paymentv2.dart';
 import 'package:hp3ki/views/screens/profile/profile.dart';
@@ -232,7 +233,7 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
       {
         "name": "Calender",
         "icon": "bottomsheet/icon-event.png",
-        "screen": const CalenderScreen(),
+        "screen": const CalendarScreen(),
       },
       {
         "name": "Member Near",
@@ -1276,10 +1277,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: const EdgeInsets.only(right: 15.0),
                   child: GestureDetector(
                     onTap: () {
-                      context.read<NewsProvider>().getNewsDetail(context,
-                          newsId: newsProvider.news[i].id!);
+                      NS.push(context, NewsDetailScreen(
+                        newsId: newsProvider.news[i].id!,
+                      ));
                     },
-                    onDoubleTap: () {},
                     child: Stack(
                       children: [
                         const SizedBox(
@@ -1293,9 +1294,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: InkWell(
                               borderRadius: BorderRadius.circular(30.0),
                               onTap: () {
-                                context.read<NewsProvider>().getNewsDetail(
-                                    context,
-                                    newsId: newsProvider.news[i].id!);
+                                NS.push(context, NewsDetailScreen(
+                                  newsId: newsProvider.news[i].id!,
+                                ));
                               },
                               child: Container(
                                 height: 200.0,

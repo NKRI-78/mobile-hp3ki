@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:hp3ki/services/navigation.dart';
+import 'package:hp3ki/views/screens/news/detail.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -151,12 +153,10 @@ class NewsScreenState extends State<NewsScreen> {
               color: ColorResources.white,
               child: InkWell(
                 borderRadius: BorderRadius.circular(20.0),
-                onDoubleTap: () { },
                 onTap: () async {
-                  await newsProvider.getNewsDetail(
-                    context,
+                  NS.push(context, NewsDetailScreen(
                     newsId: newsProvider.news[i].id!,
-                  );
+                  ));
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

@@ -1,45 +1,50 @@
 
 import 'dart:collection';
-import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:hp3ki/providers/localization/localization.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:provider/provider.dart';
+
 import 'package:hp3ki/data/models/event/event.dart';
+
 import 'package:hp3ki/localization/language_constraints.dart';
+
 import 'package:hp3ki/providers/event/event.dart';
+import 'package:hp3ki/providers/localization/localization.dart';
+
 import 'package:hp3ki/utils/helper.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
+
+import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
 
 final kToday = DateTime.now();
 final kFirstDay = DateTime(kToday.year, kToday.month - 3, kToday.day);
 final kLastDay = DateTime(kToday.year, kToday.month + 3, kToday.day);
 
-class CalenderScreen extends StatefulWidget {
-  const CalenderScreen({Key? key}) : super(key: key);
+class CalendarScreen extends StatefulWidget {
+  const CalendarScreen({Key? key}) : super(key: key);
 
   @override
-  _CalenderScreenState createState() => _CalenderScreenState();
+  CalendarScreenState createState() => CalendarScreenState();
 }
 
-class _CalenderScreenState extends State<CalenderScreen> {
+class CalendarScreenState extends State<CalendarScreen> {
   ValueNotifier<List<EventData>> selectedEvents = ValueNotifier([]);
   
   DateTime focusedDay = DateTime.now();
   DateTime selectedDay = DateTime.now();
 
   Future<void> getData() async {
-    if(mounted) {
+    if(!mounted) return;
       context.read<EventProvider>().getEvent(context);      
-    }
+    
     selectedDay = focusedDay;
     selectedEvents = ValueNotifier(getEventsForDay(selectedDay));
   }
@@ -77,6 +82,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
         selectedDay = selectedDayParam;
         focusedDay = focusedDayParam;
       });
+
       selectedEvents.value = getEventsForDay(selectedDayParam);
     }
   }
@@ -85,9 +91,8 @@ class _CalenderScreenState extends State<CalenderScreen> {
   void initState() {
     super.initState();
 
-    Future.wait([
-      getData(),
-    ]);
+    Future.microtask(() => getData());
+
     setInitialEvent();
   }
 
@@ -100,41 +105,27 @@ class _CalenderScreenState extends State<CalenderScreen> {
   
   @override
   Widget build(BuildContext context) {    
-    return buildUI();
-  }
-
-  Widget buildUI() {
     return Scaffold(
-      
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-
-            return RefreshIndicator(
-              onRefresh: () {
-                return Future.sync(() {
-                  setState(() {
-                    getData();
-                    setInitialEvent();
-                  }); 
-                }); 
-              },
-              child: CustomScrollView(
-                physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-                slivers: [
-                  buildAppBar(context),
-                  context.watch<EventProvider>().eventStatus == EventStatus.loading 
-                  ? buildLoadingContent()
-                  : context.watch<EventProvider>().eventStatus == EventStatus.error  
-                  ? buildErrorContent(context)
-                  : buildContentNotEmpty()
-              ],
-            ),
-          );
-          
-
-          },
-        )
+      body: RefreshIndicator(
+        onRefresh: () {
+          return Future.sync(() {
+            setState(() {
+              getData();
+              setInitialEvent();
+            }); 
+          }); 
+        },
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+          slivers: [
+            buildAppBar(context),
+            context.watch<EventProvider>().eventStatus == EventStatus.loading 
+            ? buildLoadingContent()
+            : context.watch<EventProvider>().eventStatus == EventStatus.error  
+            ? buildErrorContent(context)
+            : buildContent()
+          ],
+        ),
       )
     );
   }
@@ -168,7 +159,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
     );
   }
 
-  SliverList buildContentNotEmpty() {
+  SliverList buildContent() {
     return SliverList(
       delegate: SliverChildListDelegate([
       buildCalender(),

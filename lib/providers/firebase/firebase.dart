@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:hp3ki/views/screens/calendar/calendar.dart';
+import 'package:hp3ki/views/screens/notification/detail.dart';
 import 'package:soundpool/soundpool.dart';
 
 import 'package:hp3ki/data/repository/firebase/firebase.dart';
@@ -54,6 +56,28 @@ class FirebaseProvider with ChangeNotifier {
 
   Future<void> handleMessage(message) async {
 
+    // NEWS
+
+    // SOS
+    if(message.data["click_action"] == "sos") {
+      NS.push(
+        navigatorKey.currentContext!,
+        DetailInboxScreen(
+          inboxId: message.data["inbox_id"], 
+          type: message.data["inbox_type"]
+        )
+      );    
+    }
+
+    // EVENT
+    if(message.data["click_action"] == "event") {
+      NS.push(navigatorKey.currentContext!,
+        const CalendarScreen()
+      );
+    }
+
+    // FORUM
+
     if(message.data["click_action"] == "like") {
       NS.push(navigatorKey.currentContext!,
         const DashboardScreen(index: 2)
@@ -67,8 +91,7 @@ class FirebaseProvider with ChangeNotifier {
     }
 
     if(message.data["click_action"] == "create-comment") {       
-      NS.pushUntil(
-        navigatorKey.currentContext!, 
+      NS.pushUntil(navigatorKey.currentContext!, 
         PostDetailScreen(
           data: {
             "forum_id": message.data["forum_id"],
@@ -81,8 +104,7 @@ class FirebaseProvider with ChangeNotifier {
     }
 
     if(message.data["click_action"] == "create-reply") {
-      NS.pushUntil(
-        navigatorKey.currentContext!, 
+      NS.pushUntil(navigatorKey.currentContext!, 
         PostDetailScreen(
           data: {
             "forum_id": message.data["forum_id"],

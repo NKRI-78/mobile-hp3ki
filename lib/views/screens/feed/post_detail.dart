@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:detectable_text_field/detectable_text_field.dart' as detectable;
+import 'package:detectable_text_field/detectable_text_field.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_mentions/flutter_mentions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -696,9 +696,9 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
                                             
                                             const SizedBox(height: 8.0),
       
-                                            detectable.DetectableText(
+                                            DetectableText(
                                               text: comment.comment,
-                                              detectionRegExp: detectable.atSignRegExp,
+                                              detectionRegExp: atSignRegExp,
                                               detectedStyle: robotoRegular.copyWith(
                                                 color: Colors.blue
                                               ),
@@ -857,7 +857,7 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
                                                 color:  comment.like.likes.where(
                                                 (el) => el.user!.id == feedDetailProvider.ar.getUserId()
                                                 ).isEmpty ? ColorResources.black : ColorResources.blue,
-                                                     fontSize: Dimensions.fontSizeDefault,
+                                                fontSize: Dimensions.fontSizeDefault,
                                                 fontWeight: FontWeight.bold
                                               ),
                                             ),
@@ -966,9 +966,9 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
                                                     
                                                   const SizedBox(height: 8.0),
                                                                           
-                                                  detectable.DetectableText(
+                                                  DetectableText(
                                                     text: reply.reply,
-                                                    detectionRegExp: detectable.atSignRegExp,
+                                                    detectionRegExp: atSignRegExp,
                                                     detectedStyle: robotoRegular.copyWith(
                                                       color: Colors.blue
                                                     ),
@@ -1248,48 +1248,43 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
                                   ),
                                 ),
                                 Positioned.fill(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      feedDetailProvider.mentionKey.currentState!.controller!.text = "@${data['display']}";
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
+                                  child: Container(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                                              
+                                        CachedNetworkImage(
+                                          imageUrl: data['photo'].toString(),
+                                          imageBuilder: (context, imageProvider) {
+                                            return CircleAvatar(
+                                              backgroundImage: imageProvider,
+                                            );
+                                          },
+                                          placeholder: (_, __) {
+                                            return const CircleAvatar(
+                                              backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                                            );
+                                          },
+                                          errorWidget: (_, ___, __) {
+                                            return const CircleAvatar(
+                                              backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                                            );
+                                          },
+                                        ),
                                                                 
-                                          CachedNetworkImage(
-                                            imageUrl: data['photo'].toString(),
-                                            imageBuilder: (context, imageProvider) {
-                                              return CircleAvatar(
-                                                backgroundImage: imageProvider,
-                                              );
-                                            },
-                                            placeholder: (_, __) {
-                                              return const CircleAvatar(
-                                                backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
-                                              );
-                                            },
-                                            errorWidget: (_, ___, __) {
-                                              return const CircleAvatar(
-                                                backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
-                                              );
-                                            },
-                                          ),
-                                                                  
-                                          const SizedBox(
-                                            width: 20.0,
-                                          ),
-                                                                  
-                                          Text('@${data['display']}',
-                                            style: robotoRegular.copyWith(
-                                              color:Colors.blue
-                                            ),
-                                          )
+                                        const SizedBox(
+                                          width: 20.0,
+                                        ),
                                                                 
-                                        ],
-                                      ),
-                                    )
+                                        Text('@${data['display']}',
+                                          style: robotoRegular.copyWith(
+                                            color:Colors.blue
+                                          ),
+                                        )
+                                                              
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],

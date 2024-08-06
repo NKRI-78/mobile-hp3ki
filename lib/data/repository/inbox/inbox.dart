@@ -1,8 +1,12 @@
 import 'package:dio/dio.dart';
+
 import 'package:flutter/material.dart';
+
 import 'package:hp3ki/data/models/inbox/count.dart';
-import 'package:hp3ki/utils/exceptions.dart';
+import 'package:hp3ki/data/models/inbox/detail.dart';
 import 'package:hp3ki/data/models/inbox/inbox.dart';
+
+import 'package:hp3ki/utils/exceptions.dart';
 import 'package:hp3ki/utils/constant.dart';
 import 'package:hp3ki/utils/dio.dart';
 
@@ -35,6 +39,25 @@ class InboxRepo {
     }
   }
 
+  Future<InboxDetailModel> getInboxDetail({
+    required String id
+  }) async {
+    try {
+     Response res = await dioClient!.post("${AppConstants.baseUrl}/api/v1/inbox/detail",
+      data: {
+        "id": id,
+      });
+      InboxDetailModel data = InboxDetailModel.fromJson(res.data);
+      return data;
+    } on DioError catch (e) {
+      final errorMessage = DioExceptions.fromDioError(e).toString();
+      throw CustomException(errorMessage); 
+    } catch(e, stacktrace) {
+      debugPrint(stacktrace.toString());
+      throw CustomException(stacktrace.toString());
+    }
+  }
+
   Future<InboxCountModel?> getInboxCount({required String userId}) async {
     try {
       Response res = await dioClient!.post("${AppConstants.baseUrl}/api/v1/inbox/badges", data: {
@@ -50,23 +73,7 @@ class InboxRepo {
       throw CustomException(e.toString());
     }
   }
-
-  Future<void> updateInbox({
-    required String inboxId, required String userId}) async {
-    try {
-      await dioClient!.post("${AppConstants.baseUrl}/api/v1/inbox/detail", data: {
-        "id": inboxId,
-        "user_id": userId,
-      });
-    } on DioError catch (e) {
-      final errorMessage = DioExceptions.fromDioError(e).toString();
-      throw CustomException(errorMessage);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      throw CustomException(e.toString());
-    }
-  }
-
+  
   Future<void> updateInboxPayment({required int inboxId}) async {
     try {
       await dioClient!.post("${AppConstants.baseUrlPpob}/inbox/update", data: {

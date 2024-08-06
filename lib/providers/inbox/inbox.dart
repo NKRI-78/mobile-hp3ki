@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hp3ki/data/models/inbox/detail.dart';
 
 import 'package:hp3ki/data/repository/inbox/inbox.dart';
 
@@ -37,6 +38,9 @@ class InboxProvider with ChangeNotifier {
 
   InboxData? _inboxDetail;
   InboxData? get inboxDetail => _inboxDetail;
+
+  InboxDetailData _inboxDetailData = InboxDetailData();
+  InboxDetailData get inboxDetailData => _inboxDetailData;
 
   InboxPaymentData? _inboxPaymentDetail;
   InboxPaymentData? get inboxPaymentDetail => _inboxPaymentDetail;
@@ -96,10 +100,8 @@ class InboxProvider with ChangeNotifier {
   FetchInboxInfoStatus _fetchInboxInfoStatus = FetchInboxInfoStatus.idle;
   FetchInboxInfoStatus get fetchInboxInfoStatus => _fetchInboxInfoStatus;
 
-  FetchInboxPaymentStatus _fetchInboxPaymentStatus =
-      FetchInboxPaymentStatus.idle;
-  FetchInboxPaymentStatus get fetchInboxPaymentStatus =>
-      _fetchInboxPaymentStatus;
+  FetchInboxPaymentStatus _fetchInboxPaymentStatus = FetchInboxPaymentStatus.idle;
+  FetchInboxPaymentStatus get fetchInboxPaymentStatus => _fetchInboxPaymentStatus;
 
   FetchInboxPanicStatus _fetchInboxPanicStatus = FetchInboxPanicStatus.idle;
   FetchInboxPanicStatus get fetchInboxPanicStatus => _fetchInboxPanicStatus;
@@ -134,14 +136,12 @@ class InboxProvider with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  void setStateFetchInboxPaymentStatus(
-      FetchInboxPaymentStatus fetchInboxPaymentStatus) {
+  void setStateFetchInboxPaymentStatus(FetchInboxPaymentStatus fetchInboxPaymentStatus) {
     _fetchInboxPaymentStatus = fetchInboxPaymentStatus;
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  void setStateFetchInboxPanicStatus(
-      FetchInboxPanicStatus fetchInboxPanicStatus) {
+  void setStateFetchInboxPanicStatus(FetchInboxPanicStatus fetchInboxPanicStatus) {
     _fetchInboxPanicStatus = fetchInboxPanicStatus;
     Future.delayed(Duration.zero, () => notifyListeners());
   }
@@ -161,50 +161,64 @@ class InboxProvider with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  void toggleMoreInboxInfo(BuildContext context,
-      {required int pageCount}) async {
+  void toggleMoreInboxInfo(BuildContext context, {required int pageCount}) async {
     await fetchMoreInboxInfo(context, page: pageCount);
     isLoadInboxInfo = false;
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  void toggleMoreInboxPayment(BuildContext context,
-      {required int pageCount}) async {
+  void toggleMoreInboxPayment(BuildContext context, {required int pageCount}) async {
     await fetchMoreInboxPayment(context, page: pageCount);
     isLoadInboxPayment = false;
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  void toggleMoreInboxPanic(BuildContext context,
-      {required int pageCount}) async {
+  void toggleMoreInboxPanic(BuildContext context, {required int pageCount}) async {
     await fetchMoreInboxPanic(context, page: pageCount);
     isLoadInboxPanic = false;
+
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
   void resetInboxInfoPageCount() {
     isLoadInboxInfo = false;
     inboxInfoPageCount = 1;
+
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
   void resetInboxPaymentPageCount() {
     isLoadInboxPayment = false;
     inboxPaymentPageCount = 1;
+
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
   void resetInboxPanicPageCount() {
     isLoadInboxPanic = false;
     inboxPanicPageCount = 1;
+
     Future.delayed(Duration.zero, () => notifyListeners());
+  }
+
+  Future<void> getInboxDetail({
+    required String id
+  }) async {
+    setStateInboxDetailStatus(InboxDetailStatus.loading);
+    try {
+      InboxDetailModel inboxDetailModel = await ir.getInboxDetail(id: id);
+      _inboxDetailData = inboxDetailModel.data;
+      setStateInboxDetailStatus(InboxDetailStatus.loaded);
+    } catch(e) {
+      debugPrint(e.toString());
+      setStateInboxDetailStatus(InboxDetailStatus.error);
+    }
   }
 
   Future<void> getReadCount(BuildContext context) async {
     setStateInboxCountStatus(InboxCountStatus.loading);
     try {
-      InboxCountModel? icm =
-          await ir.getInboxCount(userId: SharedPrefs.getUserId());
+      InboxCountModel? icm = await ir.getInboxCount(userId: SharedPrefs.getUserId());
       // InboxCountPaymentModel? icpm = await ir.getInboxCountPayment(userId: SharedPrefs.getUserId());
       int? icmCount = icm?.data?.total;
       //  icpm?.data?.total;
@@ -401,7 +415,6 @@ class InboxProvider with ChangeNotifier {
         () async {
           Future.wait([
             getInboxInfo(context),
-            // getInboxPayment(context),
             getInboxPanic(context),
             getReadCount(context),
           ]);
@@ -418,17 +431,12 @@ class InboxProvider with ChangeNotifier {
     }
   }
 
-  Future<void> getInboxDetailAndUpdateInbox(
-    BuildContext context, {
+  Future<void> getInboxDetailAndUpdateInbox(BuildContext context, {
     required String inboxId,
     required String type,
-    required InboxData inboxSelected,
   }) async {
     setStateInboxDetailStatus(InboxDetailStatus.loading);
     try {
-      _inboxPaymentDetail = null;
-      _inboxDetail = inboxSelected;
-      await ir.updateInbox(inboxId: inboxId, userId: SharedPrefs.getUserId());
 
       setStateInboxDetailStatus(InboxDetailStatus.loaded);
       Future.delayed(
