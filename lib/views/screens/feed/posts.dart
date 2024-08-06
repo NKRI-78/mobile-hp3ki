@@ -262,7 +262,7 @@ class PostsState extends State<Posts> {
 
           Container(
             margin: const EdgeInsets.only(
-              bottom: 15.0, 
+              bottom: 5.0, 
               left: 15.0, 
               right: 15.0
             ),
@@ -273,111 +273,111 @@ class PostsState extends State<Posts> {
 
                 SizedBox(
                   width: 40.0,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-       
-                      Container(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Icon(
-                          Icons.thumb_up,
-                          size: 18.0,
-                          color: widget.forum.like!.likes.where((el) => el.user!.id == context.read<FeedProviderV2>().ar.getUserId()).isEmpty 
-                          ? ColorResources.black 
-                          : ColorResources.blue
-                        ),
-                      ),
+                  child: InkWell(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context, 
+                        builder: (context) {
+                          return Container(
+                            height: 300.0,
+                            decoration: const BoxDecoration(
+                              color: Colors.white
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
 
-                      InkWell(
-                        onTap: () {
-                          showModalBottomSheet(
-                            context: context, 
-                            builder: (context) {
-                              return Container(
-                                height: 300.0,
-                                decoration: const BoxDecoration(
-                                  color: Colors.white
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  padding: EdgeInsets.zero,
+                                  itemCount: widget.forum.like!.likes.length,
+                                  itemBuilder: (_, int i) {
 
-                                    ListView.builder(
-                                      shrinkWrap: true,
-                                      padding: EdgeInsets.zero,
-                                      itemCount: widget.forum.like!.likes.length,
-                                      itemBuilder: (_, int i) {
+                                    final like = widget.forum.like!.likes[i];
 
-                                        final like = widget.forum.like!.likes[i];
-
-                                        return Padding(
-                                          padding: const EdgeInsets.all(20.0),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisSize: MainAxisSize.min,
+                                    return Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                      
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.max,
                                             children: [
-                                          
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.max,
-                                                children: [
-                                          
-                                                  CachedNetworkImage(
-                                                    imageUrl: like.user!.avatar.toString(),
-                                                    imageBuilder: (context, imageProvider) {
-                                                      return CircleAvatar(
-                                                        maxRadius: 25.0,
-                                                        backgroundImage: imageProvider,
-                                                      );
-                                                    },
-                                                    placeholder: (context, url) {
-                                                      return const CircleAvatar(
-                                                        maxRadius: 25.0,
-                                                        backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
-                                                      );
-                                                    },
-                                                    errorWidget: (context, url, error) {
-                                                      return const CircleAvatar(
-                                                        maxRadius: 25.0,
-                                                        backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
-                                                      );
-                                                    },
-                                                  ),
-                                          
-                                                  const SizedBox(width: 14.0),
-                                          
-                                                  Text(like.user!.username.toString(),
-                                                    style: const TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 18.0
-                                                    ),
-                                                  )
-                                          
-                                                ],
+                                      
+                                              CachedNetworkImage(
+                                                imageUrl: like.user!.avatar.toString(),
+                                                imageBuilder: (context, imageProvider) {
+                                                  return CircleAvatar(
+                                                    maxRadius: 25.0,
+                                                    backgroundImage: imageProvider,
+                                                  );
+                                                },
+                                                placeholder: (context, url) {
+                                                  return const CircleAvatar(
+                                                    maxRadius: 25.0,
+                                                    backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                                                  );
+                                                },
+                                                errorWidget: (context, url, error) {
+                                                  return const CircleAvatar(
+                                                    maxRadius: 25.0,
+                                                    backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                                                  );
+                                                },
                                               ),
+                                      
+                                              const SizedBox(width: 14.0),
+                                      
+                                              Text(like.user!.username.toString(),
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 18.0
+                                                ),
+                                              )
+                                      
                                             ],
                                           ),
-                                        );
-                                      },
-                                    )
-
-                                  ],
+                                        ],
+                                      ),
+                                    );
+                                  },
                                 )
-                              );
-                            },
+
+                              ],
+                            )
                           );
                         },
-                        child: Text('${widget.forum.like!.total}', 
+                      );
+                    },
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                           
+                        Container(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Icon(
+                            Icons.thumb_up,
+                            size: 18.0,
+                            color: widget.forum.like!.likes.where((el) => el.user!.id == context.read<FeedProviderV2>().ar.getUserId()).isEmpty 
+                            ? ColorResources.black 
+                            : ColorResources.blue
+                          ),
+                        ),
+                    
+                        Text('${widget.forum.like!.total}', 
                           style: robotoRegular.copyWith(
                             color: ColorResources.black,
                             fontSize: Dimensions.fontSizeDefault
                           )
                         ),
-                      ),
-
-                    ],
+                    
+                      ],
+                    ),
                   ),
                 ),
 
@@ -393,7 +393,7 @@ class PostsState extends State<Posts> {
 
           Container(
             margin: const EdgeInsets.only(
-              top: 15.0,
+              top: 5.0,
               bottom: 15.0,
               left: 15.0, 
               right: 15.0

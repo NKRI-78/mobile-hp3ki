@@ -22,8 +22,8 @@ class NewsProvider with ChangeNotifier {
   NewsDetailStatus _newsDetailStatus = NewsDetailStatus.loading;
   NewsDetailStatus get newsDetailStatus => _newsDetailStatus;
 
-  List<NewsData>? _news = [];
-  List<NewsData>? get news => _news;
+  List<NewsData> _news = [];
+  List<NewsData> get news => [..._news];
 
   SingleNewsData? _newsDetail;
   SingleNewsData? get newsDetail => _newsDetail; 
@@ -44,7 +44,7 @@ class NewsProvider with ChangeNotifier {
       _news = [];
       NewsModel? nm = await nr.getNews();
       if(nm!.data!.isNotEmpty) {
-        _news!.addAll(nm.data!);
+        _news.addAll(nm.data!);
         setStateNewsStatus(NewsStatus.loaded);
       } else {
         setStateNewsStatus(NewsStatus.empty);

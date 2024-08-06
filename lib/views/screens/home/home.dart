@@ -1270,14 +1270,14 @@ class _HomeScreenState extends State<HomeScreen> {
               physics: const BouncingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics()),
               scrollDirection: Axis.horizontal,
-              itemCount: newsProvider.news?.length.clamp(0, 3),
+              itemCount: newsProvider.news.length.clamp(0, 3),
               itemBuilder: (context, i) {
                 return Padding(
                   padding: const EdgeInsets.only(right: 15.0),
                   child: GestureDetector(
                     onTap: () {
                       context.read<NewsProvider>().getNewsDetail(context,
-                          newsId: newsProvider.news![i].id!);
+                          newsId: newsProvider.news[i].id!);
                     },
                     onDoubleTap: () {},
                     child: Stack(
@@ -1295,7 +1295,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               onTap: () {
                                 context.read<NewsProvider>().getNewsDetail(
                                     context,
-                                    newsId: newsProvider.news![i].id!);
+                                    newsId: newsProvider.news[i].id!);
                               },
                               child: Container(
                                 height: 200.0,
@@ -1324,12 +1324,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            newsProvider.news![i].title
+                                            newsProvider.news[i].title
                                                         .toString()
                                                         .length >
                                                     85
-                                                ? "${newsProvider.news![i].title.toString().substring(0, 85)}..."
-                                                : newsProvider.news![i].title
+                                                ? "${newsProvider.news[i].title.toString().substring(0, 85)}..."
+                                                : newsProvider.news[i].title
                                                     .toString()
                                                     .toTitleCase(),
                                             style: robotoRegular.copyWith(
@@ -1352,7 +1352,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     DateTime.parse(
                                                         Helper.getFormatedDate(
                                                             newsProvider
-                                                                .news?[i]
+                                                                .news[i]
                                                                 .createdAt))),
                                                 style: robotoRegular.copyWith(
                                                   color:
@@ -1388,7 +1388,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(30.0),
                             child: CachedNetworkImage(
-                              imageUrl: newsProvider.news![i].image!,
+                              imageUrl: newsProvider.news[i].image!,
                               imageBuilder: (BuildContext context, ImageProvider imageProvider) {
                                 return Container(
                                   width: 250.0,

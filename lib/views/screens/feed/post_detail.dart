@@ -3,14 +3,14 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hp3ki/maps/src/utils/uuid.dart';
-import 'package:hp3ki/views/screens/home/home.dart';
 import 'package:provider/provider.dart';
+import 'package:detectable_text_field/detectable_text_field.dart' as detectable;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_mentions/flutter_mentions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:readmore/readmore.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+
+import 'package:hp3ki/maps/src/utils/uuid.dart';
 
 import 'package:hp3ki/data/models/feedv2/feedDetail.dart' as m;
 import 'package:hp3ki/data/models/feedv2/feedDetail.dart';
@@ -29,6 +29,7 @@ import 'package:hp3ki/views/screens/feed/widgets/post_doc.dart';
 import 'package:hp3ki/views/screens/feed/widgets/post_img.dart';
 import 'package:hp3ki/views/screens/feed/widgets/post_link.dart';
 import 'package:hp3ki/views/screens/feed/widgets/post_video.dart';
+import 'package:hp3ki/views/screens/home/home.dart';
 
 import 'package:hp3ki/services/navigation.dart';
 
@@ -72,21 +73,6 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
   
   FocusNode commentFn = FocusNode();
 
-  Widget commentText(BuildContext context, String comment) {
-    return ReadMoreText(
-      comment,
-      style: robotoRegular.copyWith(
-        fontSize: Dimensions.fontSizeDefault
-      ),
-      trimLines: 2,
-      colorClickableText: ColorResources.black,
-      trimMode: TrimMode.Line,
-      trimCollapsedText: getTranslated("READ_MORE", context),
-      trimExpandedText: getTranslated("LESS_MORE", context),
-      moreStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.w600),
-      lessStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.w600),
-    );
-  }
 
   Widget post(BuildContext context) {
     return Consumer<p.FeedDetailProviderV2>(
@@ -304,29 +290,112 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
     
                     SizedBox(
                       width: 40.0,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
+                      child: InkWell(
+                        onTap: () {
 
-                          Container(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Icon(Icons.thumb_up,
-                              size: 18.0, 
-                              color: feedDetailProvider.feedDetailData.forum!.like!.likes.where((el) => el.user!.id == feedDetailProvider.ar.getUserId()).isEmpty 
-                              ? ColorResources.black
-                              : ColorResources.blue
+                          showModalBottomSheet(
+                            context: context, 
+                            builder: (context) {
+                              return Container(
+                                height: 300.0,
+                                decoration: const BoxDecoration(
+                                  color: Colors.white
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+
+                                    ListView.builder(
+                                      shrinkWrap: true,
+                                      padding: EdgeInsets.zero,
+                                      itemCount: feedDetailProvider.feedDetailData.forum!.like!.likes.length,
+                                      itemBuilder: (_, int i) {
+
+                                        final like = feedDetailProvider.feedDetailData.forum!.like!.likes[i];
+
+                                        return Padding(
+                                          padding: const EdgeInsets.all(20.0),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                          
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: [
+                                          
+                                                  CachedNetworkImage(
+                                                    imageUrl: like.user!.avatar.toString(),
+                                                    imageBuilder: (context, imageProvider) {
+                                                      return CircleAvatar(
+                                                        maxRadius: 25.0,
+                                                        backgroundImage: imageProvider,
+                                                      );
+                                                    },
+                                                    placeholder: (context, url) {
+                                                      return const CircleAvatar(
+                                                        maxRadius: 25.0,
+                                                        backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                                                      );
+                                                    },
+                                                    errorWidget: (context, url, error) {
+                                                      return const CircleAvatar(
+                                                        maxRadius: 25.0,
+                                                        backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                                                      );
+                                                    },
+                                                  ),
+                                          
+                                                  const SizedBox(width: 14.0),
+                                          
+                                                  Text(like.user!.username.toString(),
+                                                    style: const TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 18.0
+                                                    ),
+                                                  )
+                                          
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    )
+
+                                  ],
+                                )
+                              );
+                            },
+                          );
+
+                        },
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                        
+                            Container(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Icon(Icons.thumb_up,
+                                size: 18.0, 
+                                color: feedDetailProvider.feedDetailData.forum!.like!.likes.where((el) => el.user!.id == feedDetailProvider.ar.getUserId()).isEmpty 
+                                ? ColorResources.black
+                                : ColorResources.blue
+                              ),
                             ),
-                          ),
-                          
-                          Text("${feedDetailProvider.feedDetailData.forum!.like!.total}",
-                            style: robotoRegular.copyWith(
-                              color: ColorResources.black,
-                              fontSize: Dimensions.fontSizeDefault
-                            )
-                          ),
-
-                        ],
+                            
+                            Text("${feedDetailProvider.feedDetailData.forum!.like!.total}",
+                              style: robotoRegular.copyWith(
+                                color: ColorResources.black,
+                                fontSize: Dimensions.fontSizeDefault
+                              )
+                            ),
+                        
+                          ],
+                        ),
                       ),
                     ),
     
@@ -342,7 +411,7 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
 
               Container(
                 margin: const EdgeInsets.only(
-                  top: 15.0,
+                  top: 5.0,
                   bottom: 15.0,
                   left: 15.0, 
                   right: 15.0
@@ -537,12 +606,15 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
                         );
                       } 
                       if (feedDetailProvider.feedDetailStatus == p.FeedDetailStatus.empty) {
-                        return Center(
-                          child: Text(getTranslated("THERE_IS_NO_COMMENT", context),
-                            style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeDefault
-                            ),
-                          )
+                        return SizedBox(
+                          height: 450.0,
+                          child: Center(
+                            child: Text(getTranslated("THERE_IS_NO_COMMENT", context),
+                              style: robotoRegular.copyWith(
+                                fontSize: Dimensions.fontSizeDefault
+                              ),
+                            )
+                          ),
                         );
                       }
                       return NotificationListener(
@@ -624,7 +696,14 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
                                             
                                             const SizedBox(height: 8.0),
       
-                                            commentText(context, comment.comment),
+                                            detectable.DetectableText(
+                                              text: comment.comment,
+                                              detectionRegExp: detectable.atSignRegExp,
+                                              detectedStyle: robotoRegular.copyWith(
+                                                color: Colors.blue
+                                              ),
+                                              basicStyle: robotoRegular
+                                            )
                                             
                                           ]
                                         ),
@@ -887,7 +966,14 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
                                                     
                                                   const SizedBox(height: 8.0),
                                                                           
-                                                  commentText(context, reply.reply.toString()),
+                                                  detectable.DetectableText(
+                                                    text: reply.reply,
+                                                    detectionRegExp: detectable.atSignRegExp,
+                                                    detectedStyle: robotoRegular.copyWith(
+                                                      color: Colors.blue
+                                                    ),
+                                                    basicStyle: robotoRegular
+                                                  ),
       
                                                   Container(
                                                     width: 140.0,
@@ -1121,20 +1207,6 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
                         await feedDetailProvider.getUserMentions(context, val);
                       },
                       onChanged: (String val) {
-                        feedDetailProvider.onListenComment(val);
-      
-                        // if (val.contains('@')) {
-                        //   textStyleNotifier.value =robotoRegular.copyWith(
-                        //     color: ColorResources.blue,
-                        //     fontSize: Dimensions.fontSizeDefault
-                        //   );
-                        // } else {
-                        //   textStyleNotifier.value =robotoRegular.copyWith(
-                        //     color: ColorResources.black,
-                        //     fontSize: Dimensions.fontSizeDefault
-                        //   );
-                        // }
-          
                         final currentText = feedDetailProvider.mentionKey.currentState!.controller!.text;
       
                         if (previousText.length - currentText.length == 1) {
@@ -1249,29 +1321,6 @@ class PostDetailScreenState extends State<PostDetailScreen>  with TickerProvider
       ),
     );
   }
-
-  // FlutterTagger(
-  //   controller: controller,
-  //   animationController: animationController,
-  //   onSearch: (query, triggerChar) {
-  //     if (triggerChar == "@") {
-  //       debugPrint("masuk sini");
-  //       // searchViewModel.searchUser(query);
-  //     }
-  //   },
-  //   triggerCharacterAndStyles: const {
-  //     "@": TextStyle(color: Colors.pinkAccent),
-  //     "#": TextStyle(color: Colors.blueAccent),
-  //   },
-  //   tagTextFormatter: (id, tag, triggerCharacter) {
-  //     return "$triggerCharacter$id#$tag#";
-  //   },
-  //   overlayHeight: 380.0,
-  //   overlay: Container(),
-  //   builder: (context, containerKey) {
-  //     return TextField();
-  //   },
-  // ),
 
   Widget grantedDeletePost(context) {
     return PopupMenuButton(

@@ -803,17 +803,49 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  icon,
-                  size: Dimensions.iconSizeLarge,
-                  color: inbox?[i].read ?? inboxPayment?[i].isRead ?? false
-                      ? ColorResources.primary
-                      : ColorResources.black,
-                ),
+                inbox?[i].title == "Kebakaran" 
+                ? Image.asset('assets/images/sos/wildfire.png', 
+                    width: 42.0, 
+                    height: 42.0
+                  )
+                : inbox?[i].title == "Bencana Alam"  
+                ? Image.asset('assets/images/sos/disaster.png', 
+                    width: 42.0, 
+                    height: 42.0
+                  )
+                : inbox?[i].title == "Kecelakaan"  
+                ? Image.asset('assets/images/sos/accident.png', 
+                    width: 42.0, 
+                    height: 42.0
+                  )
+                : inbox?[i].title == "Pencurian"  
+                ? Image.asset('assets/images/sos/theft.png', 
+                    width: 42.0, 
+                    height: 42.0
+                  )
+                : inbox?[i].title == "Perampokan"  
+                ? Image.asset('assets/images/sos/robbery.png', 
+                    width: 42.0, 
+                    height: 42.0
+                  )
+                : inbox?[i].title == "Kerusuhan"  
+                ? Image.asset('assets/images/sos/noise.png', 
+                    width: 42.0, 
+                    height: 42.0
+                  )
+                : Icon(
+                    icon,
+                    size: Dimensions.iconSizeLarge,
+                    color: inbox?[i].read ?? inboxPayment?[i].isRead ?? false
+                    ? ColorResources.primary
+                    : ColorResources.black,
+                  ),
                 const SizedBox(
                   width: 20,
                 ),
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start, 
+                  children: [
                   Text(
                       (inbox?[i].title ?? inboxPayment?[i].title)
                               ?.customSentence(40) ??

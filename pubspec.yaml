@@ -42,6 +42,10 @@ dev_dependencies:
   chips_choice_null_safety: ^2.0.6
   circular_countdown_timer: ^0.2.3
   currency_text_input_formatter: ^2.1.8
+
+  #D
+  dropdown_search: ^4.0.0
+  detectable_text_field: ^3.0.2
   date_time_picker:
     git:
       url: https://github.com/DavidHDJ/date_time_picker.git
@@ -49,9 +53,6 @@ dev_dependencies:
   delayed_display: ^2.0.0
   dio: ^4.0.6
   dotted_border: ^2.0.0+3
-
-  #D
-  dropdown_search: ^4.0.0
   #device_preview:
   # git:
   #  url: https://github.com/bradrushworth/flutter_device_preview.git

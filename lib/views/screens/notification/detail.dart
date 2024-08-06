@@ -194,7 +194,29 @@ class DetailInfoPageState extends State<DetailInboxScreen> {
               height: 4.0,
               thickness: 1.0,
             ),
-            Container(
+            widget.type == "sos" 
+            ? Container(
+                margin: const EdgeInsets.only(
+                  top: 10.0,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Mayday Mayday",
+                      style: robotoRegular.copyWith(
+                        color: ColorResources.black
+                      ),
+                     ),
+                     const SizedBox(height: 8.0),
+                     Text(content ?? "...",
+                      style: robotoRegular.copyWith(
+                        color: ColorResources.black
+                      ),
+                     )
+                  ],
+               ),
+            )
+            : Container(
               margin: const EdgeInsets.only(top: 5.0, bottom: 10.0),
               child: Text(
                 content ?? "...",

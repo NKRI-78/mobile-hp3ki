@@ -5,18 +5,24 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:hp3ki/data/models/membernear/membernear.dart';
-import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:hp3ki/providers/location/location.dart';
+
 import 'package:provider/provider.dart';
+
+import 'package:hp3ki/data/models/membernear/membernear.dart';
+
 import 'package:hp3ki/localization/language_constraints.dart';
+
+import 'package:hp3ki/providers/location/location.dart';
 import 'package:hp3ki/providers/membernear/membernear.dart';
+
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
+
+import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
 
 class MembernearScreen extends StatefulWidget {
   const MembernearScreen({ Key? key }) : super(key: key);
@@ -57,36 +63,27 @@ class MembernearScreenState extends State<MembernearScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return buildUI();
-  }
-
-  Widget buildUI() {
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          return RefreshIndicator(
-            backgroundColor: ColorResources.primary,
-            color: ColorResources.white,
-            onRefresh: () {
-              return Future.sync(() {
-                context.read<MembernearProvider>().getMembernear(context);
-              });
-            },
-            child: CustomScrollView(
-              physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-              slivers: [
-                buildAppBar(context),
-                context.watch<MembernearProvider>().membernearStatus == MembernearStatus.loading 
-                ? buildLoadingContent() 
-                : context.watch<MembernearProvider>().membernearStatus == MembernearStatus.error 
-                  ? buildErrorContent(context)
-                  : buildContentNotEmpty()
-              ],
-            ),
-          );
+      body: RefreshIndicator(
+        backgroundColor: ColorResources.primary,
+        color: ColorResources.white,
+        onRefresh: () {
+          return Future.sync(() {
+            context.read<MembernearProvider>().getMembernear(context);
+          });
         },
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+          slivers: [
+            buildAppBar(context),
+            context.watch<MembernearProvider>().membernearStatus == MembernearStatus.loading 
+            ? buildLoadingContent() 
+            : context.watch<MembernearProvider>().membernearStatus == MembernearStatus.error 
+            ? buildErrorContent(context)
+            : buildContent()
+          ],
+        ),
       ),
     );  
   }
@@ -120,7 +117,7 @@ class MembernearScreenState extends State<MembernearScreen> {
     );
   }
 
-  SliverFillRemaining buildContentNotEmpty() {
+  SliverFillRemaining buildContent() {
     final screenSize = MediaQuery.sizeOf(context);
     return SliverFillRemaining(
       hasScrollBody: false,
@@ -291,6 +288,7 @@ class MembernearScreenState extends State<MembernearScreen> {
   GestureDetector buildMemberItem(MembernearProvider membernearProvider, BuildContext context, int i, User? user, String? distance, Size screenSize) {
     final height = screenSize.height * 0.1;
     final width = screenSize.width * 0.5;
+
     return GestureDetector(
       onTap: () => membernearProvider.navigateTo(
         context,
@@ -303,6 +301,7 @@ class MembernearScreenState extends State<MembernearScreen> {
         child: Stack(
           clipBehavior: Clip.none,
           children: [
+
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
@@ -320,7 +319,7 @@ class MembernearScreenState extends State<MembernearScreen> {
                       context,
                       membernearProvider.membernearData[i]
                     ),
-                    onDoubleTap: () { },
+                    onDoubleTap: () {},
                     borderRadius: BorderRadius.circular(15.0),
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),
@@ -348,33 +347,38 @@ class MembernearScreenState extends State<MembernearScreen> {
                 ),
               ),
             ),
+
             Align(
               alignment: Alignment.topCenter,
-              child: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  boxShadow: kElevationToShadow[1],
-                ),
-                child: CachedNetworkImage(
-                  imageUrl: user?.avatar == "" || user?.avatar == null 
-                    ? "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png"
-                    : user!.avatar!,
-                  fit: BoxFit.fill,
-                  imageBuilder: (context, imageProvider) {
-                    return CircleAvatar(
-                      radius: 25.0,
-                      backgroundImage: imageProvider,
-                    );
-                  },
-                  errorWidget: (BuildContext context, String error, dynamic _) {
-                    return CircleAvatar(
-                      radius: 25.0,
-                      child: Image.asset("assets/images/logo/logo.png"),
-                    );
-                  },
-                ),
+              child: CachedNetworkImage(
+                imageUrl: user?.avatar == "" || user?.avatar == null 
+                ? "https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png"
+                : user!.avatar!,
+                fit: BoxFit.fill,
+                imageBuilder: (context, imageProvider) {
+                  return CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    backgroundImage: imageProvider,
+                    radius: 25.0,
+                  );
+                },
+                placeholder: (context, url) {
+                  return const CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                    radius: 25.0,
+                  );
+                },
+                errorWidget: (BuildContext context, String error, dynamic _) {
+                  return const CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                    radius: 25.0,
+                  );
+                },
               ),
             ),
+
           ],
         ),
       ),

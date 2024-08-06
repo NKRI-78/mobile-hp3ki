@@ -33,37 +33,37 @@ class SosScreenV2State extends State<SosScreenV2> {
       "id": 1,
       "name": "ACCIDENT",
       "image": "assets/images/sos/accident.png",
-      "message": "butuh bantuan telah terjadi Kecelakaan"
+      "message": "Kecelakaan"
     },
     {
       "id": 2,
       "name": "THEFT",
       "image": "assets/images/sos/theft.png",
-      "message": "butuh bantuan telah terjadi Pencurian"
+      "message": "Pencurian"
     },
     {
       "id": 3,
       "name": "WILDFIRE",
       "image": "assets/images/sos/wildfire.png",
-      "message": "butuh bantuan telah terjadi Kebakaran"
+      "message": "Kebakaran"
     },
     {
       "id": 4,
       "name": "DISASTER",
       "image": "assets/images/sos/disaster.png",
-      "message": "butuh bantuan telah terjadi Bencana Alam"
+      "message": "Bencana Alam"
     },
     {
       "id": 5,
       "name": "ROBBERY",
       "image": "assets/images/sos/robbery.png",
-      "message": "butuh bantuan telah terjadi Perampokan"
+      "message": "Perampokan"
     },
     {
       "id": 6,
       "name": "NOISE",
       "image": "assets/images/sos/noise.png",
-      "message": "butuh bantuan telah terjadi Kerusuhan"
+      "message": "Kerusuhan"
     }
   ];
 

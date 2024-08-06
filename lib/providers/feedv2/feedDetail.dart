@@ -26,13 +26,11 @@ class FeedDetailProviderV2 with ChangeNotifier {
     required this.fr
   });
 
-  GlobalKey<FlutterMentionsState> mentionKey =  GlobalKey<FlutterMentionsState>();
+  GlobalKey<FlutterMentionsState> mentionKey = GlobalKey<FlutterMentionsState>();
 
   String type = "COMMENT";
   String commentId = "";
   String replyId = "";
-
-  String inputVal = "";
 
   String highlightedComment = "";
   String highlightedReply = "";
@@ -68,12 +66,6 @@ class FeedDetailProviderV2 with ChangeNotifier {
 
     notifyListeners();
   } 
-
-  void onListenComment(String val) {
-    inputVal = val;
-
-    notifyListeners();
-  }
 
   void onUpdateHighlightComment(String val) {
     highlightedComment = val;
@@ -186,18 +178,11 @@ class FeedDetailProviderV2 with ChangeNotifier {
 
         String replyIdStore = Uuid().generateV4();
 
-        await fr.postReply(
-          context: context, 
-          replyIdStore: replyIdStore,
-          replyId: replyId, commentId: commentId, 
-          reply: inputVal, userId: ar.getUserId(),
-        );
-
         int i = comments.indexWhere((el) => el.id == commentId);
 
         _comments[i].reply.replies.add(ReplyElement(
           id: replyIdStore, 
-          reply: inputVal, 
+          reply: mentionKey.currentState!.controller!.text, 
           createdAt: "beberapa detik yang lalu", 
           user: UserReply(
             id: context.read<ProfileProvider>().user!.id.toString(), 
@@ -211,12 +196,21 @@ class FeedDetailProviderV2 with ChangeNotifier {
           ),
           key: GlobalKey()
         ));
+       
+        fr.postReply(
+          context: context, 
+          replyIdStore: replyIdStore,
+          replyId: replyId, commentId: commentId, 
+          reply: mentionKey.currentState!.controller!.text, userId: ar.getUserId(),
+        ).then((_) {
+          mentionKey.currentState!.controller!.clear();
 
-        mentionKey.currentState!.controller!.text = "";
+          notifyListeners();
+        });
 
         highlightedReply = comments[i].reply.replies.last.id;
 
-        Future.delayed(const Duration(milliseconds: 100), () {
+        Future.delayed(const Duration(milliseconds: 1000), () {
           GlobalKey targetContext = comments[i].reply.replies.last.key;
           Scrollable.ensureVisible(targetContext.currentContext!,
             duration: const Duration(milliseconds: 100),
@@ -236,15 +230,10 @@ class FeedDetailProviderV2 with ChangeNotifier {
 
         String commentIdStore = Uuid().generateV4();
 
-        await fr.postComment(
-          context: context, commentId: commentIdStore, forumId: forumId, 
-          comment: inputVal, userId: ar.getUserId(),
-        );
-
         _comments.add(
           CommentElement(
             id: commentIdStore, 
-            comment: inputVal, 
+            comment: mentionKey.currentState!.controller!.text, 
             createdAt: "beberapa detik yang lalu", 
             user: User(
               id: context.read<ProfileProvider>().user!.id.toString(), 
@@ -258,11 +247,18 @@ class FeedDetailProviderV2 with ChangeNotifier {
           )
         );
 
-        mentionKey.currentState!.controller!.text = "";
+        fr.postComment(
+          context: context, commentId: commentIdStore, forumId: forumId, 
+          comment: mentionKey.currentState!.controller!.text, userId: ar.getUserId(),
+        ).then((_) {
+          mentionKey.currentState!.controller!.clear();
+
+          notifyListeners();
+        });
 
         highlightedComment = comments.last.id;
 
-        Future.delayed(const Duration(milliseconds: 100), () {
+        Future.delayed(const Duration(milliseconds: 1000), () {
           GlobalKey targetContext = comments.last.key;
           Scrollable.ensureVisible(targetContext.currentContext!,
             duration: const Duration(milliseconds: 100),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:hp3ki/utils/helper.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -10,6 +9,7 @@ import 'package:hp3ki/providers/news/news.dart';
 import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
 import 'package:hp3ki/views/screens/connection/connection.dart';
 
+import 'package:hp3ki/utils/helper.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/utils/extension.dart';
@@ -88,7 +88,7 @@ class NewsScreenState extends State<NewsScreen> {
                   if(newsProvider.newsStatus == NewsStatus.empty) 
                     buildLoadingContent(),
                   if(newsProvider.newsStatus == NewsStatus.loaded)        
-                    buildContentNotEmpty(newsProvider),
+                    buildContent(newsProvider),
                 ],
               )
             );
@@ -128,11 +128,11 @@ class NewsScreenState extends State<NewsScreen> {
     );
   }
 
-  SliverPadding buildContentNotEmpty(NewsProvider newsProvider) {
+  SliverPadding buildContent(NewsProvider newsProvider) {
     return SliverPadding(
       padding: const EdgeInsets.only(
-        top: Dimensions.paddingSizeSmall,
-        bottom: Dimensions.paddingSizeSmall
+        top: 30.0,
+        bottom: 150.0
       ),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
@@ -155,7 +155,7 @@ class NewsScreenState extends State<NewsScreen> {
                 onTap: () async {
                   await newsProvider.getNewsDetail(
                     context,
-                    newsId: newsProvider.news![i].id!,
+                    newsId: newsProvider.news[i].id!,
                   );
                 },
                 child: Row(
@@ -171,7 +171,7 @@ class NewsScreenState extends State<NewsScreen> {
                           bottomLeft: Radius.circular(20.0)
                         ),
                         child: CachedNetworkImage(
-                          imageUrl: newsProvider.news![i].image!,
+                          imageUrl: newsProvider.news[i].image!,
                           imageBuilder: (BuildContext context, ImageProvider image) {
                             return Container(
                               width: double.infinity,
@@ -221,9 +221,9 @@ class NewsScreenState extends State<NewsScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(newsProvider.news![i].title.toString().length > 85 
-                              ? "${newsProvider.news![i].title.toString().substring(0, 85)}..."
-                              : newsProvider.news![i].title.toString().toTitleCase(),
+                            Text(newsProvider.news[i].title.toString().length > 85 
+                              ? "${newsProvider.news[i].title.toString().substring(0, 85)}..."
+                              : newsProvider.news[i].title.toString().toTitleCase(),
                               style: poppinsRegular.copyWith(
                                 fontSize: Dimensions.fontSizeDefault,
                                 color: ColorResources.black,
@@ -234,7 +234,7 @@ class NewsScreenState extends State<NewsScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(Helper.formatDate(DateTime.parse(Helper.getFormatedDate(newsProvider.news![i].createdAt))),
+                                Text(Helper.formatDate(DateTime.parse(Helper.getFormatedDate(newsProvider.news[i].createdAt))),
                                   style: poppinsRegular.copyWith(
                                     fontSize: Dimensions.fontSizeSmall,
                                     color: ColorResources.grey,
@@ -257,7 +257,7 @@ class NewsScreenState extends State<NewsScreen> {
               ),
             );
           },
-          childCount: newsProvider.news!.length
+          childCount: newsProvider.news.length
         )
       ),
     );

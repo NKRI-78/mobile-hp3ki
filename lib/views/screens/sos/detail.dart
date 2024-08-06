@@ -2,16 +2,22 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:android_intent_plus/android_intent.dart';
-import 'package:hp3ki/providers/profile/profile.dart';
-import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
+import 'package:hp3ki/providers/location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:location/location.dart';
 import 'package:slide_to_confirm/slide_to_confirm.dart';
+
 import 'package:hp3ki/services/navigation.dart';
+
+import 'package:hp3ki/providers/profile/profile.dart';
 import 'package:hp3ki/providers/sos/sos.dart';
+
 import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
+import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
+
 import 'package:hp3ki/localization/language_constraints.dart';
+
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
@@ -29,10 +35,10 @@ class SosDetailScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<SosDetailScreen> createState() => _SosDetailScreenState();
+  State<SosDetailScreen> createState() => SosDetailScreenState();
 }
 
-class _SosDetailScreenState extends State<SosDetailScreen> {
+class SosDetailScreenState extends State<SosDetailScreen> {
 
   late Location location;
 
@@ -253,10 +259,13 @@ class _SosDetailScreenState extends State<SosDetailScreen> {
                                       btnTextColor: ColorResources.white,
                                       isLoading: context.watch<SosProvider>().sosStatus == SosStatus.loading ? true : false,
                                       onTap: () async {
+                                        String fullname = context.read<ProfileProvider>().user!.fullname.toString();
+                                        String location = context.read<LocationProvider>().getCurrentNameAddress.toString();
+
                                         await context.read<SosProvider>().sendSos(
                                           context, 
                                           type: widget.label,
-                                          message: "${context.read<ProfileProvider>().user!.fullname} ${widget.message}"
+                                          message: "$fullname sedang membutuhkan bantuan cepat, $fullname mengalami ${widget.message} di $location"
                                         );
                                       }, 
                                       btnTxt: "OK"
