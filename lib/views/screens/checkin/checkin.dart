@@ -1,44 +1,50 @@
 import 'dart:async';
 
-import 'package:hp3ki/utils/helper.dart';
-import 'package:hp3ki/utils/shared_preferences.dart';
-import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
-import 'package:hp3ki/views/screens/checkin/create.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:hp3ki/utils/constant.dart';
-import 'package:hp3ki/views/screens/checkin/detail.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+
 import 'package:hp3ki/localization/language_constraints.dart';
+
+import 'package:hp3ki/services/navigation.dart';
+
+import 'package:hp3ki/data/models/checkin/checkin.dart';
+
+import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
+import 'package:hp3ki/views/basewidgets/loader/circular.dart';
+
+import 'package:hp3ki/views/screens/checkin/create.dart';
+import 'package:hp3ki/views/screens/checkin/detail.dart';
+
 import 'package:hp3ki/providers/checkin/checkin.dart';
 import 'package:hp3ki/providers/location/location.dart';
-import 'package:hp3ki/services/navigation.dart';
+
+import 'package:hp3ki/utils/constant.dart';
+import 'package:hp3ki/utils/helper.dart';
+import 'package:hp3ki/utils/shared_preferences.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/utils/color_resources.dart';
-import 'package:hp3ki/views/basewidgets/loader/circular.dart';
-import '../../../data/models/checkin/checkin.dart';
 
 class CheckInScreen extends StatefulWidget {
   const CheckInScreen({Key? key}) : super(key: key);
 
   @override
-  _CheckInScreenState createState() => _CheckInScreenState();
+  CheckInScreenState createState() => CheckInScreenState();
 }
 
-class _CheckInScreenState extends State<CheckInScreen> {
+class CheckInScreenState extends State<CheckInScreen> {
 
   int checkInIdLoading = -1;
 
   Future<void> getData() async {
-    if(mounted) {
+    if(!mounted) return;
       context.read<CheckInProvider>().getCheckIn(context);
-    }
-    if(mounted) {
+    
+    if(!mounted) return;
       context.read<LocationProvider>().getCurrentPositionCheckIn(context);
-    }
   }
 
   void join(String checkInId) {
@@ -63,7 +69,7 @@ class _CheckInScreenState extends State<CheckInScreen> {
   void initState() {
     super.initState();
 
-    getData();
+    Future.microtask(() => getData());
   }
 
   @override 
@@ -112,7 +118,7 @@ class _CheckInScreenState extends State<CheckInScreen> {
         if(checkInProvider.checkInStatus == CheckInStatus.error) {
           return buildContentError(context);
         } 
-        return buildContentNotEmpty();
+        return buildContent();
       },
     );
   }
@@ -157,7 +163,7 @@ class _CheckInScreenState extends State<CheckInScreen> {
     );
   }
 
-  SliverList buildContentNotEmpty() {
+  SliverList buildContent() {
     return SliverList(
       delegate: SliverChildListDelegate([
         Consumer<CheckInProvider>(
@@ -242,12 +248,16 @@ class _CheckInScreenState extends State<CheckInScreen> {
               children: [
                 Expanded(
                   flex: 6,
-                  child: Text(getTranslated("CAPTION", context),
+                  child: Text(getTranslated("TITLE", context),
                     style: poppinsRegular.copyWith(
                       fontWeight: FontWeight.w600,
                       fontSize: Dimensions.fontSizeDefault
                     ),
                   )
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Container()
                 ),
                 Expanded(
                   flex: 20,
@@ -280,6 +290,10 @@ class _CheckInScreenState extends State<CheckInScreen> {
                   )
                 ),
                 Expanded(
+                  flex: 1,
+                  child: Container()
+                ),
+                Expanded(
                   flex: 20,
                   child: Text(checkInProvider.checkInData[i].location ?? "...",
                     style: poppinsRegular.copyWith(
@@ -309,6 +323,10 @@ class _CheckInScreenState extends State<CheckInScreen> {
                   )
                 ),
                 Expanded(
+                  flex: 1,
+                  child: Container()
+                ),
+                Expanded(
                   flex: 20,
                   child: Text(Helper.formatDate(DateTime.parse(checkInProvider.checkInData[i].checkinDate?.replaceAll('/', '-') ?? DateTime.now().toString())),
                     style: poppinsRegular.copyWith(
@@ -336,6 +354,10 @@ class _CheckInScreenState extends State<CheckInScreen> {
                       fontSize: Dimensions.fontSizeDefault
                     ),
                   )
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Container()
                 ),
                 Expanded(
                   flex: 20,

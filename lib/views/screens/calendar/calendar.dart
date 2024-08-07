@@ -448,11 +448,12 @@ class CalendarScreenState extends State<CalendarScreen> {
                             fontWeight: FontWeight.w600
                           )
                         ),
+                        const SizedBox(height: 10.0),
                         Html(
                           data: events[i].description,
                           shrinkWrap: true,
                           style: {
-                            'body': Style(
+                            '*': Style(
                               margin: Margins.zero,
                               padding: HtmlPaddings.zero,
                               fontFamily: 'Poppins',
@@ -462,6 +463,8 @@ class CalendarScreenState extends State<CalendarScreen> {
                       ],
                     ),
                   ),
+
+                  const SizedBox(height: 10.0),
     
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -555,39 +558,33 @@ class CalendarScreenState extends State<CalendarScreen> {
     
                   Container(
                     margin: const EdgeInsets.only(
-                      top: 10.0,
-                      bottom: 10.0
+                      top: 20.0,
+                      bottom: 20.0
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-    
-                        CustomButton(
-                          onTap: events[i].joined == true 
-                          ? () { }
-                          : () async {
-                            setState(() {
-                              getData();
-                            });
-                            await context.read<EventProvider>().joinEvent(
-                              context, 
-                              eventId: events[i].id.toString(),
-                            );
-                          }, 
-                          height: 35.0,
-                          isBorder: false,
-                          isBorderRadius: true,
-                          isLoading: context.watch<EventProvider>().eventJoinStatus == EventJoinStatus.loading 
-                            ? true 
-                            : false,
-                          btnColor: events[i].joined == true 
-                            ? ColorResources.backgroundDisabled : ColorResources.success,
-                          btnTxt: events[i].joined == true ? "Tergabung" : "Gabung",
-                        )
-    
-                      ],
+                    child: CustomButton(
+                      onTap: events[i].joined == true 
+                      ? () { }
+                      : () async {
+                        setState(() {
+                          getData();
+                        });
+                        await context.read<EventProvider>().joinEvent(
+                          context, 
+                          eventId: events[i].id.toString(),
+                        );
+                      }, 
+                      height: 35.0,
+                      isBorder: false,
+                      isBorderRadius: true,
+                      isLoading: context.watch<EventProvider>().eventJoinStatus == EventJoinStatus.loading 
+                        ? true 
+                        : false,
+                      btnColor: events[i].joined == true 
+                        ? ColorResources.backgroundDisabled : ColorResources.success,
+                      btnTxt: events[i].joined == true ? "Tergabung" : "Gabung",
                     ),
                   )
+
                 ],
               ),
             ),

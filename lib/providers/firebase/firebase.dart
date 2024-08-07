@@ -83,6 +83,12 @@ class FirebaseProvider with ChangeNotifier {
     }
 
     // FORUM
+    if(message.data["click_action"] == "create") {
+      NS.push(navigatorKey.currentContext!,
+        const DashboardScreen(index: 2)
+      );
+    }
+
     if(message.data["click_action"] == "like") {
       NS.push(navigatorKey.currentContext!,
         const DashboardScreen(index: 2)

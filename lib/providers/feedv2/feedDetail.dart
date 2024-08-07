@@ -40,7 +40,7 @@ class FeedDetailProviderV2 with ChangeNotifier {
   bool hasMore = true;
   int pageKey = 1;
 
-  final List<Map<String, dynamic>> _userMentions = [];
+  List<Map<String, dynamic>> _userMentions = [];
   List<Map<String, dynamic>> get userMentions  => [..._userMentions];
 
   List<CommentElement> _comments = [];
@@ -127,9 +127,11 @@ class FeedDetailProviderV2 with ChangeNotifier {
 
       List<UserMention>? mentions = await fr.userMentions(context, username.replaceAll('@', ''));
 
+      _userMentions = [];
+      
       for (UserMention mention in mentions!) {
 
-        if(!ids.contains(mention.id)) {
+        // if(!ids.contains(mention.id)) {
 
           _userMentions.add({
             "id": mention.id.toString(),
@@ -137,9 +139,10 @@ class FeedDetailProviderV2 with ChangeNotifier {
             "display": mention.username.toString(),
             "fullname": mention.display.toString()
           });
-          ids.add(mention.id);
+          
+          // ids.add(mention.id);
 
-        }
+        // }
 
       }
       

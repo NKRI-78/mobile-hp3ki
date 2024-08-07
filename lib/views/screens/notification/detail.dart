@@ -1,6 +1,8 @@
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
+import 'package:url_launcher/url_launcher.dart';
+
 import 'package:hp3ki/providers/inbox/inbox.dart';
 
 import 'package:hp3ki/utils/helper.dart';
@@ -29,6 +31,9 @@ class DetailInboxScreenState extends State<DetailInboxScreen> {
   String title = "";
   String content = "";
   String date = "";
+
+  String latitude = "";
+  String longitude = "";
 
   String titleMore = "";
 
@@ -65,6 +70,8 @@ class DetailInboxScreenState extends State<DetailInboxScreen> {
 
       title = loading ? "..." : provider.inboxDetailData.title ?? "...";
       content = loading ? "..." : provider.inboxDetailData.description ?? "...";
+      latitude = loading ? "..." : provider.inboxDetailData.lat ?? "...";
+      longitude = loading ? "..." : provider.inboxDetailData.lng ?? "...";
       date = loading ? "..." : Helper.formatDate(DateTime.parse(((provider.inboxDetailData.createdAt)!.replaceAll('/', '-'))));
   }
 
@@ -98,10 +105,43 @@ class DetailInboxScreenState extends State<DetailInboxScreen> {
         if (didPop) {
           return;
         }
+        // InkWell(
+        //               onTap: () async {
+        //                 var address = '$latitude,$longitude';
+        //                 String googleUrl =
+        //                     'https://www.google.com/maps/search/?api=1&query=$address';
+        //                 if (!await launchUrl(Uri.parse(googleUrl))) {
+        //                   throw 'Could not open the map.';
+        //                 }
+        //               },
+        //               child: const Padding(
+        //                 padding: EdgeInsets.all(8.0),
+        //                 child: Text("Lihat lokasi")
+        //               )
+        //             )
         Navigator.pop(context, "refetch");
       },
       child: Scaffold(
         backgroundColor: Colors.white,
+        bottomNavigationBar: widget.type == "sos" 
+        ? Container(
+            margin: const EdgeInsets.all(15),
+            child: ElevatedButton(
+              onPressed: () async {
+                var address = '$latitude,$longitude';
+                String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$address';
+                if (!await launchUrl(Uri.parse(googleUrl))) {
+                  throw 'Could not open the map.';
+                }
+              }, 
+              child: Text("Lihat lokasi",
+                style: robotoRegular.copyWith(
+                  fontWeight: FontWeight.bold
+                ),
+              )
+            ),
+          ) 
+        : const SizedBox(),
         body: CustomScrollView(
           physics: const BouncingScrollPhysics(
             parent: AlwaysScrollableScrollPhysics()
@@ -164,22 +204,24 @@ class DetailInboxScreenState extends State<DetailInboxScreen> {
                 opacity: isShrink ? 0.0 : 1.0,
                 duration: const Duration(milliseconds: 250),
                 child: Text(title,
-                    textAlign: TextAlign.start,
-                    style: poppinsRegular.copyWith(
-                      fontSize: Dimensions.fontSizeLarge,
-                      color: ColorResources.black,
-                      fontWeight: FontWeight.w600,
-                    )),
+                  textAlign: TextAlign.start,
+                  style: poppinsRegular.copyWith(
+                    fontSize: Dimensions.fontSizeLarge,
+                    color: ColorResources.black,
+                    fontWeight: FontWeight.w600,
+                  )
+                ),
               ),
             ),
             Container(
-                margin: const EdgeInsets.only(bottom: 10.0),
-                child: Text(
-                  date,
-                  style: poppinsRegular.copyWith(
-                      color: ColorResources.grey,
-                      fontSize: Dimensions.fontSizeDefault),
-                )),
+              margin: const EdgeInsets.only(bottom: 10.0),
+              child: Text(
+                date,
+                style: poppinsRegular.copyWith(
+                color: ColorResources.grey,
+                fontSize: Dimensions.fontSizeDefault),
+              )
+            ),
             const Divider(
               height: 4.0,
               thickness: 1.0,
@@ -195,15 +237,16 @@ class DetailInboxScreenState extends State<DetailInboxScreen> {
                   children: [
                     Text("Mayday Mayday",
                       style: robotoRegular.copyWith(
+                        fontWeight: FontWeight.bold,
                         color: ColorResources.black
                       ),
                      ),
-                     const SizedBox(height: 8.0),
-                     Text(content,
+                    const SizedBox(height: 8.0),
+                    Text(content,
                       style: robotoRegular.copyWith(
                         color: ColorResources.black
                       ),
-                     )
+                    ),
                   ],
                ),
             )

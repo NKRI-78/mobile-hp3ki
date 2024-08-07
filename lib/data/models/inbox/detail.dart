@@ -27,6 +27,8 @@ class InboxDetailData {
   String? link;
   InboxDeatilDataUser? user;
   bool? read;
+  String? lat;
+  String? lng;
   String? createdAt;
   String? updatedAt;
 
@@ -38,6 +40,8 @@ class InboxDetailData {
     this.link,
     this.user,
     this.read,
+    this.lat,
+    this.lng,
     this.createdAt,
     this.updatedAt,
   });
@@ -50,6 +54,8 @@ class InboxDetailData {
     link: json["link"],
     user: InboxDeatilDataUser.fromJson(json["user"]),
     read: json["read"],
+    lat: json["lat"],
+    lng: json["lng"],
     createdAt: json["created_at"],
     updatedAt: json["updated_at"],
   );

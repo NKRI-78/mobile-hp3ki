@@ -35,15 +35,19 @@ class SosProvider with ChangeNotifier {
   Future<void> sendSos(BuildContext context, {required String type, required String message}) async {
     setStateSosStatus(SosStatus.loading);
     try {
-      await sr.sendSos(
-        type: type, 
-        message: message, 
-        lat: lp.getCurrentLat.toString(),
-        lng: lp.getCurrentLng.toString(),
-        userId: SharedPrefs.getUserId(),
-      );
-      NS.pushReplacement(context, const DashboardScreen());
-      ShowSnackbar.snackbar(context, getTranslated('SENT_SOS', context), '', ColorResources.success);
+      if(lp.getCurrentLat.toString() != "0.0" && lp.getCurrentLng.toString() != "0.0") {
+        await sr.sendSos(
+          type: type, 
+          message: message, 
+          lat: lp.getCurrentLat.toString(),
+          lng: lp.getCurrentLng.toString(),
+          userId: SharedPrefs.getUserId(),
+        );
+        NS.pushReplacement(context, const DashboardScreen());
+        ShowSnackbar.snackbar(context, getTranslated('SENT_SOS', context), '', ColorResources.success);
+      } else {
+        ShowSnackbar.snackbar(context, getTranslated('PLEASE_ACTIVATE_LOCATION', context), '', ColorResources.error);
+      }
       setStateSosStatus(SosStatus.loaded);
     } on CustomException catch(e) {
       debugPrint(e.cause.toString());

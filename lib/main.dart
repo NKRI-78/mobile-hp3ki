@@ -144,6 +144,12 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }
 
     // FORUM
+    if(data["click_action"] == "create") {
+      NS.push(navigatorKey.currentContext!,
+        const DashboardScreen(index: 2)
+      );
+    }
+
     if(data["click_action"] == "like") {
       NS.push(navigatorKey.currentContext!,
         const DashboardScreen(index: 2)
