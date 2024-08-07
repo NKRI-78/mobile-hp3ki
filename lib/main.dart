@@ -6,6 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:flutter_mentions/flutter_mentions.dart';
+import 'package:hp3ki/views/screens/calendar/calendar.dart';
+import 'package:hp3ki/views/screens/news/detail.dart';
+import 'package:hp3ki/views/screens/notification/detail.dart';
 
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:provider/provider.dart';
@@ -115,6 +118,32 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void onClickedNotification(String? payload) {
     var data = json.decode(payload!);
 
+    // NEWS
+    if(data["click_action"] == "news") {
+      NS.push(navigatorKey.currentContext!, 
+        NewsDetailScreen(newsId: data["news_id"])
+      );
+    }
+
+    // SOS
+    if(data["click_action"] == "sos") {
+      NS.push(
+        navigatorKey.currentContext!,
+        DetailInboxScreen(
+          inboxId: data["inbox_id"], 
+          type: data["inbox_type"]
+        )
+      );    
+    }
+
+    // EVENT
+    if(data["click_action"] == "event") {
+      NS.push(navigatorKey.currentContext!,
+        const CalendarScreen()
+      );
+    }
+
+    // FORUM
     if(data["click_action"] == "like") {
       NS.push(navigatorKey.currentContext!,
         const DashboardScreen(index: 2)

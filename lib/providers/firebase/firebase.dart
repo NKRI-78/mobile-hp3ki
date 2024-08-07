@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:hp3ki/views/screens/calendar/calendar.dart';
+import 'package:hp3ki/views/screens/news/detail.dart';
 import 'package:hp3ki/views/screens/notification/detail.dart';
 import 'package:soundpool/soundpool.dart';
 
@@ -57,6 +58,11 @@ class FirebaseProvider with ChangeNotifier {
   Future<void> handleMessage(message) async {
 
     // NEWS
+    if(message.data["click_action"] == "news") {
+      NS.push(navigatorKey.currentContext!, 
+        NewsDetailScreen(newsId: message.data["news_id"])
+      );
+    }
 
     // SOS
     if(message.data["click_action"] == "sos") {
@@ -77,7 +83,6 @@ class FirebaseProvider with ChangeNotifier {
     }
 
     // FORUM
-
     if(message.data["click_action"] == "like") {
       NS.push(navigatorKey.currentContext!,
         const DashboardScreen(index: 2)
