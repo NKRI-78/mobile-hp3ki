@@ -190,6 +190,12 @@ class CheckInScreenState extends State<CheckInScreen> {
                   child: Card(
                     margin: const EdgeInsets.all(10.0),
                     elevation: 8.0,
+                    color: checkInProvider.checkInData[i].isPass! 
+                    ? Colors.grey
+                    : Colors.white,
+                    surfaceTintColor: checkInProvider.checkInData[i].isPass! 
+                    ? Colors.grey
+                    : Colors.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -261,12 +267,11 @@ class CheckInScreenState extends State<CheckInScreen> {
                 ),
                 Expanded(
                   flex: 20,
-                  child: Text(
-                    checkInProvider.checkInData[i].title ?? "...",
+                  child: Text(checkInProvider.checkInData[i].title ?? "...",
                     style: poppinsRegular.copyWith(
                       fontSize: Dimensions.fontSizeDefault
                     ),
-                  )
+                  ) 
                 ),
               ],
             ),
@@ -448,13 +453,19 @@ class CheckInScreenState extends State<CheckInScreen> {
         height: 60.0,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            elevation: 3.0, backgroundColor: Colors.green[300]!,
+            elevation: 3.0, 
+            backgroundColor: checkInProvider.checkInData[i].isPass!
+            ? Colors.grey 
+            : Colors.green[300]!,
           ),
-          onPressed: () => join(checkInProvider.checkInData[i].id!),
+          onPressed: () => checkInProvider.checkInData[i].isPass! 
+          ? () {} 
+          : join(checkInProvider.checkInData[i].id!),
           child: checkInProvider.checkInData[i].id == checkInProvider.checkInDataSelected
           ? const Loader(
-            color: ColorResources.white,
-          ) : Text(getTranslated('JOIN', context),
+              color: ColorResources.white,
+            ) 
+          : Text(getTranslated('JOIN', context),
             style: poppinsRegular.copyWith(
               color: ColorResources.white,
               fontSize: Dimensions.fontSizeSmall

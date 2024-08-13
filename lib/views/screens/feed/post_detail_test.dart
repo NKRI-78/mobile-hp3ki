@@ -12,7 +12,6 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:hp3ki/maps/src/utils/uuid.dart';
 
 import 'package:hp3ki/data/models/feedv2/feedDetail.dart' as m;
-import 'package:hp3ki/data/models/feedv2/feedDetail.dart';
 
 import 'package:hp3ki/providers/feedv2/feed.dart';
 import 'package:hp3ki/providers/feedv2/feedDetail.dart' as p;
@@ -29,7 +28,6 @@ import 'package:hp3ki/views/screens/feed/widgets/post_img.dart';
 import 'package:hp3ki/views/screens/feed/widgets/post_link.dart';
 import 'package:hp3ki/views/screens/feed/widgets/post_video.dart';
 import 'package:hp3ki/views/screens/home/home.dart';
-import 'package:hp3ki/views/screens/feed/widgets/post_text.dart';
 
 import 'package:hp3ki/services/navigation.dart';
 
@@ -38,91 +36,54 @@ import 'package:hp3ki/localization/language_constraints.dart';
 import 'package:hp3ki/views/basewidgets/loader/circular.dart';
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
 
-class PostDetailScreen extends StatefulWidget {
+import 'package:hp3ki/views/screens/feed/widgets/post_text.dart';
+
+class PostDetailTestScreen extends StatefulWidget {
   final dynamic data;
 
-  const PostDetailScreen({
+  const PostDetailTestScreen({
     Key? key,    
     required this.data,
   }) : super(key: key);
 
   @override
-  PostDetailScreenState createState() => PostDetailScreenState();
+  PostDetailTestScreenState createState() => PostDetailTestScreenState();
 }
 
-class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderStateMixin {
+class PostDetailTestScreenState extends State<PostDetailTestScreen>  with TickerProviderStateMixin {
 
-  String mentionTrigger = "@";
+  List mentionData = [
+    {
+      "id": 1,
+      "mention": "@adly321"
+    },
+    {
+      "id": 2,
+      "mention": "@agam321"
+    }
+  ];
+
+  void updateSelection() {
+  
+  }
 
   String previousText = "";
-  String inputText = "";
 
   late FeedReplyProvider frp;
   late p.FeedDetailProviderV2 feedDetailProvider;
   
   bool deletePostBtn = false;
 
-  Timer? debounce;  
+  Timer? debounce;
+  
+  FocusNode commentFn = FocusNode();
+  FocusNode mentionFn = FocusNode();
 
-  Future<void> onTextChanged(String text) async {
-    if (debounce?.isActive ?? false) debounce?.cancel();
-      debounce = Timer(const Duration(milliseconds: 500), () async {
-        final text = feedDetailProvider.controller.text;
-        final RegExp regex = RegExp(r'@\w+');
-        final matches = regex.allMatches(text);
+  String? getPartialMention(String text) {
+    final mentionPattern = RegExp(r'@\w*$');
+    final match = mentionPattern.firstMatch(text);
 
-        int cursorPosition = feedDetailProvider.controller.selection.baseOffset;
-
-        String activeMention = '';
-        // int currentActiveStart = 0;
-        // int currentActiveEnd = 0;
-
-        for (final match in matches) {
-          final mention = match.group(0)!;
-          final start = match.start;
-          final end = match.end;
-
-          // Check if the cursor is within the current match
-          if (cursorPosition >= start && cursorPosition <= end) {
-            // currentActiveStart = start;
-            // currentActiveEnd = end;
-            activeMention = mention.replaceAll('@', '');
-            break;
-          }
-        }
-
-        String updatedText = activeMention;
-
-        await feedDetailProvider.getUserMentions(context, updatedText);
-        
-        if(text.isEmpty) {
-          feedDetailProvider.toggleShowListUserMention(false);
-        }
-      });
-
-    setState(() {
-      inputText = text;
-    });
-  }
-
-  void onSuggestionSelected(String suggestion) {
-    final cursorPosition = feedDetailProvider.controller.selection.baseOffset;
-    final mentionIndex = inputText.lastIndexOf(mentionTrigger, cursorPosition);
-
-    if (mentionIndex != -1) {
-      final beforeMention = inputText.substring(0, mentionIndex);
-      final afterMention = inputText.substring(cursorPosition);
-      final newText = '$beforeMention$mentionTrigger$suggestion $afterMention';
-
-      feedDetailProvider.controller.text = newText;
-
-      final newCursorPosition = mentionIndex + mentionTrigger.length + suggestion.length + 1;
-      feedDetailProvider.controller.selection = TextSelection.fromPosition(
-        TextPosition(offset: newCursorPosition),
-      );
-    }
-
-    feedDetailProvider.toggleShowListUserMention(false);
+    return match?.group(0); 
   }
 
   Widget post(BuildContext context) {
@@ -500,7 +461,7 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        feedDetailProvider.focusNode.requestFocus();
+                        mentionFn.requestFocus();
                       }, 
                       child: Text(getTranslated("COMMENT", context),
                         style: const TextStyle(
@@ -523,11 +484,11 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
   }
 
   Future<void> getData() async {
-    if(!mounted) return;
-      await feedDetailProvider.getFeedDetail(context, widget.data["forum_id"]);
+    // if(!mounted) return; 
+      // await feedDetailProvider.getUserMentions(context, '');
 
     if(!mounted) return;
-      feedDetailProvider.clearInput();
+      await feedDetailProvider.getFeedDetail(context, widget.data["forum_id"]);
 
     if(widget.data["from"] == "notification-comment") {
 
@@ -588,16 +549,19 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
     frp = context.read<FeedReplyProvider>();
     feedDetailProvider = context.read<p.FeedDetailProviderV2>();
 
+    feedDetailProvider.controller.addListener(updateSelection);
+
     Future.microtask(() => getData());
   }
 
-  @override 
+  @override
   void dispose() {
     debounce?.cancel();
-    
+
     super.dispose();
   }
- 
+
+
   @override
   Widget build(BuildContext context) {
 
@@ -931,7 +895,7 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
 
                                               feedDetailProvider.controller.text = "@${comment.user.mention} ";
         
-                                              feedDetailProvider.focusNode.requestFocus();
+                                              mentionFn.requestFocus();
         
                                               previousText = "@${comment.user.mention} ";
 
@@ -957,274 +921,274 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
                                       ),
                                     ),
         
-                                    comment.reply.replies.isEmpty 
-                                    ? const SizedBox() 
-                                    : Container(
-                                        padding: const EdgeInsets.only(
-                                          top: 10.0,
-                                          bottom: 10.0,
-                                          left: 40.0
-                                        ),
-                                        child: ListView.builder(
-                                          shrinkWrap: true,
-                                          physics: const NeverScrollableScrollPhysics(),
-                                          itemCount: comment.reply.replies.length,
-                                          itemBuilder: (BuildContext context, int i) {
+                                    // comment.reply.replies.isEmpty 
+                                    // ? const SizedBox() 
+                                    // : Container(
+                                    //     padding: const EdgeInsets.only(
+                                    //       top: 10.0,
+                                    //       bottom: 10.0,
+                                    //       left: 40.0
+                                    //     ),
+                                    //     child: ListView.builder(
+                                    //       shrinkWrap: true,
+                                    //       physics: const NeverScrollableScrollPhysics(),
+                                    //       itemCount: comment.reply.replies.length,
+                                    //       itemBuilder: (BuildContext context, int i) {
         
-                                          ReplyElement reply = comment.reply.replies[i];
+                                    //       ReplyElement reply = comment.reply.replies[i];
                                       
-                                          return Container(
-                                            key: reply.key,
-                                            child: ListTile(
-                                              leading: CachedNetworkImage(
-                                              imageUrl: reply.user.avatar.toString(),
-                                                imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
-                                                  backgroundColor: Colors.transparent,
-                                                  backgroundImage: imageProvider,
-                                                  radius: 20.0,
-                                                ),
-                                                placeholder: (BuildContext context, String url) => const CircleAvatar(
-                                                  backgroundColor: Colors.transparent,
-                                                  backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
-                                                  radius: 20.0,
-                                                ),
-                                                errorWidget: (BuildContext context, String url, dynamic error) => const CircleAvatar(
-                                                  backgroundColor: Colors.transparent,
-                                                  backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
-                                                  radius: 20.0,
-                                                )
-                                              ),
-                                              title: Container(
-                                                padding: const EdgeInsets.all(10.0),
-                                                decoration: BoxDecoration(
-                                                color: context.watch<p.FeedDetailProviderV2>().highlightedReply == reply.id 
-                                                  ? ColorResources.backgroundLive
-                                                  : ColorResources.blueGrey,
-                                                  borderRadius: const BorderRadius.all(
-                                                    Radius.circular(8.0)
-                                                  )
-                                                ),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
+                                    //       return Container(
+                                    //         key: reply.key,
+                                    //         child: ListTile(
+                                    //           leading: CachedNetworkImage(
+                                    //           imageUrl: reply.user.avatar.toString(),
+                                    //             imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
+                                    //               backgroundColor: Colors.transparent,
+                                    //               backgroundImage: imageProvider,
+                                    //               radius: 20.0,
+                                    //             ),
+                                    //             placeholder: (BuildContext context, String url) => const CircleAvatar(
+                                    //               backgroundColor: Colors.transparent,
+                                    //               backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                                    //               radius: 20.0,
+                                    //             ),
+                                    //             errorWidget: (BuildContext context, String url, dynamic error) => const CircleAvatar(
+                                    //               backgroundColor: Colors.transparent,
+                                    //               backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                                    //               radius: 20.0,
+                                    //             )
+                                    //           ),
+                                    //           title: Container(
+                                    //             padding: const EdgeInsets.all(10.0),
+                                    //             decoration: BoxDecoration(
+                                    //             color: context.watch<p.FeedDetailProviderV2>().highlightedReply == reply.id 
+                                    //               ? ColorResources.backgroundLive
+                                    //               : ColorResources.blueGrey,
+                                    //               borderRadius: const BorderRadius.all(
+                                    //                 Radius.circular(8.0)
+                                    //               )
+                                    //             ),
+                                    //             child: Column(
+                                    //               crossAxisAlignment: CrossAxisAlignment.start,
+                                    //               children: [
                                                                               
-                                                    Text(reply.user.username.toString(),
-                                                      style: robotoRegular.copyWith(
-                                                        fontSize: Dimensions.fontSizeDefault,
-                                                      ),
-                                                    ),
+                                    //                 Text(reply.user.username.toString(),
+                                    //                   style: robotoRegular.copyWith(
+                                    //                     fontSize: Dimensions.fontSizeDefault,
+                                    //                   ),
+                                    //                 ),
                                                     
-                                                    const SizedBox(height: 8.0),
+                                    //                 const SizedBox(height: 8.0),
                                                                             
-                                                    Text(DateHelper.formatDateTime(reply.createdAt.toString(), context),
-                                                      style: robotoRegular.copyWith(
-                                                        fontSize: Dimensions.fontSizeExtraSmall,
-                                                        color: ColorResources.dimGrey
-                                                      ),
-                                                    ),
+                                    //                 Text(DateHelper.formatDateTime(reply.createdAt.toString(), context),
+                                    //                   style: robotoRegular.copyWith(
+                                    //                     fontSize: Dimensions.fontSizeExtraSmall,
+                                    //                     color: ColorResources.dimGrey
+                                    //                   ),
+                                    //                 ),
                                                       
-                                                    const SizedBox(height: 8.0),
+                                    //                 const SizedBox(height: 8.0),
                                                                             
-                                                    DetectableText(
-                                                      text: reply.reply,
-                                                      detectionRegExp: atSignRegExp,
-                                                      detectedStyle: robotoRegular.copyWith(
-                                                        color: Colors.blue
-                                                      ),
-                                                      basicStyle: robotoRegular
-                                                    ),
+                                    //                 DetectableText(
+                                    //                   text: reply.reply,
+                                    //                   detectionRegExp: atSignRegExp,
+                                    //                   detectedStyle: robotoRegular.copyWith(
+                                    //                     color: Colors.blue
+                                    //                   ),
+                                    //                   basicStyle: robotoRegular
+                                    //                 ),
         
-                                                    Container(
-                                                      width: 140.0,
-                                                      margin: const EdgeInsets.only(
-                                                        top: 5.0
-                                                      ),
-                                                      child: Row(
-                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        children: [
+                                    //                 Container(
+                                    //                   width: 140.0,
+                                    //                   margin: const EdgeInsets.only(
+                                    //                     top: 5.0
+                                    //                   ),
+                                    //                   child: Row(
+                                    //                     crossAxisAlignment: CrossAxisAlignment.center,
+                                    //                     mainAxisAlignment: MainAxisAlignment.start,
+                                    //                     children: [
         
-                                                          Text(reply.like.total.toString(),
-                                                            style: robotoRegular.copyWith(
-                                                              fontWeight: FontWeight.bold,
-                                                              fontSize: Dimensions.fontSizeDefault
-                                                            ),
-                                                          ),
+                                    //                       Text(reply.like.total.toString(),
+                                    //                         style: robotoRegular.copyWith(
+                                    //                           fontWeight: FontWeight.bold,
+                                    //                           fontSize: Dimensions.fontSizeDefault
+                                    //                         ),
+                                    //                       ),
         
-                                                          const SizedBox(width: 5.0),
+                                    //                       const SizedBox(width: 5.0),
         
-                                                          InkWell(
-                                                            onTap: () {
-                                                              feedDetailProvider.toggleLikeReply(
-                                                                context: context, 
-                                                                commentIdP: comment.id,
-                                                                replyIdP: reply.id, 
-                                                              );
-                                                            },
-                                                            child: Padding(
-                                                              padding: const EdgeInsets.all(5.0),
-                                                              child: Text(getTranslated("LIKE", context),
-                                                                style: TextStyle(
-                                                                  color: reply.like.likes.where(
-                                                                  (el) => el.user!.id == feedDetailProvider.ar.getUserId()
-                                                                  ).isEmpty ? ColorResources.black : ColorResources.blue,
-                                                                  fontSize: Dimensions.fontSizeDefault,
-                                                                  fontWeight: FontWeight.bold
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
+                                    //                       InkWell(
+                                    //                         onTap: () {
+                                    //                           feedDetailProvider.toggleLikeReply(
+                                    //                             context: context, 
+                                    //                             commentIdP: comment.id,
+                                    //                             replyIdP: reply.id, 
+                                    //                           );
+                                    //                         },
+                                    //                         child: Padding(
+                                    //                           padding: const EdgeInsets.all(5.0),
+                                    //                           child: Text(getTranslated("LIKE", context),
+                                    //                             style: TextStyle(
+                                    //                               color: reply.like.likes.where(
+                                    //                               (el) => el.user!.id == feedDetailProvider.ar.getUserId()
+                                    //                               ).isEmpty ? ColorResources.black : ColorResources.blue,
+                                    //                               fontSize: Dimensions.fontSizeDefault,
+                                    //                               fontWeight: FontWeight.bold
+                                    //                             ),
+                                    //                           ),
+                                    //                         ),
+                                    //                       ),
         
-                                                          const SizedBox(width: 8.0),
+                                    //                       const SizedBox(width: 8.0),
         
-                                                          InkWell(
-                                                            onTap: reply.user.id == feedDetailProvider.ar.getUserId() 
-                                                            ? () {} 
-                                                            : () {
-                                                              feedDetailProvider.controller.text = "@${reply.user.mention} ";
+                                    //                       InkWell(
+                                    //                         onTap: reply.user.id == feedDetailProvider.ar.getUserId() 
+                                    //                         ? () {} 
+                                    //                         : () {
+                                    //                           feedDetailProvider.mentionKey.currentState!.controller!.text = "@${reply.user.mention} ";
         
-                                                              feedDetailProvider.focusNode.requestFocus();
+                                    //                           mentionFn.requestFocus();
                                                               
-                                                              previousText = "@${reply.user.mention} ";
+                                    //                           previousText = "@${reply.user.mention} ";
 
-                                                              feedDetailProvider.onUpdateType("REPLY");
+                                    //                           feedDetailProvider.onUpdateType("REPLY");
         
-                                                              feedDetailProvider.onSelectedReply(
-                                                                valComment: comment.id,
-                                                                valReply: reply.id
-                                                              );
-                                                            },
-                                                            child: Padding(
-                                                              padding: const EdgeInsets.all(5.0),
-                                                              child: Text(getTranslated("REPLY",context),
-                                                                style: robotoRegular.copyWith(
-                                                                  fontSize: Dimensions.fontSizeDefault,
-                                                                  fontWeight: FontWeight.bold
-                                                                )
-                                                              ),
-                                                            ),
-                                                          ),
+                                    //                           feedDetailProvider.onSelectedReply(
+                                    //                             valComment: comment.id,
+                                    //                             valReply: reply.id
+                                    //                           );
+                                    //                         },
+                                    //                         child: Padding(
+                                    //                           padding: const EdgeInsets.all(5.0),
+                                    //                           child: Text(getTranslated("REPLY",context),
+                                    //                             style: robotoRegular.copyWith(
+                                    //                               fontSize: Dimensions.fontSizeDefault,
+                                    //                               fontWeight: FontWeight.bold
+                                    //                             )
+                                    //                           ),
+                                    //                         ),
+                                    //                       ),
         
-                                                        ]
-                                                      ),
-                                                    ),
+                                    //                     ]
+                                    //                   ),
+                                    //                 ),
                                             
-                                                  ]
-                                                ),
-                                              ),
-                                              trailing: feedDetailProvider.ar.getUserId() == reply.user.id 
-                                              ? grantedDeleteReply(context, widget.data["forum_id"], reply.id)
-                                              : PopupMenuButton(
-                                                  itemBuilder: (BuildContext buildContext) { 
-                                                    return [
-                                                      PopupMenuItem(
-                                                        child: Text("block user",
-                                                          style: robotoRegular.copyWith(
-                                                            color: ColorResources.error,
-                                                            fontSize: Dimensions.fontSizeSmall
-                                                          )
-                                                        ), 
-                                                        value: "/report-user"
-                                                      ),
-                                                      PopupMenuItem(
-                                                        child: Text("It's spam",
-                                                          style: robotoRegular.copyWith(
-                                                            color: ColorResources.error,
-                                                            fontSize: Dimensions.fontSizeSmall
-                                                          )
-                                                        ), 
-                                                        value: "/report-user"
-                                                      ),
-                                                      PopupMenuItem(
-                                                        child: Text("Nudity or sexual activity",
-                                                          style: robotoRegular.copyWith(
-                                                            color: ColorResources.error,
-                                                            fontSize: Dimensions.fontSizeSmall
-                                                          )
-                                                        ), 
-                                                        value: "/report-user"
-                                                      ),
-                                                      PopupMenuItem(
-                                                        child: Text("False Information",
-                                                          style: robotoRegular.copyWith(
-                                                            color: ColorResources.error,
-                                                            fontSize: Dimensions.fontSizeSmall
-                                                          )
-                                                        ), 
-                                                        value: "/report-user"
-                                                      )
-                                                    ];
-                                                  },
-                                                  onSelected: (route) {
-                                                    if(route == "/report-user") {
-                                                      showAnimatedDialog(
-                                                        context: context,
-                                                        builder: (context) {
-                                                          return Dialog(
-                                                            child: Container(
-                                                            height: 150.0,
-                                                            padding: const EdgeInsets.all(10.0),
-                                                            margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
-                                                            child: Column(
-                                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                                              children: [
-                                                                const SizedBox(height: 10.0),
-                                                                const Icon(Icons.delete,
-                                                                  color: ColorResources.black,
-                                                                ),
-                                                                const SizedBox(height: 10.0),
-                                                                Text(getTranslated("ARE_YOU_SURE_REPORT", context),
-                                                                  style: robotoRegular.copyWith(
-                                                                    fontSize: Dimensions.fontSizeSmall,
-                                                                    fontWeight: FontWeight.w600
-                                                                  ),
-                                                                ),
-                                                                const SizedBox(height: 10.0),
-                                                                Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                  mainAxisSize: MainAxisSize.max,
-                                                                  children: [
-                                                                    ElevatedButton(
-                                                                      onPressed: () => Navigator.of(context).pop(),
-                                                                      child: Text(getTranslated("NO", context),
-                                                                        style: robotoRegular.copyWith(
-                                                                          fontSize: Dimensions.fontSizeSmall
-                                                                        )
-                                                                      )
-                                                                    ), 
-                                                                    StatefulBuilder(
-                                                                      builder: (BuildContext context, Function s) {
-                                                                      return ElevatedButton(
-                                                                      style: ButtonStyle(
-                                                                        backgroundColor: MaterialStateProperty.all(
-                                                                          ColorResources.error
-                                                                        ),
-                                                                      ),
-                                                                      onPressed: () async { 
-                                                                        Navigator.of(context, rootNavigator: true).pop(); 
-                                                                      },
-                                                                      child: Text(getTranslated("YES", context), 
-                                                                        style: robotoRegular.copyWith(
-                                                                          fontSize: Dimensions.fontSizeSmall
-                                                                        ),
-                                                                      ),                           
-                                                                    );
-                                                                  })
-                                                                ],
-                                                              ) 
-                                                            ])
-                                                          )
-                                                        );
-                                                      },
-                                                    );
-                                                  }
-                                                },
-                                              )
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
+                                    //               ]
+                                    //             ),
+                                    //           ),
+                                    //           trailing: feedDetailProvider.ar.getUserId() == reply.user.id 
+                                    //           ? grantedDeleteReply(context, widget.data["forum_id"], reply.id)
+                                    //           : PopupMenuButton(
+                                    //               itemBuilder: (BuildContext buildContext) { 
+                                    //                 return [
+                                    //                   PopupMenuItem(
+                                    //                     child: Text("block user",
+                                    //                       style: robotoRegular.copyWith(
+                                    //                         color: ColorResources.error,
+                                    //                         fontSize: Dimensions.fontSizeSmall
+                                    //                       )
+                                    //                     ), 
+                                    //                     value: "/report-user"
+                                    //                   ),
+                                    //                   PopupMenuItem(
+                                    //                     child: Text("It's spam",
+                                    //                       style: robotoRegular.copyWith(
+                                    //                         color: ColorResources.error,
+                                    //                         fontSize: Dimensions.fontSizeSmall
+                                    //                       )
+                                    //                     ), 
+                                    //                     value: "/report-user"
+                                    //                   ),
+                                    //                   PopupMenuItem(
+                                    //                     child: Text("Nudity or sexual activity",
+                                    //                       style: robotoRegular.copyWith(
+                                    //                         color: ColorResources.error,
+                                    //                         fontSize: Dimensions.fontSizeSmall
+                                    //                       )
+                                    //                     ), 
+                                    //                     value: "/report-user"
+                                    //                   ),
+                                    //                   PopupMenuItem(
+                                    //                     child: Text("False Information",
+                                    //                       style: robotoRegular.copyWith(
+                                    //                         color: ColorResources.error,
+                                    //                         fontSize: Dimensions.fontSizeSmall
+                                    //                       )
+                                    //                     ), 
+                                    //                     value: "/report-user"
+                                    //                   )
+                                    //                 ];
+                                    //               },
+                                    //               onSelected: (route) {
+                                    //                 if(route == "/report-user") {
+                                    //                   showAnimatedDialog(
+                                    //                     context: context,
+                                    //                     builder: (context) {
+                                    //                       return Dialog(
+                                    //                         child: Container(
+                                    //                         height: 150.0,
+                                    //                         padding: const EdgeInsets.all(10.0),
+                                    //                         margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
+                                    //                         child: Column(
+                                    //                           crossAxisAlignment: CrossAxisAlignment.center,
+                                    //                           children: [
+                                    //                             const SizedBox(height: 10.0),
+                                    //                             const Icon(Icons.delete,
+                                    //                               color: ColorResources.black,
+                                    //                             ),
+                                    //                             const SizedBox(height: 10.0),
+                                    //                             Text(getTranslated("ARE_YOU_SURE_REPORT", context),
+                                    //                               style: robotoRegular.copyWith(
+                                    //                                 fontSize: Dimensions.fontSizeSmall,
+                                    //                                 fontWeight: FontWeight.w600
+                                    //                               ),
+                                    //                             ),
+                                    //                             const SizedBox(height: 10.0),
+                                    //                             Row(
+                                    //                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    //                               mainAxisSize: MainAxisSize.max,
+                                    //                               children: [
+                                    //                                 ElevatedButton(
+                                    //                                   onPressed: () => Navigator.of(context).pop(),
+                                    //                                   child: Text(getTranslated("NO", context),
+                                    //                                     style: robotoRegular.copyWith(
+                                    //                                       fontSize: Dimensions.fontSizeSmall
+                                    //                                     )
+                                    //                                   )
+                                    //                                 ), 
+                                    //                                 StatefulBuilder(
+                                    //                                   builder: (BuildContext context, Function s) {
+                                    //                                   return ElevatedButton(
+                                    //                                   style: ButtonStyle(
+                                    //                                     backgroundColor: MaterialStateProperty.all(
+                                    //                                       ColorResources.error
+                                    //                                     ),
+                                    //                                   ),
+                                    //                                   onPressed: () async { 
+                                    //                                     Navigator.of(context, rootNavigator: true).pop(); 
+                                    //                                   },
+                                    //                                   child: Text(getTranslated("YES", context), 
+                                    //                                     style: robotoRegular.copyWith(
+                                    //                                       fontSize: Dimensions.fontSizeSmall
+                                    //                                     ),
+                                    //                                   ),                           
+                                    //                                 );
+                                    //                               })
+                                    //                             ],
+                                    //                           ) 
+                                    //                         ])
+                                    //                       )
+                                    //                     );
+                                    //                   },
+                                    //                 );
+                                    //               }
+                                    //             },
+                                    //           )
+                                    //         ),
+                                    //       );
+                                    //     },
+                                    //   ),
+                                    // ),
         
                                   ]
                                 ),
@@ -1241,256 +1205,129 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
             ],
           ),
         ),
-        bottomNavigationBar: Container(
-          padding: MediaQuery.of(context).viewInsets,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-          
-            if (context.watch<p.FeedDetailProviderV2>().showListUserMention)
-              Container(
-                width: double.infinity,
-                height: 300.0,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: kElevationToShadow[4]
-                ),
-                child: Consumer<p.FeedDetailProviderV2>(
-                  builder: (__, notifier, _) {
-          
-                    if(notifier.userMentionStatus == p.UserMentionStatus.loading) {
-                      return const Center(
-                        child: SpinKitThreeBounce(
-                          size: 20.0,
-                          color: ColorResources.primary,
-                        )
-                      );
-                    }
-                    
-                    if(notifier.userMentionStatus == p.UserMentionStatus.empty) {
-                      return Center(
-                        child: Text("User not found",
-                          style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault
-                          ),
-                        )
-                      );
-                    }
-          
-                    final data = notifier.userMentions;
-          
-                    return ListView.separated(
-                      separatorBuilder: (context, index) {
-                        return const Divider();
-                      },
-                      shrinkWrap: true,
-                      padding: EdgeInsets.zero,
-                      itemCount: data.length,
-                      itemBuilder: (BuildContext context, int i) {
-                        return Container(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ListTile(
-                            title: Text(data[i]["display"]),
-                            leading: CachedNetworkImage(
-                              imageUrl: data[i]["photo"],
-                              imageBuilder: (context, imageProvider) {
-                                return CircleAvatar(
-                                  maxRadius: 20.0,
-                                  backgroundImage: imageProvider,
-                                );
-                              },
-                              errorWidget:(context, url, error) {
-                                return const CircleAvatar(
-                                  maxRadius: 20.0,
-                                  backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
-                                );
-                              },
-                              placeholder: (context, url) {
-                                return const CircleAvatar(
-                                  maxRadius: 20.0,
-                                  backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
-                                );
-                              },
+        bottomNavigationBar: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [ 
+
+            SizedBox(
+              height: 300.0,
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.zero,
+                  itemCount: mentionData.length, 
+                  itemBuilder: (BuildContext _, int i) {
+                  
+                  Map<String, dynamic> mention = mentionData[i];
+
+                  return ListTile(
+                    title: Text(mention["mention"]),
+                    // leading: CachedNetworkImage(
+                    //   imageUrl: mention["photo"],
+                    //   imageBuilder: (context, imageProvider) {
+                    //     return CircleAvatar(
+                    //       maxRadius: 20.0,
+                    //       backgroundImage: imageProvider,
+                    //     );
+                    //   },
+                    //   errorWidget:(context, url, error) {
+                    //     return const CircleAvatar(
+                    //       maxRadius: 20.0,
+                    //       backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                    //     );
+                    //   },
+                    //   placeholder: (context, url) {
+                    //     return const CircleAvatar(
+                    //       maxRadius: 20.0,
+                    //       backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                    //     );
+                    //   },
+                    // ),
+                    onTap: () {
+
+                      String currentText = feedDetailProvider.controller.text;
+                      String? partialMention = getPartialMention(currentText);
+
+                      if(partialMention != null) {
+
+                        int mentionStartIndex = currentText.lastIndexOf(partialMention);
+
+                        if(mentionStartIndex != -1) {
+
+                          String newText = currentText.replaceAll(partialMention, mention["mention"]);
+
+                          int cursorPosition = mentionStartIndex + mention["mention"].toString().length;
+
+                          // if (currentText != newText) {
+                          feedDetailProvider.controller.value = feedDetailProvider.controller.value.copyWith(
+                            text: newText,
+                            selection: TextSelection.fromPosition(
+                              TextPosition(offset: cursorPosition),
                             ),
-                            onTap: () => onSuggestionSelected(data[i]["display"]),
-                          ),
-                        );
-                      }
-                    );
-                  },
-                ) 
+                            composing: TextRange.empty,
+                          );
+                          // }
+
+                        }
+                      } 
+
+                    },
+                  );
+                },
               ),
-          
-              DetectableTextField(
-                controller: feedDetailProvider.controller,
-                focusNode: feedDetailProvider.focusNode,
-                onChanged: onTextChanged,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: ColorResources.white,
-                  contentPadding: const EdgeInsets.only(
-                    top: 16.0,
-                    bottom: 16.0,
-                    left: 16.0,
-                    right: 16.0
+            ),
+
+            DetectableTextField(
+              controller: feedDetailProvider.controller,
+              focusNode: feedDetailProvider.focusNode,
+              onChanged: (String val) {
+
+                // if (debounce?.isActive ?? false) debounce?.cancel();
+                //   debounce = Timer(const Duration(milliseconds: 500), () async {
+                //     final text = feedDetailProvider.controller.text;
+                //     final RegExp regex = RegExp(r'@\w+');
+                //     final matches = regex.allMatches(text);
+
+                //     final filteredText = matches.map((match) => match.group(0)!).join(' ').split(' ').last;
+    
+                    // await feedDetailProvider.getUserMentions(context, "");
+
+                  //   if(val.isEmpty) {
+
+                  //   }
+                  // });
+
+              },
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: ColorResources.white,
+                contentPadding: const EdgeInsets.only(
+                  top: 16.0,
+                  bottom: 16.0,
+                  left: 16.0,
+                  right: 16.0
+                ),
+                suffixIcon: IconButton(
+                  icon: const Icon(
+                    Icons.send,
+                    color: ColorResources.black,
                   ),
-                  suffixIcon: IconButton(
-                    icon: const Icon(
-                      Icons.send,
-                      color: ColorResources.black,
-                    ),
-                    onPressed: () async {
-                      await feedDetailProvider.postComment(
-                        context, 
-                        widget.data["forum_id"]
-                      );
-                    } 
-                  ),
-                  hintText: '${getTranslated("WRITE_COMMENT", context)} ...',
-                  hintStyle: robotoRegular.copyWith(
-                    color: ColorResources.greyDarkPrimary,
-                    fontSize: Dimensions.fontSizeDefault
-                  ),
+                  onPressed: () async {
+                    await feedDetailProvider.postComment(
+                      context, 
+                      widget.data["forum_id"]
+                    );
+                  } 
+                ),
+                hintText: '${getTranslated("WRITE_COMMENT", context)} ...',
+                hintStyle: robotoRegular.copyWith(
+                  color: ColorResources.greyDarkPrimary,
+                  fontSize: Dimensions.fontSizeDefault
                 ),
               ),
-          
-            ],
-          ),
-        )
+            ),
         
-        // Container(
-        //   padding: MediaQuery.of(context).viewInsets,
-        //   decoration: const BoxDecoration(
-        //     color: ColorResources.white
-        //   ),
-        //   child: Row(
-        //     mainAxisSize: MainAxisSize.max,
-        //     children: [
-              
-        //       Expanded(
-        //         child: FlutterMentions(
-        //           key: feedDetailProvider.mentionKey,
-        //           focusNode: mentionFn,
-        //           maxLines: 5,
-        //           minLines: 1,
-        //           appendSpaceOnAdd: true,
-        //           suggestionPosition: SuggestionPosition.Top,
-        //           onSearchChanged: (trigger, val) async {
-        //             await feedDetailProvider.getUserMentions(context, val);
-        //           },
-        //           onChanged: (String val) async {
-        //             final currentText = feedDetailProvider.mentionKey.currentState!.controller!.text;
-  
-        //             if (previousText.length - currentText.length == 1) {
-        //               feedDetailProvider.onUpdateType("COMMENT"); 
-        //             }
-        //           },
-        //           style: robotoRegular.copyWith(
-        //             color: Colors.black,
-        //             fontSize: Dimensions.fontSizeDefault
-        //           ),
-        //           decoration: InputDecoration(
-        //             contentPadding: const EdgeInsets.only(
-        //               left: 16.0,
-        //               right: 16.0
-        //             ),
-        //             hintText: '${getTranslated("WRITE_COMMENT", context)} ...',
-        //             hintStyle: robotoRegular.copyWith(
-        //               color: ColorResources.greyDarkPrimary,
-        //               fontSize: Dimensions.fontSizeDefault
-        //             ),
-        //           ),
-        //           mentions: [
-                    
-        //             Mention(
-        //               trigger: '@',
-        //               style: const TextStyle(
-        //                 color: Colors.blue,
-        //               ),
-        //               disableMarkup: true,
-        //               matchAll: true,
-        //               data: context.watch<p.FeedDetailProviderV2>().userMentions,
-        //               suggestionBuilder: (Map<String, dynamic> data) {
-        //                 return  Stack(
-        //                   clipBehavior: Clip.none,
-        //                   children: [
-        //                     IgnorePointer(
-        //                       ignoring: true,
-        //                       child: Container(
-        //                         color: ColorResources.white,
-        //                         width: double.infinity,
-        //                         height: 60,
-        //                         child: const SizedBox(),
-        //                       ),
-        //                     ),
-        //                     Positioned.fill(
-        //                       child: 
-        //                       Container(
-        //                         padding: const EdgeInsets.all(10.0),
-        //                         child: Row(
-        //                           mainAxisSize: MainAxisSize.max,
-        //                           children: [
-                                                          
-        //                             CachedNetworkImage(
-        //                               imageUrl: data['photo'].toString(),
-        //                               imageBuilder: (context, imageProvider) {
-        //                                 return CircleAvatar(
-        //                                   backgroundImage: imageProvider,
-        //                                 );
-        //                               },
-        //                               placeholder: (_, __) {
-        //                                 return const CircleAvatar(
-        //                                   backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
-        //                                 );
-        //                               },
-        //                               errorWidget: (_, ___, __) {
-        //                                 return const CircleAvatar(
-        //                                   backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
-        //                                 );
-        //                               },
-        //                             ),
-                                                            
-        //                             const SizedBox(
-        //                               width: 20.0,
-        //                             ),
-                                                            
-        //                             Text('@${data['display']}',
-        //                               style: robotoRegular.copyWith(
-        //                                 color:Colors.blue
-        //                               ),
-        //                             )
-                                                          
-        //                           ],
-        //                         ),
-        //                       ),
-        //                     ),
-        //                   ],
-        //                 );
-        //               }
-        //             ),
-
-        //           ]
-        //         )
-        //       ),
-              
-        //       IconButton(
-        //         icon: const Icon(
-        //           Icons.send,
-        //           color: ColorResources.black,
-        //         ),
-        //         onPressed: () async {
-        //           await feedDetailProvider.postComment(
-        //             context, 
-        //             widget.data["forum_id"]
-        //           );
-        //         } 
-        //       ),
-              
-        //     ],
-        //   ),
-        // )
-
-
+          ]
+        )
       ),
     );
   }

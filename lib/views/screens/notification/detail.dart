@@ -72,7 +72,7 @@ class DetailInboxScreenState extends State<DetailInboxScreen> {
       content = loading ? "..." : provider.inboxDetailData.description ?? "...";
       latitude = loading ? "..." : provider.inboxDetailData.lat ?? "...";
       longitude = loading ? "..." : provider.inboxDetailData.lng ?? "...";
-      date = loading ? "..." : Helper.formatDate(DateTime.parse(((provider.inboxDetailData.createdAt)!.replaceAll('/', '-'))));
+      date = loading ? "..." : Helper.formatDateWithTime(DateTime.parse(((provider.inboxDetailData.createdAt)!).replaceAll('/', '-')));
   }
 
   @override

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hp3ki/providers/profile/profile.dart';
+import 'package:hp3ki/views/screens/feed/post_detail.dart';
 import 'package:provider/provider.dart';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:hp3ki/services/navigation.dart';
-import 'package:hp3ki/views/screens/feed/post_detail.dart';
 
 import 'package:hp3ki/providers/feedv2/feed.dart';
 

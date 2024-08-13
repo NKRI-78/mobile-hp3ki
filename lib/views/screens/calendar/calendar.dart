@@ -1,7 +1,8 @@
 
 import 'dart:collection';
 import 'package:intl/intl.dart';
-import 'package:flutter_html/flutter_html.dart';
+
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -162,10 +163,10 @@ class CalendarScreenState extends State<CalendarScreen> {
   SliverList buildContent() {
     return SliverList(
       delegate: SliverChildListDelegate([
-      buildCalender(),
-      const SizedBox(height: 8.0),
-      buildCalenderValueListener(),
-  ]),
+        buildCalender(),
+        const SizedBox(height: 8.0),
+        buildCalenderValueListener(),
+      ]),
     );
   }
 
@@ -258,12 +259,16 @@ class CalendarScreenState extends State<CalendarScreen> {
               vertical: 4.0,
             ),
             decoration: BoxDecoration(
-              color: ColorResources.white,
+              color: events[i].isPass!
+              ? Colors.grey
+              : ColorResources.white,
               borderRadius: BorderRadius.circular(12.0),
               boxShadow: kElevationToShadow[3]
             ),
             child: InkWell(
               onTap: context.watch<EventProvider>().eventStatus == EventStatus.loading 
+              ? () {} 
+              : events[i].isPass! 
               ? () {} 
               : () {
                 buildEventDetailDialog(context, events, i);
@@ -310,14 +315,16 @@ class CalendarScreenState extends State<CalendarScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Html(
-                              data: events[i].description,
-                              style: {
-                                'body': Style(
-                                  fontFamily: 'Poppins',
-                                  maxLines: 2,
-                                  textOverflow: TextOverflow.ellipsis,
-                                ),
+                           HtmlWidget(
+                              events[i].title.toString(),
+                              customStylesBuilder: (element) {
+                                if (element.localName == 'body') {
+                                  return {
+                                    'margin': '0', 
+                                    'padding': '0'
+                                  };
+                                }
+                                return null;
                               },
                             ),
                             Container(
@@ -449,15 +456,16 @@ class CalendarScreenState extends State<CalendarScreen> {
                           )
                         ),
                         const SizedBox(height: 10.0),
-                        Html(
-                          data: events[i].description,
-                          shrinkWrap: true,
-                          style: {
-                            '*': Style(
-                              margin: Margins.zero,
-                              padding: HtmlPaddings.zero,
-                              fontFamily: 'Poppins',
-                            ),
+                        HtmlWidget(
+                          events[i].description.toString(),
+                          customStylesBuilder: (element) {
+                            if (element.localName == 'body') {
+                              return {
+                                'margin': '0', 
+                                'padding': '0'
+                              };
+                            }
+                            return null;
                           },
                         ),
                       ],
@@ -582,6 +590,80 @@ class CalendarScreenState extends State<CalendarScreen> {
                       btnColor: events[i].joined == true 
                         ? ColorResources.backgroundDisabled : ColorResources.success,
                       btnTxt: events[i].joined == true ? "Tergabung" : "Gabung",
+                    ),
+                  ),
+
+                  Container(
+                    margin: const EdgeInsets.only(
+                      top: 20.0,
+                      bottom: 20.0
+                    ),
+                    child: CustomButton(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (context) {
+                            return SizedBox(
+                              height: 300,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.all(16.0),
+                                    child: Text("Pengguna yang berpatisipasi",
+                                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: ListView.builder(
+                                      itemCount: events[i].users!.length,
+                                      itemBuilder: (context, index) {
+                                        return ListTile(
+                                          title: Text(events[i].users![index]["fullname"]),
+                                          leading: CachedNetworkImage(
+                                          imageUrl: events[i].users![index]["avatar"],
+                                            imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
+                                              backgroundColor: Colors.transparent,
+                                              backgroundImage: imageProvider,
+                                              radius: 20.0,
+                                            ),
+                                            placeholder: (BuildContext context, String url) => const CircleAvatar(
+                                              backgroundColor: Colors.transparent,
+                                              backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                                              radius: 20.0,
+                                            ),
+                                            errorWidget: (BuildContext context, String url, dynamic error) => const CircleAvatar(
+                                              backgroundColor: Colors.transparent,
+                                              backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                                              radius: 20.0,
+                                            )
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ).then((selectedUser) {
+                          if (selectedUser != null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('You selected: $selectedUser'),
+                              ),
+                            );
+                          }
+                        });
+                      },
+                      height: 35.0,
+                      isBorder: false,
+                      isBorderRadius: true,
+                      isLoading: context.watch<EventProvider>().eventJoinStatus == EventJoinStatus.loading 
+                      ? true 
+                      : false,
+                      btnColor: ColorResources.blue,
+                      btnTxt: "Lihat pengguna yang berpartisipasi (${events[i].users!.length})",
                     ),
                   )
 

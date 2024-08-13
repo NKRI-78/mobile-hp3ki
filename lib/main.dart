@@ -7,6 +7,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:flutter_mentions/flutter_mentions.dart';
 import 'package:hp3ki/views/screens/calendar/calendar.dart';
+import 'package:hp3ki/views/screens/feed/post_detail.dart';
 import 'package:hp3ki/views/screens/news/detail.dart';
 import 'package:hp3ki/views/screens/notification/detail.dart';
 
@@ -35,7 +36,6 @@ import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/shared_preferences.dart';
 
 import 'package:hp3ki/views/screens/home/home.dart';
-import 'package:hp3ki/views/screens/feed/post_detail.dart';
 import 'package:hp3ki/views/screens/splash/splash.dart';
 
 Future<void> main() async {

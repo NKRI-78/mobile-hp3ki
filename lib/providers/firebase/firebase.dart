@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:hp3ki/views/screens/calendar/calendar.dart';
-import 'package:hp3ki/views/screens/news/detail.dart';
-import 'package:hp3ki/views/screens/notification/detail.dart';
 import 'package:soundpool/soundpool.dart';
 
 import 'package:hp3ki/data/repository/firebase/firebase.dart';
@@ -18,7 +15,10 @@ import 'package:hp3ki/services/navigation.dart';
 import 'package:hp3ki/services/services.dart';
 
 import 'package:hp3ki/views/screens/home/home.dart';
+import 'package:hp3ki/views/screens/calendar/calendar.dart';
 import 'package:hp3ki/views/screens/feed/post_detail.dart';
+import 'package:hp3ki/views/screens/news/detail.dart';
+import 'package:hp3ki/views/screens/notification/detail.dart';
 
 enum InitFCMStatus { loading, loaded, error, idle }
 
@@ -174,6 +174,6 @@ class FirebaseProvider with ChangeNotifier {
     });
   }
 
-  double get getCurrentLat => SharedPrefs.getLat();  
-  double get getCurrentLng => SharedPrefs.getLng();  
+  double? get getCurrentLat => SharedPrefs.getLat();  
+  double? get getCurrentLng => SharedPrefs.getLng();  
 }

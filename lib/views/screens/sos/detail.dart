@@ -2,15 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:android_intent_plus/android_intent.dart';
-import 'package:hp3ki/providers/location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:location/location.dart';
 import 'package:slide_to_confirm/slide_to_confirm.dart';
 
-import 'package:hp3ki/services/navigation.dart';
-
 import 'package:hp3ki/providers/profile/profile.dart';
 import 'package:hp3ki/providers/sos/sos.dart';
+import 'package:hp3ki/providers/location/location.dart';
 
 import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
@@ -232,49 +230,46 @@ class SosDetailScreenState extends State<SosDetailScreen> {
                       children: [
                         Container(
                           margin: const EdgeInsets.only(bottom: 30.0),
-                          child: Builder(
-                            builder: (BuildContext context) {
-                              return Row(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Expanded(child: Container()),
-                                  Expanded(
-                                    flex: 5,
-                                    child: CustomButton(
-                                      isBorderRadius: true,
-                                      btnColor: ColorResources.white,
-                                      btnTextColor: ColorResources.primary,
-                                      onTap: () {
-                                        NS.pop(context);
-                                      }, 
-                                      btnTxt: getTranslated("CANCEL", context)
-                                    ),
-                                  ),
-                                  Expanded(child: Container()),
-                                  Expanded(
-                                    flex: 5,
-                                    child: CustomButton(
-                                      isBorderRadius: true,
-                                      btnColor: ColorResources.primary,
-                                      btnTextColor: ColorResources.white,
-                                      isLoading: context.watch<SosProvider>().sosStatus == SosStatus.loading ? true : false,
-                                      onTap: () async {
-                                        String fullname = context.read<ProfileProvider>().user!.fullname.toString();
-                                        String location = context.read<LocationProvider>().getCurrentNameAddress.toString();
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // Expanded(child: Container()),
+                              // Expanded(
+                              //   flex: 5,
+                              //   child: CustomButton(
+                              //     isBorderRadius: true,
+                              //     btnColor: ColorResources.white,
+                              //     btnTextColor: ColorResources.primary,
+                              //     onTap: () {
+                              //       NS.pop(context);
+                              //     }, 
+                              //     btnTxt: getTranslated("CANCEL", context)
+                              //   ),
+                              // ),
+                              const Expanded(child: SizedBox()),
+                              Expanded(
+                                flex: 5,
+                                child: CustomButton(
+                                  isBorderRadius: true,
+                                  btnColor: ColorResources.primary,
+                                  btnTextColor: ColorResources.white,
+                                  isLoading: context.watch<SosProvider>().sosStatus == SosStatus.loading ? true : false,
+                                  onTap: () async {
+                                    String fullname = context.read<ProfileProvider>().user!.fullname.toString();
+                                    String location = context.read<LocationProvider>().getCurrentNameAddress.toString();
 
-                                        await context.read<SosProvider>().sendSos(
-                                          context, 
-                                          type: widget.label,
-                                          message: "$fullname sedang membutuhkan bantuan cepat, $fullname mengalami ${widget.message} di $location"
-                                        );
-                                      }, 
-                                      btnTxt: "OK"
-                                    ),
-                                  ),
-                                  Expanded(child: Container()),
-                                ],
-                              );
-                            },
+                                    await context.read<SosProvider>().sendSos(
+                                      context, 
+                                      type: widget.label,
+                                      message: "$fullname sedang membutuhkan bantuan cepat, $fullname mengalami ${widget.message} di $location"
+                                    );
+                                  }, 
+                                  btnTxt: "OK"
+                                ),
+                              ),
+                              const Expanded(child: SizedBox()),
+                            ],
                           )
                         )
                       ],

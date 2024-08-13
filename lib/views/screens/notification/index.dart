@@ -901,7 +901,7 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
                     height: 10,
                   ),
                   Text(
-                      Helper.formatDate(DateTime.parse((inbox?[i].createdAt ??
+                      Helper.formatDateWithTime(DateTime.parse((inbox?[i].createdAt ??
                               Helper.getFormatedDateTwo(
                                   inboxPayment![i].createdAt!))
                           .replaceAll('/', '-'))),

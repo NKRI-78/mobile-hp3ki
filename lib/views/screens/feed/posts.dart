@@ -2,13 +2,17 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 import 'package:provider/provider.dart';
+import 'package:gallery_saver/gallery_saver.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:detectable_text_field/detectable_text_field.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:hp3ki/services/navigation.dart';
 
 import 'package:hp3ki/views/basewidgets/loader/circular.dart';
+import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
 
 import 'package:hp3ki/data/models/feedv2/feed.dart';
 
@@ -105,7 +109,64 @@ class PostsState extends State<Posts> {
             ? grantedDeletePost(context) 
             : PopupMenuButton(
                 itemBuilder: (BuildContext buildContext) { 
-                  return [
+                  return widget.forum.type == "video" 
+                  ? [
+                      PopupMenuItem(
+                        child: Text("Download Video",
+                          style: robotoRegular.copyWith(
+                            color: Colors.blue,
+                            fontSize: Dimensions.fontSizeSmall
+                          )
+                        ), 
+                        value: "/download-video"
+                      ),
+                      PopupMenuItem(
+                        child: Text("Block content",
+                          style: robotoRegular.copyWith(
+                            color: ColorResources.error,
+                            fontSize: Dimensions.fontSizeSmall
+                          )
+                        ), 
+                        value: "/report-user"
+                      ),
+                      PopupMenuItem(
+                        child: Text("Block user",
+                          style: robotoRegular.copyWith(
+                            color: ColorResources.error,
+                            fontSize: Dimensions.fontSizeSmall
+                          )
+                        ), 
+                        value: "/report-user"
+                      ),
+                      PopupMenuItem(
+                        child: Text("It's spam",
+                          style: robotoRegular.copyWith(
+                            color: ColorResources.error,
+                            fontSize: Dimensions.fontSizeSmall
+                          )
+                        ), 
+                        value: "/report-user"
+                      ),
+                      PopupMenuItem(
+                        child: Text("Nudity or sexual activity",
+                          style: robotoRegular.copyWith(
+                            color: ColorResources.error,
+                            fontSize: Dimensions.fontSizeSmall
+                          )
+                        ), 
+                        value: "/report-user"
+                      ),
+                      PopupMenuItem(
+                        child: Text("False Information",
+                          style: robotoRegular.copyWith(
+                            color: ColorResources.error,
+                            fontSize: Dimensions.fontSizeSmall
+                          )
+                        ), 
+                        value: "/report-user"
+                      )
+                    ] 
+                  : [
                     PopupMenuItem(
                       child: Text("Block content",
                         style: robotoRegular.copyWith(
@@ -153,7 +214,27 @@ class PostsState extends State<Posts> {
                     )
                   ];
                 },
-                onSelected: (route) {
+                onSelected: (route) async {
+                  if(route == "/download-video") {
+                    ProgressDialog pr = ProgressDialog(context: context);
+                    try {
+                      PermissionStatus statusStorage = await Permission.storage.status;
+                      if(!statusStorage.isGranted) {
+                        await Permission.storage.request();
+                      } 
+                      pr.show(
+                        max: 1,
+                        msg: '${getTranslated("DOWNLOADING", context)}...'
+                      );
+                      await GallerySaver.saveVideo("${widget.forum.media![0].path}");
+                      pr.close();
+                      ShowSnackbar.snackbar(context, getTranslated("SAVE_TO_GALLERY", context), "", ColorResources.success);
+                    } catch(e, stacktrace) {
+                      pr.close();
+                      ShowSnackbar.snackbar(context, getTranslated("THERE_WAS_PROBLEM", context), "", ColorResources.error);
+                      debugPrint(stacktrace.toString());
+                    }
+                  }
                   if(route == "/report-user") {
                     showAnimatedDialog(
                       barrierDismissible: true,

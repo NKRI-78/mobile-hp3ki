@@ -1,15 +1,19 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:hp3ki/providers/profile/profile.dart';
+
+import 'package:detectable_text_field/detectable_text_field.dart';
+import 'package:hp3ki/utils/dimensions.dart';
 
 import 'package:provider/provider.dart';
-
-import 'package:flutter_mentions/flutter_mentions.dart';
 
 import 'package:hp3ki/data/models/feedv2/feedDetail.dart';
 import 'package:hp3ki/data/models/feedv2/user_mention.dart';
 
 import 'package:hp3ki/data/repository/auth/auth.dart';
 import 'package:hp3ki/data/repository/feedv2/feed.dart';
+
+import 'package:hp3ki/providers/profile/profile.dart';
+
 import 'package:hp3ki/maps/src/utils/uuid.dart';
 
 import 'package:hp3ki/utils/exceptions.dart';
@@ -26,7 +30,17 @@ class FeedDetailProviderV2 with ChangeNotifier {
     required this.fr
   });
 
-  GlobalKey<FlutterMentionsState> mentionKey = GlobalKey<FlutterMentionsState>();
+  DetectableTextEditingController controller = DetectableTextEditingController(
+    regExp: atSignRegExp,
+    detectedStyle: const TextStyle(
+      fontSize: Dimensions.fontSizeDefault,
+      color: Colors.blue,
+    ),
+  );
+
+  bool showListUserMention = false;
+
+  FocusNode focusNode = FocusNode();
 
   String type = "COMMENT";
   String commentId = "";
@@ -54,6 +68,19 @@ class FeedDetailProviderV2 with ChangeNotifier {
 
   UserMentionStatus _userMentionStatus = UserMentionStatus.loading;
   UserMentionStatus get userMentionStatus => _userMentionStatus;
+
+  void clearInput() {
+    controller.clear();
+    showListUserMention = false;
+
+    notifyListeners();
+  }
+
+  void toggleShowListUserMention(bool newVal) {
+    showListUserMention = newVal;
+
+    notifyListeners();
+  }
 
   void setStateFeedDetailStatus(FeedDetailStatus feedDetailStatus) {
     _feedDetailStatus = feedDetailStatus;
@@ -121,8 +148,6 @@ class FeedDetailProviderV2 with ChangeNotifier {
   }
 
   Future<void> getUserMentions(BuildContext context, String username) async {
-    setStateUserMentionStatus(UserMentionStatus.loading);
-
     try {
 
       List<UserMention>? mentions = await fr.userMentions(context, username.replaceAll('@', ''));
@@ -137,7 +162,7 @@ class FeedDetailProviderV2 with ChangeNotifier {
             "id": mention.id.toString(),
             "photo": mention.photo.toString(),
             "display": mention.username.toString(),
-            "fullname": mention.display.toString()
+            "fullname": mention.display.toString(),
           });
           
           // ids.add(mention.id);
@@ -145,8 +170,16 @@ class FeedDetailProviderV2 with ChangeNotifier {
         // }
 
       }
-      
+
+      showListUserMention = true;
+
       setStateUserMentionStatus(UserMentionStatus.loaded);
+
+      if(userMentions.isEmpty) {
+        showListUserMention = false;
+
+        setStateUserMentionStatus(UserMentionStatus.empty);
+      } 
     } on CustomException catch(e) {
       debugPrint(e.toString());
       setStateUserMentionStatus(UserMentionStatus.error);
@@ -172,8 +205,8 @@ class FeedDetailProviderV2 with ChangeNotifier {
   ) async {
     try {
 
-      if (mentionKey.currentState!.controller!.text.trim() == "") {
-        mentionKey.currentState!.controller!.text = "";
+      if (controller.text.trim() == "") {
+        controller.text = "";
         return;
       }
 
@@ -185,7 +218,7 @@ class FeedDetailProviderV2 with ChangeNotifier {
 
         _comments[i].reply.replies.add(ReplyElement(
           id: replyIdStore, 
-          reply: mentionKey.currentState!.controller!.text, 
+          reply: controller.text, 
           createdAt: "beberapa detik yang lalu", 
           user: UserReply(
             id: context.read<ProfileProvider>().user!.id.toString(), 
@@ -204,11 +237,9 @@ class FeedDetailProviderV2 with ChangeNotifier {
           context: context, 
           replyIdStore: replyIdStore,
           replyId: replyId, commentId: commentId, 
-          reply: mentionKey.currentState!.controller!.text, userId: ar.getUserId(),
+          reply: controller.text, userId: ar.getUserId(),
         ).then((_) {
-          mentionKey.currentState!.controller!.clear();
-
-          notifyListeners();
+          clearInput();
         });
 
         highlightedReply = comments[i].reply.replies.last.id;
@@ -236,7 +267,7 @@ class FeedDetailProviderV2 with ChangeNotifier {
         _comments.add(
           CommentElement(
             id: commentIdStore, 
-            comment: mentionKey.currentState!.controller!.text, 
+            comment: controller.text, 
             createdAt: "beberapa detik yang lalu", 
             user: User(
               id: context.read<ProfileProvider>().user!.id.toString(), 
@@ -252,11 +283,9 @@ class FeedDetailProviderV2 with ChangeNotifier {
 
         fr.postComment(
           context: context, commentId: commentIdStore, forumId: forumId, 
-          comment: mentionKey.currentState!.controller!.text, userId: ar.getUserId(),
+          comment: controller.text, userId: ar.getUserId(),
         ).then((_) {
-          mentionKey.currentState!.controller!.clear();
-
-          notifyListeners();
+          clearInput();
         });
 
         highlightedComment = comments.last.id;

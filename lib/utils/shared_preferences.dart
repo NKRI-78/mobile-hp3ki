@@ -21,12 +21,12 @@ class SharedPrefs {
     _instance!.setBool('onboarding', value);
   }
 
-  static double getLat() {
-    return _instance!.getDouble('lat') ?? 0.0;
+  static double? getLat() {
+    return _instance!.getDouble('lat');
   }
 
-  static double getLng() {
-    return _instance!.getDouble('lng') ?? 0.0;
+  static double? getLng() {
+    return _instance!.getDouble('lng');
   }
 
   static double getLatCheckIn() {

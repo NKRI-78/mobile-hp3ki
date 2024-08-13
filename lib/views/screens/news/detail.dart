@@ -2,7 +2,7 @@
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -17,7 +17,6 @@ import 'package:hp3ki/providers/news/news.dart';
 
 import 'package:hp3ki/views/webview/webview.dart';
 
-import 'package:hp3ki/utils/extension.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
@@ -80,7 +79,12 @@ class NewsDetailScreenState extends State<NewsDetailScreen> {
       title = loading ? "..." : context.read<NewsProvider>().newsDetail!.title.toString();
       content = loading ? "..." : context.read<NewsProvider>().newsDetail!.desc.toString();
       date = loading ? "..." : context.read<NewsProvider>().newsDetail!.createdAt!;
-    
+
+      if (title.length > 24) {
+        titleMore = title.substring(0, 24);
+      } else {
+        titleMore = title;
+      }
   }
 
   @override
@@ -91,12 +95,6 @@ class NewsDetailScreenState extends State<NewsDetailScreen> {
     scrollC.addListener(scrollListener);
 
     Future.microtask(() => getData());
-    
-    if (title.length > 24) {
-      titleMore = title.substring(0, 24);
-    } else {
-      titleMore = title;
-    }
   }
 
   @override
@@ -166,55 +164,53 @@ class NewsDetailScreenState extends State<NewsDetailScreen> {
             borderRadius: BorderRadius.circular(50.0),
             color: Colors.black54
           ),
-          child: Builder(
-            builder: (BuildContext context) {
-              return PopupMenuButton(
-                onSelected: (int i) async {
-                  switch (i) {
-                    case 1:
-                      ProgressDialog pr = ProgressDialog(context: context);
-                      try {
-                        PermissionStatus statusStorage = await Permission.storage.status;
-                        if(!statusStorage.isGranted) {
-                          await Permission.storage.request();
-                        } 
-                        pr.show(
-                          max: 1,
-                          msg: '${getTranslated("DOWNLOADING", context)}...'
-                        );
-                        await GallerySaver.saveImage(imageUrl);
-                        pr.close();
-                        ShowSnackbar.snackbar(context, getTranslated("SAVE_TO_GALLERY", context), "", ColorResources.success);
-                      } catch(e, stacktrace) {
-                        pr.close();
-                        ShowSnackbar.snackbar(context, getTranslated("THERE_WAS_PROBLEM", context), "", ColorResources.error);
-                        debugPrint(stacktrace.toString());
-                      }
-                    break;
-                    default:
+          child: PopupMenuButton(
+            onSelected: (int i) async {
+              switch (i) {
+                case 1:
+                  ProgressDialog pr = ProgressDialog(context: context);
+                  try {
+                    PermissionStatus statusStorage = await Permission.storage.status;
+                    if(!statusStorage.isGranted) {
+                      await Permission.storage.request();
+                    } 
+                    pr.show(
+                      max: 1,
+                      msg: '${getTranslated("DOWNLOADING", context)}...'
+                    );
+                    await GallerySaver.saveImage(imageUrl);
+                    pr.close();
+                    ShowSnackbar.snackbar(context, getTranslated("SAVE_TO_GALLERY", context), "", ColorResources.success);
+                  } catch(e, stacktrace) {
+                    pr.close();
+                    ShowSnackbar.snackbar(context, getTranslated("THERE_WAS_PROBLEM", context), "", ColorResources.error);
+                    debugPrint(stacktrace.toString());
                   }
-                },
-                icon: const Icon(Icons.more_horiz),
-                itemBuilder: (BuildContext context) => [
-                  PopupMenuItem(
-                    padding: const EdgeInsets.only(
-                      left: Dimensions.paddingSizeSmall,
-                      right: Dimensions.paddingSizeSmall
-                    ),
-                    textStyle: poppinsRegular.copyWith(
-                      fontSize: Dimensions.fontSizeDefault
-                    ),
-                    child: Text(getTranslated("DOWNLOAD", context),
-                      style: poppinsRegular.copyWith(
-                        fontSize: Dimensions.fontSizeDefault,
-                        color: ColorResources.black
-                      )
-                    ),
-                    value: 1,
-                  ),
-                ]
-              );                 
+                break;
+                default:
+              }
             },
+            icon: const Icon(Icons.more_horiz,
+              color: ColorResources.white,
+            ),
+            itemBuilder: (BuildContext context) => [
+              PopupMenuItem(
+                padding: const EdgeInsets.only(
+                  left: Dimensions.paddingSizeSmall,
+                  right: Dimensions.paddingSizeSmall
+                ),
+                textStyle: poppinsRegular.copyWith(
+                  fontSize: Dimensions.fontSizeDefault
+                ),
+                child: Text(getTranslated("DOWNLOAD", context),
+                  style: poppinsRegular.copyWith(
+                    fontSize: Dimensions.fontSizeDefault,
+                    color: ColorResources.black
+                  )
+                ),
+                value: 1,
+              ),
+            ]
           ),
         )
       ],
@@ -278,7 +274,7 @@ class NewsDetailScreenState extends State<NewsDetailScreen> {
                 child: AnimatedOpacity(
                   opacity: isShrink ? 0.0 : 1.0,
                   duration: const Duration(milliseconds: 250),
-                  child: Text(title.toTitleCase(),
+                  child: Text(title,
                   textAlign: TextAlign.start,
                     style: poppinsRegular.copyWith(
                       fontSize: Dimensions.fontSizeLarge,
@@ -304,23 +300,67 @@ class NewsDetailScreenState extends State<NewsDetailScreen> {
               ),
               Container(
                 margin: const EdgeInsets.only(top: 5.0, bottom: 10.0),
-                child: Html(
-                  onLinkTap: (String? url, Map<String, String> attributes, element) async {
+                child: HtmlWidget(
+                content.toString(),
+                onTapUrl: (String? val) {
+                  debugPrint(val.toString());
+                  return false;
+                },
+                customStylesBuilder: (element) {
+                  if (element.localName == 'body') {
+                    return {
+                      'margin': '0', 
+                      'padding': '0'
+                    };
+                  }
+                  return null;
+                },
+                customWidgetBuilder: (element) {
+                  if (element.localName == 'a') {
+                    final url = element.attributes['href'];
                     NS.push(context, WebViewScreen(
                       url: url!,
                       title: title
                     ));
-                  },
-                  style: {
-                    'a': Style(
-                      color: ColorResources.blueDrawerPrimary,
-                    ),
-                    'body': Style(
-                      fontSize: FontSize.larger
-                    ),
-                  },
-                  data: content
-                ),
+
+                    return null;
+                  }
+
+                  if (element.localName == 'span') {
+                    final text = element.text.trim();
+                    if (text.contains('https://')) {
+                      final url = text.substring(text.indexOf('https://'));
+                      NS.push(context, WebViewScreen(
+                        url: url,
+                        title: title
+                      ));
+
+                      return null;
+                    }
+                  }
+
+                  return null;
+                },
+              ),
+                
+                //  Html(
+                //   onLinkTap: (String? url, Map<String, String> attributes, element) async {
+                //     NS.push(context, WebViewScreen(
+                //       url: url!,
+                //       title: title
+                //     ));
+                //   },
+                //   style: {
+                //     'a': Style(
+                //       color: ColorResources.blueDrawerPrimary,
+                //     ),
+                //     'body': Style(
+                //       fontSize: FontSize.larger
+                //     ),
+                //   },
+                //   data: content
+                // ),
+
               ),
             ],
           ),
