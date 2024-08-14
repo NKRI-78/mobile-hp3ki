@@ -125,6 +125,16 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
       );
     }
 
+    // BROADCAST
+    if(data["click_action"] == "broadcast") {
+      NS.push(navigatorKey.currentContext!, 
+        DetailInboxScreen(
+          inboxId: data["inbox_id"],
+          type: "broadcast",
+        )
+      );
+    }
+
     // SOS
     if(data["click_action"] == "sos") {
       NS.push(

@@ -1547,23 +1547,32 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
                           )
                         ), 
                         StatefulBuilder(
-                          builder: (BuildContext context, Function s) {
+                          builder: (BuildContext context, Function setStateful) {
                           return ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: ColorResources.error
-                          ),
-                          onPressed: () async { 
-                          s(() => deletePostBtn = true);
-                            try {         
-                              await context.read<FeedProviderV2>().deletePost(context, feedDetailProvider.feedDetailData.forum!.id!);               
-                              s(() => deletePostBtn = false);
-                              Navigator.of(context).pop();             
-                            } catch(e) {
-                              s(() => deletePostBtn = false);
-                              debugPrint(e.toString()); 
-                            }
-                          },
-                          child: deletePostBtn 
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: ColorResources.error
+                            ),
+                            onPressed: () async { 
+
+                              setStateful(() => deletePostBtn = true);
+
+                              try {         
+                                await context.read<FeedProviderV2>().deletePost(context, feedDetailProvider.feedDetailData.forum!.id!);               
+                                
+                                setStateful(() => deletePostBtn = false);
+                                
+                                Navigator.of(context).pop(); 
+                                Navigator.of(context).pop();     
+
+                              } catch(e) {
+                                
+                                setStateful(() => deletePostBtn = false);
+                                debugPrint(e.toString()); 
+
+                              }
+
+                            },
+                            child: deletePostBtn 
                           ? const Loader(
                               color: ColorResources.white,
                             )

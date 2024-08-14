@@ -26,6 +26,8 @@ class CheckInData extends Equatable {
   final String? title;
   final String? desc;
   final String? location;
+  final String? lat; 
+  final String? lng;
   final String? start;
   final String? end;
   final bool? isPass;
@@ -39,6 +41,8 @@ class CheckInData extends Equatable {
     this.title,
     this.desc,
     this.location,
+    this.lat,
+    this.lng,
     this.start,
     this.end,
     this.isPass,
@@ -53,6 +57,8 @@ class CheckInData extends Equatable {
     title: json["title"],
     desc: json["desc"],
     location: json["location"],
+    lat: json["lat"],
+    lng: json["lng"],
     start: json["start"],
     end: json["end"],
     isPass: json["is_pass"],
@@ -68,6 +74,8 @@ class CheckInData extends Equatable {
     title,
     desc,
     location,
+    lat,
+    lng,
     start,
     end,
     isPass,

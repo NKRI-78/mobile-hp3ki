@@ -64,6 +64,16 @@ class FirebaseProvider with ChangeNotifier {
       );
     }
 
+    // BROADCAST
+    if(message.data["click_action"] == "broadcast") {
+      NS.push(navigatorKey.currentContext!, 
+        DetailInboxScreen(
+          inboxId: message.data["inbox_id"],
+          type: "broadcast",
+        )
+      );
+    }
+
     // SOS
     if(message.data["click_action"] == "sos") {
       NS.push(

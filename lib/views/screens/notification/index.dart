@@ -1,25 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'package:hp3ki/views/screens/notification/detail.dart';
 import 'package:provider/provider.dart';
 import 'package:badges/badges.dart' as b;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:hp3ki/localization/language_constraints.dart';
 
-import 'package:hp3ki/views/screens/notification/transaction_notif_list.dart';
-
 import 'package:hp3ki/providers/inbox/inbox.dart';
 
 import 'package:hp3ki/data/models/inbox/inbox.dart';
-import 'package:hp3ki/data/models/inbox/inbox_payment.dart';
 
 import 'package:hp3ki/utils/extension.dart';
-import 'package:hp3ki/utils/helper.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
+
+import 'package:hp3ki/views/screens/notification/transaction_notif_list.dart';
+import 'package:hp3ki/views/screens/notification/detail.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({Key? key}) : super(key: key);
@@ -39,85 +36,64 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
   int index = 0;
 
   TabBar get tabBar => TabBar(
-          controller: tabC,
-          unselectedLabelColor: ColorResources.primary,
-          indicatorSize: TabBarIndicatorSize.tab,
-          labelColor: ColorResources.white,
-          indicatorColor: const Color.fromARGB(255, 0, 41, 124),
-          labelStyle:
-              robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault),
-          tabs: [
-            Tab(
-              icon: context.read<InboxProvider>().inboxPaymentStatus ==
-                      InboxPaymentStatus.loading
-                  ? Image.asset(
-                      "assets/images/icons/pembayaran.png",
-                      width: 40.0,
-                      height: 40.0,
-                      // color: index == 0
-                      //     ? ColorResources.primary
-                      //     : ColorResources.grey,
-                    )
-                  : context.read<InboxProvider>().inboxPaymentStatus ==
-                          InboxPaymentStatus.error
-                      ? Image.asset(
-                          "assets/images/icons/pembayaran.png",
-                          width: 40.0,
-                          height: 40.0,
-                          // color: index == 0
-                          //     ? ColorResources.primary
-                          //     : ColorResources.grey,
-                        )
-                      : context.read<InboxProvider>().inboxPaymentStatus ==
-                                  InboxPaymentStatus.loaded &&
-                              context.read<InboxProvider>().inboxPaymentCount !=
-                                  0
-                          ? b.Badge(
-                              position:
-                                  const b.BadgePosition(top: -15.0, end: -15.0),
-                              padding: EdgeInsets.zero,
-                              badgeContent: Container(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  context
-                                      .read<InboxProvider>()
-                                      .inboxPaymentCount
-                                      .toString(),
-                                  // style: robotoRegular.copyWith(
-                                  //     fontSize: Dimensions.fontSizeSmall,
-                                  //     color: ColorResources.white),
-                                ),
-                              ),
-                              child: Image.asset(
-                                "assets/images/icons/pembayaran.png",
-                                width: 40.0,
-                                height: 40.0,
-                                // color: index == 0
-                                //     ? ColorResources.primary
-                                //     : ColorResources.grey,
-                              ),
-                            )
-                          : Image.asset(
-                              "assets/images/icons/pembayaran.png",
-                              width: 40.0,
-                              height: 40.0,
-                              // color: index == 0
-                              //     ? ColorResources.primary
-                              //     : ColorResources.grey,
-                            ),
-              child: Text(
-                "Pembayaran",
-                style: robotoRegular.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontSize: Dimensions.fontSizeDefault,
-                    color: index == 0
-                        ? ColorResources.primary
-                        : ColorResources.grey),
-              ),
+    controller: tabC,
+    unselectedLabelColor: ColorResources.primary,
+    indicatorSize: TabBarIndicatorSize.tab,
+    labelColor: ColorResources.white,
+    indicatorColor: const Color.fromARGB(255, 0, 41, 124),
+    labelStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault),
+      tabs: [
+        Tab(
+          icon: context.read<InboxProvider>().inboxPaymentStatus == InboxPaymentStatus.loading
+        ? Image.asset("assets/images/icons/pembayaran.png",
+            width: 40.0,
+            height: 40.0,
+          )
+        : context.read<InboxProvider>().inboxPaymentStatus == InboxPaymentStatus.error
+        ? Image.asset("assets/images/icons/pembayaran.png",
+            width: 40.0,
+            height: 40.0,
+          )
+        : context.read<InboxProvider>().inboxPaymentStatus == InboxPaymentStatus.loaded && context.read<InboxProvider>().inboxPaymentCount != 0
+        ? b.Badge(
+            position: const b.BadgePosition(top: -15.0, end: -15.0),
+            padding: EdgeInsets.zero,
+            badgeContent: Container(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(context.read<InboxProvider>().inboxPaymentCount.toString()),
             ),
-            Tab(
-              icon: context.read<InboxProvider>().inboxPanicStatus ==
-                      InboxPanicStatus.loading
+            child: Image.asset("assets/images/icons/pembayaran.png",
+              width: 40.0,
+              height: 40.0,
+            ),
+          )
+        : Image.asset("assets/images/icons/pembayaran.png",
+            width: 40.0,
+            height: 40.0,
+          ),
+          child: Text("Pembayaran",
+            style: robotoRegular.copyWith(
+              fontWeight: FontWeight.w600,
+              fontSize: Dimensions.fontSizeDefault,
+              color: index == 0
+              ? ColorResources.primary
+              : ColorResources.grey
+            ),
+          ),
+        ),
+        Tab(
+          icon: context.read<InboxProvider>().inboxPanicStatus ==
+                  InboxPanicStatus.loading
+              ? Image.asset(
+                  "assets/images/icons/sos.png",
+                  width: 40.0,
+                  height: 40.0,
+                  // color: index == 1
+                  //     ? ColorResources.primary
+                  //     : ColorResources.grey,
+                )
+              : context.read<InboxProvider>().inboxPanicStatus ==
+                      InboxPanicStatus.error
                   ? Image.asset(
                       "assets/images/icons/sos.png",
                       width: 40.0,
@@ -127,64 +103,64 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
                       //     : ColorResources.grey,
                     )
                   : context.read<InboxProvider>().inboxPanicStatus ==
-                          InboxPanicStatus.error
-                      ? Image.asset(
+                              InboxPanicStatus.loaded &&
+                          context.read<InboxProvider>().inboxPanicCount != 0
+                      ? b.Badge(
+                          position:
+                              const b.BadgePosition(top: -15.0, end: -15.0),
+                          padding: EdgeInsets.zero,
+                          badgeContent: Container(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              context
+                                  .read<InboxProvider>()
+                                  .inboxPanicCount
+                                  .toString(),
+                              style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeSmall,
+                                  color: ColorResources.white),
+                            ),
+                          ),
+                          child: Image.asset(
+                            "assets/images/icons/sos.png",
+                            width: 40.0,
+                            height: 40.0,
+                            // color: index == 1
+                            //     ? ColorResources.primary
+                            //     : ColorResources.grey,
+                          ),
+                        )
+                      : Image.asset(
                           "assets/images/icons/sos.png",
                           width: 40.0,
                           height: 40.0,
                           // color: index == 1
                           //     ? ColorResources.primary
                           //     : ColorResources.grey,
-                        )
-                      : context.read<InboxProvider>().inboxPanicStatus ==
-                                  InboxPanicStatus.loaded &&
-                              context.read<InboxProvider>().inboxPanicCount != 0
-                          ? b.Badge(
-                              position:
-                                  const b.BadgePosition(top: -15.0, end: -15.0),
-                              padding: EdgeInsets.zero,
-                              badgeContent: Container(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  context
-                                      .read<InboxProvider>()
-                                      .inboxPanicCount
-                                      .toString(),
-                                  style: robotoRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeSmall,
-                                      color: ColorResources.white),
-                                ),
-                              ),
-                              child: Image.asset(
-                                "assets/images/icons/sos.png",
-                                width: 40.0,
-                                height: 40.0,
-                                // color: index == 1
-                                //     ? ColorResources.primary
-                                //     : ColorResources.grey,
-                              ),
-                            )
-                          : Image.asset(
-                              "assets/images/icons/sos.png",
-                              width: 40.0,
-                              height: 40.0,
-                              // color: index == 1
-                              //     ? ColorResources.primary
-                              //     : ColorResources.grey,
-                            ),
-              child: Text(
-                "SOS",
-                style: robotoRegular.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontSize: Dimensions.fontSizeDefault,
-                    color: index == 1
-                        ? ColorResources.primary
-                        : ColorResources.grey),
-              ),
-            ),
-            Tab(
-              icon: context.read<InboxProvider>().inboxInfoStatus ==
-                      InboxInfoStatus.loading
+                        ),
+          child: Text(
+            "SOS",
+            style: robotoRegular.copyWith(
+                fontWeight: FontWeight.w600,
+                fontSize: Dimensions.fontSizeDefault,
+                color: index == 1
+                    ? ColorResources.primary
+                    : ColorResources.grey),
+          ),
+        ),
+        Tab(
+          icon: context.read<InboxProvider>().inboxInfoStatus ==
+                  InboxInfoStatus.loading
+              ? Image.asset(
+                  "assets/images/icons/broadcast.png",
+                  width: 40.0,
+                  height: 40.0,
+                  // color: index == 2
+                  //     ? ColorResources.primary
+                  //     : ColorResources.grey,
+                )
+              : context.read<InboxProvider>().inboxInfoStatus ==
+                      InboxInfoStatus.error
                   ? Image.asset(
                       "assets/images/icons/broadcast.png",
                       width: 40.0,
@@ -194,64 +170,64 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
                       //     : ColorResources.grey,
                     )
                   : context.read<InboxProvider>().inboxInfoStatus ==
-                          InboxInfoStatus.error
-                      ? Image.asset(
+                              InboxInfoStatus.loaded &&
+                          context.read<InboxProvider>().inboxInfoCount != 0
+                      ? b.Badge(
+                          position:
+                              const b.BadgePosition(top: -15.0, end: -15.0),
+                          padding: EdgeInsets.zero,
+                          badgeContent: Container(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              context
+                                  .read<InboxProvider>()
+                                  .inboxInfoCount!
+                                  .toString(),
+                              style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeSmall,
+                                  color: ColorResources.white),
+                            ),
+                          ),
+                          child: Image.asset(
+                            "assets/images/icons/broadcast.png",
+                            width: 40.0,
+                            height: 40.0,
+                            // color: index == 2
+                            //     ? ColorResources.primary
+                            //     : ColorResources.grey,
+                          ),
+                        )
+                      : Image.asset(
                           "assets/images/icons/broadcast.png",
                           width: 40.0,
                           height: 40.0,
                           // color: index == 2
                           //     ? ColorResources.primary
                           //     : ColorResources.grey,
-                        )
-                      : context.read<InboxProvider>().inboxInfoStatus ==
-                                  InboxInfoStatus.loaded &&
-                              context.read<InboxProvider>().inboxInfoCount != 0
-                          ? b.Badge(
-                              position:
-                                  const b.BadgePosition(top: -15.0, end: -15.0),
-                              padding: EdgeInsets.zero,
-                              badgeContent: Container(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  context
-                                      .read<InboxProvider>()
-                                      .inboxInfoCount!
-                                      .toString(),
-                                  style: robotoRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeSmall,
-                                      color: ColorResources.white),
-                                ),
-                              ),
-                              child: Image.asset(
-                                "assets/images/icons/broadcast.png",
-                                width: 40.0,
-                                height: 40.0,
-                                // color: index == 2
-                                //     ? ColorResources.primary
-                                //     : ColorResources.grey,
-                              ),
-                            )
-                          : Image.asset(
-                              "assets/images/icons/broadcast.png",
-                              width: 40.0,
-                              height: 40.0,
-                              // color: index == 2
-                              //     ? ColorResources.primary
-                              //     : ColorResources.grey,
-                            ),
-              child: Text(
-                "Broadcast",
-                style: robotoRegular.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontSize: Dimensions.fontSizeDefault,
-                    color: index == 2
-                        ? ColorResources.primary
-                        : ColorResources.grey),
-              ),
-            ),
-            Tab(
-              icon: context.read<InboxProvider>().inboxInfoStatus ==
-                      InboxInfoStatus.loading
+                        ),
+          child: Text(
+            "Broadcast",
+            style: robotoRegular.copyWith(
+                fontWeight: FontWeight.w600,
+                fontSize: Dimensions.fontSizeDefault,
+                color: index == 2
+                    ? ColorResources.primary
+                    : ColorResources.grey),
+          ),
+        ),
+        Tab(
+          icon: context.read<InboxProvider>().inboxInfoStatus ==
+                  InboxInfoStatus.loading
+              ? Image.asset(
+                  "assets/images/icons/transaksi.png",
+                  width: 40.0,
+                  height: 40.0,
+                  // color: index == 2
+                  //     ? ColorResources.primary
+                  //     : ColorResources.grey,
+                )
+              : context.read<InboxProvider>().inboxInfoStatus ==
+                      InboxInfoStatus.error
                   ? Image.asset(
                       "assets/images/icons/transaksi.png",
                       width: 40.0,
@@ -261,65 +237,56 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
                       //     : ColorResources.grey,
                     )
                   : context.read<InboxProvider>().inboxInfoStatus ==
-                          InboxInfoStatus.error
-                      ? Image.asset(
+                              InboxInfoStatus.loaded &&
+                          context
+                                  .read<InboxProvider>()
+                                  .inboxTransactionCount !=
+                              0
+                      ? b.Badge(
+                          position:
+                              const b.BadgePosition(top: -15.0, end: -15.0),
+                          padding: EdgeInsets.zero,
+                          badgeContent: Container(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              context
+                                  .read<InboxProvider>()
+                                  .inboxTransactionCount
+                                  .toString(),
+                              style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeSmall,
+                                  color: ColorResources.white),
+                            ),
+                          ),
+                          child: Image.asset(
+                            "assets/images/icons/transaksi.png",
+                            width: 40.0,
+                            height: 40.0,
+                            // color: index == 3
+                            //     ? ColorResources.primary
+                            //     : ColorResources.grey,
+                          ),
+                        )
+                      : Image.asset(
                           "assets/images/icons/transaksi.png",
                           width: 40.0,
                           height: 40.0,
                           // color: index == 2
                           //     ? ColorResources.primary
                           //     : ColorResources.grey,
-                        )
-                      : context.read<InboxProvider>().inboxInfoStatus ==
-                                  InboxInfoStatus.loaded &&
-                              context
-                                      .read<InboxProvider>()
-                                      .inboxTransactionCount !=
-                                  0
-                          ? b.Badge(
-                              position:
-                                  const b.BadgePosition(top: -15.0, end: -15.0),
-                              padding: EdgeInsets.zero,
-                              badgeContent: Container(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  context
-                                      .read<InboxProvider>()
-                                      .inboxTransactionCount
-                                      .toString(),
-                                  style: robotoRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeSmall,
-                                      color: ColorResources.white),
-                                ),
-                              ),
-                              child: Image.asset(
-                                "assets/images/icons/transaksi.png",
-                                width: 40.0,
-                                height: 40.0,
-                                // color: index == 3
-                                //     ? ColorResources.primary
-                                //     : ColorResources.grey,
-                              ),
-                            )
-                          : Image.asset(
-                              "assets/images/icons/transaksi.png",
-                              width: 40.0,
-                              height: 40.0,
-                              // color: index == 2
-                              //     ? ColorResources.primary
-                              //     : ColorResources.grey,
-                            ),
-              child: Text(
-                "Transaksi",
-                style: robotoRegular.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontSize: Dimensions.fontSizeDefault,
-                    color: index == 3
-                        ? ColorResources.primary
-                        : ColorResources.grey),
-              ),
-            ),
-          ]);
+                        ),
+          child: Text(
+            "Transaksi",
+            style: robotoRegular.copyWith(
+                fontWeight: FontWeight.w600,
+                fontSize: Dimensions.fontSizeDefault,
+                color: index == 3
+                    ? ColorResources.primary
+                    : ColorResources.grey),
+          ),
+        ),
+      ]
+    );
 
   Future<void> getData() async {
     if (mounted) {
@@ -782,7 +749,7 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
   Widget buildNotificationItem(
     List<InboxData>? inbox, i, IconData icon, 
     ScrollController scrollPosition, 
-    String type, [List<InboxPaymentData>? inboxPayment]
+    String type
   ) {
     return InkWell(
       onTap: () async {
@@ -791,7 +758,7 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
         await context.read<InboxProvider>().getInboxDetailAndUpdateInbox(
           context,
           type: type,
-          inboxId: inbox![i].id!,
+          inboxId: inbox[i].id!,
         );
 
         final isRefetch = await Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -812,7 +779,7 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
         color: ColorResources.transparent,
         child: Container(
           decoration: BoxDecoration(
-            color: inbox?[i].read == true || inboxPayment?[i].isRead == true
+            color: inbox?[i].read == true
                 ? ColorResources.white.withOpacity(0.9)
                 : ColorResources.primary.withOpacity(0.2),
           ),
@@ -857,7 +824,7 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
                 : Icon(
                     icon,
                     size: Dimensions.iconSizeLarge,
-                    color: inbox?[i].read ?? inboxPayment?[i].isRead ?? false
+                    color: inbox![i].read!
                     ? ColorResources.primary
                     : ColorResources.black,
                   ),
@@ -867,14 +834,13 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start, 
                   children: [
-                  Text(
-                      (inbox?[i].title ?? inboxPayment?[i].title)
-                              ?.customSentence(40) ??
-                          "...",
-                      style: robotoRegular.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: ColorResources.black,
-                          fontSize: Dimensions.fontSizeExtraLarge)),
+                  Text(inbox?[i].title?.customSentence(40) ?? "...",
+                    style: robotoRegular.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: ColorResources.black,
+                      fontSize: Dimensions.fontSizeExtraLarge
+                    )
+                  ),
                   const SizedBox(
                     height: 10,
                   ),
@@ -882,35 +848,29 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                          (inbox?[i].description ??
-                                      inboxPayment?[i].description)
-                                  ?.customSentence(40) ??
-                              "...",
-                          softWrap: true,
-                          overflow: TextOverflow.ellipsis,
-                          style: robotoRegular.copyWith(
-                              fontWeight: inbox?[i].read == true ||
-                                      inboxPayment?[i].isRead == true
-                                  ? null
-                                  : FontWeight.w600,
-                              color: ColorResources.black.withOpacity(0.7),
-                              fontSize: Dimensions.fontSizeLarge)),
+                        inbox![i].description!.customSentence(40),
+                        softWrap: true,
+                        overflow: TextOverflow.ellipsis,
+                        style: robotoRegular.copyWith(
+                          fontWeight: inbox[i].read == true
+                          ? null
+                          : FontWeight.w600,
+                          color: ColorResources.black.withOpacity(0.7),
+                          fontSize: Dimensions.fontSizeLarge
+                        )
+                      ),
                     ],
                   ),
                   const SizedBox(
                     height: 10,
                   ),
-                  Text(
-                      Helper.formatDateWithTime(DateTime.parse((inbox?[i].createdAt ??
-                              Helper.getFormatedDateTwo(
-                                  inboxPayment![i].createdAt!))
-                          .replaceAll('/', '-'))),
-                      style: robotoRegular.copyWith(
-                          color: inbox?[i].read == true ||
-                                  inboxPayment?[i].isRead == true
-                              ? ColorResources.greyDarkPrimary
-                              : ColorResources.black,
-                          fontSize: Dimensions.fontSizeLarge)),
+                  Text(inbox[i].createdAt!,
+                    style: robotoRegular.copyWith(
+                    color: inbox[i].read == true
+                    ? ColorResources.greyDarkPrimary
+                    : ColorResources.black,
+                    fontSize: Dimensions.fontSizeLarge
+                  )),
                 ]),
               ],
             ),

@@ -173,6 +173,8 @@ class CheckInProvider extends ChangeNotifier {
         start,
         end,
         lp.getCurrentNameAddressCheckIn,
+        lp.getCurrentLat.toString(),
+        lp.getCurrentLng.toString(),
         SharedPrefs.getUserId(),
       );
       NS.pop(context);

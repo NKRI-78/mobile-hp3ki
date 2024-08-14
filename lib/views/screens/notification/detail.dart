@@ -5,7 +5,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:hp3ki/providers/inbox/inbox.dart';
 
-import 'package:hp3ki/utils/helper.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
@@ -72,7 +71,7 @@ class DetailInboxScreenState extends State<DetailInboxScreen> {
       content = loading ? "..." : provider.inboxDetailData.description ?? "...";
       latitude = loading ? "..." : provider.inboxDetailData.lat ?? "...";
       longitude = loading ? "..." : provider.inboxDetailData.lng ?? "...";
-      date = loading ? "..." : Helper.formatDateWithTime(DateTime.parse(((provider.inboxDetailData.createdAt)!).replaceAll('/', '-')));
+      date = loading ? "..." : provider.inboxDetailData.createdAt ?? '...';
   }
 
   @override

@@ -6,6 +6,8 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+import 'package:url_launcher/url_launcher.dart';
+
 import 'package:hp3ki/localization/language_constraints.dart';
 
 import 'package:hp3ki/services/navigation.dart';
@@ -411,8 +413,31 @@ class CheckInScreenState extends State<CheckInScreen> {
               onPressed: () => delete(checkInProvider.checkInData[i].id!),
             ) 
           : checkInProvider.checkInData[i].join == true
-            ? buildOtherButton(context, label: 'Gabung', bgColor: ColorResources.dimGrey) 
-            : buildJoinButton(checkInProvider, i),
+          ? buildOtherButton(context, label: 'Gabung', bgColor: ColorResources.dimGrey) 
+          : buildJoinButton(checkInProvider, i),
+          const SizedBox(height: 10.0),
+          SizedBox(
+            height: 40.0,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                elevation: 3.0, 
+                backgroundColor: Colors.blue,
+              ),
+              onPressed: () async {
+                 var address = '${checkInProvider.checkInData[i].lat},${checkInProvider.checkInData[i].lng}';
+                String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$address';
+                if (!await launchUrl(Uri.parse(googleUrl))) {
+                  throw 'Could not open the map.';
+                }
+              },
+              child: Text("Lokasi",
+                style: poppinsRegular.copyWith(
+                  color: ColorResources.white,
+                  fontSize: Dimensions.fontSizeSmall
+                ),
+              ),
+            ),
+          )
         ],
       )  
     );
@@ -479,18 +504,17 @@ class CheckInScreenState extends State<CheckInScreen> {
 
   SizedBox buildOtherButton(BuildContext context, {required String label, required Color bgColor, void Function()? onPressed}) {
     return SizedBox(
-        height: 60.0,
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            elevation: 3.0, backgroundColor: bgColor,
-          ),
-          onPressed: onPressed,
-          child: Text(label,
-          style: poppinsRegular.copyWith(
-            color: ColorResources.white,
-            fontSize: Dimensions.fontSizeSmall
-          ),
+      height: 40.0,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          elevation: 3.0, backgroundColor: bgColor,
         ),
+        onPressed: onPressed,
+        child: Text(label,
+        style: poppinsRegular.copyWith(
+          color: ColorResources.white,
+          fontSize: Dimensions.fontSizeSmall
+        )),
       ),
     );
   }
