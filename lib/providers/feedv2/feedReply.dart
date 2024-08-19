@@ -1,8 +1,5 @@
 import 'package:flutter/widgets.dart';
 
-
-import 'package:flutter_mentions/flutter_mentions.dart';
-
 import 'package:hp3ki/data/models/feedv2/feedReply.dart';
 import 'package:hp3ki/data/repository/auth/auth.dart';
 import 'package:hp3ki/data/repository/feedv2/feed.dart';
@@ -94,16 +91,15 @@ class FeedReplyProvider with ChangeNotifier {
 
   Future<void> postReply(
     BuildContext context,
-    GlobalKey<FlutterMentionsState> mentionKey,
     String commentVal,
     String commentId,
     ) async {
     try {
 
-      if (mentionKey.currentState!.controller!.text.trim() == "") {
-        mentionKey.currentState!.controller!.text = "";
-        return;
-      }
+      // if (mentionKey.currentState!.controller!.text.trim() == "") {
+      //   mentionKey.currentState!.controller!.text = "";
+      //   return;
+      // }
 
       await fr.postReply(
         context: context,
@@ -114,7 +110,7 @@ class FeedReplyProvider with ChangeNotifier {
         userId: ar.getUserId().toString(), 
       );
 
-      mentionKey.currentState!.controller!.text = "";
+      // mentionKey.currentState!.controller!.text = "";
 
       FeedReplyModel? frm = await fr.getReply(
         context: context, 

@@ -777,25 +777,27 @@ class PostsState extends State<Posts> {
                           )
                         ), 
                         StatefulBuilder(
-                          builder: (BuildContext context, Function s) {
+                          builder: (BuildContext context, Function setStateBuilder) {
                           return ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: ColorResources.error
                           ),
                           onPressed: () async { 
-                          s(() => deletePostBtn = true);
-                            try {         
-                              await context.read<FeedDetailProviderV2>().deleteComment(
-                                context: context, 
-                                forumId: context.read<FeedDetailProviderV2>().feedDetailData.forum!.id!, 
-                                commentId: commentId
-                              );
-                              s(() => deletePostBtn = false);
-                              Navigator.of(context).pop();             
-                            } catch(e) {
-                              s(() => deletePostBtn = false);
-                              debugPrint(e.toString()); 
-                            }
+                            setStateBuilder(() => deletePostBtn = true);
+
+                            await context.read<FeedDetailProviderV2>().deleteComment(
+                              context: context, 
+                              forumId: context.read<FeedDetailProviderV2>().feedDetailData.forum!.id!, 
+                              commentId: commentId
+                            );
+
+                            await context.read<FeedProviderV2>().fetchFeedMostRecent(
+                              context
+                            );  
+
+                            setStateBuilder(() => deletePostBtn = false);
+                            
+                            Navigator.of(context).pop();             
                           },
                           child: deletePostBtn 
                           ? const Loader(
@@ -927,7 +929,7 @@ class PostsState extends State<Posts> {
                                           const SizedBox(height: 20.0),
 
                                           StatefulBuilder(
-                                            builder: (BuildContext context, Function setState) {
+                                            builder: (BuildContext context, Function setStatefulBuilder) {
                                               return  Row(
                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                 mainAxisSize: MainAxisSize.max,
@@ -954,15 +956,13 @@ class PostsState extends State<Posts> {
                                                       isBoxShadow: true,
                                                       btnColor: ColorResources.success,
                                                       onTap: () async {
-                                                        setState(() => deletePostBtn = true);
-                                                        try {         
-                                                          await context.read<FeedProviderV2>().deletePost(context, widget.forum.id!);               
-                                                          setState(() => deletePostBtn = false);        
-                                                          Navigator.of(context).pop();     
-                                                        } catch(e, stacktrace) {
-                                                          setState(() => deletePostBtn = false);
-                                                          debugPrint(stacktrace.toString()); 
-                                                        }
+                                                        setStatefulBuilder(() => deletePostBtn = true);
+
+                                                        await context.read<FeedProviderV2>().deletePost(context, widget.forum.id!);               
+                                                        
+                                                        setStatefulBuilder(() => deletePostBtn = false);    
+                                                        
+                                                        Navigator.of(context).pop(); 
                                                       }, 
                                                       btnTxt: deletePostBtn 
                                                       ? "..." 

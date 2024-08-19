@@ -50,47 +50,95 @@ class PostImageState extends State<PostImage> {
           const SizedBox(height: 8.0),
 
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             children: [
               Expanded(
-                child: CachedNetworkImage(
-                  imageUrl: "${widget.medias.first.path}",
-                  imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) => Container(
-                    height: 400.0,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: imageProvider,
-                        fit: BoxFit.fitWidth,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+
+                    CachedNetworkImage(
+                      imageUrl: "${widget.medias.first.path}",
+                      imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) => Container(
+                        height: 150.0,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
+                      errorWidget: (BuildContext context, String url, dynamic _) {
+                        return Container(
+                          margin: const EdgeInsets.all(0.0),
+                          padding: const EdgeInsets.all(0.0),
+                          width: double.infinity,
+                          height: 150.0,
+                          decoration: const BoxDecoration(
+                            image: DecorationImage(
+                              fit: BoxFit.fitWidth,
+                              image: AssetImage("assets/images/logo/logo.png")
+                            )
+                          ),
+                        );
+                      },
+                      placeholder: (BuildContext context, String url) {
+                        return Shimmer.fromColors(
+                          highlightColor: ColorResources.white,
+                          baseColor: Colors.grey[200]!,
+                          child: Container(
+                            margin: const EdgeInsets.all(0.0),
+                            padding: const EdgeInsets.all(0.0),
+                            width: double.infinity,
+                            height: 150.0,
+                            color: ColorResources.white
+                          )  
+                        );
+                      } 
                     ),
-                  ),
-                  errorWidget: (BuildContext context, String url, dynamic _) {
-                    return Container(
-                      margin: const EdgeInsets.all(0.0),
-                      padding: const EdgeInsets.all(0.0),
-                      width: double.infinity,
-                      height: 400.0,
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(
-                          fit: BoxFit.fitWidth,
-                          image: AssetImage("assets/images/logo/logo.png")
-                        )
+
+                    CachedNetworkImage(
+                      imageUrl: "${widget.medias[1].path}",
+                      imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) => Container(
+                        height: 150.0,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
-                    );
-                  },
-                  placeholder: (BuildContext context, String url) {
-                    return Shimmer.fromColors(
-                      highlightColor: ColorResources.white,
-                      baseColor: Colors.grey[200]!,
-                      child: Container(
-                        margin: const EdgeInsets.all(0.0),
-                        padding: const EdgeInsets.all(0.0),
-                        width: double.infinity,
-                        height: 400.0,
-                        color: ColorResources.white
-                      )  
-                    );
-                  } 
+                      errorWidget: (BuildContext context, String url, dynamic _) {
+                        return Container(
+                          margin: const EdgeInsets.all(0.0),
+                          padding: const EdgeInsets.all(0.0),
+                          width: double.infinity,
+                          height: 150.0,
+                          decoration: const BoxDecoration(
+                            image: DecorationImage(
+                              fit: BoxFit.fitWidth,
+                              image: AssetImage("assets/images/logo/logo.png")
+                            )
+                          ),
+                        );
+                      },
+                      placeholder: (BuildContext context, String url) {
+                        return Shimmer.fromColors(
+                          highlightColor: ColorResources.white,
+                          baseColor: Colors.grey[200]!,
+                          child: Container(
+                            margin: const EdgeInsets.all(0.0),
+                            padding: const EdgeInsets.all(0.0),
+                            width: double.infinity,
+                            height: 150.0,
+                            color: ColorResources.white
+                          )  
+                        );
+                      } 
+                    ),
+
+                  ],
                 ),
               ),
               Expanded(
@@ -102,13 +150,13 @@ class PostImageState extends State<PostImage> {
                       children: [
 
                         CachedNetworkImage(
-                          imageUrl: "${widget.medias[1].path}",
+                          imageUrl: "${widget.medias[2].path}",
                           imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) => Container(
-                            height: 400.0,
+                            height: 150.0,
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                 image: imageProvider,
-                                fit: BoxFit.fitWidth,
+                                fit: BoxFit.cover,
                               ),
                             ),
                           ),
@@ -117,7 +165,7 @@ class PostImageState extends State<PostImage> {
                               margin: const EdgeInsets.all(0.0),
                               padding: const EdgeInsets.all(0.0),
                               width: double.infinity,
-                              height: 400.0,
+                              height: 150.0,
                               decoration: const BoxDecoration(
                                 image: DecorationImage(
                                   fit: BoxFit.fitWidth,
@@ -134,7 +182,7 @@ class PostImageState extends State<PostImage> {
                                 margin: const EdgeInsets.all(0.0),
                                 padding: const EdgeInsets.all(0.0),
                                 width: double.infinity,
-                                height: 400.0,
+                                height: 150.0,
                                 color: ColorResources.white
                               )  
                             );
@@ -166,13 +214,13 @@ class PostImageState extends State<PostImage> {
                       ],
                     ),
                     CachedNetworkImage(
-                      imageUrl: "${widget.medias[2].path}",
+                      imageUrl: "${widget.medias[4].path}",
                       imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) => Container(
-                        height: 400.0,
+                        height: 150.0,
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             image: imageProvider,
-                            fit: BoxFit.fitHeight,
+                            fit: BoxFit.cover,
                           ),
                         ),
                       ),
@@ -181,7 +229,7 @@ class PostImageState extends State<PostImage> {
                           margin: const EdgeInsets.all(0.0),
                           padding: const EdgeInsets.all(0.0),
                           width: double.infinity,
-                          height: 400.0,
+                          height: 150.0,
                           decoration: const BoxDecoration(
                             image: DecorationImage(
                               fit: BoxFit.fitWidth,
@@ -198,7 +246,7 @@ class PostImageState extends State<PostImage> {
                             margin: const EdgeInsets.all(0.0),
                             padding: const EdgeInsets.all(0.0),
                             width: double.infinity,
-                            height: 400.0,
+                            height: 150.0,
                             color: ColorResources.white
                           )  
                         );
@@ -328,7 +376,7 @@ class PostImageState extends State<PostImage> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: current == index
-                  ? ColorResources.primary
+                  ? ColorResources.primaryOrange
                   : ColorResources.dimGrey,
               ),
             );

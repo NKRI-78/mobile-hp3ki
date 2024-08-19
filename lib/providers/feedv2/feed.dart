@@ -95,11 +95,11 @@ class FeedProviderV2 with ChangeNotifier {
   FeedData _fd = FeedData();
   FeedData get fd => _fd;
 
-  List<Forum> _forum1 = [];
+  final List<Forum> _forum1 = [];
   List<Forum> get forum1 => [..._forum1];
-  List<Forum> _forum2 = [];
+  final List<Forum> _forum2 = [];
   List<Forum> get forum2 => [..._forum2];
-  List<Forum> _forum3 = [];
+  final List<Forum> _forum3 = [];
   List<Forum> get forum3 => [..._forum3];
 
   Future<void> fetchFeedMostRecent(BuildContext context) async {

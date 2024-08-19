@@ -388,6 +388,7 @@ class CheckInScreenState extends State<CheckInScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -404,7 +405,9 @@ class CheckInScreenState extends State<CheckInScreen> {
               )
             ],  
           ),
+          
           const SizedBox(height: 10.0),
+
           SharedPrefs.getUserId() == checkInProvider.checkInData[i].user!.id
           ? buildOtherButton(
               context,
@@ -415,7 +418,9 @@ class CheckInScreenState extends State<CheckInScreen> {
           : checkInProvider.checkInData[i].join == true
           ? buildOtherButton(context, label: 'Gabung', bgColor: ColorResources.dimGrey) 
           : buildJoinButton(checkInProvider, i),
+          
           const SizedBox(height: 10.0),
+
           SizedBox(
             height: 40.0,
             child: ElevatedButton(
@@ -437,7 +442,8 @@ class CheckInScreenState extends State<CheckInScreen> {
                 ),
               ),
             ),
-          )
+          ),
+
         ],
       )  
     );

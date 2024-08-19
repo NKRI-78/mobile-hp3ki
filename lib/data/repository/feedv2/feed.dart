@@ -34,8 +34,6 @@ class FeedRepoV2 {
       Map<String, dynamic> data = res.data;
       UserMentionModel userMentionModel = UserMentionModel.fromJson(data);
       return userMentionModel.data;
-    } on DioError catch(e) {
-      debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());
     }

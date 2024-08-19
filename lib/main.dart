@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'package:flutter_mentions/flutter_mentions.dart';
 import 'package:hp3ki/views/screens/calendar/calendar.dart';
 import 'package:hp3ki/views/screens/feed/post_detail.dart';
 import 'package:hp3ki/views/screens/news/detail.dart';
@@ -229,49 +228,47 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
       locals.add(Locale(language.languageCode!, language.countryCode));
     }
 
-    return Portal(
-      child: MaterialApp(
-        title: 'HP3KI',
-        theme: ThemeData(
-          useMaterial3: false,
-          elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: ColorResources.primary,
-          )),
-          appBarTheme: const AppBarTheme(
-            iconTheme: IconThemeData(color: Colors.black),
-            backgroundColor: Colors.white,
-            titleTextStyle: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-            ),
+    return MaterialApp(
+      title: 'HP3KI',
+      theme: ThemeData(
+        useMaterial3: false,
+        elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: ColorResources.primary,
+        )),
+        appBarTheme: const AppBarTheme(
+          iconTheme: IconThemeData(color: Colors.black),
+          backgroundColor: Colors.white,
+          titleTextStyle: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
           ),
         ),
-        navigatorKey: navigatorKey,
-        debugShowCheckedModeBanner: false,
-        locale: context.watch<LocalizationProvider>().locale,
-        builder: (BuildContext context, Widget? child) {
-          return ResponsiveWrapper.builder(child,
-            maxWidth: 1200.0,
-            minWidth: 480.0,
-            defaultScale: true,
-            breakpoints: [
-              const ResponsiveBreakpoint.resize(480.0, name: MOBILE),
-              const ResponsiveBreakpoint.autoScale(800.0, name: TABLET),
-              const ResponsiveBreakpoint.resize(1920.0, name: DESKTOP),
-            ]
-          );
-        },
-        localizationsDelegates: const [
-          AppLocalization.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: locals,
-        home: const SplashScreen(),
       ),
+      navigatorKey: navigatorKey,
+      debugShowCheckedModeBanner: false,
+      locale: context.watch<LocalizationProvider>().locale,
+      builder: (BuildContext context, Widget? child) {
+        return ResponsiveWrapper.builder(child,
+          maxWidth: 1200.0,
+          minWidth: 480.0,
+          defaultScale: true,
+          breakpoints: [
+            const ResponsiveBreakpoint.resize(480.0, name: MOBILE),
+            const ResponsiveBreakpoint.autoScale(800.0, name: TABLET),
+            const ResponsiveBreakpoint.resize(1920.0, name: DESKTOP),
+          ]
+        );
+      },
+      localizationsDelegates: const [
+        AppLocalization.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: locals,
+      home: const SplashScreen(),
     );
   }
 }
