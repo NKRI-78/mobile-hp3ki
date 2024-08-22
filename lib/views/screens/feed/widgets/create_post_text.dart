@@ -154,7 +154,7 @@ class CreatePostTextState extends State<CreatePostText> {
         if(filePickerStatus == FilePickerStatus.picking) {
           pr.show(
             max: 2,
-            msg: "${getTranslated("PLEASE_WAIT", context)}...",
+            msg: getTranslated("PLEASE_WAIT", context),
             borderRadius: 10.0,
             backgroundColor: ColorResources.white,
             progressBgColor: ColorResources.primary,
@@ -362,29 +362,30 @@ class CreatePostTextState extends State<CreatePostText> {
             Flexible(
               child: TextField(
                 maxLines: null,
-                minLines: 5,
-                cursorColor: ColorResources.grey,
+                minLines: 3,
+                cursorColor: ColorResources.black,
                 controller: fd.postC,
                 style: robotoRegular.copyWith(
                   fontSize: Dimensions.fontSizeDefault
                 ),
                 decoration: InputDecoration(
+                  alignLabelWithHint: true,
                   labelText: getTranslated("WRITE_POST", context),
                   labelStyle: robotoRegular.copyWith(
                     fontSize: Dimensions.fontSizeDefault,
-                    color: ColorResources.grey
+                    color: ColorResources.black
                   ),
                   floatingLabelBehavior: FloatingLabelBehavior.auto,
                   focusedBorder: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(15.0)),
                     borderSide: BorderSide(
-                      color: ColorResources.grey, 
+                      color: ColorResources.black, 
                     ),
                   ),
                   enabledBorder: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(15.0)),
                     borderSide: BorderSide(
-                      color: ColorResources.grey, 
+                      color: ColorResources.black, 
                     ),
                   ),
                 ),

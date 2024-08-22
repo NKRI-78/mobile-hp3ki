@@ -1392,7 +1392,10 @@ class PostDetailTestScreenState extends State<PostDetailTestScreen>  with Ticker
                           onPressed: () async { 
                           s(() => deletePostBtn = true);
                             try {         
-                              await context.read<FeedProviderV2>().deletePost(context, feedDetailProvider.feedDetailData.forum!.id!);               
+                              await context.read<FeedProviderV2>().deletePost(
+                                context, feedDetailProvider.feedDetailData.forum!.id!,
+                                "detail"
+                              );               
                               s(() => deletePostBtn = false);
                               Navigator.of(context).pop();             
                             } catch(e) {

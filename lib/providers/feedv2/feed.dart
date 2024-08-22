@@ -470,7 +470,7 @@ class FeedProviderV2 with ChangeNotifier {
     });
   }
 
-  Future<void> deletePost(BuildContext context, String postId) async {
+  Future<void> deletePost(BuildContext context, String postId, String from) async {
     await fr.deletePost(context, postId);
 
     Future.delayed(Duration.zero, () {
@@ -478,6 +478,16 @@ class FeedProviderV2 with ChangeNotifier {
       fetchFeedMostRecent(context);
       fetchFeedPopuler(context);
     });
+
+    if(from == "index") {
+      for (int i = 0; i < 1; i++) {
+        Navigator.of(context).pop();
+      }
+    } else {
+      for (int i = 0; i < 2; i++) {
+        Navigator.of(context).pop();
+      }
+    }
   }
 
   Future<void> deleteReply(BuildContext context, String replyId) async {

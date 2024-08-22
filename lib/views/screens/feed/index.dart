@@ -365,14 +365,10 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return buildUI(); 
-  }
-
-  Widget buildUI() {
     return Scaffold(
-     body: NestedScrollView(
-       physics: const ScrollPhysics(),
-       headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
+      body: NestedScrollView(
+        physics: const ScrollPhysics(),
+        headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
           return [
 
             SliverAppBar(
@@ -410,11 +406,10 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                   )
 
                 ],
-              )
-              ,
+              ),
               elevation: 0.0,
               forceElevated: true,
-              pinned: true,
+              pinned: false,
               centerTitle: true,
               floating: true,
             ),

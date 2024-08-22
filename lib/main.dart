@@ -62,7 +62,6 @@ Future<void> main() async {
   FlutterError.onError = (details) {
     FlutterError.presentError(details);
     debugPrint(details.stack.toString());
-    // if (kReleaseMode) exit(1);
   };
 
   runApp(MultiProvider(
