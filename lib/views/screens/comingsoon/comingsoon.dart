@@ -100,7 +100,7 @@ class _ComingSoonScreenState extends State<ComingSoonScreen> {
             ? Container()
             : CustomButton(
                 onTap: () {
-                  NS.pop(context);
+                  NS.pop();
                 }, 
                 customText: true,
                 text: Text(getTranslated('BACK', context),

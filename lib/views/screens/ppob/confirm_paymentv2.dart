@@ -254,7 +254,7 @@ class ConfirmPaymentV2State extends State<ConfirmPaymentV2> {
                       : false,
                       onTap: () async {
                         if(ppobProvider.selectedPaymentMethod.trim() == "-" || ppobProvider.selectedPaymentMethod.contains('Belum')) {
-                          ShowSnackbar.snackbar(context, getTranslated("PAYMENT_ACCOUNT_IS_REQUIRED", context), "", ColorResources.error);
+                          ShowSnackbar.snackbar(getTranslated("PAYMENT_ACCOUNT_IS_REQUIRED", context), "", ColorResources.error);
                           return;
                         } else {
                           buildAskDialog(context, ppobProvider);
@@ -297,7 +297,7 @@ class ConfirmPaymentV2State extends State<ConfirmPaymentV2> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        NS.pop(context);
+                        NS.pop();
                       },
                       child: const Icon(Icons.close)
                     )
@@ -323,7 +323,7 @@ class ConfirmPaymentV2State extends State<ConfirmPaymentV2> {
                         name: "Saldo",
                         channel: "wallet",
                       );
-                      NS.pop(context);
+                      NS.pop();
                     },
                     title: Text('Saldo',
                       style: robotoRegular.copyWith(
@@ -380,7 +380,7 @@ class ConfirmPaymentV2State extends State<ConfirmPaymentV2> {
                                     name: ppobProvider.listVa[i].name!,
                                     channel: ppobProvider.listVa[i].channel!,
                                   );
-                                  NS.pop(context);
+                                  NS.pop();
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
@@ -485,7 +485,7 @@ class ConfirmPaymentV2State extends State<ConfirmPaymentV2> {
       btnOkOnPress: () async {
           final double totalPrice = widget.price + widget.adminFee;
           if(ppobProvider.selectedPaymentMethod.trim() == "-") {
-            ShowSnackbar.snackbar(context, getTranslated("PAYMENT_ACCOUNT_IS_REQUIRED", context), "", ColorResources.error);
+            ShowSnackbar.snackbar(getTranslated("PAYMENT_ACCOUNT_IS_REQUIRED", context), "", ColorResources.error);
             return;
           }
           switch (widget.type) {

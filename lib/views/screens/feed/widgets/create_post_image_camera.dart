@@ -20,10 +20,10 @@ class CreatePostImageCameraScreen extends StatefulWidget {
   ) : super(key: key);
 
   @override
-  _CreatePostImageCameraScreenState createState() => _CreatePostImageCameraScreenState();
+  CreatePostImageCameraScreenState createState() => CreatePostImageCameraScreenState();
 }
 
-class _CreatePostImageCameraScreenState extends State<CreatePostImageCameraScreen> {
+class CreatePostImageCameraScreenState extends State<CreatePostImageCameraScreen> {
   GlobalKey<ScaffoldMessengerState> globalKey = GlobalKey<ScaffoldMessengerState>();
 
   late FeedProviderV2 fdv2;
@@ -93,7 +93,7 @@ class _CreatePostImageCameraScreenState extends State<CreatePostImageCameraScree
                             width: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading ? null : 80.0,
                             padding: const EdgeInsets.all(8.0),
                             decoration: BoxDecoration(
-                              color: ColorResources.primary,
+                              color: ColorResources.primaryOrange,
                               borderRadius: BorderRadius.circular(20.0)
                             ),
                             child: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading 

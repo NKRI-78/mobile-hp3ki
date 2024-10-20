@@ -197,7 +197,7 @@ class MembernearProvider with ChangeNotifier {
     if(await canLaunchUrl(uri)){
       await launchUrl(uri);
     } else {
-      ShowSnackbar.snackbar(context, 'Nomor ini tidak bisa dihubungi', '', ColorResources.error);
+      ShowSnackbar.snackbar('Nomor ini tidak bisa dihubungi', '', ColorResources.error);
     }
   }
 

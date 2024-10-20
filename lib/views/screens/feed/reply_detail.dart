@@ -41,8 +41,8 @@ class _ReplyDetailScreenState extends State<ReplyDetailScreen> {
         trimCollapsedText: getTranslated("READ_MORE", context),
         trimExpandedText:  getTranslated("LESS", context),
         style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
-        moreStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.w600),
-        lessStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.w600),
+        moreStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.bold),
+        lessStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.bold),
       ),
     ]);
   }
@@ -56,7 +56,7 @@ class _ReplyDetailScreenState extends State<ReplyDetailScreen> {
               height: 150.0,
               child: SpinKitThreeBounce(
                 size: 20.0,
-                color: ColorResources.primary,
+                color: ColorResources.primaryOrange,
               ),
             ); 
           }
@@ -103,8 +103,8 @@ class _ReplyDetailScreenState extends State<ReplyDetailScreen> {
                     trimCollapsedText: getTranslated("READ_MORE", context),
                     trimExpandedText: getTranslated("LESS", context),
                     style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
-                    moreStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.w600),
-                    lessStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.w600),
+                    moreStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.bold),
+                    lessStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.bold),
                   ),
                 ],
               )

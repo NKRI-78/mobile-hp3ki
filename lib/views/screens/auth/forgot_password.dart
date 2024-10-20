@@ -45,7 +45,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     if(formKey.currentState!.validate()){
       if(!emailValid) {
         emailFn.requestFocus();
-        ShowSnackbar.snackbar(context, getTranslated("INVALID_FORMAT_EMAIL", context), "", ColorResources.error);
+        ShowSnackbar.snackbar(getTranslated("INVALID_FORMAT_EMAIL", context), "", ColorResources.error);
         return;
       }
       await context.read<AuthProvider>().forgetPassword(context, email);   

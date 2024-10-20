@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 
 import 'package:hp3ki/localization/language_constraints.dart';
 
-
-
 import 'package:hp3ki/providers/feedv2/feed.dart';
 
 import 'package:hp3ki/views/basewidgets/loader/circular.dart';
@@ -23,11 +21,10 @@ class CreatePostImageScreen extends StatefulWidget {
     this.files,
   }) : super(key: key);
   @override
-  _CreatePostImageScreenState createState() => _CreatePostImageScreenState();
+  CreatePostImageScreenState createState() => CreatePostImageScreenState();
 }
 
-class _CreatePostImageScreenState extends State<CreatePostImageScreen> {
-  GlobalKey<ScaffoldMessengerState> globalKey = GlobalKey<ScaffoldMessengerState>();
+class CreatePostImageScreenState extends State<CreatePostImageScreen> {
 
   late FeedProviderV2 fdv2;
   int current = 0;
@@ -122,7 +119,6 @@ class _CreatePostImageScreenState extends State<CreatePostImageScreen> {
   
   Widget buildUI() {
     return Scaffold(
-      key: globalKey,
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         slivers: [
@@ -166,7 +162,7 @@ class _CreatePostImageScreenState extends State<CreatePostImageScreen> {
                         ? null : 80.0,
                         padding: const EdgeInsets.all(8.0),
                         decoration: BoxDecoration(
-                          color: ColorResources.primary,
+                          color: ColorResources.primaryOrange,
                           borderRadius: BorderRadius.circular(20.0)
                         ),
                         child: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading  

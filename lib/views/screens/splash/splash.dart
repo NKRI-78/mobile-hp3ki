@@ -9,11 +9,11 @@ import 'package:hp3ki/views/screens/auth/sign_in.dart';
 import 'package:hp3ki/views/screens/comingsoon/comingsoon.dart';
 import 'package:hp3ki/views/screens/home/home.dart';
 import 'package:hp3ki/views/screens/onboarding/onboarding.dart';
-import 'package:hp3ki/views/screens/update/update.dart';
+// import 'package:hp3ki/views/screens/update/update.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:new_version_plus/new_version_plus.dart';
+// import 'package:new_version_plus/new_version_plus.dart';
 import 'package:hp3ki/localization/language_constraints.dart';
 import 'package:hp3ki/services/navigation.dart';
 import 'package:hp3ki/providers/splash/splash.dart';
@@ -47,16 +47,16 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void getData() {
-    if (mounted) {
-      NewVersionPlus newVersion = NewVersionPlus(
-          androidId: 'com.inovatif78.hp3ki', iOSId: 'com.inovatif78.hp3ki');
-      Future.delayed(Duration.zero, () async {
-        VersionStatus? vs = await newVersion.getVersionStatus();
-        if (vs?.canUpdate ?? false) {
-          NS.pushReplacement(context, const UpdateScreen());
-        }
-      });
-    }
+    // if (mounted) {
+    //   NewVersionPlus newVersion = NewVersionPlus(
+    //       androidId: 'com.inovatif78.hp3ki', iOSId: 'com.inovatif78.hp3ki');
+    //   Future.delayed(Duration.zero, () async {
+    //     VersionStatus? vs = await newVersion.getVersionStatus();
+    //     if (vs?.canUpdate ?? false) {
+    //       NS.pushReplacement(context, const UpdateScreen());
+    //     }
+    //   });
+    // }
     if (mounted) {
       context.read<SplashProvider>().getMaintenanceStatus(context);
     }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hp3ki/services/services.dart';
 
 class NS {
   NS._();
@@ -124,7 +125,7 @@ class NS {
       })
     );
   }
-  static pop(BuildContext context, {bool rootNavigator = false}) {
-    Navigator.of(context, rootNavigator: rootNavigator).pop();
+  static pop({bool rootNavigator = false}) {
+    Navigator.of(navigatorKey.currentContext!, rootNavigator: rootNavigator).pop();
   }
 }

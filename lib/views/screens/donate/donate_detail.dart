@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
 import 'package:hp3ki/views/screens/comingsoon/comingsoon.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:gallery_saver/gallery_saver.dart';
+import 'package:gallery_saver_updated/gallery_saver.dart';
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -127,7 +127,7 @@ class _DetailInfoPageState extends State<DonateDetailScreen> {
         child: IconButton(
           color: ColorResources.white,
           onPressed: () {
-            NS.pop(context);
+            NS.pop();
           },
           icon: const Icon(Icons.arrow_back),
           iconSize: Dimensions.iconSizeDefault,
@@ -160,10 +160,10 @@ class _DetailInfoPageState extends State<DonateDetailScreen> {
                         );
                         await GallerySaver.saveImage("${AppConstants.baseUrlImg}/${widget.imageUrl}");
                         pr.close();
-                        ShowSnackbar.snackbar(context, getTranslated("SAVE_TO_GALLERY", context), "", ColorResources.success);
+                        ShowSnackbar.snackbar(getTranslated("SAVE_TO_GALLERY", context), "", ColorResources.success);
                       } catch(e, stacktrace) {
                         pr.close();
-                        ShowSnackbar.snackbar(context, getTranslated("THERE_WAS_PROBLEM", context), "", ColorResources.error);
+                        ShowSnackbar.snackbar(getTranslated("THERE_WAS_PROBLEM", context), "", ColorResources.error);
                         debugPrint(stacktrace.toString());
                       }
                     break;

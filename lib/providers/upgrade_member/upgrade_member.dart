@@ -94,10 +94,10 @@ class UpgradeMemberProvider with ChangeNotifier {
       setStateInquiryStatus(InquiryStatus.loaded);
     } on CustomException catch (e) {
       debugPrint(e.toString());
-      ShowSnackbar.snackbar(context, e.toString(), '', ColorResources.error);
+      ShowSnackbar.snackbar(e.toString(), '', ColorResources.error);
       setStateInquiryStatus(InquiryStatus.error);
     } catch (e, stacktrace) {
-      ShowSnackbar.snackbar(context, e.toString(), '', ColorResources.error);
+      ShowSnackbar.snackbar(e.toString(), '', ColorResources.error);
       debugPrint(stacktrace.toString());
       setStateInquiryStatus(InquiryStatus.error);
     }
@@ -115,10 +115,10 @@ class UpgradeMemberProvider with ChangeNotifier {
       setStateInquiryStatus(InquiryStatus.loaded);
     } on CustomException catch (e) {
       debugPrint(e.toString());
-      ShowSnackbar.snackbar(context, e.toString(), '', ColorResources.error);
+      ShowSnackbar.snackbar(e.toString(), '', ColorResources.error);
       setStateInquiryStatus(InquiryStatus.error);
     } catch (e, stacktrace) {
-      ShowSnackbar.snackbar(context, e.toString(), '', ColorResources.error);
+      ShowSnackbar.snackbar(e.toString(), '', ColorResources.error);
       debugPrint(stacktrace.toString());
       setStateInquiryStatus(InquiryStatus.error);
     }

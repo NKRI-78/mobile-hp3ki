@@ -44,7 +44,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     } else {
-      ShowSnackbar.snackbar(context, 'Ada kesalahan dengan update aplikasi', '',
+      ShowSnackbar.snackbar('Ada kesalahan dengan update aplikasi', '',
           ColorResources.error);
     }
   }

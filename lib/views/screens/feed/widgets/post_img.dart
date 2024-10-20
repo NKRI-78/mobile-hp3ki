@@ -1,37 +1,40 @@
-import 'dart:io';
 
-import 'package:external_path/external_path.dart';
+
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:gallery_saver_updated/gallery_saver.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 
 import 'package:hp3ki/services/navigation.dart';
 
-import 'package:hp3ki/views/basewidgets/preview/preview.dart';
 import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
+import 'package:hp3ki/views/basewidgets/preview/preview_forum.dart';
 
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 
 class PostImage extends StatefulWidget {
+  final String username;
+  final String caption;
   final bool isDetail;
   final List medias;
 
   const PostImage(
+    this.username,
+    this.caption,
     this.isDetail,
     this.medias,
     {Key? key}
   ) : super(key: key);
 
   @override
-  _PostImageState createState() => _PostImageState();
+  PostImageState createState() => PostImageState();
 }
 
-class _PostImageState extends State<PostImage> {
+class PostImageState extends State<PostImage> {
   int current = 0;
 
   @override
@@ -46,46 +49,95 @@ class _PostImageState extends State<PostImage> {
           const SizedBox(height: 8.0),
 
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             children: [
               Expanded(
-                child: CachedNetworkImage(
-                  imageUrl: "${widget.medias.first.path}",
-                  imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) => Container(
-                    height: 200.0,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: imageProvider,
-                        fit: BoxFit.cover,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+
+                    CachedNetworkImage(
+                      imageUrl: "${widget.medias.first.path}",
+                      imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) => Container(
+                        height: 150.0,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
+                      errorWidget: (BuildContext context, String url, dynamic _) {
+                        return Container(
+                          margin: const EdgeInsets.all(0.0),
+                          padding: const EdgeInsets.all(0.0),
+                          width: double.infinity,
+                          height: 150.0,
+                          decoration: const BoxDecoration(
+                            image: DecorationImage(
+                              fit: BoxFit.fitWidth,
+                              image: AssetImage("assets/images/logo/logo.png")
+                            )
+                          ),
+                        );
+                      },
+                      placeholder: (BuildContext context, String url) {
+                        return Shimmer.fromColors(
+                          highlightColor: ColorResources.white,
+                          baseColor: Colors.grey[200]!,
+                          child: Container(
+                            margin: const EdgeInsets.all(0.0),
+                            padding: const EdgeInsets.all(0.0),
+                            width: double.infinity,
+                            height: 150.0,
+                            color: ColorResources.white
+                          )  
+                        );
+                      } 
                     ),
-                  ),
-                  errorWidget: (BuildContext context, String url, dynamic _) {
-                    return Container(
-                      margin: const EdgeInsets.all(0.0),
-                      padding: const EdgeInsets.all(0.0),
-                      width: double.infinity,
-                      height: 200.0,
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage("assets/images/logo/logo.png")
-                        )
+
+                    CachedNetworkImage(
+                      imageUrl: "${widget.medias[1].path}",
+                      imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) => Container(
+                        height: 150.0,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
-                    );
-                  },
-                  placeholder: (BuildContext context, String url) {
-                    return Shimmer.fromColors(
-                      highlightColor: ColorResources.white,
-                      baseColor: Colors.grey[200]!,
-                      child: Container(
-                        margin: const EdgeInsets.all(0.0),
-                        padding: const EdgeInsets.all(0.0),
-                        width: double.infinity,
-                        height: 200.0,
-                        color: ColorResources.white
-                      )  
-                    );
-                  } 
+                      errorWidget: (BuildContext context, String url, dynamic _) {
+                        return Container(
+                          margin: const EdgeInsets.all(0.0),
+                          padding: const EdgeInsets.all(0.0),
+                          width: double.infinity,
+                          height: 150.0,
+                          decoration: const BoxDecoration(
+                            image: DecorationImage(
+                              fit: BoxFit.fitWidth,
+                              image: AssetImage("assets/images/logo/logo.png")
+                            )
+                          ),
+                        );
+                      },
+                      placeholder: (BuildContext context, String url) {
+                        return Shimmer.fromColors(
+                          highlightColor: ColorResources.white,
+                          baseColor: Colors.grey[200]!,
+                          child: Container(
+                            margin: const EdgeInsets.all(0.0),
+                            padding: const EdgeInsets.all(0.0),
+                            width: double.infinity,
+                            height: 150.0,
+                            color: ColorResources.white
+                          )  
+                        );
+                      } 
+                    ),
+
+                  ],
                 ),
               ),
               Expanded(
@@ -97,9 +149,9 @@ class _PostImageState extends State<PostImage> {
                       children: [
 
                         CachedNetworkImage(
-                          imageUrl: "${widget.medias[1].path}",
+                          imageUrl: "${widget.medias[2].path}",
                           imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) => Container(
-                            height: 200.0,
+                            height: 150.0,
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                 image: imageProvider,
@@ -112,9 +164,10 @@ class _PostImageState extends State<PostImage> {
                               margin: const EdgeInsets.all(0.0),
                               padding: const EdgeInsets.all(0.0),
                               width: double.infinity,
-                              height: 200.0,
+                              height: 150.0,
                               decoration: const BoxDecoration(
                                 image: DecorationImage(
+                                  fit: BoxFit.fitWidth,
                                   image: AssetImage("assets/images/logo/logo.png")
                                 )
                               ),
@@ -128,7 +181,7 @@ class _PostImageState extends State<PostImage> {
                                 margin: const EdgeInsets.all(0.0),
                                 padding: const EdgeInsets.all(0.0),
                                 width: double.infinity,
-                                height: 200.0,
+                                height: 150.0,
                                 color: ColorResources.white
                               )  
                             );
@@ -151,7 +204,7 @@ class _PostImageState extends State<PostImage> {
                               style: robotoRegular.copyWith(
                                 color: ColorResources.white,
                                 fontSize: Dimensions.fontSizeDefault,
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.bold,
                               ),
                             )
                           )
@@ -160,9 +213,9 @@ class _PostImageState extends State<PostImage> {
                       ],
                     ),
                     CachedNetworkImage(
-                      imageUrl: "${widget.medias[2].path}",
+                      imageUrl: "${widget.medias[3].path}",
                       imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) => Container(
-                        height: 200.0,
+                        height: 150.0,
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             image: imageProvider,
@@ -175,9 +228,10 @@ class _PostImageState extends State<PostImage> {
                           margin: const EdgeInsets.all(0.0),
                           padding: const EdgeInsets.all(0.0),
                           width: double.infinity,
-                          height: 200.0,
+                          height: 150.0,
                           decoration: const BoxDecoration(
                             image: DecorationImage(
+                              fit: BoxFit.fitWidth,
                               image: AssetImage("assets/images/logo/logo.png")
                             )
                           ),
@@ -191,7 +245,7 @@ class _PostImageState extends State<PostImage> {
                             margin: const EdgeInsets.all(0.0),
                             padding: const EdgeInsets.all(0.0),
                             width: double.infinity,
-                            height: 200.0,
+                            height: 150.0,
                             color: ColorResources.white
                           )  
                         );
@@ -215,7 +269,7 @@ class _PostImageState extends State<PostImage> {
 
         CarouselSlider(
           options: CarouselOptions(
-            height: 200.0,
+            height: 400.0,
             enableInfiniteScroll: false,
             viewportFraction: 1.0,
             onPageChanged: (int i, CarouselPageChangedReason reason) {
@@ -225,8 +279,11 @@ class _PostImageState extends State<PostImage> {
           items: widget.medias.map((i) {
             return InkWell(
               onTap: () {
-                NS.push(context, PreviewImageScreen(
-                  img: '${i.path}',
+                NS.push(context, PreviewForumImageScreen(
+                  id: current,  
+                  username: widget.username,
+                  caption: widget.caption,
+                  medias: widget.medias,
                 ));
               },
               onLongPress: () async {
@@ -243,15 +300,14 @@ class _PostImageState extends State<PostImage> {
                         builder: (BuildContext c, Function s) {
                         return ElevatedButton(
                           onPressed: () async { 
-                            Directory documentsIos = await getApplicationDocumentsDirectory();
-                            String? saveDir = Platform.isIOS ? documentsIos.path : await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS);
-                          
-                            NS.pop(context);
-                            ShowSnackbar.snackbar(context, "Gambar telah disimpan pada $saveDir", "", ColorResources.success);
+                            await GallerySaver.saveImage("${widget.medias.first.path}");
+                            NS.pop();
+                            ShowSnackbar.snackbar("Gambar telah disimpan pada galeri", "", ColorResources.success);
                           },
                           child: Text("Unduh Gambar", 
                             style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeDefault
+                              fontSize: Dimensions.fontSizeDefault,
+                              color: ColorResources.black
                             ),
                           ),                           
                         );
@@ -264,11 +320,11 @@ class _PostImageState extends State<PostImage> {
               child: CachedNetworkImage(
                 imageUrl: "${i.path}",
                 imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) => Container(
-                  height: 200.0,
+                  height: 400.0,
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: imageProvider,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fitWidth,
                     ),
                   ),
                 ),
@@ -277,9 +333,10 @@ class _PostImageState extends State<PostImage> {
                     margin: const EdgeInsets.all(0.0),
                     padding: const EdgeInsets.all(0.0),
                     width: double.infinity,
-                    height: 200.0,
+                    height: 400.0,
                     decoration: const BoxDecoration(
                       image: DecorationImage(
+                        fit: BoxFit.fitWidth,
                         image: AssetImage("assets/images/logo/logo.png")
                       )
                     ),
@@ -293,7 +350,7 @@ class _PostImageState extends State<PostImage> {
                       margin: const EdgeInsets.all(0.0),
                       padding: const EdgeInsets.all(0.0),
                       width: double.infinity,
-                      height: 200.0,
+                      height: 400.0,
                       color: ColorResources.white
                     )  
                   );
@@ -303,7 +360,9 @@ class _PostImageState extends State<PostImage> {
           }).toList(),
         ),
         
-        Row(
+        widget.medias.length == 1 
+        ? const SizedBox() 
+        : Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: widget.medias.map((i) {
             int index = widget.medias.indexOf(i);
@@ -314,7 +373,7 @@ class _PostImageState extends State<PostImage> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: current == index
-                  ? ColorResources.primary
+                  ? ColorResources.primaryOrange
                   : ColorResources.dimGrey,
               ),
             );

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:gallery_saver/gallery_saver.dart';
+import 'package:gallery_saver_updated/gallery_saver.dart';
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -147,7 +147,7 @@ class DetailInfoPageState extends State<DetailNewsScreen> {
         child: IconButton(
           color: ColorResources.white,
           onPressed: () {
-            NS.pop(context);
+            NS.pop();
           },
           icon: const Icon(Icons.arrow_back,
             size: Dimensions.iconSizeDefault,
@@ -181,10 +181,10 @@ class DetailInfoPageState extends State<DetailNewsScreen> {
                         );
                         await GallerySaver.saveImage(imageUrl!);
                         pr.close();
-                        ShowSnackbar.snackbar(context, getTranslated("SAVE_TO_GALLERY", context), "", ColorResources.success);
+                        ShowSnackbar.snackbar(getTranslated("SAVE_TO_GALLERY", context), "", ColorResources.success);
                       } catch(e, stacktrace) {
                         pr.close();
-                        ShowSnackbar.snackbar(context, getTranslated("THERE_WAS_PROBLEM", context), "", ColorResources.error);
+                        ShowSnackbar.snackbar(getTranslated("THERE_WAS_PROBLEM", context), "", ColorResources.error);
                         debugPrint(stacktrace.toString());
                       }
                     break;

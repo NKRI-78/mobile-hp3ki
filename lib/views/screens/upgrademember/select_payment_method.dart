@@ -100,7 +100,7 @@ class _UpgradeMemberV2IndexScreenState
                               onTap: () {
                                 upgradeMemberProvider
                                     .setSelectedPaymentChannel(data);
-                                NS.pop(context);
+                                NS.pop();
                               },
                               leading: CircleAvatar(
                                 backgroundColor: ColorResources.transparent,

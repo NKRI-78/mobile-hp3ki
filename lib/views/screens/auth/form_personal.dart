@@ -74,32 +74,32 @@ class _FormPersonalScreenState extends State<FormPersonalScreen> {
 
     if (provinsi == "" || provinsi.isEmpty) {
       ShowSnackbar.snackbar(
-          context, 'Pilih Provinsi Terlebih Dahulu', "", ColorResources.error);
+           'Pilih Provinsi Terlebih Dahulu', "", ColorResources.error);
       return;
     }
     if (kabupaten == "" || kabupaten.isEmpty) {
       ShowSnackbar.snackbar(
-          context, 'Pilih Kabupaten Terlebih Dahulu', "", ColorResources.error);
+           'Pilih Kabupaten Terlebih Dahulu', "", ColorResources.error);
       return;
     }
     if (kecamatan == "" || kecamatan.isEmpty) {
       ShowSnackbar.snackbar(
-          context, 'Pilih Kecamatan Terlebih Dahulu', "", ColorResources.error);
+           'Pilih Kecamatan Terlebih Dahulu', "", ColorResources.error);
       return;
     }
     if (desa == "" || desa.isEmpty) {
       ShowSnackbar.snackbar(
-          context, 'Pilih Desa Terlebih Dahulu', "", ColorResources.error);
+           'Pilih Desa Terlebih Dahulu', "", ColorResources.error);
       return;
     }
     if (ktpPhoto == null) {
       ShowSnackbar.snackbar(
-          context, 'Upload Foto KTP', "", ColorResources.error);
+           'Upload Foto KTP', "", ColorResources.error);
       return;
     }
     if (selfiePhoto == null) {
       ShowSnackbar.snackbar(
-          context, 'Upload Foto Selfie', "", ColorResources.error);
+           'Upload Foto Selfie', "", ColorResources.error);
       return;
     }
 

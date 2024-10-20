@@ -11,7 +11,6 @@ class Helper {
     String _format = s.toString().replaceAll(RegExp(r"([,]*00)(?!.*\d)"), "");
     return _format;
   }
-
   
   static String getFormatedDate(_date) {
     var inputFormat = DateFormat('yyyy/MM/dd');

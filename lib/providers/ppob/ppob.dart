@@ -238,7 +238,7 @@ class PPOBProvider with ChangeNotifier {
       CustomDialog.buildPaymentSuccessDialog(context, getTranslated("PAYMENT_SUCCESSFUL", context));
     } on DioError catch(e) {
       if(e.response?.statusCode == 400) {
-        ShowSnackbar.snackbar(context, "${e.response?.data["message"]}", "", ColorResources.error);
+        ShowSnackbar.snackbar("${e.response?.data["message"]}", "", ColorResources.error);
       }
       if(e.type == DioErrorType.response) {
         if(e.response!.statusCode == 500 || e.response!.statusCode == 411) {
@@ -305,7 +305,7 @@ class PPOBProvider with ChangeNotifier {
       debugPrint('Init PG FCM: 200');
     } on DioError catch(e) {
       debugPrint(e.toString());
-      ShowSnackbar.snackbar(context, e.toString(), "", ColorResources.error);
+      ShowSnackbar.snackbar(e.toString(), "", ColorResources.error);
     } catch(e, stacktrace) {  
       debugPrint(stacktrace.toString());
     }
@@ -375,7 +375,7 @@ class PPOBProvider with ChangeNotifier {
 
     } on DioError catch(e) {
       if(e.response?.statusCode == 400) {
-        ShowSnackbar.snackbar(context, "${e.response?.data["message"]}", "", ColorResources.error);
+        ShowSnackbar.snackbar("${e.response?.data["message"]}", "", ColorResources.error);
       }
       if(e.type == DioErrorType.response) {
         if(e.response!.statusCode == 500 || e.response!.statusCode == 411) {
@@ -514,7 +514,7 @@ class PPOBProvider with ChangeNotifier {
       await pr.createWalletData(userId: SharedPrefs.getUserId());
     } on CustomException catch(e) {
       debugPrint(e.toString());
-      ShowSnackbar.snackbar(context, e.toString(), '', ColorResources.error);
+      ShowSnackbar.snackbar(e.toString(), '', ColorResources.error);
     } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());
       CustomDialog.showUnexpectedError(context, errorCode: 'PPP11');

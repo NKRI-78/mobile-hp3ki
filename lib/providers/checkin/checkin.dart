@@ -173,16 +173,16 @@ class CheckInProvider extends ChangeNotifier {
         lp.getCurrentNameAddressCheckIn,
         SharedPrefs.getUserId(),
       );
-      NS.pop(context);
+      NS.pop();
       getCheckIn(context);
       setStateCheckInStatusCreate(CheckInStatusCreate.loaded);
     } on CustomException catch (e) {
       debugPrint(e.toString());
-      ShowSnackbar.snackbar(context, e.toString(), '', ColorResources.error);
+      ShowSnackbar.snackbar(e.toString(), '', ColorResources.error);
       setStateCheckInStatusCreate(CheckInStatusCreate.error);
     } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
-      ShowSnackbar.snackbar(context, e.toString(), '', ColorResources.error);
+      ShowSnackbar.snackbar(e.toString(), '', ColorResources.error);
       setStateCheckInStatusCreate(CheckInStatusCreate.error);
     }
   }
@@ -192,16 +192,16 @@ class CheckInProvider extends ChangeNotifier {
     try {
       await cr.joinCheckIn(checkInId, SharedPrefs.getUserId());
       ShowSnackbar.snackbar(
-          context, getTranslated('JOINED', context), '', ColorResources.green);
+           getTranslated('JOINED', context), '', ColorResources.green);
       getCheckIn(context);
       setStateCheckInStatusJoin(CheckInStatusJoin.loaded);
     } on CustomException catch (e) {
       debugPrint(e.toString());
-      ShowSnackbar.snackbar(context, e.toString(), '', ColorResources.error);
+      ShowSnackbar.snackbar(e.toString(), '', ColorResources.error);
       setStateCheckInStatusJoin(CheckInStatusJoin.error);
     } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
-      ShowSnackbar.snackbar(context, e.toString(), '', ColorResources.error);
+      ShowSnackbar.snackbar(e.toString(), '', ColorResources.error);
       setStateCheckInStatusJoin(CheckInStatusJoin.error);
     }
   }
@@ -214,11 +214,11 @@ class CheckInProvider extends ChangeNotifier {
       setStateCheckInStatusDelete(CheckInStatusDelete.loaded);
     } on CustomException catch (e) {
       debugPrint(e.toString());
-      ShowSnackbar.snackbar(context, e.toString(), '', ColorResources.error);
+      ShowSnackbar.snackbar(e.toString(), '', ColorResources.error);
       setStateCheckInStatusDelete(CheckInStatusDelete.error);
     } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
-      ShowSnackbar.snackbar(context, e.toString(), '', ColorResources.error);
+      ShowSnackbar.snackbar(e.toString(), '', ColorResources.error);
       setStateCheckInStatusDelete(CheckInStatusDelete.error);
     }
   }

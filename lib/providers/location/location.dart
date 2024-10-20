@@ -88,7 +88,7 @@ class LocationProvider extends ChangeNotifier {
           )
         )
       );
-      NS.pop(context);
+      NS.pop();
       Future.delayed(Duration.zero, () => notifyListeners());
     } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());

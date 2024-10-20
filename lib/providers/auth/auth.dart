@@ -194,7 +194,7 @@ class AuthProvider with ChangeNotifier {
       );
     } on CustomException catch (e) {
       debugPrint(e.toString());
-      ShowSnackbar.snackbar(context, e.toString(), '', ColorResources.error);
+      ShowSnackbar.snackbar(e.toString(), '', ColorResources.error);
       setStateLoginStatus(LoginStatus.error);
     } catch (e, stacktrace) {
       debugPrint(e.toString());
@@ -221,7 +221,7 @@ class AuthProvider with ChangeNotifier {
       );
     } on CustomException catch (e) {
       debugPrint(e.toString());
-      ShowSnackbar.snackbar(context, e.toString(), '', ColorResources.error);
+      ShowSnackbar.snackbar(e.toString(), '', ColorResources.error);
       setStateRegisterStatus(RegisterStatus.error);
     } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
@@ -240,11 +240,10 @@ class AuthProvider with ChangeNotifier {
         newPassword,
       );
       ShowSnackbar.snackbar(
-          context,
           getTranslated("UPDATE_PASSWORD_SUCCESS", context),
           "",
           ColorResources.success);
-      NS.pop(context);
+      NS.pop();
       setStateChangePasswordStatus(ChangePasswordStatus.loaded);
     } on CustomException catch (e) {
       debugPrint(e.toString());
@@ -264,7 +263,6 @@ class AuthProvider with ChangeNotifier {
       await ar.setNewPassword(
           SharedPrefs.getForgetEmail(), oldPassword, newPassword);
       ShowSnackbar.snackbar(
-          context,
           getTranslated("UPDATE_PASSWORD_SUCCESS", context),
           "",
           ColorResources.success);
@@ -286,7 +284,6 @@ class AuthProvider with ChangeNotifier {
     try {
       await ar.forgetPassword(email);
       ShowSnackbar.snackbar(
-          context,
           'Silahkan cek email Anda untuk mendapatkan kode verifikasi',
           "",
           ColorResources.success,
@@ -304,7 +301,6 @@ class AuthProvider with ChangeNotifier {
       CustomDialog.showUnexpectedError(context, errorCode: 'AP05');
       setStateForgetPasswordStatus(ForgetPasswordStatus.error);
       ShowSnackbar.snackbar(
-          context,
           getTranslated("THERE_WAS_PROBLEM", context),
           "",
           ColorResources.error);
@@ -346,7 +342,6 @@ class AuthProvider with ChangeNotifier {
       changeEmail = true;
       SharedPrefs.writeChangeEmailData(changeEmailName);
       ShowSnackbar.snackbar(
-          context,
           "Silahkan cek kembali email anda, $changeEmailName",
           "",
           ColorResources.success);
@@ -354,7 +349,7 @@ class AuthProvider with ChangeNotifier {
     } on CustomException catch (e) {
       changeEmailName = SharedPrefs.getEmailOTP();
       changeEmail = false;
-      ShowSnackbar.snackbar(context, e.toString(), '', ColorResources.error);
+      ShowSnackbar.snackbar(e.toString(), '', ColorResources.error);
       setApplyChangeEmailOtpStatus(ApplyChangeEmailOtpStatus.error);
     } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
@@ -397,8 +392,7 @@ class AuthProvider with ChangeNotifier {
     setVerifyOtpStatus(VerifyOtpStatus.loading);
     try {
       if (otp!.isEmpty || otp == "") {
-        ShowSnackbar.snackbar(
-            context, 'Isi OTP terlebih dahulu!', '', ColorResources.error);
+        ShowSnackbar.snackbar('Isi OTP terlebih dahulu!', '', ColorResources.error);
         return;
       }
       AuthModel auth = await ar.verifyOtp(changeEmailName, otp!);
@@ -427,7 +421,6 @@ class AuthProvider with ChangeNotifier {
         email,
       );
       ShowSnackbar.snackbar(
-          context,
           "${getTranslated('CHECK_YOUR_EMAIL', context)} $email, ${getTranslated('TO_SEE_THE_OTP', context)}",
           "",
           ColorResources.success);

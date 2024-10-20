@@ -303,7 +303,7 @@ class ProfileProvider with ChangeNotifier {
         userId: SharedPrefs.getUserId(),
       );
       setStateUpdateProfileStatus(UpdateProfileStatus.loaded);
-      NS.pop(context);
+      NS.pop();
       getProfile(context);
     } on CustomException catch (e) {
       debugPrint(e.toString());

@@ -15,21 +15,25 @@ import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 
-class PreviewReviewImageScreen extends StatefulWidget {
+class PreviewForumImageScreen extends StatefulWidget {
+  final String? username;
+  final String? caption;
   final List<dynamic>? medias;
   final int? id;
 
-  const PreviewReviewImageScreen({
+  const PreviewForumImageScreen({
+    this.username,
+    this.caption,
     this.medias,
     this.id,
     Key? key, 
   }) : super(key: key);
 
   @override
-  PreviewReviewImageScreenState createState() => PreviewReviewImageScreenState();
+  PreviewForumImageScreenState createState() => PreviewForumImageScreenState();
 }
 
-class PreviewReviewImageScreenState extends State<PreviewReviewImageScreen> {
+class PreviewForumImageScreenState extends State<PreviewForumImageScreen> {
 
   bool loadingBtn = false;
 
@@ -51,6 +55,52 @@ class PreviewReviewImageScreenState extends State<PreviewReviewImageScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor:ColorResources.black,
+      bottomNavigationBar: Container(
+        height: 200.0,
+        decoration: BoxDecoration(
+          color: Colors.grey.withOpacity(0.5),
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20.0),
+            topRight: Radius.circular(20.0)
+          )
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+
+            Container(
+              margin: const EdgeInsets.only(
+                top: 15.0,
+                left: 15.0,
+              ),
+              child: Text(widget.username!,
+                style: const TextStyle(
+                  fontSize: Dimensions.fontSizeExtraLarge,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white
+                ),
+              ),
+            ),
+
+            Container(
+              margin: const EdgeInsets.only(
+                top: 5.0,
+                left: 15.0,
+              ),
+              child: Text(widget.caption!,
+                maxLines: 6,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: Dimensions.fontSizeLarge,
+                  color: Colors.white
+                ),
+              ),
+            )
+
+          ],
+        )
+      ),
       appBar: AppBar(
         backgroundColor:ColorResources.transparent,
         forceMaterialTransparency: true,

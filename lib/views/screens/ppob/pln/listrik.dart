@@ -510,7 +510,7 @@ class _ListrikScreenState extends State<ListrikScreen> {
                               index: selected,
                             );
                           } else {
-                            ShowSnackbar.snackbar(context, 'Isi ID Customer terlebih dahulu!', '', ColorResources.error);
+                            ShowSnackbar.snackbar('Isi ID Customer terlebih dahulu!', '', ColorResources.error);
                           }
                         },
                         isBorderRadius: true,

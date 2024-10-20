@@ -100,7 +100,7 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
     if (currentBackPressTime == null ||
       now.difference(currentBackPressTime) > const Duration(seconds: 2)) {
       currentBackPressTime = now;
-      ShowSnackbar.snackbar(context, getTranslated("PRESS_TWICE_BACK", context), "", ColorResources.primary);
+      ShowSnackbar.snackbar(getTranslated("PRESS_TWICE_BACK", context), "", ColorResources.primary);
       return Future.value(false);
     }
     SystemNavigator.pop();
@@ -113,8 +113,6 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
         widgetOptions = [
           const HomeScreen(),
           const NewsScreen(fromHome: true),
-          // ComingSoonScreen(
-          //     title: getTranslated('DONATE', context), isNavbarItem: true),
           const FeedIndex(),
           const NotificationScreen(),
         ];
@@ -165,7 +163,6 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
 
   Widget buildUI() {
     final screenSize = MediaQuery.sizeOf(context);
-    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: willPopScope,
       child: Scaffold(
@@ -173,22 +170,20 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
         endDrawerEnableOpenDragGesture: false,
         extendBody: true,
         body: !SharedPrefs.isLoggedIn()
-            ? widgetOptions.elementAt(selectedIndex)
-            : SlidingUpPanel(
-                controller: panelC,
-                maxHeight: screenSize.height,
-                color: Colors.transparent,
-                panelSnapping: true,
-                panel: buildMenuPanel(),
-                body: widgetOptions.isEmpty
-                ? Container()
-                : widgetOptions.elementAt(selectedIndex),
-              ),
+        ? widgetOptions.elementAt(selectedIndex)
+        : SlidingUpPanel(
+            controller: panelC,
+            maxHeight: screenSize.height,
+            color: Colors.transparent,
+            panelSnapping: true,
+            panel: buildMenuPanel(),
+            body: widgetOptions.isEmpty
+            ? Container()
+            : widgetOptions.elementAt(selectedIndex),
+          ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton:
-            !SharedPrefs.isLoggedIn() ? const SizedBox() : buildMenuBar(),
-        bottomNavigationBar:
-            !SharedPrefs.isLoggedIn() ? const SizedBox() : buildNavbar(),
+        floatingActionButton: !SharedPrefs.isLoggedIn() ? const SizedBox() : buildMenuBar(),
+        bottomNavigationBar: !SharedPrefs.isLoggedIn() ? const SizedBox() : buildNavbar(),
       ),
     );
   }
@@ -200,11 +195,6 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
         "icon": "logo/logo.png",
         "screen": const AboutMenuScreen(),
       },
-      // {
-      //   "name": "Mart",
-      //   "icon": "bottomsheet/icon-mart.png",
-      //   "screen": const ComingSoonScreen(title: 'HP3KI Mart'),
-      // },
       {
         "name": "PPOB",
         "icon": "bottomsheet/icon-ppob.png",
@@ -245,16 +235,6 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
         "icon": "bottomsheet/icon-mart.png",
         "screen": const MaintainScreen(),
       },
-      // {
-      //   "name": "Mart",
-      //   "icon": "bottomsheet/icon-mart.png",
-      //   "screen": const ComingSoonScreen(title: 'HP3KI Mart'),
-      // },
-      // {
-      //   "name": "SHOP",
-      //   "icon": "bottomsheet/icon-membernear.png",
-      //   "screen": const MaintainScreen(),
-      // },
     ];
 
     return Stack(
@@ -274,7 +254,8 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
           alignment: const Alignment(0, 0.3),
           child: AlignedGridView.count(
             physics: const BouncingScrollPhysics(
-                parent: AlwaysScrollableScrollPhysics()),
+              parent: AlwaysScrollableScrollPhysics()
+            ),
             crossAxisCount: 3,
             mainAxisSpacing: 16.0,
             crossAxisSpacing: 2.0,
@@ -285,7 +266,7 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
               if (menu[index]['name'] == "SHOP") {
                 return Consumer<PPOBProvider>(builder: (context, ppob, child) {
                   return Consumer<ProfileProvider>(
-                      builder: (context, notifier, child) {
+                    builder: (context, notifier, child) {
                     bool hasStore = notifier.user?.storeId != null;
                     return Column(
                       children: [

@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hp3ki/data/models/language/language.dart';
 import 'package:hp3ki/providers/firebase/firebase.dart';
 import 'package:hp3ki/providers/internet/internet.dart';
+import 'package:hp3ki/services/services.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/shared_preferences.dart';
 
@@ -141,17 +142,19 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
         ),
       ),
       debugShowCheckedModeBanner: false,
+      navigatorKey: navigatorKey,
       locale: context.watch<LocalizationProvider>().locale,
       builder: (BuildContext context, Widget? child) {
         return ResponsiveWrapper.builder(child,
-            maxWidth: 1200.0,
-            minWidth: 480.0,
-            defaultScale: true,
-            breakpoints: [
-              const ResponsiveBreakpoint.resize(480.0, name: MOBILE),
-              const ResponsiveBreakpoint.autoScale(800.0, name: TABLET),
-              const ResponsiveBreakpoint.resize(1920.0, name: DESKTOP),
-            ]);
+          maxWidth: 1200.0,
+          minWidth: 480.0,
+          defaultScale: true,
+          breakpoints: [
+            const ResponsiveBreakpoint.resize(480.0, name: MOBILE),
+            const ResponsiveBreakpoint.autoScale(800.0, name: TABLET),
+            const ResponsiveBreakpoint.resize(1920.0, name: DESKTOP),
+          ]
+        );
       },
       localizationsDelegates: const [
         AppLocalization.delegate,

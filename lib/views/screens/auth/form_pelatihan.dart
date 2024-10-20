@@ -50,27 +50,27 @@ class _FormPelatihanScreenState extends State<FormPelatihanScreen> {
     String klasifikasiUsaha = klasifikasiUsahaC.text.trim();
 
     if(provinsi == "" || provinsi.isEmpty) {
-      ShowSnackbar.snackbar(context, 'Pilih Provinsi Terlebih Dahulu', "", ColorResources.error);
+      ShowSnackbar.snackbar('Pilih Provinsi Terlebih Dahulu', "", ColorResources.error);
       return;
     }
     if(kabupaten == "" || kabupaten.isEmpty) {
-      ShowSnackbar.snackbar(context, 'Pilih Kabupaten Terlebih Dahulu', "", ColorResources.error);
+      ShowSnackbar.snackbar('Pilih Kabupaten Terlebih Dahulu', "", ColorResources.error);
       return;
     }
     if(desa == "" || desa.isEmpty) {
-      ShowSnackbar.snackbar(context, 'Pilih Desa Terlebih Dahulu', "", ColorResources.error);
+      ShowSnackbar.snackbar('Pilih Desa Terlebih Dahulu', "", ColorResources.error);
       return;
     }
     if(kecamatan == "" || kecamatan.isEmpty) {
-      ShowSnackbar.snackbar(context, 'Pilih Kecamatan Terlebih Dahulu', "", ColorResources.error);
+      ShowSnackbar.snackbar('Pilih Kecamatan Terlebih Dahulu', "", ColorResources.error);
       return;
     }
     if(klasifikasiUsaha == "" || klasifikasiUsaha.isEmpty) {
-      ShowSnackbar.snackbar(context, 'Pilih Klasifikasi Usaha Terlebih Dahulu', "", ColorResources.error);
+      ShowSnackbar.snackbar('Pilih Klasifikasi Usaha Terlebih Dahulu', "", ColorResources.error);
       return;
     }
     if(bentukUsaha == "" || bentukUsaha.isEmpty) {
-      ShowSnackbar.snackbar(context, 'Pilih Bentuk Usaha Terlebih Dahulu', "", ColorResources.error);
+      ShowSnackbar.snackbar('Pilih Bentuk Usaha Terlebih Dahulu', "", ColorResources.error);
       return;
     }
 

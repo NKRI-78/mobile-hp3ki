@@ -61,7 +61,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (formKey.currentState!.validate()) {
       if (!emailValid) {
         ShowSnackbar.snackbar(
-            context,
             getTranslated("INVALID_FORMAT_EMAIL", context),
             "",
             ColorResources.error);
@@ -69,18 +68,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
         return;
       }
       if (organisasi == "" || organisasi.isEmpty) {
-        ShowSnackbar.snackbar(context, 'Pilih Organisasi Terlebih Dahulu', "",
+        ShowSnackbar.snackbar('Pilih Organisasi Terlebih Dahulu', "",
             ColorResources.error);
         return;
       }
       if (profesi == "" || profesi.isEmpty) {
         ShowSnackbar.snackbar(
-            context, 'Pilih Profesi Terlebih Dahulu', "", ColorResources.error);
+        'Pilih Profesi Terlebih Dahulu', "", ColorResources.error);
         return;
       }
       if (passConfirm.trim() != pass.trim()) {
         ShowSnackbar.snackbar(
-            context,
             getTranslated('PASSWORD_CONFIRM_DOES_NOT_MATCH', context),
             "",
             ColorResources.error);

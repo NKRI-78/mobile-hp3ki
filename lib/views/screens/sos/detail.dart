@@ -1,15 +1,11 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:android_intent_plus/android_intent.dart';
+
 import 'package:hp3ki/providers/profile/profile.dart';
 import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
 import 'package:provider/provider.dart';
-import 'package:location/location.dart';
 import 'package:slide_to_confirm/slide_to_confirm.dart';
 import 'package:hp3ki/services/navigation.dart';
 import 'package:hp3ki/providers/sos/sos.dart';
-import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
 import 'package:hp3ki/localization/language_constraints.dart';
 import 'package:hp3ki/utils/color_resources.dart';
@@ -34,13 +30,9 @@ class SosDetailScreen extends StatefulWidget {
 
 class _SosDetailScreenState extends State<SosDetailScreen> {
 
-  late Location location;
-
   @override
   void initState() {
     super.initState();
-
-    location = Location();
   }
 
   @override  
@@ -106,20 +98,7 @@ class _SosDetailScreenState extends State<SosDetailScreen> {
                   foregroundColor: ColorResources.primary,
                   text: getTranslated("SLIDE_TO_CONFIRM", context),
                   onConfirmation: () async {
-                    bool isActive = await location.serviceEnabled();
-                    if(!isActive) {
-                      if(Platform.isAndroid) {
-                        AndroidIntent intent = const AndroidIntent(
-                          action: 'android.settings.LOCATION_SOURCE_SETTINGS'
-                        );
-                        intent.launch();
-                      } else {
-                        ShowSnackbar.snackbar(context, getTranslated("PLEASE_ACTIVATE_LOCATION", context), "", ColorResources.error);
-                        return;
-                      }
-                    } else {
-                      buildAgreementDialog();
-                    }
+                    buildAgreementDialog();
                   },
                 ),
               )
@@ -239,7 +218,7 @@ class _SosDetailScreenState extends State<SosDetailScreen> {
                                       btnColor: ColorResources.white,
                                       btnTextColor: ColorResources.primary,
                                       onTap: () {
-                                        NS.pop(context);
+                                        NS.pop();
                                       }, 
                                       btnTxt: getTranslated("CANCEL", context)
                                     ),

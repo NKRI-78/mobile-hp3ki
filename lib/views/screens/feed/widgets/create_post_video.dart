@@ -2,21 +2,18 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:provider/provider.dart';
-import 'package:hp3ki/providers/feedv2/feed.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter/material.dart';
 
+import 'package:hp3ki/providers/feedv2/feed.dart';
 
 import 'package:hp3ki/localization/language_constraints.dart';
-import 'package:hp3ki/container.dart';
-import 'package:hp3ki/data/repository/feed/feed.dart';
 
 import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 
 import 'package:hp3ki/views/basewidgets/loader/circular.dart';
-
 
 class CreatePostVideoScreen extends StatefulWidget {
   final Uint8List? thumbnail;
@@ -31,10 +28,10 @@ class CreatePostVideoScreen extends StatefulWidget {
     this.videoSize
   }) : super(key: key);
   @override
-  _CreatePostVideoScreenState createState() => _CreatePostVideoScreenState();
+  CreatePostVideoScreenState createState() => CreatePostVideoScreenState();
 }
 
-class _CreatePostVideoScreenState extends State<CreatePostVideoScreen> {
+class CreatePostVideoScreenState extends State<CreatePostVideoScreen> {
   late VideoPlayerController videoPlayerController;
   late FeedProviderV2 fdv2;
 
@@ -44,11 +41,12 @@ class _CreatePostVideoScreenState extends State<CreatePostVideoScreen> {
   @override
   void initState() {
     super.initState();
+    
     fdv2 = context.read<FeedProviderV2>();
     fdv2.postC = TextEditingController();
-    setState(() {
-      fileX = File(widget.file!.path);
-    });
+    
+    setState(() => fileX = File(widget.file!.path));
+
     videoPlayerController = VideoPlayerController.file(fileX!);
   }
 
@@ -62,10 +60,6 @@ class _CreatePostVideoScreenState extends State<CreatePostVideoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return buildUI();
-  }
-
-  Widget buildUI() {
     return Scaffold(
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
@@ -99,22 +93,15 @@ class _CreatePostVideoScreenState extends State<CreatePostVideoScreen> {
                   children: [
                     InkWell(
                       onTap: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading ? () {} : () async {
-                        fdv2.setStateWritePost(WritePostStatus.loading);
-                        // String? body = await getIt<FeedRepo>().getMediaKey(context); 
                         File f = File(fileX!.path);
-                        // Uint8List bytesFiles = f.readAsBytesSync();
-                        // String digestFile = sha256.convert(bytesFiles).toString();
-                        // String imageHash = base64Url.encode(HEX.decode(digestFile)); 
-                        await getIt<FeedRepo>().uploadMedia(context, f);
                         fdv2.feedType = "video";
                         await fdv2.postVideo(context, "video", f);
-                        fdv2.setStateWritePost(WritePostStatus.loaded);
                       },
                       child: Container(
                         width: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading ? null : 80.0,
                         padding: const EdgeInsets.all(8.0),
                         decoration: BoxDecoration(
-                          color: ColorResources.primary,
+                          color: ColorResources.primaryOrange,
                           borderRadius: BorderRadius.circular(20.0)
                         ),
                         child: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading 
@@ -212,7 +199,7 @@ class _CreatePostVideoScreenState extends State<CreatePostVideoScreen> {
           style: robotoRegular.copyWith(
             color: ColorResources.success,
             fontSize: Dimensions.fontSizeSmall,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ],

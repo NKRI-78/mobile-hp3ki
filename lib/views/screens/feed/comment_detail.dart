@@ -16,7 +16,6 @@ import 'package:hp3ki/providers/feed/feed.dart';
 
 import 'package:hp3ki/data/models/feed/reply.dart';
 
-
 class CommentDetailScreen extends StatefulWidget {
   final String commentId;
   final String postId;
@@ -28,10 +27,10 @@ class CommentDetailScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _CommentDetailScreenState createState() => _CommentDetailScreenState();
+  CommentDetailScreenState createState() => CommentDetailScreenState();
 }
 
-class _CommentDetailScreenState extends State<CommentDetailScreen> {
+class CommentDetailScreenState extends State<CommentDetailScreen> {
   GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
 
   late TextEditingController replyC;
@@ -53,11 +52,11 @@ class _CommentDetailScreenState extends State<CommentDetailScreen> {
           ),
           moreStyle: robotoRegular.copyWith(
             fontSize: Dimensions.fontSizeSmall, 
-            fontWeight: FontWeight.w600
+            fontWeight: FontWeight.bold
           ),
           lessStyle: robotoRegular.copyWith(
             fontSize: Dimensions.fontSizeSmall, 
-            fontWeight: FontWeight.w600
+            fontWeight: FontWeight.bold
           ),
         ),
       ]
@@ -74,7 +73,7 @@ class _CommentDetailScreenState extends State<CommentDetailScreen> {
               child: Center(
                 child: SpinKitThreeBounce(
                   size: 20.0,
-                  color: ColorResources.primary,
+                  color: ColorResources.primaryOrange,
                 ),
               )
             );
@@ -132,8 +131,8 @@ class _CommentDetailScreenState extends State<CommentDetailScreen> {
                       trimCollapsedText: getTranslated("READ_MORE", context),
                       trimExpandedText: getTranslated("LESS", context),
                       style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault),
-                      moreStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.w600),
-                      lessStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.w600),
+                      moreStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.bold),
+                      lessStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ) 
@@ -250,7 +249,7 @@ class _CommentDetailScreenState extends State<CommentDetailScreen> {
                   child: Center(
                     child: SpinKitThreeBounce(
                     size: 20.0,
-                    color: ColorResources.primary,
+                    color: ColorResources.primaryOrange,
                   ),
                 )
               );
@@ -280,7 +279,7 @@ class _CommentDetailScreenState extends State<CommentDetailScreen> {
                       width: 15.0,
                       height: 15.0,
                       child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(ColorResources.primary)),
+                        valueColor: AlwaysStoppedAnimation<Color>(ColorResources.primaryOrange)),
                       )
                     );
                   }

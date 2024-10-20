@@ -40,7 +40,7 @@ class SosProvider with ChangeNotifier {
         userId: SharedPrefs.getUserId(),
       );
       NS.pushReplacement(context, const DashboardScreen());
-      ShowSnackbar.snackbar(context, getTranslated('SENT_SOS', context), '', ColorResources.success);
+      ShowSnackbar.snackbar(getTranslated('SENT_SOS', context), '', ColorResources.success);
       setStateSosStatus(SosStatus.loaded);
     } on CustomException catch(e) {
       debugPrint(e.cause.toString());

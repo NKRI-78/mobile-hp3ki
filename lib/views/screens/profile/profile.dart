@@ -1089,7 +1089,7 @@ class ProfileScreenState extends State<ProfileScreen> {
         child: InkWell(
           borderRadius: BorderRadius.circular(15.0),
           onTap: () {
-            NS.pop(context);
+            NS.pop();
           },
           child: Hero(
             tag: 'userBox',

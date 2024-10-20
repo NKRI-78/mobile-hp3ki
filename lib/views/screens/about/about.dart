@@ -66,7 +66,7 @@ class _AboutScreenState extends State<AboutScreen> {
         padding: const EdgeInsets.only(left: Dimensions.paddingSizeDefault),
         child: IconButton(
           onPressed: () {
-            NS.pop(context);
+            NS.pop();
           },
           icon: const Icon(
             Icons.arrow_back,

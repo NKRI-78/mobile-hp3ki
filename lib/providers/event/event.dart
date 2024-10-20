@@ -82,17 +82,17 @@ class EventProvider with ChangeNotifier {
     setStateJoinEventStatus(EventJoinStatus.loading);
     try {
       await er.joinEvent(eventId: eventId, userId: SharedPrefs.getUserId());
-      NS.pop(context);
+      NS.pop();
       ShowSnackbar.snackbar(
-          context, 'Anda berhasil bergabung!', '', ColorResources.success);
+          'Anda berhasil bergabung!', '', ColorResources.success);
       setStateJoinEventStatus(EventJoinStatus.loaded);
     } on CustomException catch (e) {
-      ShowSnackbar.snackbar(context, e.toString(), '', ColorResources.error);
+      ShowSnackbar.snackbar(e.toString(), '', ColorResources.error);
       setStateJoinEventStatus(EventJoinStatus.error);
     } catch (e, stacktrace) {
       debugPrint(stacktrace.toString());
       ShowSnackbar.snackbar(
-          context, 'Ada sesuatu yang bermasalah.', '', ColorResources.error);
+        'Ada sesuatu yang bermasalah.', '', ColorResources.error);
       setStateJoinEventStatus(EventJoinStatus.error);
     }
   }

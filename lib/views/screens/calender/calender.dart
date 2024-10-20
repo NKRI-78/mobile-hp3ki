@@ -579,7 +579,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                         Expanded(
                           child: CustomButton(
                             onTap: () {
-                              NS.pop(context);
+                              NS.pop();
                             }, 
                             height: 35.0,
                             isBorder: false,

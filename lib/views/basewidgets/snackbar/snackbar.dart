@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
+import 'package:hp3ki/services/services.dart';
+
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 
 class ShowSnackbar {
   ShowSnackbar._();
-  static snackbar(BuildContext context, String content, String label, Color backgroundColor, [Duration? time]) {
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(
+  static snackbar(String content, String label, Color backgroundColor, [Duration? time]) {
+    ScaffoldMessenger.of(navigatorKey.currentContext!).clearSnackBars();
+    ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
       SnackBar(
         duration: time ?? const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,  
@@ -23,7 +25,7 @@ class ShowSnackbar {
           textColor: ColorResources.white,
           label: label,
           onPressed: () {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            ScaffoldMessenger.of(navigatorKey.currentContext!).hideCurrentSnackBar();
           }
         ),
       )

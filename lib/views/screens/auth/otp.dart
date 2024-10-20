@@ -383,10 +383,10 @@ class OtpScreenState extends State<OtpScreen> {
       child: CustomButton(
         onTap: () {
           if(authProvider.otp!.trim().isEmpty || authProvider.otp!.trim() == "") {
-            ShowSnackbar.snackbar(context, 'Isi OTP Terlebih dahulu!', '', ColorResources.error);
+            ShowSnackbar.snackbar('Isi OTP Terlebih dahulu!', '', ColorResources.error);
             return;
           } else if (authProvider.otp!.trim().length > 1 && authProvider.otp!.trim().length < 4) {
-            ShowSnackbar.snackbar(context, 'Lengkapi OTP anda!', '', ColorResources.error);
+            ShowSnackbar.snackbar('Lengkapi OTP anda!', '', ColorResources.error);
             return;
           } else {
             authProvider.verifyOtp(context);

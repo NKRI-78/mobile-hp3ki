@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
 import 'package:hp3ki/views/screens/auth/forgot_password.dart';
 import 'package:hp3ki/views/screens/auth/sign_up.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -17,17 +18,15 @@ import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
 import 'package:hp3ki/views/basewidgets/textfield/textfield.dart';
-import '../../basewidgets/snackbar/snackbar.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
 
   @override
-  State<SignInScreen> createState() => _SignInScreenState();
+  State<SignInScreen> createState() => SignInScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen>
-    with SingleTickerProviderStateMixin {
+class SignInScreenState extends State<SignInScreen> with SingleTickerProviderStateMixin {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   late ScrollController scrollC;
@@ -45,7 +44,7 @@ class _SignInScreenState extends State<SignInScreen>
     if (currentBackPressTime == null ||
         now.difference(currentBackPressTime) > const Duration(seconds: 2)) {
       currentBackPressTime = now;
-      ShowSnackbar.snackbar(context, getTranslated("PRESS_TWICE_BACK", context),
+      ShowSnackbar.snackbar(getTranslated("PRESS_TWICE_BACK", context),
           "", ColorResources.black);
       return Future.value(false);
     }
@@ -104,25 +103,19 @@ class _SignInScreenState extends State<SignInScreen>
 
   @override
   Widget build(BuildContext context) {
-    return buildUI();
-  }
-
-  Widget buildUI() {
-    return Consumer<InternetProvider>(builder: (BuildContext context,
-        InternetProvider internetProvider, Widget? child) {
+    return Consumer<InternetProvider>(builder: (BuildContext context, InternetProvider internetProvider, Widget? child) {
       // ignore: deprecated_member_use
       return WillPopScope(
         onWillPop: willPopScope,
         child: Scaffold(
           backgroundColor: ColorResources.transparent,
           body: internetProvider.internetStatus == InternetStatus.disconnected
-              ? const NoConnectionScreen()
-              : buildConnectionAvailableContent(context),
+          ? const NoConnectionScreen()
+          : buildConnectionAvailableContent(context),
         ),
       );
     });
   }
-
   GestureDetector buildConnectionAvailableContent(BuildContext context) {
     return GestureDetector(
       onTap: (() {
@@ -144,17 +137,20 @@ class _SignInScreenState extends State<SignInScreen>
     return const BoxDecoration(
       backgroundBlendMode: BlendMode.darken,
       gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [ColorResources.black, Color(0xff0B1741)]),
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [ColorResources.black, Color(0xff0B1741)]
+      ),
       image: DecorationImage(
-          fit: BoxFit.cover,
-          image: AssetImage('assets/images/background/bg.png')),
+        fit: BoxFit.cover,
+        image: AssetImage('assets/images/background/bg.png')
+      ),
     );
   }
 
   Widget buildBodyContent() {
     return Stack(
+      clipBehavior: Clip.none,
       children: [
         Padding(
           padding: const EdgeInsets.all(45.0),
@@ -169,13 +165,13 @@ class _SignInScreenState extends State<SignInScreen>
           ),
         ),
         Positioned(
-            top: 150,
-            child: Image.asset(
-              'assets/images/auth/rectangle.png',
-              fit: BoxFit.cover,
-              height: MediaQuery.of(context).size.height * .70,
-              width: MediaQuery.sizeOf(context).width,
-            )),
+          top: 150,
+          child: Image.asset('assets/images/auth/rectangle.png',
+            fit: BoxFit.cover,
+            height: MediaQuery.of(context).size.height * .70,
+            width: MediaQuery.sizeOf(context).width,
+          )
+        ),
         Positioned(
           top: 300.0,
           left: 30.0,
@@ -201,12 +197,13 @@ class _SignInScreenState extends State<SignInScreen>
         ),
         Padding(
           padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).size.height * .12,
+            bottom: MediaQuery.of(context).size.height * .05,
             left: 130.0,
             right: 130.0,
           ),
           child: Align(
-              alignment: Alignment.bottomCenter, child: buildLoginButton()),
+            alignment: Alignment.bottomCenter, child: buildLoginButton()
+          ),
         ),
       ],
     );

@@ -54,23 +54,23 @@ class _CreateCheckInScreenState extends State<CreateCheckInScreen> {
       String? end = datetimeEndC.text.trim();
 
       if(caption.isEmpty) {
-        ShowSnackbar.snackbar(context, getTranslated('CAPTION_IS_REQUIRED', context), "", ColorResources.error);
+        ShowSnackbar.snackbar(getTranslated('CAPTION_IS_REQUIRED', context), "", ColorResources.error);
         return;
       }
       if(desc.isEmpty) {
-        ShowSnackbar.snackbar(context, 'Deskripsi harus diisi.', "", ColorResources.error);
+        ShowSnackbar.snackbar('Deskripsi harus diisi.', "", ColorResources.error);
         return;
       }
       if(date.isEmpty) {
-        ShowSnackbar.snackbar(context, getTranslated('DATE_IS_REQUIRED', context), "", ColorResources.error);
+        ShowSnackbar.snackbar(getTranslated('DATE_IS_REQUIRED', context), "", ColorResources.error);
         return;
       }
       if(start.isEmpty) {
-        ShowSnackbar.snackbar(context, getTranslated('DATE_TIME_START_IS_REQUIRED', context), "", ColorResources.error);
+        ShowSnackbar.snackbar(getTranslated('DATE_TIME_START_IS_REQUIRED', context), "", ColorResources.error);
         return;
       }
       if(end.isEmpty) {
-        ShowSnackbar.snackbar(context, getTranslated('DATE_TIME_END_IS_REQUIRED', context), "", ColorResources.error);  
+        ShowSnackbar.snackbar(getTranslated('DATE_TIME_END_IS_REQUIRED', context), "", ColorResources.error);  
         return; 
       }
       

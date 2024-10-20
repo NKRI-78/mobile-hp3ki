@@ -167,7 +167,7 @@ class _DetailInfoPageState extends State<DetailInboxScreen> {
           child: IconButton(
             color: ColorResources.white,
             onPressed: () {
-              NS.pop(context);
+              NS.pop();
             },
             icon: const Icon(
               Icons.arrow_back,
@@ -274,7 +274,6 @@ class _DetailInfoPageState extends State<DetailInboxScreen> {
               onTap: () {
                 Clipboard.setData(ClipboardData(text: va!));
                 ShowSnackbar.snackbar(
-                    context,
                     'Nomor Virtual Account sudah tersalin',
                     '',
                     ColorResources.black);

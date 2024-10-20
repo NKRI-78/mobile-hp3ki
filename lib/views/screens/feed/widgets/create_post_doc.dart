@@ -20,10 +20,10 @@ class CreatePostDocScreen extends StatefulWidget {
     this.files,
   }) : super(key: key);
   @override
-  _CreatePostDocScreenState createState() => _CreatePostDocScreenState();
+  CreatePostDocScreenState createState() => CreatePostDocScreenState();
 }
 
-class _CreatePostDocScreenState extends State<CreatePostDocScreen> {
+class CreatePostDocScreenState extends State<CreatePostDocScreen> {
 
   late TextEditingController captionC;
 
@@ -152,7 +152,7 @@ class _CreatePostDocScreenState extends State<CreatePostDocScreen> {
                         : 80.0,
                         padding: const EdgeInsets.all(8.0),
                         decoration: BoxDecoration(
-                          color: ColorResources.primary,
+                          color: ColorResources.primaryOrange,
                           borderRadius: BorderRadius.circular(20.0)
                         ),
                         child: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading 

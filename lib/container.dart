@@ -20,6 +20,8 @@ import 'package:hp3ki/providers/banner/banner.dart';
 import 'package:hp3ki/providers/checkin/checkin.dart';
 import 'package:hp3ki/providers/event/event.dart';
 import 'package:hp3ki/providers/feedv2/feed.dart';
+import 'package:hp3ki/providers/feedv2/feedDetail.dart';
+import 'package:hp3ki/providers/feedv2/feedReply.dart';
 import 'package:hp3ki/providers/firebase/firebase.dart';
 import 'package:hp3ki/providers/inbox/inbox.dart';
 import 'package:hp3ki/providers/internet/internet.dart';
@@ -42,12 +44,9 @@ import 'package:hp3ki/views/screens/shop_cart/domain/shop_cart_repository.dart';
 import 'package:hp3ki/views/screens/shop_cart/persentation/providers/shop_cart_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:hp3ki/services/location.dart';
-
 final getIt = GetIt.instance;
 
 Future<void> init() async {
-  getIt.registerLazySingleton(() => LocationService());
 
   //Api
   getIt.registerLazySingleton(() => NewsRepo(
@@ -133,6 +132,14 @@ Future<void> init() async {
         ar: getIt(),
         fr: getIt(),
       ));
+  getIt.registerFactory(() => FeedReplyProvider(
+        ar: getIt(),
+        fr: getIt(),
+  ));
+  getIt.registerFactory(() => FeedDetailProviderV2(
+    ar: getIt(),
+    fr: getIt(),
+  ));
   getIt.registerFactory(() => CheckInProvider(
         cr: getIt(),
         lp: getIt(),

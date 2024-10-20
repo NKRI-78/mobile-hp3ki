@@ -391,7 +391,7 @@ class _PulsaScreenState extends State<PulsaScreen> {
                           onTap: selected != -1 
                           ? () {
                               if(phoneNumberC.text.length < 9) {
-                                ShowSnackbar.snackbar(context, "Nomor ponsel minimal 10 digit", "", ColorResources.error);
+                                ShowSnackbar.snackbar("Nomor ponsel minimal 10 digit", "", ColorResources.error);
                                 return;
                               }
                               final int price = productPrice - 2000;
@@ -409,7 +409,7 @@ class _PulsaScreenState extends State<PulsaScreen> {
                             } 
                           : () {
                             if(selected == -1) {
-                              ShowSnackbar.snackbar(context, "Anda belum memilih denom", "", ColorResources.error);
+                              ShowSnackbar.snackbar("Anda belum memilih denom", "", ColorResources.error);
                               return;
                             }
                           },

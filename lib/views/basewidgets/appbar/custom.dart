@@ -49,7 +49,7 @@ class CustomAppBar {
                 child: IconButton(
                     onPressed: () {
                       onTapBack?.call();
-                      NS.pop(context);
+                      NS.pop();
                     },
                     icon: Icon(
                       isWebview == true ? Icons.close : Icons.arrow_back,
@@ -91,7 +91,7 @@ class CustomAppBar {
                 child: IconButton(
                     onPressed: () {
                       onTapBack?.call();
-                      NS.pop(context);
+                      NS.pop();
                     },
                     icon: Icon(
                       isWebview == true ? Icons.close : Icons.arrow_back,

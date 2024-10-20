@@ -15,10 +15,10 @@ class PostDoc extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _PostDocState createState() => _PostDocState();
+  PostDocState createState() => PostDocState();
 }
 
-class _PostDocState extends State<PostDoc> {
+class PostDocState extends State<PostDoc> {
 
   String? type = "";
   Color? color;
@@ -87,8 +87,8 @@ class _PostDocState extends State<PostDoc> {
                       margin: const EdgeInsets.only(left: 12.0),
                       child: Text(type!,
                         style: robotoRegular.copyWith(
-                          fontSize: Dimensions.fontSizeSmall,
-                          fontWeight: FontWeight.w600,
+                          fontSize: Dimensions.fontSizeExtraSmall,
+                          fontWeight: FontWeight.bold,
                           color: ColorResources.white
                         ),
                       ),
@@ -97,7 +97,7 @@ class _PostDocState extends State<PostDoc> {
                   Expanded(
                     child: Text(widget.medias[0].path!.split('/').last,
                       style: robotoRegular.copyWith(
-                        fontSize: Dimensions.fontSizeSmall,
+                        fontSize: Dimensions.fontSizeExtraSmall,
                         color: ColorResources.white
                       )
                     ),
@@ -125,7 +125,7 @@ class _PostDocState extends State<PostDoc> {
                         //             Text(getTranslated("SAVE_DOCUMENT", context),
                         //               style: robotoRegular.copyWith(
                         //                 fontSize: Dimensions.fontSizeSmall,
-                        //                 fontWeight: FontWeight.w600
+                        //                 fontWeight: FontWeight.bold
                         //               ),
                         //             ),
                         //             const SizedBox(height: 10.0),

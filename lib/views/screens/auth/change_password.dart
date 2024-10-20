@@ -65,22 +65,22 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     String newPassConfirm = newPassConfirmC.text;
     if(formKey.currentState!.validate()){
       if(newPassConfirm.trim() != newPass.trim() && newPass.trim() != newPassConfirm.trim()) {
-        ShowSnackbar.snackbar(context, getTranslated("PASSWORD_DID_NOT_MATCH", context), "", ColorResources.error);
+        ShowSnackbar.snackbar(getTranslated("PASSWORD_DID_NOT_MATCH", context), "", ColorResources.error);
         return;
       }
       if(oldPass.trim().length < 8) {
         oldPassFn.requestFocus();
-        ShowSnackbar.snackbar(context, getTranslated("OLD_PASSWORD_8_REQUIRED", context), "", ColorResources.error);
+        ShowSnackbar.snackbar(getTranslated("OLD_PASSWORD_8_REQUIRED", context), "", ColorResources.error);
         return;
       }
       if(newPass.trim().length < 8) {
         newPassFn.requestFocus();
-        ShowSnackbar.snackbar(context, getTranslated("NEW_PASSWORD_8_REQUIRED", context), "", ColorResources.error);
+        ShowSnackbar.snackbar(getTranslated("NEW_PASSWORD_8_REQUIRED", context), "", ColorResources.error);
         return;
       }
       if(newPassConfirm.trim().length < 8) {
         newPassConfirmFn.requestFocus();
-        ShowSnackbar.snackbar(context, getTranslated("NEW_PASSWORD_CONFIRM_8_REQUIRED", context), "", ColorResources.error);
+        ShowSnackbar.snackbar(getTranslated("NEW_PASSWORD_CONFIRM_8_REQUIRED", context), "", ColorResources.error);
         return;
       }
 
