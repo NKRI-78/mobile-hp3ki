@@ -1,34 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:badges/badges.dart' as b;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:hp3ki/localization/language_constraints.dart';
 
-import 'package:hp3ki/views/screens/notification/transaction_notif_list.dart';
-
 import 'package:hp3ki/providers/inbox/inbox.dart';
 
 import 'package:hp3ki/data/models/inbox/inbox.dart';
-import 'package:hp3ki/data/models/inbox/inbox_payment.dart';
 
 import 'package:hp3ki/utils/extension.dart';
-import 'package:hp3ki/utils/helper.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
+
+import 'package:hp3ki/views/screens/notification/transaction_notif_list.dart';
+import 'package:hp3ki/views/screens/notification/detail.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({Key? key}) : super(key: key);
 
   @override
-  _NotificationScreenState createState() => _NotificationScreenState();
+  NotificationScreenState createState() => NotificationScreenState();
 }
 
-class _NotificationScreenState extends State<NotificationScreen>
-    with TickerProviderStateMixin {
+class NotificationScreenState extends State<NotificationScreen> with TickerProviderStateMixin {
+
   late ScrollController inboxInfoViewC;
   late ScrollController inboxPaymentViewC;
   late ScrollController inboxPanicViewC;
@@ -38,85 +36,64 @@ class _NotificationScreenState extends State<NotificationScreen>
   int index = 0;
 
   TabBar get tabBar => TabBar(
-          controller: tabC,
-          unselectedLabelColor: ColorResources.primary,
-          indicatorSize: TabBarIndicatorSize.tab,
-          labelColor: ColorResources.white,
-          indicatorColor: const Color.fromARGB(255, 0, 41, 124),
-          labelStyle:
-              robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault),
-          tabs: [
-            Tab(
-              icon: context.read<InboxProvider>().inboxPaymentStatus ==
-                      InboxPaymentStatus.loading
-                  ? Image.asset(
-                      "assets/images/icons/pembayaran.png",
-                      width: 40.0,
-                      height: 40.0,
-                      // color: index == 0
-                      //     ? ColorResources.primary
-                      //     : ColorResources.grey,
-                    )
-                  : context.read<InboxProvider>().inboxPaymentStatus ==
-                          InboxPaymentStatus.error
-                      ? Image.asset(
-                          "assets/images/icons/pembayaran.png",
-                          width: 40.0,
-                          height: 40.0,
-                          // color: index == 0
-                          //     ? ColorResources.primary
-                          //     : ColorResources.grey,
-                        )
-                      : context.read<InboxProvider>().inboxPaymentStatus ==
-                                  InboxPaymentStatus.loaded &&
-                              context.read<InboxProvider>().inboxPaymentCount !=
-                                  0
-                          ? b.Badge(
-                              position:
-                                  const b.BadgePosition(top: -15.0, end: -15.0),
-                              padding: EdgeInsets.zero,
-                              badgeContent: Container(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  context
-                                      .read<InboxProvider>()
-                                      .inboxPaymentCount
-                                      .toString(),
-                                  // style: robotoRegular.copyWith(
-                                  //     fontSize: Dimensions.fontSizeSmall,
-                                  //     color: ColorResources.white),
-                                ),
-                              ),
-                              child: Image.asset(
-                                "assets/images/icons/pembayaran.png",
-                                width: 40.0,
-                                height: 40.0,
-                                // color: index == 0
-                                //     ? ColorResources.primary
-                                //     : ColorResources.grey,
-                              ),
-                            )
-                          : Image.asset(
-                              "assets/images/icons/pembayaran.png",
-                              width: 40.0,
-                              height: 40.0,
-                              // color: index == 0
-                              //     ? ColorResources.primary
-                              //     : ColorResources.grey,
-                            ),
-              child: Text(
-                "Pembayaran",
-                style: robotoRegular.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontSize: Dimensions.fontSizeDefault,
-                    color: index == 0
-                        ? ColorResources.primary
-                        : ColorResources.grey),
-              ),
+    controller: tabC,
+    unselectedLabelColor: ColorResources.primary,
+    indicatorSize: TabBarIndicatorSize.tab,
+    labelColor: ColorResources.white,
+    indicatorColor: const Color.fromARGB(255, 0, 41, 124),
+    labelStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault),
+      tabs: [
+        Tab(
+          icon: context.read<InboxProvider>().inboxPaymentStatus == InboxPaymentStatus.loading
+        ? Image.asset("assets/images/icons/pembayaran.png",
+            width: 40.0,
+            height: 40.0,
+          )
+        : context.read<InboxProvider>().inboxPaymentStatus == InboxPaymentStatus.error
+        ? Image.asset("assets/images/icons/pembayaran.png",
+            width: 40.0,
+            height: 40.0,
+          )
+        : context.read<InboxProvider>().inboxPaymentStatus == InboxPaymentStatus.loaded && context.read<InboxProvider>().inboxPaymentCount != 0
+        ? b.Badge(
+            position: const b.BadgePosition(top: -15.0, end: -15.0),
+            padding: EdgeInsets.zero,
+            badgeContent: Container(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(context.read<InboxProvider>().inboxPaymentCount.toString()),
             ),
-            Tab(
-              icon: context.read<InboxProvider>().inboxPanicStatus ==
-                      InboxPanicStatus.loading
+            child: Image.asset("assets/images/icons/pembayaran.png",
+              width: 40.0,
+              height: 40.0,
+            ),
+          )
+        : Image.asset("assets/images/icons/pembayaran.png",
+            width: 40.0,
+            height: 40.0,
+          ),
+          child: Text("Pembayaran",
+            style: robotoRegular.copyWith(
+              fontWeight: FontWeight.w600,
+              fontSize: Dimensions.fontSizeDefault,
+              color: index == 0
+              ? ColorResources.primary
+              : ColorResources.grey
+            ),
+          ),
+        ),
+        Tab(
+          icon: context.read<InboxProvider>().inboxPanicStatus ==
+                  InboxPanicStatus.loading
+              ? Image.asset(
+                  "assets/images/icons/sos.png",
+                  width: 40.0,
+                  height: 40.0,
+                  // color: index == 1
+                  //     ? ColorResources.primary
+                  //     : ColorResources.grey,
+                )
+              : context.read<InboxProvider>().inboxPanicStatus ==
+                      InboxPanicStatus.error
                   ? Image.asset(
                       "assets/images/icons/sos.png",
                       width: 40.0,
@@ -126,64 +103,64 @@ class _NotificationScreenState extends State<NotificationScreen>
                       //     : ColorResources.grey,
                     )
                   : context.read<InboxProvider>().inboxPanicStatus ==
-                          InboxPanicStatus.error
-                      ? Image.asset(
+                              InboxPanicStatus.loaded &&
+                          context.read<InboxProvider>().inboxPanicCount != 0
+                      ? b.Badge(
+                          position:
+                              const b.BadgePosition(top: -15.0, end: -15.0),
+                          padding: EdgeInsets.zero,
+                          badgeContent: Container(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              context
+                                  .read<InboxProvider>()
+                                  .inboxPanicCount
+                                  .toString(),
+                              style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeSmall,
+                                  color: ColorResources.white),
+                            ),
+                          ),
+                          child: Image.asset(
+                            "assets/images/icons/sos.png",
+                            width: 40.0,
+                            height: 40.0,
+                            // color: index == 1
+                            //     ? ColorResources.primary
+                            //     : ColorResources.grey,
+                          ),
+                        )
+                      : Image.asset(
                           "assets/images/icons/sos.png",
                           width: 40.0,
                           height: 40.0,
                           // color: index == 1
                           //     ? ColorResources.primary
                           //     : ColorResources.grey,
-                        )
-                      : context.read<InboxProvider>().inboxPanicStatus ==
-                                  InboxPanicStatus.loaded &&
-                              context.read<InboxProvider>().inboxPanicCount != 0
-                          ? b.Badge(
-                              position:
-                                  const b.BadgePosition(top: -15.0, end: -15.0),
-                              padding: EdgeInsets.zero,
-                              badgeContent: Container(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  context
-                                      .read<InboxProvider>()
-                                      .inboxPanicCount
-                                      .toString(),
-                                  style: robotoRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeSmall,
-                                      color: ColorResources.white),
-                                ),
-                              ),
-                              child: Image.asset(
-                                "assets/images/icons/sos.png",
-                                width: 40.0,
-                                height: 40.0,
-                                // color: index == 1
-                                //     ? ColorResources.primary
-                                //     : ColorResources.grey,
-                              ),
-                            )
-                          : Image.asset(
-                              "assets/images/icons/sos.png",
-                              width: 40.0,
-                              height: 40.0,
-                              // color: index == 1
-                              //     ? ColorResources.primary
-                              //     : ColorResources.grey,
-                            ),
-              child: Text(
-                "SOS",
-                style: robotoRegular.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontSize: Dimensions.fontSizeDefault,
-                    color: index == 1
-                        ? ColorResources.primary
-                        : ColorResources.grey),
-              ),
-            ),
-            Tab(
-              icon: context.read<InboxProvider>().inboxInfoStatus ==
-                      InboxInfoStatus.loading
+                        ),
+          child: Text(
+            "SOS",
+            style: robotoRegular.copyWith(
+                fontWeight: FontWeight.w600,
+                fontSize: Dimensions.fontSizeDefault,
+                color: index == 1
+                    ? ColorResources.primary
+                    : ColorResources.grey),
+          ),
+        ),
+        Tab(
+          icon: context.read<InboxProvider>().inboxInfoStatus ==
+                  InboxInfoStatus.loading
+              ? Image.asset(
+                  "assets/images/icons/broadcast.png",
+                  width: 40.0,
+                  height: 40.0,
+                  // color: index == 2
+                  //     ? ColorResources.primary
+                  //     : ColorResources.grey,
+                )
+              : context.read<InboxProvider>().inboxInfoStatus ==
+                      InboxInfoStatus.error
                   ? Image.asset(
                       "assets/images/icons/broadcast.png",
                       width: 40.0,
@@ -193,64 +170,64 @@ class _NotificationScreenState extends State<NotificationScreen>
                       //     : ColorResources.grey,
                     )
                   : context.read<InboxProvider>().inboxInfoStatus ==
-                          InboxInfoStatus.error
-                      ? Image.asset(
+                              InboxInfoStatus.loaded &&
+                          context.read<InboxProvider>().inboxInfoCount != 0
+                      ? b.Badge(
+                          position:
+                              const b.BadgePosition(top: -15.0, end: -15.0),
+                          padding: EdgeInsets.zero,
+                          badgeContent: Container(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              context
+                                  .read<InboxProvider>()
+                                  .inboxInfoCount!
+                                  .toString(),
+                              style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeSmall,
+                                  color: ColorResources.white),
+                            ),
+                          ),
+                          child: Image.asset(
+                            "assets/images/icons/broadcast.png",
+                            width: 40.0,
+                            height: 40.0,
+                            // color: index == 2
+                            //     ? ColorResources.primary
+                            //     : ColorResources.grey,
+                          ),
+                        )
+                      : Image.asset(
                           "assets/images/icons/broadcast.png",
                           width: 40.0,
                           height: 40.0,
                           // color: index == 2
                           //     ? ColorResources.primary
                           //     : ColorResources.grey,
-                        )
-                      : context.read<InboxProvider>().inboxInfoStatus ==
-                                  InboxInfoStatus.loaded &&
-                              context.read<InboxProvider>().inboxInfoCount != 0
-                          ? b.Badge(
-                              position:
-                                  const b.BadgePosition(top: -15.0, end: -15.0),
-                              padding: EdgeInsets.zero,
-                              badgeContent: Container(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  context
-                                      .read<InboxProvider>()
-                                      .inboxInfoCount!
-                                      .toString(),
-                                  style: robotoRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeSmall,
-                                      color: ColorResources.white),
-                                ),
-                              ),
-                              child: Image.asset(
-                                "assets/images/icons/broadcast.png",
-                                width: 40.0,
-                                height: 40.0,
-                                // color: index == 2
-                                //     ? ColorResources.primary
-                                //     : ColorResources.grey,
-                              ),
-                            )
-                          : Image.asset(
-                              "assets/images/icons/broadcast.png",
-                              width: 40.0,
-                              height: 40.0,
-                              // color: index == 2
-                              //     ? ColorResources.primary
-                              //     : ColorResources.grey,
-                            ),
-              child: Text(
-                "Broadcast",
-                style: robotoRegular.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontSize: Dimensions.fontSizeDefault,
-                    color: index == 2
-                        ? ColorResources.primary
-                        : ColorResources.grey),
-              ),
-            ),
-            Tab(
-              icon: context.read<InboxProvider>().inboxInfoStatus ==
-                      InboxInfoStatus.loading
+                        ),
+          child: Text(
+            "Broadcast",
+            style: robotoRegular.copyWith(
+                fontWeight: FontWeight.w600,
+                fontSize: Dimensions.fontSizeDefault,
+                color: index == 2
+                    ? ColorResources.primary
+                    : ColorResources.grey),
+          ),
+        ),
+        Tab(
+          icon: context.read<InboxProvider>().inboxInfoStatus ==
+                  InboxInfoStatus.loading
+              ? Image.asset(
+                  "assets/images/icons/transaksi.png",
+                  width: 40.0,
+                  height: 40.0,
+                  // color: index == 2
+                  //     ? ColorResources.primary
+                  //     : ColorResources.grey,
+                )
+              : context.read<InboxProvider>().inboxInfoStatus ==
+                      InboxInfoStatus.error
                   ? Image.asset(
                       "assets/images/icons/transaksi.png",
                       width: 40.0,
@@ -260,65 +237,56 @@ class _NotificationScreenState extends State<NotificationScreen>
                       //     : ColorResources.grey,
                     )
                   : context.read<InboxProvider>().inboxInfoStatus ==
-                          InboxInfoStatus.error
-                      ? Image.asset(
+                              InboxInfoStatus.loaded &&
+                          context
+                                  .read<InboxProvider>()
+                                  .inboxTransactionCount !=
+                              0
+                      ? b.Badge(
+                          position:
+                              const b.BadgePosition(top: -15.0, end: -15.0),
+                          padding: EdgeInsets.zero,
+                          badgeContent: Container(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              context
+                                  .read<InboxProvider>()
+                                  .inboxTransactionCount
+                                  .toString(),
+                              style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeSmall,
+                                  color: ColorResources.white),
+                            ),
+                          ),
+                          child: Image.asset(
+                            "assets/images/icons/transaksi.png",
+                            width: 40.0,
+                            height: 40.0,
+                            // color: index == 3
+                            //     ? ColorResources.primary
+                            //     : ColorResources.grey,
+                          ),
+                        )
+                      : Image.asset(
                           "assets/images/icons/transaksi.png",
                           width: 40.0,
                           height: 40.0,
                           // color: index == 2
                           //     ? ColorResources.primary
                           //     : ColorResources.grey,
-                        )
-                      : context.read<InboxProvider>().inboxInfoStatus ==
-                                  InboxInfoStatus.loaded &&
-                              context
-                                      .read<InboxProvider>()
-                                      .inboxTransactionCount !=
-                                  0
-                          ? b.Badge(
-                              position:
-                                  const b.BadgePosition(top: -15.0, end: -15.0),
-                              padding: EdgeInsets.zero,
-                              badgeContent: Container(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  context
-                                      .read<InboxProvider>()
-                                      .inboxTransactionCount
-                                      .toString(),
-                                  style: robotoRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeSmall,
-                                      color: ColorResources.white),
-                                ),
-                              ),
-                              child: Image.asset(
-                                "assets/images/icons/transaksi.png",
-                                width: 40.0,
-                                height: 40.0,
-                                // color: index == 3
-                                //     ? ColorResources.primary
-                                //     : ColorResources.grey,
-                              ),
-                            )
-                          : Image.asset(
-                              "assets/images/icons/transaksi.png",
-                              width: 40.0,
-                              height: 40.0,
-                              // color: index == 2
-                              //     ? ColorResources.primary
-                              //     : ColorResources.grey,
-                            ),
-              child: Text(
-                "Transaksi",
-                style: robotoRegular.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontSize: Dimensions.fontSizeDefault,
-                    color: index == 3
-                        ? ColorResources.primary
-                        : ColorResources.grey),
-              ),
-            ),
-          ]);
+                        ),
+          child: Text(
+            "Transaksi",
+            style: robotoRegular.copyWith(
+                fontWeight: FontWeight.w600,
+                fontSize: Dimensions.fontSizeDefault,
+                color: index == 3
+                    ? ColorResources.primary
+                    : ColorResources.grey),
+          ),
+        ),
+      ]
+    );
 
   Future<void> getData() async {
     if (mounted) {
@@ -427,15 +395,17 @@ class _NotificationScreenState extends State<NotificationScreen>
     inboxPanicViewC = ScrollController();
     inboxPanicViewC.addListener(inboxPanicControllerListener);
 
-    Future.wait([getData()]);
+    Future.microtask(() => getData());
   }
 
   @override
   void dispose() {
     inboxInfoViewC.removeListener(inboxInfoControllerListener);
     inboxInfoViewC.dispose();
+    
     inboxPaymentViewC.removeListener(inboxPaymentControllerListener);
     inboxPaymentViewC.dispose();
+    
     inboxPanicViewC.removeListener(inboxPanicControllerListener);
     inboxPanicViewC.dispose();
 
@@ -447,32 +417,44 @@ class _NotificationScreenState extends State<NotificationScreen>
 
   @override
   Widget build(BuildContext context) {
-    return buildUI();
-  }
-
-  Widget buildUI() {
     return Scaffold(
       backgroundColor: ColorResources.greyDarkPrimary.withOpacity(0.2),
-      body: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          return NestedScrollView(
-              headerSliverBuilder:
-                  (BuildContext context, bool innerBoxIsScrolled) {
-                return [
-                  buildAppBar(context),
-                ];
-              },
-              body: TabBarView(
-                controller: tabC,
-                children: [
-                  index == 0 ? inboxWidgetPayment(context) : loadingWidget(),
-                  index == 1 ? inboxWidgetPanic(context) : loadingWidget(),
-                  index == 2 ? inboxWidgetInfo(context) : loadingWidget(),
-                  index == 3 ? const TransactionNotifList() : loadingWidget(),
-                ],
-              ));
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return [
+            buildAppBar(context),
+          ];
         },
-      ),
+        body: TabBarView(
+          controller: tabC,
+          children: [
+            index == 0 ? inboxWidgetPayment(context) : const Center(
+              child: SpinKitThreeBounce(
+                size: 20.0,
+                color: ColorResources.primary,
+              ),
+            ),
+            index == 1 ? inboxWidgetPanic(context) : const Center(
+              child: SpinKitThreeBounce(
+                size: 20.0,
+                color: ColorResources.primary,
+              ),
+            ),
+            index == 2 ? inboxWidgetInfo(context) : const Center(
+              child: SpinKitThreeBounce(
+                size: 20.0,
+                color: ColorResources.primary,
+              ),
+            ),
+            index == 3 ? const TransactionNotifList() : const Center(
+              child: SpinKitThreeBounce(
+                size: 20.0,
+                color: ColorResources.primary,
+              ),
+            ),
+          ],
+        )
+      )
     );
   }
 
@@ -481,31 +463,24 @@ class _NotificationScreenState extends State<NotificationScreen>
       backgroundColor: ColorResources.white,
       toolbarHeight: 60.0,
       leading: Container(),
-      title: Text(
-        getTranslated("NOTIFICATION", context),
+      title: Text(getTranslated("NOTIFICATION", context),
         style: robotoRegular.copyWith(
-            color: ColorResources.black,
-            fontSize: Dimensions.fontSizeExtraLarge,
-            fontWeight: FontWeight.bold),
+          color: ColorResources.black,
+          fontSize: Dimensions.fontSizeExtraLarge,
+          fontWeight: FontWeight.bold
+        ),
       ),
       centerTitle: true,
       systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarBrightness: Brightness.light,
-          statusBarColor: ColorResources.primary),
+        statusBarBrightness: Brightness.light,
+        statusBarColor: ColorResources.primary
+      ),
       bottom: PreferredSize(
-          preferredSize: tabBar.preferredSize,
-          child: ColoredBox(
-            color: ColorResources.white,
-            child: tabBar,
-          )),
-    );
-  }
-
-  Widget loadingWidget() {
-    return const Center(
-      child: SpinKitThreeBounce(
-        size: 20.0,
-        color: ColorResources.primary,
+        preferredSize: tabBar.preferredSize,
+        child: ColoredBox(
+          color: ColorResources.white,
+          child: tabBar,
+        )
       ),
     );
   }
@@ -523,17 +498,19 @@ class _NotificationScreenState extends State<NotificationScreen>
       child: CustomScrollView(
         controller: inboxInfoViewC,
         scrollDirection: Axis.vertical,
-        physics: const BouncingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics()),
+        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         slivers: [
-          if (context.watch<InboxProvider>().inboxInfoStatus ==
-              InboxInfoStatus.loading)
-            SliverFillRemaining(
+          if (context.watch<InboxProvider>().inboxInfoStatus == InboxInfoStatus.loading)
+            const SliverFillRemaining(
               hasScrollBody: false,
-              child: loadingWidget(),
+              child: Center(
+                child: SpinKitThreeBounce(
+                  size: 20.0,
+                  color: ColorResources.primary,
+                ),
+              ),
             ),
-          if (context.watch<InboxProvider>().inboxInfoStatus ==
-              InboxInfoStatus.empty)
+          if (context.watch<InboxProvider>().inboxInfoStatus == InboxInfoStatus.empty)
             SliverFillRemaining(
               hasScrollBody: false,
               child: Center(
@@ -545,42 +522,45 @@ class _NotificationScreenState extends State<NotificationScreen>
                 ),
               )),
             ),
-          if (context.watch<InboxProvider>().inboxInfoStatus ==
-              InboxInfoStatus.error)
+          if (context.watch<InboxProvider>().inboxInfoStatus == InboxInfoStatus.error)
             SliverFillRemaining(
               hasScrollBody: false,
               child: Center(
-                  child: Text(
-                getTranslated("THERE_WAS_PROBLEM", context),
+                child: Text(getTranslated("THERE_WAS_PROBLEM", context),
                 style: robotoRegular.copyWith(
                   fontSize: Dimensions.fontSizeDefault,
                   color: ColorResources.black,
                 ),
               )),
             ),
-          if (context.watch<InboxProvider>().inboxInfoStatus ==
-              InboxInfoStatus.loaded)
+          if (context.watch<InboxProvider>().inboxInfoStatus == InboxInfoStatus.loaded)
             SliverPadding(
               padding: const EdgeInsets.only(bottom: 80.0),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (BuildContext context, int i) {
                     if (context.read<InboxProvider>().inboxInfo!.length == i) {
-                      return loadingWidget();
+                      return const Center(
+                        child: SpinKitThreeBounce(
+                          size: 20.0,
+                          color: ColorResources.primary,
+                        ),
+                      );
                     }
                     if (context.read<InboxProvider>().inboxInfo!.isNotEmpty) {
                       return buildNotificationItem(
-                          context.read<InboxProvider>().inboxInfo!,
-                          i,
-                          Icons.info,
-                          "info");
+                        context.read<InboxProvider>().inboxInfo!,
+                        i,
+                        Icons.info,
+                        inboxInfoViewC,
+                        "info"
+                      );
                     }
                     return Container();
                   },
-                  childCount:
-                      context.watch<InboxProvider>().isLoadInboxInfo == true
-                          ? context.read<InboxProvider>().inboxInfo!.length + 1
-                          : context.read<InboxProvider>().inboxInfo!.length,
+                  childCount: context.watch<InboxProvider>().isLoadInboxInfo == true
+                  ? context.read<InboxProvider>().inboxInfo!.length + 1
+                  : context.read<InboxProvider>().inboxInfo!.length,
                 ),
               ),
             )
@@ -602,59 +582,73 @@ class _NotificationScreenState extends State<NotificationScreen>
       child: CustomScrollView(
         controller: inboxPanicViewC,
         scrollDirection: Axis.vertical,
-        physics: const BouncingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics()),
+        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         slivers: [
-          if (context.watch<InboxProvider>().inboxPanicStatus ==
-              InboxPanicStatus.loading)
-            SliverFillRemaining(hasScrollBody: false, child: loadingWidget()),
-          if (context.watch<InboxProvider>().inboxPanicStatus ==
-              InboxPanicStatus.empty)
+      
+          if (context.watch<InboxProvider>().inboxPanicStatus == InboxPanicStatus.loading)
+            const SliverFillRemaining(
+              hasScrollBody: false, 
+              child: Center(
+                child: SpinKitThreeBounce(
+                  size: 20.0,
+                  color: ColorResources.primary,
+                ),
+              ),
+            ),
+      
+          if (context.watch<InboxProvider>().inboxPanicStatus == InboxPanicStatus.empty)
             SliverFillRemaining(
               hasScrollBody: false,
               child: Center(
-                  child: Text(
-                getTranslated("NO_INBOX_AVAILABLE", context),
+                child: Text(getTranslated("NO_INBOX_AVAILABLE", context),
                 style: robotoRegular.copyWith(
-                    fontSize: Dimensions.fontSizeDefault,
-                    color: ColorResources.black),
-              )),
+                  fontSize: Dimensions.fontSizeDefault,
+                  color: ColorResources.black),
+                )
+              ),
             ),
-          if (context.watch<InboxProvider>().inboxPanicStatus ==
-              InboxPanicStatus.error)
+      
+          if (context.watch<InboxProvider>().inboxPanicStatus == InboxPanicStatus.error)
             SliverFillRemaining(
               hasScrollBody: false,
               child: Center(
-                  child: Text(
-                getTranslated("THERE_WAS_PROBLEM", context),
+                child: Text(getTranslated("THERE_WAS_PROBLEM", context),
                 style: robotoRegular.copyWith(
-                    fontSize: Dimensions.fontSizeDefault,
-                    color: ColorResources.black),
+                  fontSize: Dimensions.fontSizeDefault,
+                  color: ColorResources.black
+                ),
               )),
             ),
-          if (context.watch<InboxProvider>().inboxPanicStatus ==
-              InboxPanicStatus.loaded)
+      
+          if (context.watch<InboxProvider>().inboxPanicStatus == InboxPanicStatus.loaded)
             SliverPadding(
-              padding: const EdgeInsets.only(bottom: 80.0),
+              padding: const EdgeInsets.only(bottom: 140.0),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (BuildContext context, int i) {
+                    
                     if (context.read<InboxProvider>().inboxPanic!.length == i) {
-                      return loadingWidget();
+                      return const Center(
+                        child: SpinKitThreeBounce(
+                          size: 20.0,
+                          color: ColorResources.primary,
+                        ),
+                      );
                     }
+                    
                     if (context.read<InboxProvider>().inboxPanic!.isNotEmpty) {
                       return buildNotificationItem(
-                          context.read<InboxProvider>().inboxPanic!,
-                          i,
-                          Icons.warning,
-                          "sos");
+                        context.read<InboxProvider>().inboxPanic!, 
+                        i, Icons.warning, inboxPanicViewC, "sos"
+                      );
                     }
-                    return Container();
+                    
+                    return const SizedBox();
+      
                   },
-                  childCount:
-                      context.watch<InboxProvider>().isLoadInboxPanic == true
-                          ? context.read<InboxProvider>().inboxPanic!.length + 1
-                          : context.read<InboxProvider>().inboxPanic!.length,
+                  childCount: context.watch<InboxProvider>().isLoadInboxPanic == true
+                  ? context.read<InboxProvider>().inboxPanic!.length + 1
+                  : context.read<InboxProvider>().inboxPanic!.length,
                 ),
               ),
             )
@@ -669,8 +663,8 @@ class _NotificationScreenState extends State<NotificationScreen>
       color: ColorResources.white,
       onRefresh: () {
         return Future.sync(() {
-          context.read<InboxProvider>().resetInboxPaymentPageCount();
-          context.read<InboxProvider>().getInboxPayment(context);
+          // context.read<InboxProvider>().resetInboxPaymentPageCount();
+          // context.read<InboxProvider>().getInboxPayment(context);
         });
       },
       child: CustomScrollView(
@@ -753,34 +747,39 @@ class _NotificationScreenState extends State<NotificationScreen>
   }
 
   Widget buildNotificationItem(
-      List<InboxData>? inbox, int i, IconData icon, String type,
-      [List<InboxPaymentData>? inboxPayment]) {
+    List<InboxData>? inbox, i, IconData icon, 
+    ScrollController scrollPosition, 
+    String type
+  ) {
     return InkWell(
-      onDoubleTap: () {},
       onTap: () async {
-        if (inbox?.isEmpty == true || inbox == null) {
-          await context
-              .read<InboxProvider>()
-              .getInboxDetailAndUpdateInboxPayment(
-                context,
-                inboxId: inboxPayment![i].id!,
-                type: type,
-                inboxSelected: inboxPayment[i],
-              );
-        } else {
-          await context.read<InboxProvider>().getInboxDetailAndUpdateInbox(
-                context,
-                type: type,
-                inboxId: inbox[i].id!,
-                inboxSelected: inbox[i],
-              );
+        final currentScrollPosition = scrollPosition.position.pixels;
+
+        await context.read<InboxProvider>().getInboxDetailAndUpdateInbox(
+          context,
+          type: type,
+          inboxId: inbox[i].id!,
+        );
+
+        final isRefetch = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return DetailInboxScreen(
+            inboxId: inbox[i].id!,
+            type: type
+          );
+        }));
+
+        if(isRefetch != null) {
+          Future.delayed(const Duration(milliseconds: 500), () {
+            scrollPosition.jumpTo(currentScrollPosition);
+          });
         }
+
       },
       child: Material(
         color: ColorResources.transparent,
         child: Container(
           decoration: BoxDecoration(
-            color: inbox?[i].read == true || inboxPayment?[i].isRead == true
+            color: inbox?[i].read == true
                 ? ColorResources.white.withOpacity(0.9)
                 : ColorResources.primary.withOpacity(0.2),
           ),
@@ -792,25 +791,56 @@ class _NotificationScreenState extends State<NotificationScreen>
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  icon,
-                  size: Dimensions.iconSizeLarge,
-                  color: inbox?[i].read ?? inboxPayment?[i].isRead ?? false
-                      ? ColorResources.primary
-                      : ColorResources.black,
-                ),
+                inbox?[i].title == "Kebakaran" 
+                ? Image.asset('assets/images/sos/wildfire.png', 
+                    width: 42.0, 
+                    height: 42.0
+                  )
+                : inbox?[i].title == "Bencana Alam"  
+                ? Image.asset('assets/images/sos/disaster.png', 
+                    width: 42.0, 
+                    height: 42.0
+                  )
+                : inbox?[i].title == "Kecelakaan"  
+                ? Image.asset('assets/images/sos/accident.png', 
+                    width: 42.0, 
+                    height: 42.0
+                  )
+                : inbox?[i].title == "Pencurian"  
+                ? Image.asset('assets/images/sos/theft.png', 
+                    width: 42.0, 
+                    height: 42.0
+                  )
+                : inbox?[i].title == "Perampokan"  
+                ? Image.asset('assets/images/sos/robbery.png', 
+                    width: 42.0, 
+                    height: 42.0
+                  )
+                : inbox?[i].title == "Kerusuhan"  
+                ? Image.asset('assets/images/sos/noise.png', 
+                    width: 42.0, 
+                    height: 42.0
+                  )
+                : Icon(
+                    icon,
+                    size: Dimensions.iconSizeLarge,
+                    color: inbox![i].read!
+                    ? ColorResources.primary
+                    : ColorResources.black,
+                  ),
                 const SizedBox(
                   width: 20,
                 ),
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(
-                      (inbox?[i].title ?? inboxPayment?[i].title)
-                              ?.customSentence(40) ??
-                          "...",
-                      style: robotoRegular.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: ColorResources.black,
-                          fontSize: Dimensions.fontSizeExtraLarge)),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start, 
+                  children: [
+                  Text(inbox?[i].title?.customSentence(40) ?? "...",
+                    style: robotoRegular.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: ColorResources.black,
+                      fontSize: Dimensions.fontSizeExtraLarge
+                    )
+                  ),
                   const SizedBox(
                     height: 10,
                   ),
@@ -818,35 +848,29 @@ class _NotificationScreenState extends State<NotificationScreen>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                          (inbox?[i].description ??
-                                      inboxPayment?[i].description)
-                                  ?.customSentence(40) ??
-                              "...",
-                          softWrap: true,
-                          overflow: TextOverflow.ellipsis,
-                          style: robotoRegular.copyWith(
-                              fontWeight: inbox?[i].read == true ||
-                                      inboxPayment?[i].isRead == true
-                                  ? null
-                                  : FontWeight.w600,
-                              color: ColorResources.black.withOpacity(0.7),
-                              fontSize: Dimensions.fontSizeLarge)),
+                        inbox![i].description!.customSentence(40),
+                        softWrap: true,
+                        overflow: TextOverflow.ellipsis,
+                        style: robotoRegular.copyWith(
+                          fontWeight: inbox[i].read == true
+                          ? null
+                          : FontWeight.w600,
+                          color: ColorResources.black.withOpacity(0.7),
+                          fontSize: Dimensions.fontSizeLarge
+                        )
+                      ),
                     ],
                   ),
                   const SizedBox(
                     height: 10,
                   ),
-                  Text(
-                      Helper.formatDate(DateTime.parse((inbox?[i].createdAt ??
-                              Helper.getFormatedDateTwo(
-                                  inboxPayment![i].createdAt!))
-                          .replaceAll('/', '-'))),
-                      style: robotoRegular.copyWith(
-                          color: inbox?[i].read == true ||
-                                  inboxPayment?[i].isRead == true
-                              ? ColorResources.greyDarkPrimary
-                              : ColorResources.black,
-                          fontSize: Dimensions.fontSizeLarge)),
+                  Text(inbox[i].createdAt!,
+                    style: robotoRegular.copyWith(
+                    color: inbox[i].read == true
+                    ? ColorResources.greyDarkPrimary
+                    : ColorResources.black,
+                    fontSize: Dimensions.fontSizeLarge
+                  )),
                 ]),
               ],
             ),

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+
 import 'package:hp3ki/data/models/news/news.dart';
+
 import 'package:hp3ki/data/models/news/single_news.dart';
 import 'package:hp3ki/data/repository/news/news.dart';
-import 'package:hp3ki/services/navigation.dart';
+
 import 'package:hp3ki/utils/exceptions.dart';
-import 'package:hp3ki/views/screens/news/detail.dart';
 
 enum NewsStatus { idle, loading, loaded, error, empty }
 enum NewsDetailStatus { idle, loading, loaded, error, empty }
@@ -22,8 +23,8 @@ class NewsProvider with ChangeNotifier {
   NewsDetailStatus _newsDetailStatus = NewsDetailStatus.loading;
   NewsDetailStatus get newsDetailStatus => _newsDetailStatus;
 
-  List<NewsData>? _news = [];
-  List<NewsData>? get news => _news;
+  List<NewsData> _news = [];
+  List<NewsData> get news => [..._news];
 
   SingleNewsData? _newsDetail;
   SingleNewsData? get newsDetail => _newsDetail; 
@@ -44,7 +45,7 @@ class NewsProvider with ChangeNotifier {
       _news = [];
       NewsModel? nm = await nr.getNews();
       if(nm!.data!.isNotEmpty) {
-        _news!.addAll(nm.data!);
+        _news.addAll(nm.data!);
         setStateNewsStatus(NewsStatus.loaded);
       } else {
         setStateNewsStatus(NewsStatus.empty);
@@ -64,7 +65,6 @@ class NewsProvider with ChangeNotifier {
     try {   
       SingleNewsModel? snm = await nr.getNewsDetail(newsId: newsId);
       _newsDetail = snm!.data!;
-      NS.push(context, const DetailNewsScreen());
       setStateNewsDetailStatus(NewsDetailStatus.loaded);
     } on CustomException catch(e) {
       debugPrint(e.toString());

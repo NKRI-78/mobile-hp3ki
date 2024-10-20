@@ -200,9 +200,10 @@ class _CustomTextFieldV2State extends State<CustomTextFieldV2> {
                             FilteringTextInputFormatter.digitsOnly,
                           ]
                         : [
-                            FilteringTextInputFormatter.singleLineFormatter,
-                            FilteringTextInputFormatter.allow(
-                                RegExp('[a-zA-Z0-9 ]')),
+                          UpperCaseTextFormatter()
+                            // FilteringTextInputFormatter.singleLineFormatter,
+                            // FilteringTextInputFormatter.allow(
+                            //     RegExp('[a-zA-Z0-9 ]')),
                           ],
         decoration: InputDecoration(
           alignLabelWithHint: widget.alignLabelWithHint,
@@ -266,12 +267,16 @@ class UpperCaseTextFormatter extends TextInputFormatter {
   TextEditingValue formatEditUpdate(
       TextEditingValue oldValue, TextEditingValue newValue) {
     return TextEditingValue(
-      text: newValue.text.toUpperCase(),
+      text: newValue.text.toTitleCase(),
       selection: newValue.selection,
     );
   }
 }
 
+extension StringCasingExtension on String {
+  String toCapitalized() => length > 0 ?'${this[0].toUpperCase()}${substring(1).toLowerCase()}':'';
+  String toTitleCase() => replaceAll(RegExp(' +'), ' ').split(' ').map((str) => str.toCapitalized()).join(' ');
+}
 class DecimalFormatter extends TextInputFormatter {
   final int decimalDigits;
 

@@ -21,12 +21,12 @@ class SharedPrefs {
     _instance!.setBool('onboarding', value);
   }
 
-  static double getLat() {
-    return _instance!.getDouble('lat') ?? 0.0;
+  static double? getLat() {
+    return _instance!.getDouble('lat');
   }
 
-  static double getLng() {
-    return _instance!.getDouble('lng') ?? 0.0;
+  static double? getLng() {
+    return _instance!.getDouble('lng');
   }
 
   static double getLatCheckIn() {
@@ -256,24 +256,24 @@ class SharedPrefs {
   }
 
   static void writeUserData(UserData user) {
-    _instance!.setString(
-        "user",
-        json.encode({
-          "id": user.id,
-          "avatar": user.avatar,
-          "fullname": user.fullname,
-          "email": user.email,
-          "phone": user.phone,
-          "role": user.role,
-          "pic_ktp": user.picKtp,
-          "address_ktp": user.addressKtp,
-          "no_ktp": user.noKtp,
-          "no_member": user.noMember,
-          "job": user.job,
-          "organization": user.organization,
-          "member_type": user.memberType,
-          "fulfilled_data": user.fulfilledUserData,
-        }));
+    _instance!.setString("user",
+      json.encode({
+        "id": user.id,
+        "avatar": user.avatar,
+        "fullname": user.fullname,
+        "email": user.email,
+        "phone": user.phone,
+        "role": user.role,
+        "pic_ktp": user.picKtp,
+        "address_ktp": user.addressKtp,
+        "no_ktp": user.noKtp,
+        "no_member": user.noMember,
+        "job": user.job,
+        "organization": user.organization,
+        "member_type": user.memberType,
+        "fulfilled_data": user.fulfilledUserData,
+      })
+    );
   }
 
   static void deleteData() {

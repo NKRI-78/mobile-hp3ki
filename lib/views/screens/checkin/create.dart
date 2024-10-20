@@ -4,29 +4,35 @@ import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:hp3ki/services/navigation.dart';
 import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import 'package:hp3ki/services/navigation.dart';
+
 import 'package:hp3ki/maps/src/place_picker.dart';
+
 import 'package:hp3ki/localization/language_constraints.dart';
+
 import 'package:hp3ki/providers/checkin/checkin.dart';
 import 'package:hp3ki/providers/location/location.dart';
+
+import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
+import 'package:hp3ki/views/basewidgets/button/custom.dart';
+import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
+
 import 'package:hp3ki/utils/constant.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
-import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
-import 'package:hp3ki/views/basewidgets/button/custom.dart';
-import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
 
 class CreateCheckInScreen extends StatefulWidget {
   const CreateCheckInScreen({Key? key}) : super(key: key);
 
   @override
-  _CreateCheckInScreenState createState() => _CreateCheckInScreenState();
+  CreateCheckInScreenState createState() => CreateCheckInScreenState();
 }
 
-class _CreateCheckInScreenState extends State<CreateCheckInScreen> {
+class CreateCheckInScreenState extends State<CreateCheckInScreen> {
 
   Completer<GoogleMapController> mapsController = Completer();
   
@@ -47,12 +53,13 @@ class _CreateCheckInScreenState extends State<CreateCheckInScreen> {
   List<Marker> markers = [];
 
   Future<void> createCheckIn(BuildContext context) async {
-      String? caption = captionC.text.trim();
-      String? desc = descC.text.trim();
-      String? date = dateC.text.trim();
-      String? start = datetimeStartC.text.trim();
-      String? end = datetimeEndC.text.trim();
+    String? caption = captionC.text.trim();
+    String? desc = descC.text.trim();
+    String? date = dateC.text.trim();
+    String? start = datetimeStartC.text.trim();
+    String? end = datetimeEndC.text.trim();
 
+<<<<<<< HEAD
       if(caption.isEmpty) {
         ShowSnackbar.snackbar(getTranslated('CAPTION_IS_REQUIRED', context), "", ColorResources.error);
         return;
@@ -82,6 +89,37 @@ class _CreateCheckInScreenState extends State<CreateCheckInScreen> {
         end,
         desc,
       );
+=======
+    if(caption.isEmpty) {
+      ShowSnackbar.snackbar(context, getTranslated('CAPTION_IS_REQUIRED', context), "", ColorResources.error);
+      return;
+    }
+    if(desc.isEmpty) {
+      ShowSnackbar.snackbar(context, 'Deskripsi harus diisi.', "", ColorResources.error);
+      return;
+    }
+    if(date.isEmpty) {
+      ShowSnackbar.snackbar(context, getTranslated('DATE_IS_REQUIRED', context), "", ColorResources.error);
+      return;
+    }
+    if(start.isEmpty) {
+      ShowSnackbar.snackbar(context, getTranslated('DATE_TIME_START_IS_REQUIRED', context), "", ColorResources.error);
+      return;
+    }
+    if(end.isEmpty) {
+      ShowSnackbar.snackbar(context, getTranslated('DATE_TIME_END_IS_REQUIRED', context), "", ColorResources.error);  
+      return; 
+    }
+    
+    await context.read<CheckInProvider>().createCheckIn(
+      context,
+      caption,
+      date,
+      start,
+      end,
+      desc,
+    );
+>>>>>>> 3de3b56a677787d3a71350f1578c9cfdc07bb277
   }
 
   @override 
@@ -127,10 +165,6 @@ class _CreateCheckInScreenState extends State<CreateCheckInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return buildUI();
-  }
-
-  Widget buildUI() {
     return Scaffold(
       body: ListView(
         padding: EdgeInsets.zero,
@@ -183,7 +217,7 @@ class _CreateCheckInScreenState extends State<CreateCheckInScreen> {
                     Icons.title, 
                     color: ColorResources.primary, 
                   ),
-                  Text(getTranslated('CAPTION', context), 
+                  Text(getTranslated('TITLE', context), 
                     style: poppinsRegular.copyWith(
                       fontSize: Dimensions.fontSizeSmall
                     )
@@ -202,7 +236,7 @@ class _CreateCheckInScreenState extends State<CreateCheckInScreen> {
                 child: TextFormField(
                   controller: captionC,
                   decoration: InputDecoration(
-                    hintText: getTranslated('CAPTION', context),
+                    hintText: getTranslated('TITLE', context),
                     hintStyle: poppinsRegular.copyWith(
                       color: ColorResources.grey
                     ),

@@ -108,7 +108,7 @@ class CustomDialog {
           padding: const EdgeInsets.all(15.0),
           child: CustomButton(
             onTap: () {
-              NS.pushReplacementUntil(context, const FormPersonalScreen());
+              NS.pushUntil(context, const FormPersonalScreen());
             },
             btnColor: ColorResources.primary,
             isBorderRadius: true,

@@ -18,11 +18,13 @@ class InternetProvider with ChangeNotifier {
 
   Future<String> checkFromInternet() async {
     try {
+    
       final result = await InternetAddress.lookup('example.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         setStateInternetStatus(InternetStatus.connected);
         return "=== CONNECTED TO INTERNET ===";
       }
+    
     } on SocketException catch (_) {
       setStateInternetStatus(InternetStatus.disconnected);
       return "=== DISCONNECTED TO INTERNET ===";
@@ -30,10 +32,11 @@ class InternetProvider with ChangeNotifier {
       setStateInternetStatus(InternetStatus.disconnected);
       return "=== DISCONNECTED TO INTERNET ===";
     }
-    return "=== CONNECTED TO INTERNET ===";
-}
 
-void connectingToInternet() async {
+    return "=== CONNECTED TO INTERNET ===";
+  }
+
+  void connectingToInternet() async {
     Stream.fromFuture(checkFromInternet()).listen((event) { 
 
     }, onError: (e) async {
@@ -42,6 +45,6 @@ void connectingToInternet() async {
     }, onDone: () async {
       await Future.delayed(const Duration(seconds: 2));
       connectingToInternet();
-    },);
-}
+    });
+  }
 }

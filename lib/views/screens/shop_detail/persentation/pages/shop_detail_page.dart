@@ -1,4 +1,3 @@
-import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:hp3ki/localization/language_constraints.dart';
 import 'package:hp3ki/providers/profile/profile.dart';
@@ -298,20 +297,20 @@ class ShopDetailView extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            CurrencyTextInputFormatter(
-                              locale: 'id_ID',
-                              decimalDigits: 0,
-                              symbol: 'Rp ',
-                            ).format(
-                              provider.product?.price.toString() ?? '0',
-                            ),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              color: Colors.grey,
-                            ),
-                          ),
+                          // Text(
+                          //   CurrencyTextInputFormatter(
+                          //     locale: 'id_ID',
+                          //     decimalDigits: 0,
+                          //     symbol: 'Rp ',
+                          //   ).format(
+                          //     provider.product?.price.toString() ?? '0',
+                          //   ),
+                          //   style: const TextStyle(
+                          //     fontWeight: FontWeight.bold,
+                          //     fontSize: 16,
+                          //     color: Colors.grey,
+                          //   ),
+                          // ),
                           Text(
                             provider.product?.name ?? '-',
                             style: const TextStyle(

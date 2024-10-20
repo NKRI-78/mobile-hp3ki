@@ -8,10 +8,8 @@ import 'package:hp3ki/localization/language_constraints.dart';
 import 'package:hp3ki/views/basewidgets/button/bounce.dart';
 import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
 
-import 'package:hp3ki/utils/dio.dart';
 import 'package:hp3ki/utils/modal.dart';
 import 'package:hp3ki/utils/shared_preferences.dart';
-import 'package:hp3ki/utils/constant.dart';
 import 'package:hp3ki/utils/extension.dart';
 import 'package:hp3ki/utils/box_shadow.dart';
 import 'package:hp3ki/utils/color_resources.dart';
@@ -33,7 +31,7 @@ import 'package:hp3ki/services/navigation.dart';
 
 import 'package:hp3ki/views/screens/about/about_menu.dart';
 import 'package:hp3ki/views/screens/auth/sign_in.dart';
-import 'package:hp3ki/views/screens/calender/calender.dart';
+import 'package:hp3ki/views/screens/calendar/calendar.dart';
 import 'package:hp3ki/views/screens/checkin/checkin.dart';
 import 'package:hp3ki/views/screens/feed/index.dart';
 import 'package:hp3ki/views/screens/maintain/maintain.dart';
@@ -41,6 +39,7 @@ import 'package:hp3ki/views/screens/media/media.dart';
 import 'package:hp3ki/views/screens/membernear/membernear.dart';
 import 'package:hp3ki/views/screens/my_store/persentation/pages/my_store_page.dart';
 import 'package:hp3ki/views/screens/my_store_create/persentation/pages/store_open_page.dart';
+import 'package:hp3ki/views/screens/news/detail.dart';
 import 'package:hp3ki/views/screens/notification/index.dart';
 import 'package:hp3ki/views/screens/ppob/confirm_paymentv2.dart';
 import 'package:hp3ki/views/screens/profile/profile.dart';
@@ -57,7 +56,7 @@ import 'package:flutter_glow/flutter_glow.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:badges/badges.dart' as b;
+// import 'package:badges/badges.dart' as b;
 
 class DashboardScreen extends StatefulWidget {
   final int? index;
@@ -133,10 +132,9 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
     }
   }
 
-  Future<void> getDataRemote() async {
-    if (mounted) {
-      context.read<ProfileProvider>().remote();
-    }
+  Future<void> getData() async {
+     if (!mounted) return;
+      await context.read<ProfileProvider>().remote();
   }
 
   @override
@@ -145,15 +143,17 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
 
     panelC = PanelController();
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Future.delayed(const Duration(seconds: 1), () => getDataRemote());
+    selectedIndex = widget.index == null ? 0 : widget.index!;
 
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (context.read<ProfileProvider>().isActive == 1) {
         getData1();
       } else {
         getData2();
       }
     });
+
+    Future.microtask(() => getData());
   }
 
   @override
@@ -223,7 +223,7 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
       {
         "name": "Calender",
         "icon": "bottomsheet/icon-event.png",
-        "screen": const CalenderScreen(),
+        "screen": const CalendarScreen(),
       },
       {
         "name": "Member Near",
@@ -568,33 +568,29 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
   }
 
   Consumer<InboxProvider> buildNotificationItem() {
-    return Consumer<InboxProvider>(builder:
-        (BuildContext context, InboxProvider inboxProvider, Widget? child) {
+    return Consumer<InboxProvider>(builder: (BuildContext context, InboxProvider inboxProvider, Widget? child) {
       if (inboxProvider.inboxCountStatus == InboxCountStatus.loading) {
-        return buildNavbarItem(
-            index: 3, image: "navbar-notif", label: "NOTIFICATION");
+        return buildNavbarItem(index: 3, image: "navbar-notif", label: "NOTIFICATION");
       } else if (inboxProvider.inboxCountStatus == InboxCountStatus.empty) {
-        return buildNavbarItem(
-            index: 3, image: "navbar-notif", label: "NOTIFICATION");
+        return buildNavbarItem(index: 3, image: "navbar-notif", label: "NOTIFICATION");
       } else if (inboxProvider.inboxCountStatus == InboxCountStatus.error) {
-        return buildNavbarItem(
-            index: 3, image: "navbar-notif", label: "NOTIFICATION");
+        return buildNavbarItem(index: 3, image: "navbar-notif", label: "NOTIFICATION");
       } else {
-        return b.Badge(
-            position: const b.BadgePosition(
-              end: 15.0,
-              top: 0.0,
-            ),
-            badgeColor: ColorResources.error,
-            badgeContent: Text(
-              inboxProvider.readCount?.toString() ?? "...",
-              style: poppinsRegular.copyWith(
-                fontWeight: FontWeight.w600,
-                color: ColorResources.white,
-              ),
-            ),
-            child: buildNavbarItem(
-                index: 3, image: "navbar-notif", label: "NOTIFICATION"));
+        return buildNavbarItem(index: 3, image: "navbar-notif", label: "NOTIFICATION");
+        // b.Badge(
+        //  position: const b.BadgePosition(
+        //    end: 15.0,
+        //    top: 0.0,
+        //  ),
+        //  badgeColor: ColorResources.error,
+        //  badgeContent: Text(
+        //  inboxProvider.readCount?.toString() ?? "...",
+        //   style: poppinsRegular.copyWith(
+        //     fontWeight: FontWeight.w600,
+        //     color: ColorResources.white,
+        //   ),
+        // ),
+        // child: );
       }
     });
   }
@@ -653,26 +649,26 @@ class _HomeScreenState extends State<HomeScreen> {
   int currentIndex = 0;
 
   ShopModel? shops;
-  Future<void> initShop() async {
-    try {
-      final client = DioManager.shared.getClient();
-      final res = await client
-          .get("${AppConstants.baseUrl}/api/v1/product/list?page=1&cat=");
-      shops = ShopModel.fromJson(res.data["data"]);
-    } catch (e) {
-      ///
-    }
-  }
+
+  // Future<void> initShop() async {
+  //   try {
+  //     final client = DioManager.shared.getClient();
+  //     final res = await client.get("${AppConstants.baseUrl}/api/v1/product/list?page=1&cat=");
+  //     shops = ShopModel.fromJson(res.data["data"]);
+  //   } catch (e) {
+  //     debugPrint(e.toString());
+  //   }
+  // }
 
   Future<void> getData() async {
     if (mounted) {
       await Geolocator.requestPermission();
     }
     if (mounted) {
-      await Permission.storage.request();
+      await Permission.notification.request();
     }
     if (mounted) {
-      await Permission.notification.request();
+      await Permission.photos.request();
     }
     if (mounted) {
       context.read<NewsProvider>().getNews(context);
@@ -721,7 +717,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     Future.wait([
       getData(),
-      initShop(),
+      // initShop(),
     ]);
 
     super.initState();
@@ -901,58 +897,46 @@ class _HomeScreenState extends State<HomeScreen> {
                               backgroundColor: Colors.transparent,
                               radius: 40.0,
                               child: Consumer<ProfileProvider>(
-                                builder: (BuildContext context,
-                                    ProfileProvider profileProvider,
-                                    Widget? child) {
-                                  if (profileProvider.profileStatus ==
-                                      ProfileStatus.loading) {
+                                builder: (BuildContext context, ProfileProvider profileProvider, Widget? child) {
+
+                                  if (profileProvider.profileStatus == ProfileStatus.loading) {
                                     return const CircleAvatar(
-                                      backgroundColor:
-                                          ColorResources.backgroundDisabled,
+                                      backgroundColor:ColorResources.backgroundDisabled,
                                       maxRadius: 40.0,
                                     );
                                   }
-                                  if (profileProvider.profileStatus ==
-                                      ProfileStatus.error) {
+
+                                  if (profileProvider.profileStatus == ProfileStatus.error) {
                                     return const CircleAvatar(
-                                      backgroundColor:
-                                          ColorResources.backgroundDisabled,
+                                      backgroundColor:ColorResources.backgroundDisabled,
                                       maxRadius: 40.0,
                                     );
                                   }
+                                  
                                   UserData? user = profileProvider.user;
+
                                   return CachedNetworkImage(
-                                    fit: BoxFit.fill,
-                                    imageUrl: user?.avatar ??
-                                        AppConstants.avatarError,
-                                    imageBuilder: (BuildContext context,
-                                        ImageProvider<Object> imageProvider) {
+                                    imageUrl: user?.avatar.toString() ?? "",
+                                    imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
                                       return CircleAvatar(
                                         backgroundColor: Colors.transparent,
-                                        backgroundImage: imageProvider,
                                         maxRadius: 40.0,
+                                        backgroundImage: imageProvider,
                                       );
                                     },
-                                    errorWidget: (BuildContext context,
-                                        String url, dynamic error) {
-                                      return CircleAvatar(
-                                          backgroundColor:
-                                              Colors.transparent,
-                                          maxRadius: 40.0,
-                                          child: Image.asset(
-                                            "assets/images/icons/ic-person.png",
-                                          ));
+                                    errorWidget: (BuildContext context, String url, dynamic error) {
+                                      return Image.asset("assets/images/icons/ic-person.png");
                                     },
                                   );
                                 },
+
                               ),
                             ),
                             title: Row(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  getTranslated("WELCOME", context),
+                                Text(getTranslated("WELCOME", context),
                                   style: poppinsRegular.copyWith(
                                     color: ColorResources.white,
                                     fontSize: Dimensions.fontSizeLarge,
@@ -970,11 +954,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                     const SizedBox(
                                       width: 5,
                                     ),
-                                    Text(
-                                      getTranslated('MY_BALANCE', context),
+                                    Text(getTranslated('MY_BALANCE', context),
                                       style: poppinsRegular.copyWith(
-                                          fontSize: Dimensions.fontSizeDefault,
-                                          color: ColorResources.white),
+                                        fontSize: Dimensions.fontSizeDefault,
+                                        color: ColorResources.white
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -985,17 +969,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: [
                                 Expanded(
                                   child: Text(
-                                    context
-                                                .watch<ProfileProvider>()
-                                                .profileStatus ==
-                                            ProfileStatus.loading
-                                        ? "..."
-                                        : context
-                                                    .watch<ProfileProvider>()
-                                                    .profileStatus ==
-                                                ProfileStatus.error
-                                            ? "-"
-                                            : 'Hi, ${context.read<ProfileProvider>().user?.fullname?.smallSentence() ?? "..."}',
+                                    context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading
+                                    ? "..."
+                                    : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error
+                                    ? "-"
+                                    : 'Hi, ${context.read<ProfileProvider>().user?.fullname?.smallSentence() ?? "..."}',
                                     maxLines: 1,
                                     style: poppinsRegular.copyWith(
                                         fontWeight: FontWeight.w600,
@@ -1274,16 +1252,16 @@ class _HomeScreenState extends State<HomeScreen> {
               physics: const BouncingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics()),
               scrollDirection: Axis.horizontal,
-              itemCount: newsProvider.news?.length.clamp(0, 3),
+              itemCount: newsProvider.news.length.clamp(0, 3),
               itemBuilder: (context, i) {
                 return Padding(
                   padding: const EdgeInsets.only(right: 15.0),
                   child: GestureDetector(
                     onTap: () {
-                      context.read<NewsProvider>().getNewsDetail(context,
-                          newsId: newsProvider.news![i].id!);
+                      NS.push(context, NewsDetailScreen(
+                        newsId: newsProvider.news[i].id!,
+                      ));
                     },
-                    onDoubleTap: () {},
                     child: Stack(
                       children: [
                         const SizedBox(
@@ -1297,9 +1275,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: InkWell(
                               borderRadius: BorderRadius.circular(30.0),
                               onTap: () {
-                                context.read<NewsProvider>().getNewsDetail(
-                                    context,
-                                    newsId: newsProvider.news![i].id!);
+                                NS.push(context, NewsDetailScreen(
+                                  newsId: newsProvider.news[i].id!,
+                                ));
                               },
                               child: Container(
                                 height: 200.0,
@@ -1328,12 +1306,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            newsProvider.news![i].title
+                                            newsProvider.news[i].title
                                                         .toString()
                                                         .length >
                                                     85
-                                                ? "${newsProvider.news![i].title.toString().substring(0, 85)}..."
-                                                : newsProvider.news![i].title
+                                                ? "${newsProvider.news[i].title.toString().substring(0, 85)}..."
+                                                : newsProvider.news[i].title
                                                     .toString()
                                                     .toTitleCase(),
                                             style: robotoRegular.copyWith(
@@ -1356,7 +1334,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     DateTime.parse(
                                                         Helper.getFormatedDate(
                                                             newsProvider
-                                                                .news?[i]
+                                                                .news[i]
                                                                 .createdAt))),
                                                 style: robotoRegular.copyWith(
                                                   color:
@@ -1392,7 +1370,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(30.0),
                             child: CachedNetworkImage(
-                              imageUrl: newsProvider.news![i].image!,
+                              imageUrl: newsProvider.news[i].image!,
                               imageBuilder: (BuildContext context, ImageProvider imageProvider) {
                                 return Container(
                                   width: 250.0,
@@ -1401,7 +1379,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     color: ColorResources.white,
                                     image: DecorationImage(
                                       image: imageProvider,
-                                      fit: BoxFit.fitWidth,
+                                      fit: BoxFit.cover,
                                     )
                                   ),
                                 );

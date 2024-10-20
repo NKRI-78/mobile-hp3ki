@@ -4,6 +4,7 @@ import 'package:hp3ki/data/repository/auth/auth.dart';
 import 'package:hp3ki/data/repository/banner/banner.dart';
 import 'package:hp3ki/data/repository/checkin/checkin.dart';
 import 'package:hp3ki/data/repository/event/event.dart';
+import 'package:hp3ki/data/repository/feed/feed.dart';
 import 'package:hp3ki/data/repository/feedv2/feed.dart';
 import 'package:hp3ki/data/repository/firebase/firebase.dart';
 import 'package:hp3ki/data/repository/inbox/inbox.dart';
@@ -60,7 +61,10 @@ Future<void> init() async {
       ));
   getIt.registerLazySingleton(() => InboxRepo(
         dioClient: null,
-      ));
+      ));  
+  getIt.registerLazySingleton(() => FeedRepo(
+       sp: getIt(),
+  ));
   getIt.registerLazySingleton(() => FeedRepoV2(
        sp: getIt(),
   ));
@@ -128,6 +132,10 @@ Future<void> init() async {
   getIt.registerFactory(() => InboxProvider(
         ir: getIt(),
       ));
+  getIt.registerFactory(() => FeedDetailProviderV2(
+    ar: getIt(),
+    fr: getIt(),
+  ));
   getIt.registerFactory(() => FeedProviderV2(
         ar: getIt(),
         fr: getIt(),
@@ -141,9 +149,9 @@ Future<void> init() async {
     fr: getIt(),
   ));
   getIt.registerFactory(() => CheckInProvider(
-        cr: getIt(),
-        lp: getIt(),
-      ));
+    cr: getIt(),
+    lp: getIt(),
+  ));
   getIt.registerFactory(() => EventProvider(
         er: getIt(),
       ));

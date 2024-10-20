@@ -622,7 +622,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                         // var bs64 = base64Encode(pngBytes);
 
                         String dir = (await getTemporaryDirectory()).path;
-                        File file = File("$dir/kta-hp3ki.jpg");
+                        File file = File("$dir/kta-hp3ki-${DateTime.now()}.jpg");
                         await file.writeAsBytes(
                           pngBytes,
                         );

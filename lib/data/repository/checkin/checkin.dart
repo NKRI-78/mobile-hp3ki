@@ -77,12 +77,19 @@ class CheckInRepo {
     }
   }
 
-  Future<void> createCheckIn( String caption, String desc, String date, String start, String end, String placeName, String userId) async {
+  Future<void> createCheckIn(String caption, String desc, 
+      String date, 
+      String start, String end, 
+      String placeName, String lat, String lng,
+      String userId
+    ) async {
     try {
       await dioClient!.post("${AppConstants.baseUrl}/api/v1/checkin/assign", data: {
         "title": caption,
         "desc": desc,
         "location": placeName,
+        "lat": lat,
+        "lng": lng,
         "start": start,
         "end": end,
         "user_id": userId,

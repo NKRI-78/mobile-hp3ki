@@ -1,44 +1,52 @@
 import 'dart:async';
 
-import 'package:hp3ki/utils/helper.dart';
-import 'package:hp3ki/utils/shared_preferences.dart';
-import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
-import 'package:hp3ki/views/screens/checkin/create.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:hp3ki/utils/constant.dart';
-import 'package:hp3ki/views/screens/checkin/detail.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+
+import 'package:url_launcher/url_launcher.dart';
+
 import 'package:hp3ki/localization/language_constraints.dart';
+
+import 'package:hp3ki/services/navigation.dart';
+
+import 'package:hp3ki/data/models/checkin/checkin.dart';
+
+import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
+import 'package:hp3ki/views/basewidgets/loader/circular.dart';
+
+import 'package:hp3ki/views/screens/checkin/create.dart';
+import 'package:hp3ki/views/screens/checkin/detail.dart';
+
 import 'package:hp3ki/providers/checkin/checkin.dart';
 import 'package:hp3ki/providers/location/location.dart';
-import 'package:hp3ki/services/navigation.dart';
+
+import 'package:hp3ki/utils/constant.dart';
+import 'package:hp3ki/utils/helper.dart';
+import 'package:hp3ki/utils/shared_preferences.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/utils/color_resources.dart';
-import 'package:hp3ki/views/basewidgets/loader/circular.dart';
-import '../../../data/models/checkin/checkin.dart';
 
 class CheckInScreen extends StatefulWidget {
   const CheckInScreen({Key? key}) : super(key: key);
 
   @override
-  _CheckInScreenState createState() => _CheckInScreenState();
+  CheckInScreenState createState() => CheckInScreenState();
 }
 
-class _CheckInScreenState extends State<CheckInScreen> {
+class CheckInScreenState extends State<CheckInScreen> {
 
   int checkInIdLoading = -1;
 
   Future<void> getData() async {
-    if(mounted) {
+    if(!mounted) return;
       context.read<CheckInProvider>().getCheckIn(context);
-    }
-    if(mounted) {
+    
+    if(!mounted) return;
       context.read<LocationProvider>().getCurrentPositionCheckIn(context);
-    }
   }
 
   void join(String checkInId) {
@@ -63,7 +71,7 @@ class _CheckInScreenState extends State<CheckInScreen> {
   void initState() {
     super.initState();
 
-    getData();
+    Future.microtask(() => getData());
   }
 
   @override 
@@ -112,7 +120,7 @@ class _CheckInScreenState extends State<CheckInScreen> {
         if(checkInProvider.checkInStatus == CheckInStatus.error) {
           return buildContentError(context);
         } 
-        return buildContentNotEmpty();
+        return buildContent();
       },
     );
   }
@@ -157,7 +165,7 @@ class _CheckInScreenState extends State<CheckInScreen> {
     );
   }
 
-  SliverList buildContentNotEmpty() {
+  SliverList buildContent() {
     return SliverList(
       delegate: SliverChildListDelegate([
         Consumer<CheckInProvider>(
@@ -184,6 +192,12 @@ class _CheckInScreenState extends State<CheckInScreen> {
                   child: Card(
                     margin: const EdgeInsets.all(10.0),
                     elevation: 8.0,
+                    color: checkInProvider.checkInData[i].isPass! 
+                    ? Colors.grey
+                    : Colors.white,
+                    surfaceTintColor: checkInProvider.checkInData[i].isPass! 
+                    ? Colors.grey
+                    : Colors.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -242,7 +256,7 @@ class _CheckInScreenState extends State<CheckInScreen> {
               children: [
                 Expanded(
                   flex: 6,
-                  child: Text(getTranslated("CAPTION", context),
+                  child: Text(getTranslated("TITLE", context),
                     style: poppinsRegular.copyWith(
                       fontWeight: FontWeight.w600,
                       fontSize: Dimensions.fontSizeDefault
@@ -250,13 +264,16 @@ class _CheckInScreenState extends State<CheckInScreen> {
                   )
                 ),
                 Expanded(
+                  flex: 1,
+                  child: Container()
+                ),
+                Expanded(
                   flex: 20,
-                  child: Text(
-                    checkInProvider.checkInData[i].title ?? "...",
+                  child: Text(checkInProvider.checkInData[i].title ?? "...",
                     style: poppinsRegular.copyWith(
                       fontSize: Dimensions.fontSizeDefault
                     ),
-                  )
+                  ) 
                 ),
               ],
             ),
@@ -278,6 +295,10 @@ class _CheckInScreenState extends State<CheckInScreen> {
                       fontSize: Dimensions.fontSizeDefault
                     ),
                   )
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Container()
                 ),
                 Expanded(
                   flex: 20,
@@ -309,6 +330,10 @@ class _CheckInScreenState extends State<CheckInScreen> {
                   )
                 ),
                 Expanded(
+                  flex: 1,
+                  child: Container()
+                ),
+                Expanded(
                   flex: 20,
                   child: Text(Helper.formatDate(DateTime.parse(checkInProvider.checkInData[i].checkinDate?.replaceAll('/', '-') ?? DateTime.now().toString())),
                     style: poppinsRegular.copyWith(
@@ -338,6 +363,10 @@ class _CheckInScreenState extends State<CheckInScreen> {
                   )
                 ),
                 Expanded(
+                  flex: 1,
+                  child: Container()
+                ),
+                Expanded(
                   flex: 20,
                   child: Text("${checkInProvider.checkInData[i].start} s/d ${checkInProvider.checkInData[i].end}",
                     style: poppinsRegular.copyWith(
@@ -359,6 +388,7 @@ class _CheckInScreenState extends State<CheckInScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -375,7 +405,9 @@ class _CheckInScreenState extends State<CheckInScreen> {
               )
             ],  
           ),
+          
           const SizedBox(height: 10.0),
+
           SharedPrefs.getUserId() == checkInProvider.checkInData[i].user!.id
           ? buildOtherButton(
               context,
@@ -384,8 +416,34 @@ class _CheckInScreenState extends State<CheckInScreen> {
               onPressed: () => delete(checkInProvider.checkInData[i].id!),
             ) 
           : checkInProvider.checkInData[i].join == true
-            ? buildOtherButton(context, label: 'Gabung', bgColor: ColorResources.dimGrey) 
-            : buildJoinButton(checkInProvider, i),
+          ? buildOtherButton(context, label: 'Gabung', bgColor: ColorResources.dimGrey) 
+          : buildJoinButton(checkInProvider, i),
+          
+          const SizedBox(height: 10.0),
+
+          SizedBox(
+            height: 40.0,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                elevation: 3.0, 
+                backgroundColor: Colors.blue,
+              ),
+              onPressed: () async {
+                 var address = '${checkInProvider.checkInData[i].lat},${checkInProvider.checkInData[i].lng}';
+                String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$address';
+                if (!await launchUrl(Uri.parse(googleUrl))) {
+                  throw 'Could not open the map.';
+                }
+              },
+              child: Text("Lokasi",
+                style: poppinsRegular.copyWith(
+                  color: ColorResources.white,
+                  fontSize: Dimensions.fontSizeSmall
+                ),
+              ),
+            ),
+          ),
+
         ],
       )  
     );
@@ -426,13 +484,19 @@ class _CheckInScreenState extends State<CheckInScreen> {
         height: 60.0,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            elevation: 3.0, backgroundColor: Colors.green[300]!,
+            elevation: 3.0, 
+            backgroundColor: checkInProvider.checkInData[i].isPass!
+            ? Colors.grey 
+            : Colors.green[300]!,
           ),
-          onPressed: () => join(checkInProvider.checkInData[i].id!),
-          child: checkInProvider.checkInStatusJoin == CheckInStatusJoin.loading
+          onPressed: () => checkInProvider.checkInData[i].isPass! 
+          ? () {} 
+          : join(checkInProvider.checkInData[i].id!),
+          child: checkInProvider.checkInData[i].id == checkInProvider.checkInDataSelected
           ? const Loader(
-            color: ColorResources.white,
-          ) : Text(getTranslated('JOIN', context),
+              color: ColorResources.white,
+            ) 
+          : Text(getTranslated('JOIN', context),
             style: poppinsRegular.copyWith(
               color: ColorResources.white,
               fontSize: Dimensions.fontSizeSmall
@@ -446,18 +510,17 @@ class _CheckInScreenState extends State<CheckInScreen> {
 
   SizedBox buildOtherButton(BuildContext context, {required String label, required Color bgColor, void Function()? onPressed}) {
     return SizedBox(
-        height: 60.0,
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            elevation: 3.0, backgroundColor: bgColor,
-          ),
-          onPressed: onPressed,
-          child: Text(label,
-          style: poppinsRegular.copyWith(
-            color: ColorResources.white,
-            fontSize: Dimensions.fontSizeSmall
-          ),
+      height: 40.0,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          elevation: 3.0, backgroundColor: bgColor,
         ),
+        onPressed: onPressed,
+        child: Text(label,
+        style: poppinsRegular.copyWith(
+          color: ColorResources.white,
+          fontSize: Dimensions.fontSizeSmall
+        )),
       ),
     );
   }

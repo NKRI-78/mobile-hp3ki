@@ -1,46 +1,51 @@
 
 import 'dart:collection';
-import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_html/flutter_html.dart';
+
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:hp3ki/providers/localization/localization.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:provider/provider.dart';
+
 import 'package:hp3ki/data/models/event/event.dart';
+
 import 'package:hp3ki/localization/language_constraints.dart';
-import 'package:hp3ki/services/navigation.dart';
+
 import 'package:hp3ki/providers/event/event.dart';
+import 'package:hp3ki/providers/localization/localization.dart';
+
 import 'package:hp3ki/utils/helper.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
+
+import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
 
 final kToday = DateTime.now();
 final kFirstDay = DateTime(kToday.year, kToday.month - 3, kToday.day);
 final kLastDay = DateTime(kToday.year, kToday.month + 3, kToday.day);
 
-class CalenderScreen extends StatefulWidget {
-  const CalenderScreen({Key? key}) : super(key: key);
+class CalendarScreen extends StatefulWidget {
+  const CalendarScreen({Key? key}) : super(key: key);
 
   @override
-  _CalenderScreenState createState() => _CalenderScreenState();
+  CalendarScreenState createState() => CalendarScreenState();
 }
 
-class _CalenderScreenState extends State<CalenderScreen> {
+class CalendarScreenState extends State<CalendarScreen> {
   ValueNotifier<List<EventData>> selectedEvents = ValueNotifier([]);
   
   DateTime focusedDay = DateTime.now();
   DateTime selectedDay = DateTime.now();
 
   Future<void> getData() async {
-    if(mounted) {
+    if(!mounted) return;
       context.read<EventProvider>().getEvent(context);      
-    }
+    
     selectedDay = focusedDay;
     selectedEvents = ValueNotifier(getEventsForDay(selectedDay));
   }
@@ -78,6 +83,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
         selectedDay = selectedDayParam;
         focusedDay = focusedDayParam;
       });
+
       selectedEvents.value = getEventsForDay(selectedDayParam);
     }
   }
@@ -86,9 +92,8 @@ class _CalenderScreenState extends State<CalenderScreen> {
   void initState() {
     super.initState();
 
-    Future.wait([
-      getData(),
-    ]);
+    Future.microtask(() => getData());
+
     setInitialEvent();
   }
 
@@ -101,41 +106,27 @@ class _CalenderScreenState extends State<CalenderScreen> {
   
   @override
   Widget build(BuildContext context) {    
-    return buildUI();
-  }
-
-  Widget buildUI() {
     return Scaffold(
-      
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-
-            return RefreshIndicator(
-              onRefresh: () {
-                return Future.sync(() {
-                  setState(() {
-                    getData();
-                    setInitialEvent();
-                  }); 
-                }); 
-              },
-              child: CustomScrollView(
-                physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-                slivers: [
-                  buildAppBar(context),
-                  context.watch<EventProvider>().eventStatus == EventStatus.loading 
-                  ? buildLoadingContent()
-                  : context.watch<EventProvider>().eventStatus == EventStatus.error  
-                  ? buildErrorContent(context)
-                  : buildContentNotEmpty()
-              ],
-            ),
-          );
-          
-
-          },
-        )
+      body: RefreshIndicator(
+        onRefresh: () {
+          return Future.sync(() {
+            setState(() {
+              getData();
+              setInitialEvent();
+            }); 
+          }); 
+        },
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+          slivers: [
+            buildAppBar(context),
+            context.watch<EventProvider>().eventStatus == EventStatus.loading 
+            ? buildLoadingContent()
+            : context.watch<EventProvider>().eventStatus == EventStatus.error  
+            ? buildErrorContent(context)
+            : buildContent()
+          ],
+        ),
       )
     );
   }
@@ -169,13 +160,13 @@ class _CalenderScreenState extends State<CalenderScreen> {
     );
   }
 
-  SliverList buildContentNotEmpty() {
+  SliverList buildContent() {
     return SliverList(
       delegate: SliverChildListDelegate([
-      buildCalender(),
-      const SizedBox(height: 8.0),
-      buildCalenderValueListener(),
-  ]),
+        buildCalender(),
+        const SizedBox(height: 8.0),
+        buildCalenderValueListener(),
+      ]),
     );
   }
 
@@ -268,12 +259,16 @@ class _CalenderScreenState extends State<CalenderScreen> {
               vertical: 4.0,
             ),
             decoration: BoxDecoration(
-              color: ColorResources.white,
+              color: events[i].isPass!
+              ? Colors.grey
+              : ColorResources.white,
               borderRadius: BorderRadius.circular(12.0),
               boxShadow: kElevationToShadow[3]
             ),
             child: InkWell(
               onTap: context.watch<EventProvider>().eventStatus == EventStatus.loading 
+              ? () {} 
+              : events[i].isPass! 
               ? () {} 
               : () {
                 buildEventDetailDialog(context, events, i);
@@ -320,14 +315,16 @@ class _CalenderScreenState extends State<CalenderScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Html(
-                              data: events[i].description,
-                              style: {
-                                'body': Style(
-                                  fontFamily: 'Poppins',
-                                  maxLines: 2,
-                                  textOverflow: TextOverflow.ellipsis,
-                                ),
+                           HtmlWidget(
+                              events[i].title.toString(),
+                              customStylesBuilder: (element) {
+                                if (element.localName == 'body') {
+                                  return {
+                                    'margin': '0', 
+                                    'padding': '0'
+                                  };
+                                }
+                                return null;
                               },
                             ),
                             Container(
@@ -422,11 +419,106 @@ class _CalenderScreenState extends State<CalenderScreen> {
                       },
                     ),
                   ),
+
+                  Container(
+                    margin: const EdgeInsets.only(top: 10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(getTranslated("TITLE", context),
+                          style: poppinsRegular.copyWith(
+                            fontSize: Dimensions.fontSizeDefault,
+                            fontWeight: FontWeight.w600
+                          )
+                        ),
+                        const SizedBox(height: 10.0),
+                        Text(events[i].title!.trim(),
+                          style: poppinsRegular.copyWith(
+                            color: ColorResources.black,
+                            fontSize: Dimensions.fontSizeDefault,
+                          )
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  Container(
+                    margin: const EdgeInsets.only(top: 10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(getTranslated("DESCRIPTION", context),
+                          style: poppinsRegular.copyWith(
+                            fontSize: Dimensions.fontSizeDefault,
+                            fontWeight: FontWeight.w600
+                          )
+                        ),
+                        const SizedBox(height: 10.0),
+                        HtmlWidget(
+                          events[i].description.toString(),
+                          customStylesBuilder: (element) {
+                            if (element.localName == 'body') {
+                              return {
+                                'margin': '0', 
+                                'padding': '0'
+                              };
+                            }
+                            return null;
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 10.0),
+    
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(getTranslated("LOCATION", context),
+                        style: poppinsRegular.copyWith(
+                          fontSize: Dimensions.fontSizeDefault,
+                          fontWeight: FontWeight.w600
+                        )
+                      ),
+                      const SizedBox(height: 6.0),
+                      Text(events[i].location ?? "...",
+                        style: poppinsRegular.copyWith(
+                          fontSize: Dimensions.fontSizeDefault
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  Container(
+                    margin: const EdgeInsets.only(top: 10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(getTranslated("DATE", context),
+                          style: poppinsRegular.copyWith(
+                            fontSize: Dimensions.fontSizeDefault,
+                            fontWeight: FontWeight.w600
+                          )
+                        ),
+                        const SizedBox(height: 6.0),
+                        Text(Helper.formatDate(DateTime.parse(Helper.getFormatedDate(events[i].date))),
+                          style: poppinsRegular.copyWith(
+                            fontSize: Dimensions.fontSizeDefault
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
     
                   Container(
                     margin: const EdgeInsets.only(top: 10.0),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       mainAxisSize: MainAxisSize.max,
                       children: [
 
@@ -471,107 +563,13 @@ class _CalenderScreenState extends State<CalenderScreen> {
                       ],
                     ),
                   ),
-
-                  Container(
-                    margin: const EdgeInsets.only(top: 5.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(getTranslated("TITLE", context),
-                          style: poppinsRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
-                            fontWeight: FontWeight.w600
-                          )
-                        ),
-                        const SizedBox(height: 10.0),
-                        Text(events[i].title!.trim(),
-                          style: poppinsRegular.copyWith(
-                            color: ColorResources.black,
-                            fontSize: Dimensions.fontSizeDefault,
-                          )
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 10.0),
-                  
-                  Container(
-                    margin: const EdgeInsets.only(top: 5.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(getTranslated("DESCRIPTION", context),
-                          style: poppinsRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
-                            fontWeight: FontWeight.w600
-                          )
-                        ),
-                        Html(
-                          data: events[i].description,
-                          shrinkWrap: true,
-                          style: {
-                            'body': Style(
-                              margin: Margins.zero,
-                              fontFamily: 'Poppins',
-                            ),
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-    
-                  Container(
-                    margin: const EdgeInsets.only(top: 5.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(getTranslated("LOCATION", context),
-                          style: poppinsRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
-                            fontWeight: FontWeight.w600
-                          )
-                        ),
-                        const SizedBox(height: 6.0),
-                        Text(events[i].location ?? "...",
-                          style: poppinsRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  Container(
-                    margin: const EdgeInsets.only(top: 10.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(getTranslated("DATE", context),
-                          style: poppinsRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
-                            fontWeight: FontWeight.w600
-                          )
-                        ),
-                        const SizedBox(height: 6.0),
-                        Text(Helper.formatDate(DateTime.parse(Helper.getFormatedDate(events[i].date))),
-                          style: poppinsRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
     
                   Container(
                     margin: const EdgeInsets.only(
-                      top: Dimensions.marginSizeSmall,
-                      bottom: Dimensions.marginSizeSmall
+                      top: 20.0,
+                      bottom: 20.0
                     ),
+<<<<<<< HEAD:lib/views/screens/calender/calender.dart
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       children: [
@@ -617,8 +615,106 @@ class _CalenderScreenState extends State<CalenderScreen> {
                         )
     
                       ],
+=======
+                    child: CustomButton(
+                      onTap: events[i].joined == true 
+                      ? () { }
+                      : () async {
+                        setState(() {
+                          getData();
+                        });
+                        await context.read<EventProvider>().joinEvent(
+                          context, 
+                          eventId: events[i].id.toString(),
+                        );
+                      }, 
+                      height: 35.0,
+                      isBorder: false,
+                      isBorderRadius: true,
+                      isLoading: context.watch<EventProvider>().eventJoinStatus == EventJoinStatus.loading 
+                        ? true 
+                        : false,
+                      btnColor: events[i].joined == true 
+                        ? ColorResources.backgroundDisabled : ColorResources.success,
+                      btnTxt: events[i].joined == true ? "Tergabung" : "Gabung",
+                    ),
+                  ),
+
+                  Container(
+                    margin: const EdgeInsets.only(
+                      top: 20.0,
+                      bottom: 20.0
+                    ),
+                    child: CustomButton(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (context) {
+                            return SizedBox(
+                              height: 300,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.all(16.0),
+                                    child: Text("Pengguna yang berpatisipasi",
+                                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: ListView.builder(
+                                      itemCount: events[i].users!.length,
+                                      itemBuilder: (context, index) {
+                                        return ListTile(
+                                          title: Text(events[i].users![index]["fullname"]),
+                                          leading: CachedNetworkImage(
+                                          imageUrl: events[i].users![index]["avatar"],
+                                            imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
+                                              backgroundColor: Colors.transparent,
+                                              backgroundImage: imageProvider,
+                                              radius: 20.0,
+                                            ),
+                                            placeholder: (BuildContext context, String url) => const CircleAvatar(
+                                              backgroundColor: Colors.transparent,
+                                              backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                                              radius: 20.0,
+                                            ),
+                                            errorWidget: (BuildContext context, String url, dynamic error) => const CircleAvatar(
+                                              backgroundColor: Colors.transparent,
+                                              backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
+                                              radius: 20.0,
+                                            )
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ).then((selectedUser) {
+                          if (selectedUser != null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('You selected: $selectedUser'),
+                              ),
+                            );
+                          }
+                        });
+                      },
+                      height: 35.0,
+                      isBorder: false,
+                      isBorderRadius: true,
+                      isLoading: context.watch<EventProvider>().eventJoinStatus == EventJoinStatus.loading 
+                      ? true 
+                      : false,
+                      btnColor: ColorResources.blue,
+                      btnTxt: "Lihat pengguna yang berpartisipasi (${events[i].users!.length})",
+>>>>>>> 3de3b56a677787d3a71350f1578c9cfdc07bb277:lib/views/screens/calendar/calendar.dart
                     ),
                   )
+
                 ],
               ),
             ),

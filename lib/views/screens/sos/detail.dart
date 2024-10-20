@@ -4,10 +4,12 @@ import 'package:hp3ki/providers/profile/profile.dart';
 import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
 import 'package:provider/provider.dart';
 import 'package:slide_to_confirm/slide_to_confirm.dart';
-import 'package:hp3ki/services/navigation.dart';
+
 import 'package:hp3ki/providers/sos/sos.dart';
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
+
 import 'package:hp3ki/localization/language_constraints.dart';
+
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
@@ -25,10 +27,10 @@ class SosDetailScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<SosDetailScreen> createState() => _SosDetailScreenState();
+  State<SosDetailScreen> createState() => SosDetailScreenState();
 }
 
-class _SosDetailScreenState extends State<SosDetailScreen> {
+class SosDetailScreenState extends State<SosDetailScreen> {
 
   @override
   void initState() {

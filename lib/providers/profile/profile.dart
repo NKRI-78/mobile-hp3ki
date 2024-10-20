@@ -319,7 +319,7 @@ class ProfileProvider with ChangeNotifier {
 
   AwesomeDialog showNonPlatinumLimit(context) {
     return CustomDialog.showWarningMemberNonPlatinum(context,
-        warning:
-            "Fitur ini dibatasi karena anda belum menjadi member platinum, silahkan upgrade member terlebih dahulu.");
+      warning: "Fitur ini dibatasi karena anda belum menjadi member platinum, silahkan upgrade member terlebih dahulu."
+    );
   }
 }

@@ -718,12 +718,13 @@ class PostsState extends State<Posts> {
   //   );
   // }
 
-  Widget grantedDeletePost(context) {
+
+  Widget grantedDeleteComment(context, String commentId) {
     return PopupMenuButton(
       itemBuilder: (BuildContext buildContext) { 
         return [
           PopupMenuItem(
-            child: Text(getTranslated("DELETE_POST", context),
+            child: Text(getTranslated("DELETE_COMMENT", context),
               style: robotoRegular.copyWith(
                 color: ColorResources.black,
                 fontSize: Dimensions.fontSizeSmall

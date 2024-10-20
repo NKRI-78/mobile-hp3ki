@@ -1,4 +1,3 @@
-import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:hp3ki/localization/language_constraints.dart';
 import 'package:hp3ki/views/screens/my_store_add_product/persentation/providers/my_store_add_product_proivder.dart';
@@ -67,11 +66,11 @@ class ProductStockWidget extends StatelessWidget {
                       },
                       keyboardType: TextInputType.number,
                       inputFormatters: [
-                        CurrencyTextInputFormatter(
-                          locale: 'id_ID',
-                          decimalDigits: 0,
-                          symbol: '',
-                        ),
+                        // CurrencyTextInputFormatter(
+                        //   locale: 'id_ID',
+                        //   decimalDigits: 0,
+                        //   symbol: '',
+                        // ),
                       ],
                       decoration: InputDecoration(
                         errorStyle: const TextStyle(height: 0, fontSize: 0),
@@ -105,11 +104,11 @@ class ProductStockWidget extends StatelessWidget {
                             .setState(minOrderState: value);
                       },
                       inputFormatters: [
-                        CurrencyTextInputFormatter(
-                          locale: 'id_ID',
-                          decimalDigits: 0,
-                          symbol: '',
-                        ),
+                        // CurrencyTextInputFormatter(
+                        //   locale: 'id_ID',
+                        //   decimalDigits: 0,
+                        //   symbol: '',
+                        // ),
                       ],
                       decoration: InputDecoration(
                         errorStyle: const TextStyle(height: 0, fontSize: 0),
@@ -143,11 +142,11 @@ class ProductStockWidget extends StatelessWidget {
                             .setState(weightState: value);
                       },
                       inputFormatters: [
-                        CurrencyTextInputFormatter(
-                          locale: 'id_ID',
-                          decimalDigits: 0,
-                          symbol: '',
-                        ),
+                        // CurrencyTextInputFormatter(
+                        //   locale: 'id_ID',
+                        //   decimalDigits: 0,
+                        //   symbol: '',
+                        // ),
                       ],
                       decoration: InputDecoration(
                         floatingLabelBehavior: FloatingLabelBehavior.always,

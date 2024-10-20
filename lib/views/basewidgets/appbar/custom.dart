@@ -32,7 +32,7 @@ class CustomAppBar {
         title,
         style: poppinsRegular.copyWith(
           color: ColorResources.black,
-          fontSize: Dimensions.fontSizeExtraLarge,
+          fontSize: Dimensions.fontSizeOverLarge,
           fontWeight: FontWeight.bold,
         ),
       ),

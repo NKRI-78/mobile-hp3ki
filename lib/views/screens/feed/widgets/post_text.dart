@@ -43,11 +43,19 @@ class PostTextState extends State<PostText> {
           trimExpandedText: getTranslated("LESS_MORE", context),
           moreStyle: robotoRegular.copyWith(
             fontSize: Dimensions.fontSizeSmall, 
+<<<<<<< HEAD
             fontWeight: FontWeight.bold
           ),
           lessStyle: robotoRegular.copyWith(
             fontSize: Dimensions.fontSizeSmall, 
             fontWeight: FontWeight.bold
+=======
+            fontWeight: FontWeight.w600
+          ),
+          lessStyle: robotoRegular.copyWith(
+            fontSize: Dimensions.fontSizeSmall, 
+            fontWeight: FontWeight.w600
+>>>>>>> 3de3b56a677787d3a71350f1578c9cfdc07bb277
           ),
         ),
       ],

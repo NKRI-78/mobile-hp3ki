@@ -31,8 +31,8 @@ class LocationProvider extends ChangeNotifier {
     try {
       SharedPrefs.deleteOtherMemberPosition();
       double otherMemberPosition = Geolocator.distanceBetween(
-        getCurrentLat,
-        getCurrentLng,
+        getCurrentLat!,
+        getCurrentLng!,
         double.parse(otherMemberLat),
         double.parse(otherMemberLng),
       );
@@ -99,9 +99,9 @@ class LocationProvider extends ChangeNotifier {
 
   String get getCurrentNameAddressCheckIn => SharedPrefs.getCurrentNameAddressCheckIn(); 
 
-  double get getCurrentLat => SharedPrefs.getLat();
+  double? get getCurrentLat => SharedPrefs.getLat();
   
-  double get getCurrentLng => SharedPrefs.getLng();
+  double? get getCurrentLng => SharedPrefs.getLng();
 
   double get getCurrentLatCheckIn => SharedPrefs.getLatCheckIn();
 

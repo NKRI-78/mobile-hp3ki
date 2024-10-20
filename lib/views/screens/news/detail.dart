@@ -2,7 +2,6 @@
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:gallery_saver_updated/gallery_saver.dart';
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -13,33 +12,35 @@ import 'package:hp3ki/services/navigation.dart';
 
 import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
 
-import 'package:hp3ki/providers/internet/internet.dart';
 import 'package:hp3ki/providers/news/news.dart';
 
-import 'package:hp3ki/views/screens/connection/connection.dart';
 import 'package:hp3ki/views/webview/webview.dart';
 
-import 'package:hp3ki/utils/helper.dart';
-import 'package:hp3ki/utils/extension.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 
-class DetailNewsScreen extends StatefulWidget {
+class NewsDetailScreen extends StatefulWidget {
+  final String newsId;
 
-  const DetailNewsScreen({ Key? key,}) : super(key: key);
+  const NewsDetailScreen({ 
+    required this.newsId,
+    Key? key,
+  }) : super(key: key);
   
   @override
-  DetailInfoPageState createState() => DetailInfoPageState();
+  NewsDetailScreenState createState() => NewsDetailScreenState();
 }
 
-class DetailInfoPageState extends State<DetailNewsScreen> {
+class NewsDetailScreenState extends State<NewsDetailScreen> {
 
-  String? imageUrl;
-  String? title;
-  String? content;
-  String? titleMore;
-  String? date;
+  bool loading = false;
+
+  String imageUrl = "";
+  String title = "";
+  String content = "";
+  String titleMore = "";
+  String date = "";
 
   late ScrollController scrollC;
 
@@ -58,12 +59,31 @@ class DetailInfoPageState extends State<DetailNewsScreen> {
   }
 
   Future<void> getData() async {
-    if(mounted){
-      imageUrl = context.read<NewsProvider>().newsDetail!.image;
-      title = context.read<NewsProvider>().newsDetail!.title;
-      content = context.read<NewsProvider>().newsDetail!.desc;
-      date = context.read<NewsProvider>().newsDetail!.createdAt;
-    }
+
+    setState(() {
+      loading = true;
+    });
+
+    if(!mounted) return;
+      await context.read<NewsProvider>().getNewsDetail(
+        context, 
+        newsId: widget.newsId.toString()
+      );
+
+      setState(() {
+        loading = false;
+      });
+
+      imageUrl = loading ? "..." : context.read<NewsProvider>().newsDetail!.image.toString();
+      title = loading ? "..." : context.read<NewsProvider>().newsDetail!.title.toString();
+      content = loading ? "..." : context.read<NewsProvider>().newsDetail!.desc.toString();
+      date = loading ? "..." : context.read<NewsProvider>().newsDetail!.createdAt!;
+
+      if (title.length > 24) {
+        titleMore = title.substring(0, 24);
+      } else {
+        titleMore = title;
+      }
   }
 
   @override
@@ -73,13 +93,7 @@ class DetailInfoPageState extends State<DetailNewsScreen> {
     scrollC = ScrollController();
     scrollC.addListener(scrollListener);
 
-    Future.wait([getData()]);
-    
-    if (title!.length > 24) {
-      titleMore = title!.substring(0, 24);
-    } else {
-      titleMore = title;
-    }
+    Future.microtask(() => getData());
   }
 
   @override
@@ -90,43 +104,29 @@ class DetailInfoPageState extends State<DetailNewsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return buildUI();  
-  }
-
-  Widget buildUI() {
-    return Consumer<InternetProvider>(
-      builder: (BuildContext context, InternetProvider internetProvider, Widget? child) {
-        return Scaffold(
-          backgroundColor: ColorResources.white,
-          body: internetProvider.internetStatus == InternetStatus.disconnected
-          ? const NoConnectionScreen()
-          : buildConnectionAvailableContent(context),
-        );
-      },
-    );
-  }
-
-  Widget buildConnectionAvailableContent(BuildContext context) {
-    return Consumer<NewsProvider>(
-      builder: (context, newsProvider, child) {
-        if(newsProvider.newsDetailStatus == NewsDetailStatus.loading) {
-          return const Center(child: CircularProgressIndicator(color: ColorResources.primary,));
+    return Scaffold(
+      backgroundColor: ColorResources.white,
+      body: Consumer<NewsProvider>(
+        builder: (context, newsProvider, child) {
+          if(newsProvider.newsDetailStatus == NewsDetailStatus.loading) {
+            return const Center(child: CircularProgressIndicator(color: ColorResources.primary,));
+          }
+          if(newsProvider.newsDetailStatus == NewsDetailStatus.empty) {
+            return const Center(child: Text('Tidak ada detail berita.'));
+          }
+          if(newsProvider.newsDetailStatus == NewsDetailStatus.loading) {
+            return const Center(child: Text('Ada yang salah.'));
+          }
+          return CustomScrollView(
+            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+            controller: scrollC,
+            slivers: [
+              buildAppBar(context),
+              buildBodyContent()
+            ],
+          );
         }
-        if(newsProvider.newsDetailStatus == NewsDetailStatus.empty) {
-          return const Center(child: Text('Tidak ada detail berita.'));
-        }
-        if(newsProvider.newsDetailStatus == NewsDetailStatus.loading) {
-          return const Center(child: Text('Ada yang salah.'));
-        }
-        return CustomScrollView(
-          physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-          controller: scrollC,
-          slivers: [
-            buildAppBar(context),
-            buildBodyContent()
-          ],
-        );
-      }
+      )
     );
   }
 
@@ -179,7 +179,7 @@ class DetailInfoPageState extends State<DetailNewsScreen> {
                           max: 1,
                           msg: '${getTranslated("DOWNLOADING", context)}...'
                         );
-                        await GallerySaver.saveImage(imageUrl!);
+                        await GallerySaver.saveImage(imageUrl);
                         pr.close();
                         ShowSnackbar.snackbar(getTranslated("SAVE_TO_GALLERY", context), "", ColorResources.success);
                       } catch(e, stacktrace) {
@@ -220,7 +220,7 @@ class DetailInfoPageState extends State<DetailNewsScreen> {
           width: double.infinity,
           height: double.infinity,
           child: CachedNetworkImage(
-            imageUrl: imageUrl ?? "...",
+            imageUrl: imageUrl,
             fit: BoxFit.fitHeight,
             placeholder: (BuildContext context, String url)  {
               return Center(
@@ -246,7 +246,7 @@ class DetailInfoPageState extends State<DetailNewsScreen> {
           opacity: isShrink ? 1.0 : 0.0,
           duration: const Duration(milliseconds: 150),
           child: Text(
-            titleMore! + "...",
+            titleMore + "...",
             maxLines: 1,
             style: poppinsRegular.copyWith(
               fontSize: Dimensions.fontSizeDefault,
@@ -267,6 +267,7 @@ class DetailInfoPageState extends State<DetailNewsScreen> {
           width: double.infinity,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Container(
                 width: double.infinity,
@@ -274,7 +275,7 @@ class DetailInfoPageState extends State<DetailNewsScreen> {
                 child: AnimatedOpacity(
                   opacity: isShrink ? 0.0 : 1.0,
                   duration: const Duration(milliseconds: 250),
-                  child: Text(title!.toTitleCase(),
+                  child: Text(title,
                   textAlign: TextAlign.start,
                     style: poppinsRegular.copyWith(
                       fontSize: Dimensions.fontSizeLarge,
@@ -287,7 +288,7 @@ class DetailInfoPageState extends State<DetailNewsScreen> {
               Container(
                 margin: const EdgeInsets.only(bottom: 10.0),
                 child: Text(
-                  Helper.formatDate(DateTime.parse(Helper.getFormatedDate(date))),
+                  date,
                   style: poppinsRegular.copyWith(
                     color: ColorResources.grey, 
                     fontSize: Dimensions.fontSizeDefault
@@ -300,23 +301,67 @@ class DetailInfoPageState extends State<DetailNewsScreen> {
               ),
               Container(
                 margin: const EdgeInsets.only(top: 5.0, bottom: 10.0),
-                child: Html(
-                  onLinkTap: (String? url, Map<String, String> attributes, element) async {
+                child: HtmlWidget(
+                content.toString(),
+                onTapUrl: (String? val) {
+                  debugPrint(val.toString());
+                  return false;
+                },
+                customStylesBuilder: (element) {
+                  if (element.localName == 'body') {
+                    return {
+                      'margin': '0', 
+                      'padding': '0'
+                    };
+                  }
+                  return null;
+                },
+                customWidgetBuilder: (element) {
+                  if (element.localName == 'a') {
+                    final url = element.attributes['href'];
                     NS.push(context, WebViewScreen(
                       url: url!,
-                      title: title ?? "HP3KI Webview"
+                      title: title
                     ));
-                  },
-                  style: {
-                    'a': Style(
-                      color: ColorResources.blueDrawerPrimary,
-                    ),
-                    'body': Style(
-                      fontSize: FontSize.larger
-                    ),
-                  },
-                  data: content
-                ),
+
+                    return null;
+                  }
+
+                  if (element.localName == 'span') {
+                    final text = element.text.trim();
+                    if (text.contains('https://')) {
+                      final url = text.substring(text.indexOf('https://'));
+                      NS.push(context, WebViewScreen(
+                        url: url,
+                        title: title
+                      ));
+
+                      return null;
+                    }
+                  }
+
+                  return null;
+                },
+              ),
+                
+                //  Html(
+                //   onLinkTap: (String? url, Map<String, String> attributes, element) async {
+                //     NS.push(context, WebViewScreen(
+                //       url: url!,
+                //       title: title
+                //     ));
+                //   },
+                //   style: {
+                //     'a': Style(
+                //       color: ColorResources.blueDrawerPrimary,
+                //     ),
+                //     'body': Style(
+                //       fontSize: FontSize.larger
+                //     ),
+                //   },
+                //   data: content
+                // ),
+
               ),
             ],
           ),

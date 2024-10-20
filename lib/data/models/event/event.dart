@@ -18,10 +18,9 @@ class EventModel {
         error: json["error"],
         message: json["message"],
         data: List<EventData>.from(
-            json["data"].map((x) => EventData.fromJson(x))),
+        json["data"].map((x) => EventData.fromJson(x))),
       );
 }
-
 class EventData extends Equatable {
   final String? id;
   final String? picture;
@@ -30,6 +29,8 @@ class EventData extends Equatable {
   final String? date;
   final String? location;
   final bool? paid;
+  final bool? isPass;
+  final List<dynamic>? users; // Specify the type if possible
   final bool? joined;
   final String? start;
   final String? end;
@@ -42,48 +43,41 @@ class EventData extends Equatable {
     this.date,
     this.location,
     this.paid,
+    this.isPass,
+    this.users,
     this.joined,
     this.start,
     this.end,
   });
 
   factory EventData.fromJson(Map<String, dynamic> json) => EventData(
-        id: json["id"],
-        picture: json["picture"],
-        title: json["title"],
-        description: json["description"],
-        date: json["date"],
-        location: json["location"],
-        paid: json["paid"],
-        joined: json["joined"],
-        start: json["start"],
-        end: json["end"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "picture": picture,
-        "title": title,
-        "description": description,
-        "date": date,
-        "location": location,
-        "paid": paid,
-        "joined": joined,
-        "start": start,
-        "end": end,
-      };
+    id: json["id"] as String?,
+    picture: json["picture"] as String?,
+    title: json["title"] as String?,
+    description: json["description"] as String?,
+    date: json["date"] as String?,
+    location: json["location"] as String?,
+    paid: json["paid"] as bool?,
+    isPass: json["is_passed"] as bool?,
+    users: json["users"] != null ? List<dynamic>.from(json["users"]) : null, // Adjust type here
+    joined: json["joined"] as bool?,
+    start: json["start"] as String?,
+    end: json["end"] as String?,
+  );
 
   @override
   List<Object?> get props => [
-        id,
-        picture,
-        title,
-        description,
-        date,
-        location,
-        paid,
-        joined,
-        start,
-        end,
-      ];
+    id,
+    picture,
+    title,
+    description,
+    date,
+    location,
+    paid,
+    isPass,
+    users,
+    joined,
+    start,
+    end,
+  ];
 }

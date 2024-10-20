@@ -32,8 +32,8 @@ class _TransactionNotifListState extends State<TransactionNotifList> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      fetchPaidOrder();
-      fetchWaitingPayment();
+      // fetchPaidOrder();
+      // fetchWaitingPayment();
     });
   }
 

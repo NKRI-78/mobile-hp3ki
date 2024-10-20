@@ -49,8 +49,8 @@ class MembernearProvider with ChangeNotifier {
       _markers = [];
       MemberNearModel? mnm = await nr.getMembernear(
         userId: SharedPrefs.getUserId(),
-        lat: lp.getCurrentLat,
-        lng: lp.getCurrentLng
+        lat: lp.getCurrentLat!,
+        lng: lp.getCurrentLng!
       );
       List<MemberNearData> nd = mnm!.data!;
       for (MemberNearData membernear in nd) {
@@ -201,6 +201,6 @@ class MembernearProvider with ChangeNotifier {
     }
   }
 
-  double get getCurrentLat => lp.getCurrentLat;
-  double get getCurrentLng => lp.getCurrentLng;
+  double get getCurrentLat => lp.getCurrentLat!;
+  double get getCurrentLng => lp.getCurrentLng!;
 }

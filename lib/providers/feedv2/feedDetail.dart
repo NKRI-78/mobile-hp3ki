@@ -486,4 +486,5 @@ class FeedDetailProviderV2 with ChangeNotifier {
       debugPrint(e.toString());
     } catch (_) {}
   }
+
 }

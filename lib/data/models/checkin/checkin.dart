@@ -14,12 +14,11 @@ class CheckInModel {
   });
 
   factory CheckInModel.fromJson(Map<String, dynamic> json) => CheckInModel(
-        status: json["status"],
-        error: json["error"],
-        message: json["message"],
-        data: List<CheckInData>.from(
-            json["data"].map((x) => CheckInData.fromJson(x))),
-      );
+    status: json["status"],
+    error: json["error"],
+    message: json["message"],
+    data: List<CheckInData>.from(json["data"].map((x) => CheckInData.fromJson(x))),
+  );
 }
 
 class CheckInData extends Equatable {
@@ -27,8 +26,11 @@ class CheckInData extends Equatable {
   final String? title;
   final String? desc;
   final String? location;
+  final String? lat; 
+  final String? lng;
   final String? start;
   final String? end;
+  final bool? isPass;
   final Joined? joined;
   final bool? join;
   final String? checkinDate;
@@ -39,8 +41,11 @@ class CheckInData extends Equatable {
     this.title,
     this.desc,
     this.location,
+    this.lat,
+    this.lng,
     this.start,
     this.end,
+    this.isPass,
     this.joined,
     this.join,
     this.checkinDate,
@@ -48,44 +53,37 @@ class CheckInData extends Equatable {
   });
 
   factory CheckInData.fromJson(Map<String, dynamic> json) => CheckInData(
-        id: json["id"],
-        title: json["title"],
-        desc: json["desc"],
-        location: json["location"],
-        start: json["start"],
-        end: json["end"],
-        joined: Joined.fromJson(json["joined"]),
-        join: json["join"],
-        checkinDate: json["checkin_date"],
-        user: User.fromJson(json["user"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "title": title,
-        "desc": desc,
-        "start": start,
-        "end": end,
-        "join": join,
-        "checkin_date": checkinDate,
-        "location": location,
-        "joined": joined?.toJson(),
-        "user": user?.toJson(),
-      };
+    id: json["id"],
+    title: json["title"],
+    desc: json["desc"],
+    location: json["location"],
+    lat: json["lat"],
+    lng: json["lng"],
+    start: json["start"],
+    end: json["end"],
+    isPass: json["is_pass"],
+    joined: Joined.fromJson(json["joined"]),
+    join: json["join"],
+    checkinDate: json["checkin_date"],
+    user: User.fromJson(json["user"]),
+  );
 
   @override
   List<Object?> get props => [
-        id,
-        title,
-        desc,
-        location,
-        start,
-        end,
-        joined,
-        join,
-        checkinDate,
-        user,
-      ];
+    id,
+    title,
+    desc,
+    location,
+    lat,
+    lng,
+    start,
+    end,
+    isPass,
+    joined,
+    join,
+    checkinDate,
+    user,
+  ];
 }
 
 class Joined extends Equatable {
@@ -96,19 +94,13 @@ class Joined extends Equatable {
   });
 
   factory Joined.fromJson(Map<String, dynamic> json) => Joined(
-        user: List<User>.from(json["user"].map((x) => User.fromJson(x))),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "user": user == null
-            ? []
-            : List<dynamic>.from(user!.map((x) => x.toJson())),
-      };
+    user: List<User>.from(json["user"].map((x) => User.fromJson(x))),
+  );
 
   @override
   List<Object?> get props => [
-        user,
-      ];
+    user,
+  ];
 }
 
 class User extends Equatable {
@@ -123,21 +115,15 @@ class User extends Equatable {
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-        id: json["id"],
-        name: json["name"],
-        avatar: json["avatar"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "name": name,
-        "avatar": avatar,
-      };
+    id: json["id"],
+    name: json["name"],
+    avatar: json["avatar"],
+  );
 
   @override
   List<Object?> get props => [
-        id,
-        name,
-        avatar,
-      ];
+    id,
+    name,
+    avatar,
+  ];
 }

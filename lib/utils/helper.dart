@@ -29,7 +29,14 @@ class Helper {
   static String formatDate(DateTime dateTime) {
     initializeDateFormatting("id");
     // return DateFormat.yMMMMEEEEd("id").format(dateTime);
-    return DateFormat('dd-MM-yyyy').format(dateTime);
+    // return DateFormat('dd-MM-yyyy').format(dateTime);
+    return DateFormat('dd MMMM yyyy').format(dateTime);
+  }
+
+  static String formatDateWithTime(DateTime dateTime) {
+    initializeDateFormatting("id");
+    
+    return DateFormat('dd MMMM yyyy hh:mm').format(dateTime);
   }
 
   static createUniqueId() {

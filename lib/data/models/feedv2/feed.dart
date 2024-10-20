@@ -57,6 +57,7 @@ class Forum {
     this.like,
   });
 
+<<<<<<< HEAD
   factory Forum.fromJson(Map<String, dynamic> json) {
 
     return  Forum(
@@ -71,6 +72,19 @@ class Forum {
       like: ForumLikes.fromJson(json["like"]),
     );
   }
+=======
+  factory Forum.fromJson(Map<String, dynamic> json) => Forum(
+    id: json["id"],
+    media: List<Media>.from(json["media"].map((x) => Media.fromJson(x))),
+    link: json["link"],
+    caption: json["caption"],
+    type: json["type"],
+    createdAt: json["created_at"],
+    user: User.fromJson(json["user"]),
+    comment: ForumComment.fromJson(json["comment"]),
+    like: ForumLikes.fromJson(json["like"]),
+  );
+>>>>>>> 3de3b56a677787d3a71350f1578c9cfdc07bb277
 }
 
 class ForumComment {
