@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:detectable_text_field/detectable_text_field.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:flutter_animated_dialog_updated/flutter_animated_dialog.dart';
 
 import 'package:hp3ki/maps/src/utils/uuid.dart';
 
@@ -189,7 +189,7 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
                 ),
                 trailing: feedDetailProvider.ar.getUserId() == feedDetailProvider.feedDetailData.forum!.user?.id
                 ? grantedDeletePost(context) 
-                : const TermsPopup()
+                : TermsPopup()
               ),
         
               Container(

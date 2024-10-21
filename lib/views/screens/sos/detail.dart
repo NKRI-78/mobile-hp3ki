@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:hp3ki/providers/profile/profile.dart';
+import 'package:hp3ki/services/navigation.dart';
 import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
 import 'package:provider/provider.dart';
 import 'package:slide_to_confirm/slide_to_confirm.dart';

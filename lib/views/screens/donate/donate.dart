@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide CarouselController;
 import 'package:flutter/services.dart';
-// import 'package:hp3ki/providers/banner/banner.dart';
 import 'package:hp3ki/views/screens/comingsoon/comingsoon.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:shimmer/shimmer.dart';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:carousel_indicator/carousel_indicator.dart';
 
@@ -28,7 +28,6 @@ class DonateScreen extends StatefulWidget {
 }
 
 class _DonateScreenState extends State<DonateScreen> {
-  late CarouselController cc;
   late ScrollController sc;
 
   int currentIndex = 0;
@@ -41,7 +40,6 @@ class _DonateScreenState extends State<DonateScreen> {
 
   @override
   void initState() {
-    cc = CarouselController();
     sc = ScrollController();
 
     getData();
@@ -410,7 +408,6 @@ class _DonateScreenState extends State<DonateScreen> {
               DelayedDisplay(
                 delay: const Duration(seconds: 1),
                 child: CarouselSlider.builder(
-                  carouselController: cc,
                   options: CarouselOptions(
                     height: 200.0,
                     autoPlay: true,
@@ -500,7 +497,6 @@ class _DonateScreenState extends State<DonateScreen> {
                     height: 15.0,
                     cornerRadius: 30.0,
                     space: 10.0,
-                    // count: bannerProvider.banners.length,
                     count: banner.length,
                     index: currentIndex,
                   ),

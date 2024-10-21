@@ -9,9 +9,9 @@ import 'package:hp3ki/utils/dio.dart';
 
 import 'package:hp3ki/views/screens/my_store/persentation/pages/my_store_page.dart';
 import 'package:hp3ki/views/screens/my_store_create/persentation/pages/store_open_page.dart';
-import 'package:hp3ki/views/screens/shop/data/models/shop.dart';
-import 'package:hp3ki/views/screens/shop/domain/shop_repository.dart';
-import 'package:hp3ki/views/screens/shop/persentation/providers/shop_provider.dart';
+import 'package:hp3ki/views/screens/shipping_address_add/shop/data/models/shop.dart';
+import 'package:hp3ki/views/screens/shipping_address_add/shop/domain/shop_repository.dart';
+import 'package:hp3ki/views/screens/shipping_address_add/shop/persentation/providers/shop_provider.dart';
 import 'package:hp3ki/views/screens/shop_cart/persentation/pages/shop_cart_page.dart';
 import 'package:hp3ki/views/screens/shop_detail/persentation/pages/shop_detail_page.dart';
 import 'package:provider/provider.dart';

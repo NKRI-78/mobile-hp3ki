@@ -5,7 +5,7 @@ import 'package:rxdart/rxdart.dart';
 
 class NotificationService {
   static final notifications = FlutterLocalNotificationsPlugin();
-  static final onNotifications = BehaviorSubject<String>();
+  static final onNotifications = BehaviorSubject<NotificationResponse >();
 
   static Future notificationDetails() async {
     AndroidNotificationDetails androidNotificationDetails = const AndroidNotificationDetails(
@@ -21,7 +21,7 @@ class NotificationService {
     );
     return NotificationDetails(
       android: androidNotificationDetails,
-      iOS: const IOSNotificationDetails(
+      macOS: const DarwinNotificationDetails(
         presentBadge: true,
         presentSound: true,
         presentAlert: true,
@@ -32,7 +32,7 @@ class NotificationService {
   static Future init() async {
     InitializationSettings settings =  const InitializationSettings(
       android: AndroidInitializationSettings('@drawable/ic_notification'),
-      iOS: IOSInitializationSettings(
+      macOS: DarwinInitializationSettings(
         requestAlertPermission: true,
         requestBadgePermission: true,
         requestSoundPermission: true,
@@ -44,8 +44,8 @@ class NotificationService {
 
     await notifications.initialize(
       settings,
-      onSelectNotification: (payload) async {
-        onNotifications.add(payload!);
+      onDidReceiveNotificationResponse: (payload) async {
+        onNotifications.add(payload);
       }
     );
   }

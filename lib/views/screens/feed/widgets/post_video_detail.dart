@@ -46,7 +46,7 @@ class PostVideoDetailState extends State<PostVideoDetail> with AutomaticKeepAliv
       ..addListener(updateState);
       await videoC!.initialize();
     } catch (e) {
-      debugPrint('Error initializing video player: $e');
+      print('Error initializing video player: $e');
     } finally {
       if (mounted) {
         setState(() {});
@@ -95,7 +95,7 @@ class PostVideoDetailState extends State<PostVideoDetail> with AutomaticKeepAliv
     super.build(context);
 
     if (videoC == null || !videoC!.value.isInitialized) {
-      return const SizedBox(
+      return SizedBox(
         height: 80.0,
         child: Center(
           child: SpinKitChasingDots(
@@ -134,12 +134,12 @@ class PostVideoDetailState extends State<PostVideoDetail> with AutomaticKeepAliv
               child: InkWell(
                 borderRadius: BorderRadius.circular(10.0),
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(8.0),
                   child: isPlay
-                  ? const Icon(Icons.pause,
+                  ? Icon(Icons.pause,
                       color: ColorResources.white,
                     )
-                  : const Icon(Icons.play_arrow,
+                  : Icon(Icons.play_arrow,
                       color: ColorResources.white,
                     )
                 ),

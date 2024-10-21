@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:hp3ki/localization/language_constraints.dart';
 import 'package:hp3ki/utils/modal.dart';
 import 'package:hp3ki/views/screens/my_store_add_product/persentation/providers/my_store_add_product_proivder.dart';
@@ -66,11 +65,8 @@ class _ProductImagesWidgetState extends State<ProductImagesWidget> {
       );
 
       for (var imageAsset in resultList) {
-        String? filePath = await LecleFlutterAbsolutePath.getAbsolutePath(
-            uri: imageAsset.identifier);
-        File compressedFile = await FlutterNativeImage.compressImage(filePath!,
-            quality: 50, percentage: 50);
-        provider.setImages([File(compressedFile.path)]);
+        String? filePath = await LecleFlutterAbsolutePath.getAbsolutePath(uri: imageAsset.identifier);
+        provider.setImages([File(filePath!)]);
       }
     }
   }

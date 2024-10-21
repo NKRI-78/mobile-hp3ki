@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:gallery_saver_updated/gallery_saver.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:gallery_saver_plus/gallery_saver.dart';
+import 'package:flutter_animated_dialog_updated/flutter_animated_dialog.dart';
 
 import 'package:hp3ki/services/navigation.dart';
 
@@ -213,11 +213,7 @@ class PostImageState extends State<PostImage> {
                       ],
                     ),
                     CachedNetworkImage(
-<<<<<<< HEAD
                       imageUrl: "${widget.medias[3].path}",
-=======
-                      imageUrl: "${widget.medias[4].path}",
->>>>>>> 3de3b56a677787d3a71350f1578c9cfdc07bb277
                       imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) => Container(
                         height: 150.0,
                         decoration: BoxDecoration(
@@ -304,18 +300,9 @@ class PostImageState extends State<PostImage> {
                         builder: (BuildContext c, Function s) {
                         return ElevatedButton(
                           onPressed: () async { 
-<<<<<<< HEAD
                             await GallerySaver.saveImage("${widget.medias.first.path}");
                             NS.pop();
                             ShowSnackbar.snackbar("Gambar telah disimpan pada galeri", "", ColorResources.success);
-=======
-                            Directory documentsIos = await getApplicationDocumentsDirectory();
-                            String? saveDir = Platform.isIOS 
-                            ? documentsIos.path 
-                            : await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS);
-                            NS.pop(context);
-                            ShowSnackbar.snackbar(context, "Gambar telah disimpan pada $saveDir", "", ColorResources.success);
->>>>>>> 3de3b56a677787d3a71350f1578c9cfdc07bb277
                           },
                           child: Text("Unduh Gambar", 
                             style: robotoRegular.copyWith(

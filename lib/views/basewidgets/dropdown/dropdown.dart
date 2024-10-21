@@ -15,7 +15,7 @@ import 'package:hp3ki/data/models/organization/organization.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 
 class CustomDropdown {
-  static InputDecoration? buildDropdownSearchDecoration(
+  static InputDecoration buildDropdownSearchDecoration(
       {required String label}) {
     return InputDecoration(
       fillColor: const Color(0xffFBFBFB),
@@ -61,8 +61,10 @@ class CustomDropdown {
       required String searchHint,
       required TextEditingController dropdownC}) {
     return DropdownSearch<String>(
-      items: options,
-      dropdownSearchDecoration: buildDropdownSearchDecoration(label: label),
+      items: (filter, loadProps) => options,
+      decoratorProps: DropDownDecoratorProps(
+        decoration: buildDropdownSearchDecoration(label: label)
+      ),
       popupProps: PopupProps.dialog(
           showSearchBox: true,
           showSelectedItems: false,
@@ -80,9 +82,11 @@ class CustomDropdown {
       required String searchHint,
       required TextEditingController dropdownC}) {
     return DropdownSearch<JobData>(
-      items: options,
+      items: (filter, loadProps) => options,
+      decoratorProps: DropDownDecoratorProps(
+        decoration: buildDropdownSearchDecoration(label: label)
+      ),
       itemAsString: (item) => item.name ?? "...",
-      dropdownSearchDecoration: buildDropdownSearchDecoration(label: label),
       popupProps: PopupProps.dialog(
           showSearchBox: true,
           showSelectedItems: false,
@@ -101,9 +105,11 @@ class CustomDropdown {
       required String searchHint,
       required TextEditingController dropdownC}) {
     return DropdownSearch<BusinessData>(
-      items: options,
+      items: (filter, loadProps) => options,
+      decoratorProps: DropDownDecoratorProps(
+        decoration: buildDropdownSearchDecoration(label: label)
+      ),
       itemAsString: (item) => item.name ?? "...",
-      dropdownSearchDecoration: buildDropdownSearchDecoration(label: label),
       popupProps: PopupProps.dialog(
           showSearchBox: true,
           showSelectedItems: false,
@@ -121,9 +127,11 @@ class CustomDropdown {
       required String searchHint,
       required TextEditingController dropdownC}) {
     return DropdownSearch<ClassificationData>(
-      items: options,
+      items: (filter, loadProps) => options,
+      decoratorProps: DropDownDecoratorProps(
+        decoration: buildDropdownSearchDecoration(label: label)
+      ),
       itemAsString: (item) => item.name ?? "...",
-      dropdownSearchDecoration: buildDropdownSearchDecoration(label: label),
       popupProps: PopupProps.dialog(
           showSearchBox: true,
           showSelectedItems: false,
@@ -141,9 +149,11 @@ class CustomDropdown {
       String? searchHint,
       required TextEditingController dropdownC}) {
     return DropdownSearch<OrganizationData>(
-      items: options,
+      items: (filter, loadProps) => options,
+      decoratorProps: DropDownDecoratorProps(
+        decoration: buildDropdownSearchDecoration(label: label)
+      ),
       itemAsString: (item) => item.name ?? "...",
-      dropdownSearchDecoration: buildDropdownSearchDecoration(label: label),
       popupProps: PopupProps.dialog(
           showSearchBox: true,
           showSelectedItems: false,
@@ -164,9 +174,11 @@ class CustomDropdown {
       required String searchHint,
       required TextEditingController dropdownC}) {
     return DropdownSearch<ProvinceData>(
-      items: options,
+      items: (filter, loadProps) => options,
+      decoratorProps: DropDownDecoratorProps(
+        decoration: buildDropdownSearchDecoration(label: label)
+      ),
       itemAsString: (item) => item.name ?? "...",
-      dropdownSearchDecoration: buildDropdownSearchDecoration(label: label),
       popupProps: PopupProps.dialog(
           showSearchBox: true,
           showSelectedItems: false,
@@ -188,9 +200,11 @@ class CustomDropdown {
       required String searchHint,
       required TextEditingController dropdownC}) {
     return DropdownSearch<DistrictData>(
-      items: options,
+      items: (filter, loadProps) => options,
+      decoratorProps: DropDownDecoratorProps(
+        decoration: buildDropdownSearchDecoration(label: label)
+      ),
       itemAsString: (item) => item.name ?? "...",
-      dropdownSearchDecoration: buildDropdownSearchDecoration(label: label),
       popupProps: PopupProps.dialog(
           showSearchBox: true,
           showSelectedItems: false,
@@ -211,9 +225,11 @@ class CustomDropdown {
       required String searchHint,
       required TextEditingController dropdownC}) {
     return DropdownSearch<CityData>(
-      items: options,
+      items: (filter, loadProps) => options,
+      decoratorProps: DropDownDecoratorProps(
+        decoration: buildDropdownSearchDecoration(label: label)
+      ),
       itemAsString: (item) => item.name ?? "...",
-      dropdownSearchDecoration: buildDropdownSearchDecoration(label: label),
       popupProps: PopupProps.dialog(
           showSearchBox: true,
           showSelectedItems: false,
@@ -235,9 +251,11 @@ class CustomDropdown {
       required String searchHint,
       required TextEditingController dropdownC}) {
     return DropdownSearch<SubdistrictData>(
-      items: options,
+      items: (filter, loadProps) => options,
+      decoratorProps: DropDownDecoratorProps(
+        decoration: buildDropdownSearchDecoration(label: label)
+      ),
       itemAsString: (item) => item.name ?? "...",
-      dropdownSearchDecoration: buildDropdownSearchDecoration(label: label),
       popupProps: PopupProps.dialog(
           showSearchBox: true,
           showSelectedItems: false,

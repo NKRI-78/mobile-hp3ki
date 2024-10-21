@@ -2,7 +2,8 @@
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:gallery_saver_updated/gallery_saver.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:gallery_saver_plus/gallery_saver.dart';
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 

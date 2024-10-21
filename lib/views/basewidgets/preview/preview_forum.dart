@@ -3,9 +3,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-import 'package:gallery_saver_updated/gallery_saver.dart';
+import 'package:gallery_saver_plus/gallery_saver.dart';
 
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:flutter_animated_dialog_updated/flutter_animated_dialog.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
 

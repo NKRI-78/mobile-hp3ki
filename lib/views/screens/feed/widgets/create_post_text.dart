@@ -25,23 +25,6 @@ import 'package:hp3ki/views/screens/feed/widgets/create_post_video.dart';
 import 'package:hp3ki/views/screens/feed/widgets/create_post_image.dart';
 import 'package:hp3ki/views/screens/feed/widgets/create_post_doc.dart';
 
-import 'package:sn_progress_dialog/progress_dialog.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:multi_image_picker_plus/multi_image_picker_plus.dart';
-import 'package:lecle_flutter_absolute_path/lecle_flutter_absolute_path.dart';
-
-import 'package:file_picker/file_picker.dart';
-import 'package:filesize/filesize.dart';
-import 'package:video_compress/video_compress.dart';
-
-import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
-
-import 'package:hp3ki/views/screens/feed/widgets/create_post_image_camera.dart';
-import 'package:hp3ki/views/screens/feed/widgets/create_post_link.dart';
-import 'package:hp3ki/views/screens/feed/widgets/create_post_video.dart';
-import 'package:hp3ki/views/screens/feed/widgets/create_post_image.dart';
-import 'package:hp3ki/views/screens/feed/widgets/create_post_doc.dart';
-
 import 'package:hp3ki/localization/language_constraints.dart';
 
 import 'package:hp3ki/providers/feedv2/feed.dart';
@@ -82,13 +65,8 @@ class CreatePostTextState extends State<CreatePostText> {
         title: Text(getTranslated("SOURCE_IMAGE", context),
         style: robotoRegular.copyWith(
           fontSize: Dimensions.fontSizeDefault,
-<<<<<<< HEAD
           color: ColorResources.primaryOrange,
           fontWeight: FontWeight.bold, 
-=======
-          color: ColorResources.primary,
-          fontWeight: FontWeight.w600, 
->>>>>>> 3de3b56a677787d3a71350f1578c9cfdc07bb277
         ),
       ),
       actions: [
@@ -177,17 +155,10 @@ class CreatePostTextState extends State<CreatePostText> {
         if(filePickerStatus == FilePickerStatus.picking) {
           pr.show(
             max: 2,
-<<<<<<< HEAD
             msg: "${getTranslated("PLEASE_WAIT", context)}...",
             borderRadius: 10.0,
             backgroundColor: ColorResources.white,
             progressBgColor: ColorResources.primaryOrange,
-=======
-            msg: getTranslated("PLEASE_WAIT", context),
-            borderRadius: 10.0,
-            backgroundColor: ColorResources.white,
-            progressBgColor: ColorResources.primary,
->>>>>>> 3de3b56a677787d3a71350f1578c9cfdc07bb277
             progressValueColor: ColorResources.white
           ); 
         }
@@ -199,7 +170,6 @@ class CreatePostTextState extends State<CreatePostText> {
     if(result != null) {
       File file = File(result.files.single.path!);
       int sizeInBytes = file.lengthSync();
-<<<<<<< HEAD
 
       // double sizeInMb = sizeInBytes / (1024 * 1024);
 
@@ -209,14 +179,6 @@ class CreatePostTextState extends State<CreatePostText> {
       //   ShowSnackbar.snackbar(getTranslated("SIZE_MAXIMUM", context), "", ColorResources.error);
       //   return;
       // }
-=======
-      String fs = filesize(sizeInBytes, 0).replaceAll(RegExp(r'[^0-9]'),'');
-
-      if(int.parse(fs) >= 100) {
-        ShowSnackbar.snackbar(context, getTranslated("SIZE_MAXIMUM", context), "", ColorResources.error);
-        return;
-      }
->>>>>>> 3de3b56a677787d3a71350f1578c9cfdc07bb277
 
       setState(() =>  fileVideo = file);
 
@@ -241,11 +203,7 @@ class CreatePostTextState extends State<CreatePostText> {
     if(result != null) {
       for (int i = 0; i < result.files.length; i++) {
         if(result.files[i].size > 50000000) {
-<<<<<<< HEAD
           ShowSnackbar.snackbar(getTranslated("SIZE_MAXIMUM", context), "", ColorResources.error);
-=======
-          ShowSnackbar.snackbar(context, getTranslated("SIZE_MAXIMUM", context), "", ColorResources.error);
->>>>>>> 3de3b56a677787d3a71350f1578c9cfdc07bb277
           return;
         } 
       }
@@ -257,18 +215,11 @@ class CreatePostTextState extends State<CreatePostText> {
   @override 
   void initState() {
     super.initState();
-<<<<<<< HEAD
     fd = context.read<FeedProviderV2>();
 
     scrollController = ScrollController();
     fd.postC = TextEditingController();
     fd.resetFeedType();
-=======
-
-    fd = context.read<FeedProviderV2>();
-    scrollController = ScrollController();
-    fd.postC = TextEditingController();
->>>>>>> 3de3b56a677787d3a71350f1578c9cfdc07bb277
   }
 
   @override 
@@ -288,10 +239,7 @@ class CreatePostTextState extends State<CreatePostText> {
         title: Text(getTranslated("CREATE_POST", context), 
           style: robotoRegular.copyWith(
             fontSize: Dimensions.fontSizeDefault,
-<<<<<<< HEAD
             fontWeight: FontWeight.bold,
-=======
->>>>>>> 3de3b56a677787d3a71350f1578c9cfdc07bb277
             color: ColorResources.black
           )
         ),
@@ -312,24 +260,16 @@ class CreatePostTextState extends State<CreatePostText> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 InkWell(
-<<<<<<< HEAD
                   onTap: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading 
                   ? () {} 
                   : () async {
-=======
-                  onTap: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading ? () {} : () async {
->>>>>>> 3de3b56a677787d3a71350f1578c9cfdc07bb277
                     await fd.post(context, "text", []);   
                   },
                   child: Container(
                     width: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading ? null : 80.0,
                     padding: const EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
-<<<<<<< HEAD
                       color: ColorResources.primaryOrange,
-=======
-                      color: ColorResources.primary,
->>>>>>> 3de3b56a677787d3a71350f1578c9cfdc07bb277
                       borderRadius: BorderRadius.circular(20.0)
                     ),
                     child: context.watch<FeedProviderV2>().writePostStatus == WritePostStatus.loading 
@@ -360,11 +300,7 @@ class CreatePostTextState extends State<CreatePostText> {
               icon: const Icon(
                 size: 30.0,
                 Icons.image,
-<<<<<<< HEAD
                 color: ColorResources.primaryOrange
-=======
-                color: ColorResources.primary
->>>>>>> 3de3b56a677787d3a71350f1578c9cfdc07bb277
               ),
             ),
             IconButton(
@@ -372,11 +308,7 @@ class CreatePostTextState extends State<CreatePostText> {
               icon: const Icon(
                 size: 30.0,
                 Icons.video_call,
-<<<<<<< HEAD
                 color: ColorResources.primaryOrange,
-=======
-                color: ColorResources.primary,
->>>>>>> 3de3b56a677787d3a71350f1578c9cfdc07bb277
               ),
             ),
             IconButton(
@@ -384,11 +316,7 @@ class CreatePostTextState extends State<CreatePostText> {
               icon: const Icon(
                 size: 30.0,
                 Icons.attach_file,
-<<<<<<< HEAD
                 color: ColorResources.primaryOrange,
-=======
-                color: ColorResources.primary,
->>>>>>> 3de3b56a677787d3a71350f1578c9cfdc07bb277
               ),
               
             ),
@@ -397,11 +325,7 @@ class CreatePostTextState extends State<CreatePostText> {
               icon: const Icon(
                 size: 30.0,
                 Icons.picture_as_pdf,
-<<<<<<< HEAD
                 color: ColorResources.primaryOrange,
-=======
-                color: ColorResources.primary,
->>>>>>> 3de3b56a677787d3a71350f1578c9cfdc07bb277
               ),
             )
           ],
@@ -452,12 +376,9 @@ class CreatePostTextState extends State<CreatePostText> {
                 style: robotoRegular.copyWith(
                   fontSize: Dimensions.fontSizeDefault
                 ),
-<<<<<<< HEAD
                 inputFormatters: [
                   CapitalizeWordsInputFormatter()
                 ],
-=======
->>>>>>> 3de3b56a677787d3a71350f1578c9cfdc07bb277
                 decoration: InputDecoration(
                   alignLabelWithHint: true,
                   labelText: getTranslated("WRITE_POST", context),

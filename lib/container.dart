@@ -1,5 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:hp3ki/data/repository/auth/auth.dart';
 import 'package:hp3ki/data/repository/banner/banner.dart';
 import 'package:hp3ki/data/repository/checkin/checkin.dart';
@@ -16,6 +18,15 @@ import 'package:hp3ki/data/repository/profile/profile.dart';
 import 'package:hp3ki/data/repository/region_dropdown/region_dropdown.dart';
 import 'package:hp3ki/data/repository/sos/sos.dart';
 import 'package:hp3ki/data/repository/upgrade_member/upgrade_member.dart';
+import 'package:hp3ki/data/repository/news/news.dart';
+
+import 'package:hp3ki/providers/localization/localization.dart';
+import 'package:hp3ki/providers/location/location.dart';
+import 'package:hp3ki/providers/maintenance/maintenance.dart';
+import 'package:hp3ki/providers/media/media.dart';
+import 'package:hp3ki/providers/membernear/membernear.dart';
+import 'package:hp3ki/providers/news/news.dart';
+import 'package:hp3ki/providers/ppob/ppob.dart';
 import 'package:hp3ki/providers/auth/auth.dart';
 import 'package:hp3ki/providers/banner/banner.dart';
 import 'package:hp3ki/providers/checkin/checkin.dart';
@@ -26,125 +37,115 @@ import 'package:hp3ki/providers/feedv2/feedReply.dart';
 import 'package:hp3ki/providers/firebase/firebase.dart';
 import 'package:hp3ki/providers/inbox/inbox.dart';
 import 'package:hp3ki/providers/internet/internet.dart';
-import 'package:hp3ki/data/repository/news/news.dart';
-import 'package:hp3ki/providers/localization/localization.dart';
-import 'package:hp3ki/providers/location/location.dart';
-import 'package:hp3ki/providers/maintenance/maintenance.dart';
-import 'package:hp3ki/providers/media/media.dart';
-import 'package:hp3ki/providers/membernear/membernear.dart';
-import 'package:hp3ki/providers/news/news.dart';
-import 'package:hp3ki/providers/ppob/ppob.dart';
 import 'package:hp3ki/providers/profile/profile.dart';
 import 'package:hp3ki/providers/region_dropdown/region_dropdown.dart';
 import 'package:hp3ki/providers/sos/sos.dart';
 import 'package:hp3ki/providers/splash/splash.dart';
 import 'package:hp3ki/providers/upgrade_member/upgrade_member.dart';
+
 import 'package:hp3ki/views/screens/shipping_address/domain/shipping_address_repository.dart';
 import 'package:hp3ki/views/screens/shipping_address/persentation/providers/shipping_address_provider.dart';
 import 'package:hp3ki/views/screens/shop_cart/domain/shop_cart_repository.dart';
 import 'package:hp3ki/views/screens/shop_cart/persentation/providers/shop_cart_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 final getIt = GetIt.instance;
 
 Future<void> init() async {
 
-  //Api
+  // REPOSITORY
+
   getIt.registerLazySingleton(() => NewsRepo(
-        dioClient: null,
-      ));
+    dioClient: null,
+  ));
   getIt.registerLazySingleton(() => MembernearRepo(
-        dioClient: null,
-      ));
+    dioClient: null,
+  ));
   getIt.registerLazySingleton(() => SosRepo(
-        dioClient: null,
-      ));
+    dioClient: null,
+  ));
   getIt.registerLazySingleton(() => InboxRepo(
-        dioClient: null,
-      ));  
+    dioClient: null,
+  ));  
   getIt.registerLazySingleton(() => FeedRepo(
-       sp: getIt(),
+    sp: getIt(),
   ));
   getIt.registerLazySingleton(() => FeedRepoV2(
-       sp: getIt(),
+    sp: getIt(),
   ));
   getIt.registerLazySingleton(() => CheckInRepo(
-        dioClient: null,
-      ));
+    dioClient: null,
+  ));
   getIt.registerLazySingleton(() => EventRepo(
-        dioClient: null,
-      ));
+    dioClient: null,
+  ));
   getIt.registerLazySingleton(() => FirebaseRepo(
-        dioClient: null,
-      ));
+    dioClient: null,
+  ));
   getIt.registerLazySingleton(() => ProfileRepo(
-        dioClient: null,
-      ));
+    dioClient: null,
+  ));
   getIt.registerLazySingleton(() => AuthRepo(
-        dioClient: null,
-      ));
+    dioClient: null,
+  ));
   getIt.registerLazySingleton(() => MediaRepo(
-        dioClient: null,
-      ));
+    dioClient: null,
+  ));
   getIt.registerLazySingleton(() => MaintenanceRepo(
-        dioClient: null,
-      ));
+    dioClient: null,
+  ));
   getIt.registerLazySingleton(() => RegionDropdownRepo(
-        dioClient: null,
-      ));
+    dioClient: null,
+  ));
   getIt.registerLazySingleton(() => BannerRepo(
-        dioClient: null,
-      ));
+    dioClient: null,
+  ));
   getIt.registerLazySingleton(() => UpgradeMemberRepo(
-        dioClient: null,
-      ));
+    dioClient: null,
+  ));
   getIt.registerLazySingleton(() => PPOBRepo(
-        dioClient: null,
-      ));
+    dioClient: null,
+  ));
 
-  //Provider
+  // PROVIDER
+
   getIt.registerFactory(() => FirebaseProvider(
-        fr: getIt(),
-      ));
+    fr: getIt(),
+  ));
   getIt.registerFactory(() => SplashProvider(
-        mr: getIt(),
-      ));
+    mr: getIt(),
+  ));
   getIt.registerFactory(() => InternetProvider());
   getIt.registerFactory(() => LocalizationProvider());
   getIt.registerFactory(() => AuthProvider(
-        ar: getIt(),
-      ));
+    ar: getIt(),
+  ));
   getIt.registerFactory(() => NewsProvider(
-        nr: getIt(),
-      ));
+    nr: getIt(),
+  ));
   getIt.registerFactory(() => PPOBProvider(
-        pr: getIt(),
-      ));
+    pr: getIt(),
+  ));
   getIt.registerFactory(() => LocationProvider());
   getIt.registerFactory(() => MembernearProvider(
-        lp: getIt(),
-        nr: getIt(),
-      ));
+    lp: getIt(),
+    nr: getIt(),
+  ));
   getIt.registerFactory(() => SosProvider(
-        sr: getIt(),
-        lp: getIt(),
-      ));
+    sr: getIt(),
+    lp: getIt(),
+  ));
   getIt.registerFactory(() => InboxProvider(
-        ir: getIt(),
-      ));
+    ir: getIt(),
+  ));
   getIt.registerFactory(() => FeedDetailProviderV2(
     ar: getIt(),
     fr: getIt(),
   ));
   getIt.registerFactory(() => FeedProviderV2(
-        ar: getIt(),
-        fr: getIt(),
-      ));
-  getIt.registerFactory(() => FeedReplyProvider(
-        ar: getIt(),
-        fr: getIt(),
+    ar: getIt(),
+    fr: getIt()
   ));
-  getIt.registerFactory(() => FeedDetailProviderV2(
+  getIt.registerFactory(() => FeedReplyProvider(
     ar: getIt(),
     fr: getIt(),
   ));
@@ -153,34 +154,32 @@ Future<void> init() async {
     lp: getIt(),
   ));
   getIt.registerFactory(() => EventProvider(
-        er: getIt(),
-      ));
+    er: getIt(),
+  ));
   getIt.registerFactory(() => ProfileProvider(
-        ap: getIt(),
-        pr: getIt(),
-      ));
+    ap: getIt(),
+    pr: getIt(),
+  ));
   getIt.registerLazySingleton(() => MediaProvider(
-        mr: getIt(),
-      ));
+    mr: getIt(),
+  ));
   getIt.registerLazySingleton(() => MaintenanceProvider(
-        mr: getIt(),
-      ));
+    mr: getIt(),
+  ));
   getIt.registerLazySingleton(() => RegionDropdownProvider(
-        rr: getIt(),
-      ));
+    rr: getIt(),
+  ));
   getIt.registerLazySingleton(() => BannerProvider(
-        br: getIt(),
-      ));
+    br: getIt(),
+  ));
   getIt.registerLazySingleton(() => UpgradeMemberProvider(
-        umr: getIt(),
-      ));
+    umr: getIt(),
+  ));
 
-  //External
   SharedPreferences sp = await SharedPreferences.getInstance();
+
   getIt.registerLazySingleton(() => sp);
   getIt.registerLazySingleton(() => Dio());
-  getIt.registerLazySingleton<ShopCartProvider>(
-      () => ShopCartProvider(repo: ShopCartRepository()));
-  getIt.registerLazySingleton<ShippingAddressProvider>(
-      () => ShippingAddressProvider(repo: ShippingAddressRepository()));
+  getIt.registerLazySingleton<ShopCartProvider>(() => ShopCartProvider(repo: ShopCartRepository()));
+  getIt.registerLazySingleton<ShippingAddressProvider>(() => ShippingAddressProvider(repo: ShippingAddressRepository()));
 }

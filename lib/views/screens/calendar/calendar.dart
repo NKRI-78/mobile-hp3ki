@@ -1,10 +1,11 @@
 
 import 'dart:collection';
+import 'package:hp3ki/services/navigation.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:flutter_animated_dialog_updated/flutter_animated_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -569,7 +570,6 @@ class CalendarScreenState extends State<CalendarScreen> {
                       top: 20.0,
                       bottom: 20.0
                     ),
-<<<<<<< HEAD:lib/views/screens/calender/calender.dart
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       children: [
@@ -615,103 +615,6 @@ class CalendarScreenState extends State<CalendarScreen> {
                         )
     
                       ],
-=======
-                    child: CustomButton(
-                      onTap: events[i].joined == true 
-                      ? () { }
-                      : () async {
-                        setState(() {
-                          getData();
-                        });
-                        await context.read<EventProvider>().joinEvent(
-                          context, 
-                          eventId: events[i].id.toString(),
-                        );
-                      }, 
-                      height: 35.0,
-                      isBorder: false,
-                      isBorderRadius: true,
-                      isLoading: context.watch<EventProvider>().eventJoinStatus == EventJoinStatus.loading 
-                        ? true 
-                        : false,
-                      btnColor: events[i].joined == true 
-                        ? ColorResources.backgroundDisabled : ColorResources.success,
-                      btnTxt: events[i].joined == true ? "Tergabung" : "Gabung",
-                    ),
-                  ),
-
-                  Container(
-                    margin: const EdgeInsets.only(
-                      top: 20.0,
-                      bottom: 20.0
-                    ),
-                    child: CustomButton(
-                      onTap: () {
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (context) {
-                            return SizedBox(
-                              height: 300,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Padding(
-                                    padding: EdgeInsets.all(16.0),
-                                    child: Text("Pengguna yang berpatisipasi",
-                                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: ListView.builder(
-                                      itemCount: events[i].users!.length,
-                                      itemBuilder: (context, index) {
-                                        return ListTile(
-                                          title: Text(events[i].users![index]["fullname"]),
-                                          leading: CachedNetworkImage(
-                                          imageUrl: events[i].users![index]["avatar"],
-                                            imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
-                                              backgroundColor: Colors.transparent,
-                                              backgroundImage: imageProvider,
-                                              radius: 20.0,
-                                            ),
-                                            placeholder: (BuildContext context, String url) => const CircleAvatar(
-                                              backgroundColor: Colors.transparent,
-                                              backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
-                                              radius: 20.0,
-                                            ),
-                                            errorWidget: (BuildContext context, String url, dynamic error) => const CircleAvatar(
-                                              backgroundColor: Colors.transparent,
-                                              backgroundImage: AssetImage('assets/images/default_avatar.jpg'),
-                                              radius: 20.0,
-                                            )
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        ).then((selectedUser) {
-                          if (selectedUser != null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('You selected: $selectedUser'),
-                              ),
-                            );
-                          }
-                        });
-                      },
-                      height: 35.0,
-                      isBorder: false,
-                      isBorderRadius: true,
-                      isLoading: context.watch<EventProvider>().eventJoinStatus == EventJoinStatus.loading 
-                      ? true 
-                      : false,
-                      btnColor: ColorResources.blue,
-                      btnTxt: "Lihat pengguna yang berpartisipasi (${events[i].users!.length})",
->>>>>>> 3de3b56a677787d3a71350f1578c9cfdc07bb277:lib/views/screens/calendar/calendar.dart
                     ),
                   )
 

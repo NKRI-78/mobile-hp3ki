@@ -1,3 +1,4 @@
+import 'package:hp3ki/services/navigation.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
@@ -104,20 +105,6 @@ class DetailInboxScreenState extends State<DetailInboxScreen> {
         if (didPop) {
           return;
         }
-        // InkWell(
-        //               onTap: () async {
-        //                 var address = '$latitude,$longitude';
-        //                 String googleUrl =
-        //                     'https://www.google.com/maps/search/?api=1&query=$address';
-        //                 if (!await launchUrl(Uri.parse(googleUrl))) {
-        //                   throw 'Could not open the map.';
-        //                 }
-        //               },
-        //               child: const Padding(
-        //                 padding: EdgeInsets.all(8.0),
-        //                 child: Text("Lihat lokasi")
-        //               )
-        //             )
         Navigator.pop(context, "refetch");
       },
       child: Scaffold(
@@ -265,60 +252,6 @@ class DetailInboxScreenState extends State<DetailInboxScreen> {
     ]));
   }
 
-  Widget buildVaContent() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Virtual Account',
-          style: poppinsRegular.copyWith(
-            fontWeight: FontWeight.w600,
-            fontSize: Dimensions.fontSizeLarge,
-          ),
-        ),
-        Container(
-          margin: const EdgeInsets.only(top: 5.0, bottom: 10.0),
-          decoration: BoxDecoration(
-            color: ColorResources.greyLightPrimary.withOpacity(0.4),
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          child: Material(
-            color: ColorResources.transparent,
-            child: InkWell(
-              onTap: () {
-                Clipboard.setData(ClipboardData(text: va!));
-                ShowSnackbar.snackbar(
-                    'Nomor Virtual Account sudah tersalin',
-                    '',
-                    ColorResources.black);
-              },
-              borderRadius: BorderRadius.circular(10.0),
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      va ?? "...",
-                      style: poppinsRegular.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: ColorResources.greenHour,
-                        fontSize: Dimensions.fontSizeExtraLarge,
-                      ),
-                    ),
-                    const Icon(
-                      Icons.copy,
-                      color: ColorResources.greyDarkPrimary,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 
   // Widget buildPaymentGuideContent() {
   //   return Consumer<PPOBProvider>(builder: (context, provider, _) {

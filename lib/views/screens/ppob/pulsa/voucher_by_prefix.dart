@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:hp3ki/data/models/ppob_v2/denom_pulsa.dart';
@@ -27,9 +26,6 @@ class PulsaScreen extends StatefulWidget {
 
 class _PulsaScreenState extends State<PulsaScreen> {
   GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
-
-  FlutterContactPicker cp = FlutterContactPicker();
-  Contact? contact;
 
   late TextEditingController phoneNumberC;
   String phoneNumber = "";
@@ -166,27 +162,7 @@ class _PulsaScreenState extends State<PulsaScreen> {
                                   ),
                                   GestureDetector(
                                     onTap: () async {
-                                      Contact? c = await cp.selectContact();
-                                      if(c != null) {
-                                        setState(() {
-                                          phoneNumberC.text = c.phoneNumbers![0].replaceAll(RegExp("[()+\\s-]+"), "");
-      
-                                          if(phoneNumberC.text.startsWith('0')) {
-                                            setState(() {
-                                              phoneNumber = '62${phoneNumberC.text.replaceFirst(RegExp(r'0'), '')}';
-                                              phoneNumberC.text = phoneNumberC.text.replaceFirst(RegExp(r'0'), '');
-                                            });
-                                          } else {
-                                            phoneNumber = phoneNumberC.text;
-                                            phoneNumberC.text = phoneNumberC.text.replaceFirst(RegExp(r'62'), '');
-                                          }
-
-                                          if (debounce?.isActive ?? false) debounce!.cancel();
-                                            debounce = Timer(const Duration(milliseconds: 500), () {
-                                              context.read<PPOBProvider>().getVoucherPulsaByPrefix(context, prefix:  int.parse(phoneNumber), type: "PULSA");
-                                            });
-                                        });
-                                      }
+                                    
                                     },
                                     child: Container(
                                       margin: const EdgeInsets.only(right: 15.0),

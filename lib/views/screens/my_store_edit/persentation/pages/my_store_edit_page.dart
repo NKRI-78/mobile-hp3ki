@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hp3ki/localization/language_constraints.dart';
 import 'package:hp3ki/providers/profile/profile.dart';
@@ -176,10 +175,9 @@ class _MyStoreEditViewState extends State<MyStoreEditView> {
       for (var imageAsset in resultList) {
         String? filePath = await LecleFlutterAbsolutePath.getAbsolutePath(
             uri: imageAsset.identifier);
-        File compressedFile = await FlutterNativeImage.compressImage(filePath!,
-            quality: 50, percentage: 50);
+    
         setState(() {
-          image = File(compressedFile.path);
+          image = File(filePath!);
         });
       }
     }

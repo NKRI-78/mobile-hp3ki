@@ -43,11 +43,7 @@ class InputPostWidgetState extends State<InputPostWidget> {
                 Consumer<ProfileProvider>(
                   builder: (BuildContext context, ProfileProvider profileProvider, Widget? child) {
                     return CachedNetworkImage(
-<<<<<<< HEAD
-                      imageUrl: profileProvider.user!.avatar.toString(),
-=======
-                      imageUrl: profileProvider.ap.ar.getUserAvatar(),
->>>>>>> 3de3b56a677787d3a71350f1578c9cfdc07bb277
+                      imageUrl: profileProvider.user!.avatar!,
                       imageBuilder: (BuildContext context, dynamic imageProvider) => CircleAvatar(
                         backgroundColor: Colors.transparent,
                         backgroundImage: imageProvider,
@@ -82,10 +78,7 @@ class InputPostWidgetState extends State<InputPostWidget> {
                           color: ColorResources.black
                         ),
                       ),
-<<<<<<< HEAD
                       
-=======
->>>>>>> 3de3b56a677787d3a71350f1578c9cfdc07bb277
                       enabledBorder: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15.0)),
                         borderSide: BorderSide(
@@ -94,13 +87,8 @@ class InputPostWidgetState extends State<InputPostWidget> {
                       ),
                       hintText: getTranslated("WRITE_POST", context),
                       hintStyle: robotoRegular.copyWith(
-<<<<<<< HEAD
                         fontSize: Dimensions.fontSizeSmall,
                         color: ColorResources.black
-=======
-                        color: ColorResources.black,
-                        fontSize: Dimensions.fontSizeSmall,
->>>>>>> 3de3b56a677787d3a71350f1578c9cfdc07bb277
                       )
                     ),
                     onTap: () {

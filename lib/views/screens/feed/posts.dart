@@ -1,10 +1,10 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:flutter_animated_dialog_updated/flutter_animated_dialog.dart';
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 import 'package:provider/provider.dart';
-import 'package:gallery_saver_updated/gallery_saver.dart';
+import 'package:gallery_saver_plus/gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:detectable_text_field/detectable_text_field.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -718,13 +718,12 @@ class PostsState extends State<Posts> {
   //   );
   // }
 
-
-  Widget grantedDeleteComment(context, String commentId) {
+  Widget grantedDeletePost(context) {
     return PopupMenuButton(
       itemBuilder: (BuildContext buildContext) { 
         return [
           PopupMenuItem(
-            child: Text(getTranslated("DELETE_COMMENT", context),
+            child: Text(getTranslated("DELETE_POST", context),
               style: robotoRegular.copyWith(
                 color: ColorResources.black,
                 fontSize: Dimensions.fontSizeSmall

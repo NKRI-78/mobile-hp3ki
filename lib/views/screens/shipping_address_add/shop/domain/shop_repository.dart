@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:hp3ki/utils/constant.dart';
-import 'package:hp3ki/views/screens/shop/data/models/shop.dart';
-import 'package:hp3ki/views/screens/shop/data/models/shop_category.dart';
+import 'package:hp3ki/views/screens/shipping_address_add/shop/data/models/shop.dart';
+import 'package:hp3ki/views/screens/shipping_address_add/shop/data/models/shop_category.dart';
+
 
 class ShopRepository {
   final Dio client;

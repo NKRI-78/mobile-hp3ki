@@ -5,36 +5,37 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 import 'package:hp3ki/data/models/language/language.dart';
 import 'package:hp3ki/providers/firebase/firebase.dart';
-import 'package:hp3ki/providers/internet/internet.dart';
 import 'package:hp3ki/services/services.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/shared_preferences.dart';
+import 'package:hp3ki/views/screens/calendar/calendar.dart';
+import 'package:hp3ki/views/screens/feed/post_detail.dart';
+import 'package:hp3ki/views/screens/news/detail.dart';
+import 'package:hp3ki/views/screens/notification/detail.dart';
 
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+// import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import 'package:hp3ki/container.dart' as core;
 
-import 'package:hp3ki/data/models/language/language.dart';
 
 import 'package:hp3ki/providers.dart';
-import 'package:hp3ki/providers/firebase/firebase.dart';
 import 'package:hp3ki/providers/localization/localization.dart';
 
 import 'package:hp3ki/services/navigation.dart';
 import 'package:hp3ki/services/notification.dart';
-import 'package:hp3ki/services/services.dart';
 
 import 'package:hp3ki/localization/app_localization.dart';
 
 import 'package:hp3ki/utils/constant.dart';
-import 'package:hp3ki/utils/color_resources.dart';
-import 'package:hp3ki/utils/shared_preferences.dart';
 
 import 'package:hp3ki/views/screens/home/home.dart';
 import 'package:hp3ki/views/screens/splash/splash.dart';
@@ -44,12 +45,12 @@ Future<void> main() async {
 
   await Firebase.initializeApp();
 
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  // FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
 
-  PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    return true;
-  };
+  // PlatformDispatcher.instance.onError = (error, stack) {
+  //   FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+  //   return true;
+  // };
 
   await core.init();
 
@@ -115,8 +116,8 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   void listenOnClickNotifications() => NotificationService.onNotifications.stream.listen(onClickedNotification);
 
-  void onClickedNotification(String? payload) {
-    var data = json.decode(payload!);
+  void onClickedNotification(NotificationResponse payload) {
+    var data = json.decode(payload.payload!);
 
     // NEWS
     if(data["click_action"] == "news") {
@@ -181,7 +182,7 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
             "comment_id": data["comment_id"],
             "reply_id": "-",
             "from": "notification-comment",
-          },
+          }, from: "notification-comment",
         )
       );
     }
@@ -196,6 +197,7 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
             "reply_id": data["reply_id"],
             "from": "notification-reply",
           },
+          from: "notification-reply",
         )
       );
     }
@@ -249,7 +251,6 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
       ),
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
-      navigatorKey: navigatorKey,
       locale: context.watch<LocalizationProvider>().locale,
       builder: (BuildContext context, Widget? child) {
         return ResponsiveWrapper.builder(child,

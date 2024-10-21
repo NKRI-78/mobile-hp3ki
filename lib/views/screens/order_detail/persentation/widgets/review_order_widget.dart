@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:hp3ki/utils/dio.dart';
 
@@ -313,11 +312,7 @@ class _ReviewOrderAtDetailWidgetState extends State<ReviewOrderAtDetailWidget> {
             for (var imageAsset in resultList) {
               String? filePath = await LecleFlutterAbsolutePath.getAbsolutePath(
                   uri: imageAsset.identifier);
-              File compressedFile = await FlutterNativeImage.compressImage(
-                  filePath!,
-                  quality: 50,
-                  percentage: 50);
-              pathsGalery.add(File(compressedFile.path));
+              pathsGalery.add(File(filePath!));
             }
 
             setState(() {

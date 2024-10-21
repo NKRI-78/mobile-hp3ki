@@ -25,10 +25,6 @@ class CreatePostImageScreen extends StatefulWidget {
 }
 
 class CreatePostImageScreenState extends State<CreatePostImageScreen> {
-<<<<<<< HEAD
-=======
-  GlobalKey<ScaffoldMessengerState> globalKey = GlobalKey<ScaffoldMessengerState>();
->>>>>>> 3de3b56a677787d3a71350f1578c9cfdc07bb277
 
   late FeedProviderV2 fdv2;
   int current = 0;

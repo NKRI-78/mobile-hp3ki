@@ -119,7 +119,7 @@ class FirebaseProvider with ChangeNotifier {
             "comment_id": message.data["comment_id"],
             "reply_id": "-",
             "from": "notification-comment",
-          },
+          }, from: "notification-comment"
         )
       );
     }
@@ -132,7 +132,7 @@ class FirebaseProvider with ChangeNotifier {
             "comment_id": message.data["comment_id"],
             "reply_id": message.data["reply_id"],
             "from": "notification-reply",
-          },
+          }, from: "notification-reply",
         )
       );
     }

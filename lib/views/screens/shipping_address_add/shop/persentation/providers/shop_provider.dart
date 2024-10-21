@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hp3ki/views/screens/shop/data/models/shop.dart';
-import 'package:hp3ki/views/screens/shop/data/models/shop_category.dart';
-import 'package:hp3ki/views/screens/shop/domain/shop_repository.dart';
+import 'package:hp3ki/views/screens/shipping_address_add/shop/data/models/shop.dart';
+import 'package:hp3ki/views/screens/shipping_address_add/shop/data/models/shop_category.dart';
+import 'package:hp3ki/views/screens/shipping_address_add/shop/domain/shop_repository.dart';
+
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class ShopProvider with ChangeNotifier {

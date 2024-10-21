@@ -196,12 +196,8 @@ class CheckInProvider extends ChangeNotifier {
     setStateCheckInStatusJoin(CheckInStatusJoin.loading);
     try {
       await cr.joinCheckIn(checkInId, SharedPrefs.getUserId());
-<<<<<<< HEAD
       ShowSnackbar.snackbar(
            getTranslated('JOINED', context), '', ColorResources.green);
-=======
-      ShowSnackbar.snackbar(context, getTranslated('JOINED', context), '', ColorResources.green);
->>>>>>> 3de3b56a677787d3a71350f1578c9cfdc07bb277
       getCheckIn(context);
       setStateCheckInStatusJoin(CheckInStatusJoin.loaded);
     } on CustomException catch (e) {

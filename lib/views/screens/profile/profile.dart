@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
+import 'package:hp3ki/views/screens/store/create.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:path_provider/path_provider.dart';
@@ -222,6 +223,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                     parent: AlwaysScrollableScrollPhysics()),
                 slivers: [
                   buildUserKTA(),
+                  buildCreateStore(),
                   buildUserDetails(),
                   buildNoReferral(),
                   buildChangePassword(),
@@ -916,6 +918,22 @@ class ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
+
+  SliverToBoxAdapter buildCreateStore() {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 15.0),
+        child: buildOptionContainer(
+          color: Colors.white,
+          label: 'Buat Toko',
+          onTap: () {
+            NS.push(context, const CreateStore());
+          },
+        ),
+      ),
+    );
+  }
+  
 
   SliverToBoxAdapter buildChangePassword() {
     return SliverToBoxAdapter(

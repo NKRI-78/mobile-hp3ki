@@ -59,7 +59,6 @@ class CreateCheckInScreenState extends State<CreateCheckInScreen> {
     String? start = datetimeStartC.text.trim();
     String? end = datetimeEndC.text.trim();
 
-<<<<<<< HEAD
       if(caption.isEmpty) {
         ShowSnackbar.snackbar(getTranslated('CAPTION_IS_REQUIRED', context), "", ColorResources.error);
         return;
@@ -89,37 +88,6 @@ class CreateCheckInScreenState extends State<CreateCheckInScreen> {
         end,
         desc,
       );
-=======
-    if(caption.isEmpty) {
-      ShowSnackbar.snackbar(context, getTranslated('CAPTION_IS_REQUIRED', context), "", ColorResources.error);
-      return;
-    }
-    if(desc.isEmpty) {
-      ShowSnackbar.snackbar(context, 'Deskripsi harus diisi.', "", ColorResources.error);
-      return;
-    }
-    if(date.isEmpty) {
-      ShowSnackbar.snackbar(context, getTranslated('DATE_IS_REQUIRED', context), "", ColorResources.error);
-      return;
-    }
-    if(start.isEmpty) {
-      ShowSnackbar.snackbar(context, getTranslated('DATE_TIME_START_IS_REQUIRED', context), "", ColorResources.error);
-      return;
-    }
-    if(end.isEmpty) {
-      ShowSnackbar.snackbar(context, getTranslated('DATE_TIME_END_IS_REQUIRED', context), "", ColorResources.error);  
-      return; 
-    }
-    
-    await context.read<CheckInProvider>().createCheckIn(
-      context,
-      caption,
-      date,
-      start,
-      end,
-      desc,
-    );
->>>>>>> 3de3b56a677787d3a71350f1578c9cfdc07bb277
   }
 
   @override 

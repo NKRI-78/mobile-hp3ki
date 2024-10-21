@@ -6,7 +6,6 @@ import 'package:hp3ki/views/screens/ppob/paket_data/paket_data.dart';
 import 'package:hp3ki/views/screens/ppob/pln/listrik.dart';
 import 'package:hp3ki/views/screens/ppob/pulsa/voucher_by_prefix.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/box_shadow.dart';
 
@@ -19,9 +18,6 @@ class PPOBV2Screen extends StatefulWidget {
 
 class _PPOBV2ScreenState extends State<PPOBV2Screen> {
   GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
-
-  FlutterContactPicker cp = FlutterContactPicker();
-  Contact? contact;
 
   late TextEditingController phoneNumberC;
   late TextEditingController plnC;

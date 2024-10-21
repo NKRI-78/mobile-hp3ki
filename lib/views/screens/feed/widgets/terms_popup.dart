@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:flutter_animated_dialog_updated/flutter_animated_dialog.dart';
 
 import 'package:hp3ki/localization/language_constraints.dart';
 

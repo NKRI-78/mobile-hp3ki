@@ -68,7 +68,7 @@ android {
     defaultConfig {
         applicationId "com.inovatif78.hp3ki"
         minSdkVersion 24
-        targetSdkVersion 33
+        targetSdkVersion 34
         multiDexEnabled true
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

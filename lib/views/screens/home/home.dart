@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide CarouselController;
 import 'package:carousel_slider/carousel_slider.dart';
 
 import 'package:hp3ki/localization/language_constraints.dart';
@@ -43,7 +43,6 @@ import 'package:hp3ki/views/screens/news/detail.dart';
 import 'package:hp3ki/views/screens/notification/index.dart';
 import 'package:hp3ki/views/screens/ppob/confirm_paymentv2.dart';
 import 'package:hp3ki/views/screens/profile/profile.dart';
-import 'package:hp3ki/views/screens/shop/data/models/shop.dart';
 import 'package:hp3ki/views/screens/sos/indexv2.dart';
 import 'package:hp3ki/views/screens/news/index.dart';
 
@@ -644,11 +643,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late CarouselController cc;
 
   int currentIndex = 0;
-
-  ShopModel? shops;
 
   // Future<void> initShop() async {
   //   try {
@@ -713,7 +709,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    cc = CarouselController();
 
     Future.wait([
       getData(),
@@ -1070,7 +1065,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 borderRadius: BorderRadius.circular(15.0)
               ),
               child: CarouselSlider.builder(
-                carouselController: cc,
                 options: CarouselOptions(
                   autoPlay: true,
                   enlargeCenterPage: true,

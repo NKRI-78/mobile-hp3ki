@@ -55,10 +55,8 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider(create: (_) => c.getIt<RegionDropdownProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<BannerProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<UpgradeMemberProvider>()),
-  ChangeNotifierProvider(
-      create: (_) => c.getIt<ShopCartProvider>()..fetchCarts()),
-  ChangeNotifierProvider(
-      create: (_) =>
-          c.getIt<ShippingAddressProvider>()..fetchAllShippingAddress()),
+  ChangeNotifierProvider(create: (_) => c.getIt<ShopCartProvider>()..fetchCarts()),
+  ChangeNotifierProvider(create: (_) => c.getIt<ShippingAddressProvider>()..fetchAllShippingAddress()),
+  
   Provider.value(value: const <String, dynamic>{})
 ];

@@ -12,7 +12,7 @@ import 'package:readmore/readmore.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:flutter_animated_dialog_updated/flutter_animated_dialog.dart';
 
 import 'package:hp3ki/data/models/feed/singlecomment.dart';
 import 'package:hp3ki/data/models/feedv2/feedReply.dart';
@@ -373,7 +373,7 @@ class RepliesScreenState extends State<RepliesScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       width: 50.0,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -565,7 +565,7 @@ class RepliesScreenState extends State<RepliesScreen> {
                               )
                             ),
                             
-                            SizedBox(
+                            const SizedBox(
                               width: 50.0,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceAround,

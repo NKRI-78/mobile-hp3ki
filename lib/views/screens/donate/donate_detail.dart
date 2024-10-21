@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
 import 'package:hp3ki/views/screens/comingsoon/comingsoon.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:gallery_saver_updated/gallery_saver.dart';
+import 'package:gallery_saver_plus/gallery_saver.dart';
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
