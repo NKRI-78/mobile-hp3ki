@@ -302,7 +302,7 @@ class _PulsaScreenState extends State<PulsaScreen> {
                                                           children: [
                                                             Text(
                                                               Helper.formatCurrency(
-                                                                double.parse(selectedDenom.productPrice.toString())
+                                                               0
                                                               ).split('.')[0],
                                                               style: TextStyle(
                                                                 fontSize: Dimensions.fontSizeExtraLarge,
@@ -323,7 +323,7 @@ class _PulsaScreenState extends State<PulsaScreen> {
                                                             ),
                                                             Text(
                                                               Helper.formatCurrency(
-                                                                double.parse(selectedDenom.productPrice.toString())
+                                                                0
                                                               ).split('.')[1],
                                                               style: TextStyle(
                                                                 fontSize: Dimensions.fontSizeDefault,

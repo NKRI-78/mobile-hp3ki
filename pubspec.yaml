@@ -41,6 +41,7 @@ dev_dependencies:
 
   # D
   dropdown_search: ^6.0.1 
+  date_count_down: ^3.0.0
   #device_preview:
   # git:
   #  url: https://github.com/bradrushworth/flutter_device_preview.git
@@ -75,6 +76,7 @@ dev_dependencies:
   flutter_file_dialog: ^3.0.2
   file_picker: ^5.3.2
   filesize: ^2.0.1
+  flutter_typeahead: ^4.3.7
   flutter_local_notifications: ^17.2.3
   flutter_native_contact_picker: ^0.0.4
   flutter_rating_bar: ^4.0.1

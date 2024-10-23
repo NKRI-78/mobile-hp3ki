@@ -1,5 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
+import 'package:hp3ki/data/repository/ecommerce/ecommerce.dart';
+import 'package:hp3ki/providers/ecommerce/ecommerce.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:hp3ki/data/repository/auth/auth.dart';
@@ -43,17 +45,21 @@ import 'package:hp3ki/providers/sos/sos.dart';
 import 'package:hp3ki/providers/splash/splash.dart';
 import 'package:hp3ki/providers/upgrade_member/upgrade_member.dart';
 
-import 'package:hp3ki/views/screens/shipping_address/domain/shipping_address_repository.dart';
-import 'package:hp3ki/views/screens/shipping_address/persentation/providers/shipping_address_provider.dart';
-import 'package:hp3ki/views/screens/shop_cart/domain/shop_cart_repository.dart';
-import 'package:hp3ki/views/screens/shop_cart/persentation/providers/shop_cart_provider.dart';
-
 final getIt = GetIt.instance;
 
 Future<void> init() async {
 
   // REPOSITORY
-
+  
+  getIt.registerLazySingleton(() => EcommerceRepo(
+    sp: getIt()
+  ));
+  getIt.registerLazySingleton(() => FeedRepo(
+    sp: getIt(),
+  ));
+  getIt.registerLazySingleton(() => FeedRepoV2(
+    sp: getIt(),
+  ));
   getIt.registerLazySingleton(() => NewsRepo(
     dioClient: null,
   ));
@@ -66,12 +72,6 @@ Future<void> init() async {
   getIt.registerLazySingleton(() => InboxRepo(
     dioClient: null,
   ));  
-  getIt.registerLazySingleton(() => FeedRepo(
-    sp: getIt(),
-  ));
-  getIt.registerLazySingleton(() => FeedRepoV2(
-    sp: getIt(),
-  ));
   getIt.registerLazySingleton(() => CheckInRepo(
     dioClient: null,
   ));
@@ -87,9 +87,7 @@ Future<void> init() async {
   getIt.registerLazySingleton(() => AuthRepo(
     dioClient: null,
   ));
-  getIt.registerLazySingleton(() => MediaRepo(
-    dioClient: null,
-  ));
+  getIt.registerLazySingleton(() => MediaRepo());
   getIt.registerLazySingleton(() => MaintenanceRepo(
     dioClient: null,
   ));
@@ -110,6 +108,10 @@ Future<void> init() async {
 
   getIt.registerFactory(() => FirebaseProvider(
     fr: getIt(),
+  ));
+  getIt.registerFactory(() => EcommerceProvider(
+    er: getIt(),
+    mr: getIt()
   ));
   getIt.registerFactory(() => SplashProvider(
     mr: getIt(),
@@ -180,6 +182,4 @@ Future<void> init() async {
 
   getIt.registerLazySingleton(() => sp);
   getIt.registerLazySingleton(() => Dio());
-  getIt.registerLazySingleton<ShopCartProvider>(() => ShopCartProvider(repo: ShopCartRepository()));
-  getIt.registerLazySingleton<ShippingAddressProvider>(() => ShippingAddressProvider(repo: ShippingAddressRepository()));
 }

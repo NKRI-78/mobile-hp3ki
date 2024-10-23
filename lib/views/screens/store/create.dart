@@ -3,16 +3,21 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:provider/provider.dart';
 
+import 'package:hp3ki/maps/src/place_picker.dart';
+
 import 'package:hp3ki/services/navigation.dart';
 
+import 'package:hp3ki/utils/constant.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 
+import 'package:hp3ki/providers/ecommerce/ecommerce.dart';
 import 'package:hp3ki/providers/profile/profile.dart';
 
 class CreateStore extends StatefulWidget {
@@ -26,17 +31,37 @@ class CreateStoreState extends State<CreateStore> {
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
+  late EcommerceProvider ecommerceProvider;
+
+  String provinceName = "";
+  String cityName = "";
+  String districtName = "";
+  String subdistrictName = "";
+
+  String location = "";
+
+  String lat = "";
+  String lng = "";
+
+  bool isOpenStore = false;
+
   late TextEditingController nameStoreC;
   late TextEditingController descStoreC;
   late TextEditingController provinceC;
   late TextEditingController cityC;
-  late TextEditingController villageC;
+  late TextEditingController districtC;
+  late TextEditingController subdistrictC;
   late TextEditingController postCodeC;
   late TextEditingController addressC;
   late TextEditingController emailC;
   late TextEditingController phoneC;
 
   File? file;
+
+  Future<void> getData() async {
+    if(!mounted) return;
+      ecommerceProvider.getProvince(search: "");
+  }
   
   void pickImage() async {
 
@@ -73,6 +98,43 @@ class CreateStoreState extends State<CreateStore> {
 
   }
 
+  Future<void> submit() async {
+    if(nameStoreC.text.isEmpty) {
+      ShowSnackbar.snackbar("Nama Toko wajib diisi", "", ColorResources.error);
+      return;
+    }
+
+    if(descStoreC.text.isEmpty) {
+      ShowSnackbar.snackbar("Deskripsi Toko wajib diisi", "", ColorResources.error);
+      return;
+    }
+
+    if(provinceC.text.isEmpty) {
+      ShowSnackbar.snackbar("Provinsi wajib diisi", "", ColorResources.error);
+      return;
+    }
+
+    if(cityC.text.isEmpty) {
+      ShowSnackbar.snackbar("Kota wajib diisi", "", ColorResources.error);
+      return;
+    }
+
+    if(districtC.text.isEmpty) {
+      ShowSnackbar.snackbar("Kecamatan wajib diisi", "", ColorResources.error);
+      return;
+    }
+
+    if(subdistrictC.text.isEmpty) {
+      ShowSnackbar.snackbar("Kelurahan", "", ColorResources.error);
+      return;
+    }
+
+    if(addressC.text.isEmpty) {
+      ShowSnackbar.snackbar("Alamat", "", ColorResources.error);
+      return;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -81,7 +143,8 @@ class CreateStoreState extends State<CreateStore> {
     descStoreC = TextEditingController();
     provinceC = TextEditingController();
     cityC = TextEditingController();
-    villageC = TextEditingController();
+    districtC = TextEditingController();
+    subdistrictC = TextEditingController();
     postCodeC = TextEditingController();
     addressC = TextEditingController();
     emailC = TextEditingController(text: context.read<ProfileProvider>().user!.email);
@@ -91,6 +154,10 @@ class CreateStoreState extends State<CreateStore> {
     descStoreC.addListener(() {
       setState(() {});
     });
+
+    ecommerceProvider = context.read<EcommerceProvider>();
+
+    Future.microtask(() => getData());
   }
 
   @override
@@ -99,7 +166,8 @@ class CreateStoreState extends State<CreateStore> {
     descStoreC.dispose();
     provinceC.dispose();
     cityC.dispose();
-    villageC.dispose();
+    districtC.dispose();
+    subdistrictC.dispose();
     postCodeC.dispose();
     addressC.dispose();
     emailC.dispose();
@@ -127,6 +195,7 @@ class CreateStoreState extends State<CreateStore> {
         title: Text("Buka Toko",
           style: robotoRegular.copyWith(
             color: ColorResources.white,
+            fontSize: Dimensions.fontSizeDefault,
             fontWeight: FontWeight.w600
           ),
         ),
@@ -162,7 +231,7 @@ class CreateStoreState extends State<CreateStore> {
                       )
                   ),
                   
-                  inputFieldStoreName( "Nama Toko", nameStoreC, "Nama Toko"),
+                  inputFieldStoreName("Nama Toko", nameStoreC, "Nama Toko"),
                   
                   const SizedBox(
                     height: 15.0,
@@ -177,19 +246,21 @@ class CreateStoreState extends State<CreateStore> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      inputFieldCity(context, "Kota", "Kota"),    
+                      inputFieldCity("Kota", "Kota"),    
+                      
                       const SizedBox(width: 15.0), 
+
                       inputFieldPostCode("Kode Pos", postCodeC, "Kode Pos"),
                     ],
                   ),
                   
                   const SizedBox(height: 15.0),
                   
-                  inputFieldSubDistrict(),
+                  inputFieldDistrict(),
                   
                   const SizedBox(height: 15.0),
                   
-                  inputFieldKelurahanDesa("Kelurahan / Desa", villageC, "Kelurahan / Desa"),
+                  inputFieldSubdistrict("Kelurahan", "Kelurahan"),
                   
                   const SizedBox(height: 15.0),
                   
@@ -204,12 +275,6 @@ class CreateStoreState extends State<CreateStore> {
                   ),
 
                   inputFieldAddress(),
-
-                  const SizedBox(
-                    height: 15.0,
-                  ),
-
-                  inputFieldDetailAddress("Detail Alamat Toko", addressC, "Ex: Jl. Benda Raya"),
                   
                   const SizedBox(
                     height: 15.0,
@@ -217,6 +282,12 @@ class CreateStoreState extends State<CreateStore> {
 
                   inputFieldDescriptionStore(descStoreC),    
                   
+                  const SizedBox(
+                    height: 15.0,
+                  ),
+
+                  toggleOpenIsStore(),
+
                   const SizedBox(
                     height: 25.0,
                   ),
@@ -239,7 +310,7 @@ class CreateStoreState extends State<CreateStore> {
                           )
                         ),
                       ),
-                      onPressed: () {}
+                      onPressed: submit
                     ),
                   )
 
@@ -280,22 +351,18 @@ class CreateStoreState extends State<CreateStore> {
             style: robotoRegular,
             inputFormatters: [FilteringTextInputFormatter.singleLineFormatter],
             maxLength: 30,
-            decoration: InputDecoration(
-              hintText: hintText,
-              contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
+            decoration: const InputDecoration(
+              contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
               isDense: true,
               filled: true,
               fillColor: ColorResources.white,
-              hintStyle: robotoRegular.copyWith(
-                color: Theme.of(context).hintColor
-              ),
-              focusedBorder: const OutlineInputBorder(
+              focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   color: Colors.grey,
                   width: 0.5
                 ),
               ),
-              enabledBorder: const OutlineInputBorder(
+              enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   color: Colors.grey,
                   width: 0.5
@@ -358,6 +425,7 @@ class CreateStoreState extends State<CreateStore> {
                       )
                     ),
                     child: Stack(
+                      clipBehavior: Clip.none,
                       children: [
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -396,28 +464,34 @@ class CreateStoreState extends State<CreateStore> {
                             ),
                             Expanded(
                               flex: 40,
-                              child:  ListView.separated(
-                                shrinkWrap: true,
-                                physics: const BouncingScrollPhysics(),
-                                scrollDirection: Axis.vertical,
-                                itemCount: ["hello"].length,
-                                itemBuilder: (context, index) {
-                                  return ListTile(
-                                    title: Text(["hello"][index]),
-                                    onTap: () {
-                                      setState(() {
-                                        
-                                      });
-                                      NS.pop();
+                              child: Consumer<EcommerceProvider>(
+                                builder: (BuildContext context, EcommerceProvider notifier, Widget? child) {
+                                  return ListView.separated(
+                                    shrinkWrap: true,
+                                    physics: const BouncingScrollPhysics(),
+                                    scrollDirection: Axis.vertical,
+                                    itemCount: notifier.provinces.length,
+                                    itemBuilder: (BuildContext context, int i) {
+                                      return ListTile(
+                                        title: Text(notifier.provinces[i].provinceName),
+                                        onTap: () async {
+                                          setState(() {
+                                            provinceName = notifier.provinces[i].provinceName;
+                                            provinceC.text = provinceName;
+                                          });
+                                          await ecommerceProvider.getCity(provinceName: provinceName, search: "");
+                                          NS.pop();
+                                        },
+                                      );
+                                    },
+                                    separatorBuilder: (context, index) {
+                                      return const Divider(
+                                        thickness: 1,
+                                      );
                                     },
                                   );
                                 },
-                                separatorBuilder: (context, index) {
-                                  return const Divider(
-                                    thickness: 1,
-                                  );
-                                },
-                              )
+                              )  
                             ),
                           ]
                         ),
@@ -432,20 +506,16 @@ class CreateStoreState extends State<CreateStore> {
             controller: provinceC,
             keyboardType: TextInputType.text,
             inputFormatters: [FilteringTextInputFormatter.singleLineFormatter],
-            decoration: InputDecoration(
-              hintText: hintText,
-              contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
+            decoration: const InputDecoration(
+              contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
               isDense: true,
-              hintStyle: robotoRegular.copyWith(
-                color:ColorResources.black 
-              ),
-              focusedBorder: const OutlineInputBorder(
+              focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   color: Colors.grey,
                   width: 0.5
                 ),
               ),
-              enabledBorder: const OutlineInputBorder(
+              enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   color: Colors.grey,
                   width: 0.5
@@ -458,9 +528,9 @@ class CreateStoreState extends State<CreateStore> {
     );          
   }
 
-  Widget inputFieldCity(BuildContext context, String title, String hintText) {
+  Widget inputFieldCity(String title, String hintText) {
     return Expanded(
-    child: Column(
+      child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title, 
@@ -552,23 +622,31 @@ class CreateStoreState extends State<CreateStore> {
                               ),
                               Expanded(
                                 flex: 40,
-                                child: ListView.separated(
-                                  shrinkWrap: true,
-                                  physics: const BouncingScrollPhysics(),
-                                  scrollDirection: Axis.vertical,
-                                  itemCount: ["hello"].length,
-                                  itemBuilder: (context, index) {
-                                    return ListTile(
-                                      title: Text(["hello"][index]),
-                                      onTap: () {
-                                        
-                                        NS.pop();
+                                child: Consumer<EcommerceProvider>(
+                                  builder: (BuildContext context, EcommerceProvider notifier, Widget? child) {
+                                    return ListView.separated(
+                                      shrinkWrap: true,
+                                      physics: const BouncingScrollPhysics(),
+                                      scrollDirection: Axis.vertical,
+                                      itemCount: notifier.city.length,
+                                      itemBuilder: (BuildContext context, int i) {
+                                        return ListTile(
+                                          title: Text(notifier.city[i].cityName),
+                                          onTap: () async {
+                                            setState(() {
+                                              cityName = notifier.city[i].cityName;
+                                              cityC.text = cityName;
+                                            });
+                                            await ecommerceProvider.getDistrict(cityName: cityName, search: "");
+                                            NS.pop();
+                                          },
+                                        );
                                       },
-                                    );
-                                  },
-                                  separatorBuilder: (context, index) {
-                                    return const Divider(
-                                      thickness: 1,
+                                      separatorBuilder: (context, index) {
+                                        return const Divider(
+                                          thickness: 1,
+                                        );
+                                      },
                                     );
                                   },
                                 )
@@ -587,20 +665,16 @@ class CreateStoreState extends State<CreateStore> {
             controller: cityC,
             keyboardType: TextInputType.text,
             inputFormatters: [FilteringTextInputFormatter.singleLineFormatter],
-            decoration: InputDecoration(
-              hintText: hintText,
-              contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
+            decoration: const InputDecoration(
+              contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
               isDense: true,
-              hintStyle: robotoRegular.copyWith(
-                color: ColorResources.black
-              ),
-              focusedBorder: const OutlineInputBorder(
+              focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   color: Colors.grey,
                   width: 0.5
                 ),
               ),
-              enabledBorder: const OutlineInputBorder(
+              enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   color: Colors.grey,
                   width: 0.5
@@ -712,8 +786,22 @@ class CreateStoreState extends State<CreateStore> {
                   ),
                   const SizedBox(width: 4.0),
                   GestureDetector(
-                    onTap: () {
-                      
+                    onTap: () async {
+                      NS.push(context, PlacePicker(
+                        apiKey: AppConstants.apiKeyGmaps,
+                        useCurrentLocation: true,
+                        onPlacePicked: (result) async {
+                          setState(() {
+                            location = result.formattedAddress!.isNotEmpty
+                            ? result.formattedAddress.toString()
+                            : '-';
+                            lat = result.geometry?.location.lat.toString() ?? '-';
+                            lng = result.geometry?.location.lng.toString() ?? '-';
+                          });
+                          NS.pop();
+                        },
+                        autocompleteLanguage: "id",
+                      ));
                     },
                     child: Text("Ubah Lokasi",
                       style: robotoRegular.copyWith(
@@ -730,7 +818,9 @@ class CreateStoreState extends State<CreateStore> {
             ),
             Container(
               padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0, top: 8.0),
-              child: Text("Location no Selected",
+              child: Text(location.isEmpty 
+              ? "Location no Selected" 
+              : location,
                 style: robotoRegular.copyWith(
                   color: ColorResources.black,
                   fontSize: Dimensions.fontSizeDefault
@@ -743,7 +833,7 @@ class CreateStoreState extends State<CreateStore> {
     );
   }
 
-  Widget inputFieldSubDistrict() {
+  Widget inputFieldDistrict() {
     return Column(
       children: [
         Container(
@@ -831,55 +921,58 @@ class CreateStoreState extends State<CreateStore> {
                             ),
                             Expanded(
                               flex: 40,
-                              child: ListView.separated(
-                              shrinkWrap: true,
-                              physics: const BouncingScrollPhysics(),
-                              scrollDirection: Axis.vertical,
-                              itemCount: ["hello"].length,
-                              itemBuilder: (context, index) {
-                                return ListTile(
-                                  title: Text(["hello"][index]),
-                                  onTap: () {
-                                    setState(() {
-                                      
-                                    });
-                                    NS.pop();
-                                  },
-                                );
-                              },
-                              separatorBuilder: (context, index) {
-                                return const Divider(
-                                  thickness: 1,
-                                );
-                              },
-                            )
-                          ),
-                        ],
-                      ),
-                    ])
+                              child: Consumer<EcommerceProvider>(
+                                builder: (BuildContext context, EcommerceProvider notifier, Widget? child) {
+                                  return ListView.separated(
+                                    shrinkWrap: true,
+                                    physics: const BouncingScrollPhysics(),
+                                    scrollDirection: Axis.vertical,
+                                    itemCount: notifier.district.length,
+                                    itemBuilder: (BuildContext context, int i) {
+                                      return ListTile(
+                                        title: Text(notifier.district[i].districtName),
+                                        onTap: () async {
+                                          setState(() {
+                                            districtName = notifier.district[i].districtName;
+                                            districtC.text = districtName;
+                                          });
+                                          await ecommerceProvider.getSubdistrict(districtName: districtName, search: "");
+                                          NS.pop();
+                                        },
+                                      );
+                                    },
+                                    separatorBuilder: (context, index) {
+                                      return const Divider(
+                                        thickness: 1,
+                                      );
+                                    },
+                                  );
+                                },
+                              )                             
+                            ),
+                          ],
+                        ),
+                      ])
                     )
                   );
                 },
               );
             },
             readOnly: true,
+            controller: districtC,
             cursorColor: ColorResources.black,
             keyboardType: TextInputType.text,
             inputFormatters: [FilteringTextInputFormatter.singleLineFormatter],
-            decoration: InputDecoration(
-              hintText: "Kecamatan",
-              contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
+            decoration: const InputDecoration(
+              contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
               isDense: true,
-              hintStyle: robotoRegular.copyWith(
-                color: ColorResources.black 
-              ),
-              focusedBorder: const OutlineInputBorder(
+              focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   color: Colors.grey,
                   width: 0.5
                 ),
               ),
-              enabledBorder: const OutlineInputBorder(
+              enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   color: Colors.grey,
                   width: 0.5
@@ -892,7 +985,7 @@ class CreateStoreState extends State<CreateStore> {
     );       
   }
 
-  Widget inputFieldKelurahanDesa(String title, TextEditingController controller, String hintText) {
+  Widget inputFieldSubdistrict(String title, String hintText) {
     return Column(
       children: [
         Container(
@@ -921,26 +1014,118 @@ class CreateStoreState extends State<CreateStore> {
             ],
           ),
           child: TextFormField(
-            readOnly: false,
+            onTap: () {
+              showModalBottomSheet(
+                isScrollControlled: true,
+                backgroundColor: ColorResources.transparent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                context: context,
+                builder: (BuildContext context) {
+                  return Container(
+                  height: MediaQuery.of(context).size.height * 0.96,
+                  color: Colors.transparent,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: ColorResources.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10.0),
+                        topRight: Radius.circular(10.0)
+                      )
+                    ),
+                    child: Stack(
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0, bottom: 8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          NS.pop();
+                                        },
+                                        child: const Icon(
+                                          Icons.close
+                                        )
+                                      ),
+                                      Container(
+                                        margin: const EdgeInsets.only(left: 16),
+                                        child: Text("Pilih Kecamatan Anda",
+                                          style: robotoRegular.copyWith(
+                                            fontSize: Dimensions.fontSizeDefault,
+                                            color: ColorResources.black
+                                          )
+                                        )
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Divider(
+                              thickness: 3,
+                            ),
+                            Expanded(
+                              flex: 40,
+                              child: Consumer<EcommerceProvider>(
+                                builder: (BuildContext context, EcommerceProvider notifier, Widget? child) {
+                                  return ListView.separated(
+                                    shrinkWrap: true,
+                                    physics: const BouncingScrollPhysics(),
+                                    scrollDirection: Axis.vertical,
+                                    itemCount: notifier.subdistrict.length,
+                                    itemBuilder: (BuildContext context, int i) {
+                                      return ListTile(
+                                        title: Text(notifier.subdistrict[i].subdistrictName),
+                                        onTap: () async {
+                                          setState(() {
+                                            subdistrictName = notifier.subdistrict[i].subdistrictName;
+                                            subdistrictC.text = subdistrictName;
+                                            postCodeC.text = notifier.subdistrict[i].zipCode.toString();
+                                          });
+                                          NS.pop();
+                                        },
+                                      );
+                                    },
+                                    separatorBuilder: (context, index) {
+                                      return const Divider(
+                                        thickness: 1,
+                                      );
+                                    },
+                                  );
+                                },
+                              )                             
+                            ),
+                          ],
+                        ),
+                      ])
+                    )
+                  );
+                },
+              );
+            },
+            readOnly: true,
             cursorColor: ColorResources.black,
-            controller: controller,
+            controller: subdistrictC,
             style: robotoRegular,
             keyboardType: TextInputType.text,
             inputFormatters: [FilteringTextInputFormatter.singleLineFormatter],
-            decoration: InputDecoration(
-              hintText: hintText,
-              contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
+            decoration: const InputDecoration(
+              contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
               isDense: true,
-              hintStyle: robotoRegular.copyWith(
-                color: Theme.of(context).hintColor
-              ),
-              focusedBorder: const OutlineInputBorder(
+              focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   color: Colors.grey,
                   width: 0.5
                 ),
               ),
-              enabledBorder: const OutlineInputBorder(
+              enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   color: Colors.grey,
                   width: 0.5
@@ -983,24 +1168,20 @@ class CreateStoreState extends State<CreateStore> {
             ],
           ),
           child: TextFormField(
-            cursorColor: ColorResources.black,
+            readOnly: true,
             controller: controller,
             keyboardType: TextInputType.text,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            decoration: InputDecoration(
-              hintText: hintText,
-              contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
+            decoration: const InputDecoration(
+              contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
               isDense: true,
-              hintStyle: robotoRegular.copyWith(
-                color: Theme.of(context).hintColor
-              ),
-              focusedBorder: const OutlineInputBorder(
+              focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   color: Colors.grey,
                   width: 0.5
                 ),
               ),
-              enabledBorder: const OutlineInputBorder(
+              enabledBorder:  OutlineInputBorder(
                 borderSide: BorderSide(
                   color: Colors.grey,
                   width: 0.5
@@ -1135,6 +1316,23 @@ class CreateStoreState extends State<CreateStore> {
     ); 
   }
 
+  Widget toggleOpenIsStore() {
+    return SwitchListTile(
+      title: Text('Buka toko',
+        style: robotoRegular.copyWith(
+          fontSize: Dimensions.fontSizeDefault,
+          color: ColorResources.black
+        ),
+      ),
+      value: isOpenStore,
+      onChanged: (bool val) {
+        setState(() {
+          isOpenStore = val;
+        });
+      },
+    );
+  }
+
   Widget inputFieldDescriptionStore(TextEditingController controller) {
     return Column(
       children: [
@@ -1223,13 +1421,7 @@ class CreateStoreState extends State<CreateStore> {
                                 child: TextFormField(
                                   controller: controller,
                                   autofocus: true,
-                                  decoration: InputDecoration(
-                                    hintText: "Masukan Deskripsi Toko Anda",
-                                    hintStyle: robotoRegular.copyWith(
-                                      color: controller.text.isNotEmpty 
-                                      ? ColorResources.black
-                                      : Theme.of(context).hintColor
-                                    ),
+                                  decoration: const InputDecoration(
                                     fillColor: ColorResources.white,
                                     border: InputBorder.none,
                                     focusedBorder: InputBorder.none,
@@ -1255,11 +1447,12 @@ class CreateStoreState extends State<CreateStore> {
               width: double.infinity,
               padding: const EdgeInsets.all(10.0),
               decoration: BoxDecoration(
+                color: ColorResources.white,
                 borderRadius: BorderRadius.circular(6.0),
                 border: Border.all(color: Colors.grey.withOpacity(0.5)),
               ),
               child: Text(controller.text == '' 
-              ? "Masukan Deskripsi Toko Anda" 
+              ? "" 
               : controller.text,
               style: robotoRegular.copyWith(
                 fontSize: Dimensions.fontSizeDefault, 

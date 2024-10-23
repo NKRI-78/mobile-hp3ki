@@ -220,9 +220,9 @@ class ConfirmPaymentV2State extends State<ConfirmPaymentV2> {
                                       ),
                                     ),
                                     const SizedBox(height: 4.0),
-                                    RowItem(label: 'Harga Pesanan', text: Helper.formatCurrency(widget.price)),
-                                    RowItem(label: 'Biaya Admin', text: Helper.formatCurrency(widget.adminFee)),
-                                    RowItem(label: 'Total Pembayaran', text: Helper.formatCurrency(widget.price + widget.adminFee)),
+                                    RowItem(label: 'Harga Pesanan', text: Helper.formatCurrency(int.parse(widget.price.toString()))),
+                                    RowItem(label: 'Biaya Admin', text: Helper.formatCurrency(int.parse(widget.adminFee.toString()))),
+                                    RowItem(label: 'Total Pembayaran', text: Helper.formatCurrency(int.parse((widget.price + widget.adminFee).toString()))),
                                   ],
                                 ),
                               ],
@@ -335,7 +335,7 @@ class ConfirmPaymentV2State extends State<ConfirmPaymentV2> {
                       ? "..."
                       : ppobProvider.balanceStatus == BalanceStatus.error 
                       ?  "..."
-                      : Helper.formatCurrency(double.parse(ppobProvider.balance.toString())),
+                      : Helper.formatCurrency(int.parse(ppobProvider.balance.toString())),
                         style: robotoRegular.copyWith(
                           fontWeight: FontWeight.w600,
                           fontSize: Dimensions.fontSizeDefault,

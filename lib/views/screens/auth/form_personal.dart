@@ -1,9 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:hp3ki/data/models/user/user.dart';
 import 'package:hp3ki/providers/media/media.dart';
 import 'package:hp3ki/providers/profile/profile.dart';
 import 'package:hp3ki/providers/region_dropdown/region_dropdown.dart';
+import 'package:hp3ki/utils/shared_preferences.dart';
+import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -18,8 +21,6 @@ import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/views/basewidgets/textfield/textfield_two.dart';
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
-import '../../../utils/shared_preferences.dart';
-import '../../basewidgets/snackbar/snackbar.dart';
 
 class FormPersonalScreen extends StatefulWidget {
   const FormPersonalScreen({Key? key}) : super(key: key);
@@ -105,15 +106,18 @@ class _FormPersonalScreenState extends State<FormPersonalScreen> {
 
     if (formKey.currentState!.validate()) {
 
-      String? ktpPhotoPath = await context.read<MediaProvider>().uploadPicture(context, ktpPhoto!);
-      String? selfiePhotoPath = await context.read<MediaProvider>().uploadPicture(context, selfiePhoto!);
+      final ktpPhotoPath = await context.read<MediaProvider>().postMedia(ktpPhoto!);
+      final selfiePhotoPath = await context.read<MediaProvider>().postMedia(selfiePhoto!);
+
+      String picKtp = json.decode(ktpPhotoPath!.data)['data']['path'];
+      String avatar = json.decode(selfiePhotoPath!.data)['data']['path'];
 
       SharedPrefs.writePersonalData(
         fullname: name,
         addressKtp: alamatKTP,
-        picKtp: ktpPhotoPath.toString(),
+        picKtp: picKtp,
         noKtp: ktp,
-        avatar: selfiePhotoPath.toString(),
+        avatar: avatar,
         provinceId: provinsi,
         province: context.read<RegionDropdownProvider>().currentProvince!,
         cityId: kabupaten,
@@ -449,10 +453,6 @@ class _FormPersonalScreenState extends State<FormPersonalScreen> {
 
   CustomButton buildSubmitButton() {
     return CustomButton(
-      isLoading: context.watch<MediaProvider>().uploadPictureStatus ==
-              UploadPictureStatus.loading
-          ? true
-          : false,
       onTap: submit,
       customText: true,
       text: Text(

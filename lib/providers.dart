@@ -1,3 +1,7 @@
+import 'package:hp3ki/providers/ecommerce/ecommerce.dart';
+import 'package:provider/provider.dart';
+import 'package:provider/single_child_widget.dart';
+
 import 'package:hp3ki/providers/auth/auth.dart';
 import 'package:hp3ki/providers/banner/banner.dart';
 import 'package:hp3ki/providers/checkin/checkin.dart';
@@ -20,10 +24,6 @@ import 'package:hp3ki/providers/region_dropdown/region_dropdown.dart';
 import 'package:hp3ki/providers/sos/sos.dart';
 import 'package:hp3ki/providers/splash/splash.dart';
 import 'package:hp3ki/providers/upgrade_member/upgrade_member.dart';
-import 'package:hp3ki/views/screens/shipping_address/persentation/providers/shipping_address_provider.dart';
-import 'package:hp3ki/views/screens/shop_cart/persentation/providers/shop_cart_provider.dart';
-import 'package:provider/provider.dart';
-import 'package:provider/single_child_widget.dart';
 
 import 'container.dart' as c;
 
@@ -47,6 +47,7 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider(create: (_) => c.getIt<FeedDetailProviderV2>()),
   ChangeNotifierProvider(create: (_) => c.getIt<FeedReplyProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<EventProvider>()),
+  ChangeNotifierProvider(create: (_) => c.getIt<EcommerceProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<CheckInProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<AuthProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<ProfileProvider>()),
@@ -55,8 +56,6 @@ List<SingleChildWidget> independentServices = [
   ChangeNotifierProvider(create: (_) => c.getIt<RegionDropdownProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<BannerProvider>()),
   ChangeNotifierProvider(create: (_) => c.getIt<UpgradeMemberProvider>()),
-  ChangeNotifierProvider(create: (_) => c.getIt<ShopCartProvider>()..fetchCarts()),
-  ChangeNotifierProvider(create: (_) => c.getIt<ShippingAddressProvider>()..fetchAllShippingAddress()),
   
   Provider.value(value: const <String, dynamic>{})
 ];

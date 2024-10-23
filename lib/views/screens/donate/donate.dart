@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' hide CarouselController;
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hp3ki/views/screens/comingsoon/comingsoon.dart';
 import 'package:sliver_tools/sliver_tools.dart';

@@ -1,23 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
+import 'package:hp3ki/providers/upgrade_member/upgrade_member.dart';
+
+import 'package:hp3ki/services/navigation.dart';
+
 import 'package:hp3ki/data/models/package_account/package_account_model.dart';
 import 'package:hp3ki/data/models/ppob_v2/payment_list.dart';
-import 'package:hp3ki/providers/upgrade_member/upgrade_member.dart';
-import 'package:hp3ki/services/navigation.dart';
+
 import 'package:hp3ki/utils/constant.dart';
 import 'package:hp3ki/utils/dio.dart';
 import 'package:hp3ki/utils/shared_preferences.dart';
-import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
-import 'package:hp3ki/views/basewidgets/dialog/custom/custom.dart';
-import 'package:hp3ki/views/screens/upgrademember/select_payment_method.dart';
-import 'package:provider/provider.dart';
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:hp3ki/utils/helper.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
+
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
-import 'package:dio/dio.dart';
+import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
+import 'package:hp3ki/views/basewidgets/dialog/custom/custom.dart';
+
+import 'package:hp3ki/views/screens/upgrademember/select_payment_method.dart';
 
 class UpgradeMemberInquiryV2Screen extends StatefulWidget {
   const UpgradeMemberInquiryV2Screen({super.key});
@@ -163,7 +169,7 @@ class _UpgradeMemberInquiryV2ScreenState
               ),
               subtitle: Text(
                 "Biaya admin: " +
-                    Helper.formatCurrency(data.totalAdminFee?.toDouble() ?? 0),
+                    Helper.formatCurrency(data.totalAdminFee!),
                 style: poppinsRegular,
               ),
             )
@@ -396,7 +402,7 @@ class InfoTile extends StatelessWidget {
         ),
       ),
       title: Text(
-        Helper.formatCurrency(price),
+        Helper.formatCurrency(int.parse(price.toString())),
         style: robotoRegular,
         textAlign: TextAlign.end,
       ),

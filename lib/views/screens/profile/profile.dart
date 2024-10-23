@@ -1,9 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
-import 'package:hp3ki/views/screens/store/create.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:path_provider/path_provider.dart';
@@ -20,7 +20,6 @@ import 'package:hp3ki/localization/language_constraints.dart';
 import 'package:hp3ki/services/navigation.dart';
 
 import 'package:hp3ki/providers/media/media.dart';
-import 'package:hp3ki/providers/ppob/ppob.dart';
 import 'package:hp3ki/providers/profile/profile.dart';
 
 import 'package:hp3ki/utils/helper.dart';
@@ -37,6 +36,7 @@ import 'package:hp3ki/views/screens/auth/change_password.dart';
 import 'package:hp3ki/views/screens/privacy_policy/privacy_policy.dart';
 import 'package:hp3ki/views/screens/profile/edit.dart';
 import 'package:hp3ki/views/screens/maintain/maintain.dart';
+import 'package:hp3ki/views/screens/store/create.dart';
 
 final GlobalKey ktaImageKey = GlobalKey();
 
@@ -89,8 +89,9 @@ class ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<String?> uploadPicture(BuildContext context, File file) async {
-    String? path = await context.read<MediaProvider>().uploadPicture(context, file);
-    return path;
+    final res = await context.read<MediaProvider>().postMedia(file);
+    Map data = json.decode(res!.data);
+    return data["data"]["path"];
   }
 
   Future<void> editPicture() async {
@@ -202,10 +203,6 @@ class ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return buildUI();
-  }
-
-  Widget buildUI() {
     return Scaffold(
       body: Container(
         decoration: buildBackgroundImage(),
@@ -217,10 +214,12 @@ class ProfileScreenState extends State<ProfileScreen> {
             });
           },
           child: Stack(
+            clipBehavior: Clip.none,
             children: [
               CustomScrollView(
                 physics: const BouncingScrollPhysics(
-                    parent: AlwaysScrollableScrollPhysics()),
+                  parent: AlwaysScrollableScrollPhysics()
+                ),
                 slivers: [
                   buildUserKTA(),
                   buildCreateStore(),
@@ -569,36 +568,32 @@ class ProfileScreenState extends State<ProfileScreen> {
                     ],
                   ),
                   file != null
-                      ? Container(
-                          margin: const EdgeInsets.only(
-                            left: Dimensions.marginSizeExtraLarge,
-                            right: Dimensions.marginSizeExtraLarge,
-                            bottom: Dimensions.marginSizeSmall,
+                  ? Container(
+                      margin: const EdgeInsets.only(
+                        left: Dimensions.marginSizeExtraLarge,
+                        right: Dimensions.marginSizeExtraLarge,
+                        bottom: Dimensions.marginSizeSmall,
+                      ),
+                      child: CustomButton(
+                        customText: true,
+                        text: Text('Ubah Foto Profil',
+                          style: robotoRegular.copyWith(
+                            fontSize: Dimensions.fontSizeLarge,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.5,
+                            color: ColorResources.white
                           ),
-                          child: CustomButton(
-                            isLoading: context
-                            .watch<MediaProvider>()
-                            .uploadPictureStatus == UploadPictureStatus.loading
-                            ? true
-                            : false,
-                            customText: true,
-                            text: Text('Ubah Foto Profil',
-                              style: robotoRegular.copyWith(
-                                fontSize: Dimensions.fontSizeLarge,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1.5,
-                                color: ColorResources.white
-                              ),
-                            ),
-                            btnColor: ColorResources.success,
-                            isBorderRadius: true,
-                            sizeBorderRadius: 10.0,
-                            isBoxShadow: true,
-                            onTap: () async {
-                              editPicture();
-                            },
-                          ))
-                      : const SizedBox(),
+                        ),
+                        btnColor: ColorResources.success,
+                        isBorderRadius: true,
+                        sizeBorderRadius: 10.0,
+                        isBoxShadow: true,
+                        onTap: () async {
+                          editPicture();
+                        },
+                      )
+                    )
+                  : const SizedBox(),
                 ],
               ),
             ),
@@ -933,7 +928,6 @@ class ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
-  
 
   SliverToBoxAdapter buildChangePassword() {
     return SliverToBoxAdapter(
@@ -1031,10 +1025,11 @@ class ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Container buildOptionReferral(
-      {required String label,
-      required Color color,
-      required void Function() onTap}) {
+  Container buildOptionReferral({
+    required String label,
+    required Color color,
+    required void Function() onTap
+  }) {
     return Container(
       margin: const EdgeInsets.only(
         left: Dimensions.marginSizeExtraLarge,
@@ -1206,8 +1201,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                       ),
                       Expanded(
                         child: Text(
-                          Helper.formatCurrency(
-                              context.read<PPOBProvider>().balance ?? 0),
+                          Helper.formatCurrency(0),
                           textAlign: TextAlign.right,
                           style: poppinsRegular.copyWith(
                             color: ColorResources.white,

@@ -5,11 +5,28 @@ import 'package:intl/date_symbol_data_local.dart';
 
 class Helper {
   
-  static String formatCurrency(double number, {bool useSymbol = true}) {
+  static String formatCurrency(int number, {bool useSymbol = true}) {
     final NumberFormat _fmt = NumberFormat.currency(locale: 'id', symbol: useSymbol ? 'Rp ' : '');
     String s = _fmt.format(number);
     String _format = s.toString().replaceAll(RegExp(r"([,]*00)(?!.*\d)"), "");
     return _format;
+  }
+
+  static String gramsToKilograms(double grams) {
+    return "${grams / 1000} Kg";
+  }
+
+  static String censorName(String name) {
+    if (name.length <= 2) {
+      return name;
+    }
+
+    String start = name.substring(0, 2);
+    String end = name.substring(name.length - 1);
+    
+    String censoredPart = '*' * (name.length - 3);
+
+    return start + censoredPart + end;
   }
   
   static String getFormatedDate(_date) {

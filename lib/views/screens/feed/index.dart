@@ -1045,7 +1045,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
     
                   const SizedBox(height: 8.0),
     
-                  const Text("Saka Dirgantara",
+                  const Text("HP3KI",
                     style: TextStyle(
                       color: ColorResources.black,
                       fontWeight: FontWeight.bold,
@@ -1064,12 +1064,12 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                     }
                   });
                   if(sc.position.pixels == 0.0) {
-                    NS.push(context, DashboardScreen());
+                    NS.push(context, const DashboardScreen());
                   } else {
-                    Future.delayed(Duration(milliseconds: 500),() {
+                    Future.delayed(const Duration(milliseconds: 500),() {
                       sc.animateTo(
                         sc.position.minScrollExtent, 
-                        duration: Duration(milliseconds: 500), 
+                        duration: const Duration(milliseconds: 500), 
                         curve: Curves.easeIn
                       );
                     });

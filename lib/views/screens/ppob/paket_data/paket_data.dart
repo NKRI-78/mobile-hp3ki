@@ -58,10 +58,6 @@ class _PaketDataScreen extends State<PaketDataScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return buildUI();
-  }
-
-  Widget buildUI() {
     return Scaffold(
       backgroundColor: ColorResources.white,
       body: SafeArea(
@@ -295,9 +291,7 @@ class _PaketDataScreen extends State<PaketDataScreen> {
                                                         mainAxisAlignment: MainAxisAlignment.center,
                                                         children: [
                                                           Text(
-                                                            Helper.formatCurrency(
-                                                              double.parse(selectedPaketData.productPrice.toString())
-                                                            ).split('.')[0],
+                                                            Helper.formatCurrency(0).split('.')[0],
                                                             style: TextStyle(
                                                               fontSize: Dimensions.fontSizeExtraLarge,
                                                               fontWeight: FontWeight.bold,
@@ -316,9 +310,7 @@ class _PaketDataScreen extends State<PaketDataScreen> {
                                                             ),
                                                           ),
                                                           Text(
-                                                            Helper.formatCurrency(
-                                                              double.parse(selectedPaketData.productPrice.toString())
-                                                            ).split('.')[1],
+                                                            Helper.formatCurrency(0).split('.')[1],
                                                             style: TextStyle(
                                                               fontSize: Dimensions.fontSizeDefault,
                                                               fontWeight: FontWeight.bold,
@@ -397,4 +389,5 @@ class _PaketDataScreen extends State<PaketDataScreen> {
       )
     );
   }
+  
 }

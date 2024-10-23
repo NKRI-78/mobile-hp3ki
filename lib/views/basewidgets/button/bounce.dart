@@ -10,10 +10,10 @@ class Bouncing extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _BouncingState createState() => _BouncingState();
+  BouncingState createState() => BouncingState();
 }
 
-class _BouncingState extends State<Bouncing> with SingleTickerProviderStateMixin {
+class BouncingState extends State<Bouncing> with SingleTickerProviderStateMixin {
   Animation<double>? scale;
   AnimationController? controller;
 

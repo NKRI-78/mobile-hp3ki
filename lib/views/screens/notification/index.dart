@@ -15,7 +15,6 @@ import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 
-import 'package:hp3ki/views/screens/notification/transaction_notif_list.dart';
 import 'package:hp3ki/views/screens/notification/detail.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -446,7 +445,7 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
                 color: ColorResources.primary,
               ),
             ),
-            index == 3 ? const TransactionNotifList() : const Center(
+            index == 3 ? const SizedBox() : const Center(
               child: SpinKitThreeBounce(
                 size: 20.0,
                 color: ColorResources.primary,

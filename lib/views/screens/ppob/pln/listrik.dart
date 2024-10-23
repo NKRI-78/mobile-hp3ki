@@ -3,27 +3,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:hp3ki/utils/helper.dart';
+import 'package:provider/provider.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+
+import 'package:hp3ki/providers/ppob/ppob.dart';
+
 import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
 import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
-import 'package:provider/provider.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:hp3ki/providers/ppob/ppob.dart';
+
 import 'package:hp3ki/utils/box_shadow.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/dimensions.dart';
+import 'package:hp3ki/utils/helper.dart';
 
 class ListrikScreen extends StatefulWidget {
   const ListrikScreen({super.key});
 
   @override
-  State<ListrikScreen> createState() => _ListrikScreenState();
+  State<ListrikScreen> createState() => ListrikScreenState();
 }
 
-class _ListrikScreenState extends State<ListrikScreen> {
-  GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
-
+class ListrikScreenState extends State<ListrikScreen> {
   late TextEditingController plnPraC;
   late TextEditingController plnPasC;
 
@@ -90,7 +91,6 @@ class _ListrikScreenState extends State<ListrikScreen> {
 
   Widget buildUI() {
     return Scaffold(
-      key: globalKey,
       backgroundColor: ColorResources.white,
       body: SafeArea(
         child: LayoutBuilder(
@@ -426,7 +426,7 @@ class _ListrikScreenState extends State<ListrikScreen> {
                                                             children: [
                                                               Text(
                                                                 Helper.formatCurrency(
-                                                                  double.parse((ppobProvider.listPricePLNPrabayarData[i].productPrice! + 2000).toString())
+                                                                  0
                                                                 ).split('.')[0],
                                                                 style: TextStyle(
                                                                   fontSize: Dimensions.fontSizeExtraLarge,
@@ -447,7 +447,7 @@ class _ListrikScreenState extends State<ListrikScreen> {
                                                               ),
                                                               Text(
                                                                 Helper.formatCurrency(
-                                                                  double.parse((ppobProvider.listPricePLNPrabayarData[i].productPrice! + 2000).toString())
+                                                                  0
                                                                 ).split('.')[1],
                                                                 style: TextStyle(
                                                                   fontSize: Dimensions.fontSizeDefault,

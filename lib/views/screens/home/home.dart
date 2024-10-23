@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart' hide CarouselController;
+import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 import 'package:hp3ki/localization/language_constraints.dart';
@@ -8,7 +8,6 @@ import 'package:hp3ki/localization/language_constraints.dart';
 import 'package:hp3ki/views/basewidgets/button/bounce.dart';
 import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
 
-import 'package:hp3ki/utils/modal.dart';
 import 'package:hp3ki/utils/shared_preferences.dart';
 import 'package:hp3ki/utils/extension.dart';
 import 'package:hp3ki/utils/box_shadow.dart';
@@ -37,11 +36,8 @@ import 'package:hp3ki/views/screens/feed/index.dart';
 import 'package:hp3ki/views/screens/maintain/maintain.dart';
 import 'package:hp3ki/views/screens/media/media.dart';
 import 'package:hp3ki/views/screens/membernear/membernear.dart';
-import 'package:hp3ki/views/screens/my_store/persentation/pages/my_store_page.dart';
-import 'package:hp3ki/views/screens/my_store_create/persentation/pages/store_open_page.dart';
 import 'package:hp3ki/views/screens/news/detail.dart';
 import 'package:hp3ki/views/screens/notification/index.dart';
-import 'package:hp3ki/views/screens/ppob/confirm_paymentv2.dart';
 import 'package:hp3ki/views/screens/profile/profile.dart';
 import 'package:hp3ki/views/screens/sos/indexv2.dart';
 import 'package:hp3ki/views/screens/news/index.dart';
@@ -271,36 +267,36 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
                       children: [
                         Bouncing(
                           onPress: () {
-                            if (!hasStore) {
-                              if ((ppob.balance ?? 0) <= 20000) {
-                                GeneralModal.error(context,
-                                    msg: getTranslated(
-                                        "TXT_OPEN_STORE_MINIM_WALLET", context),
-                                    onOk: () {
-                                  Navigator.pop(context);
+                            // if (!hasStore) {
+                            //   if ((ppob.balance ?? 0) <= 20000) {
+                            //     GeneralModal.error(context,
+                            //         msg: getTranslated(
+                            //             "TXT_OPEN_STORE_MINIM_WALLET", context),
+                            //         onOk: () {
+                            //       Navigator.pop(context);
 
-                                  NS.push(
-                                      context,
-                                      ConfirmPaymentV2(
-                                        accountNumber:
-                                            SharedPrefs.getUserPhone(),
-                                        description:
-                                            'Isi Saldo sebesar Rp 20.000',
-                                        price: 20000,
-                                        adminFee: 6500,
-                                        productId:
-                                            "17805178-2f32-48a3-aab3-ce7a55eb3227",
-                                        provider: 'asdasd',
-                                        productName: 'Saldo',
-                                        type: "topup",
-                                      ));
-                                });
-                                return;
-                              }
-                              NS.push(context, const StoreOpenPage());
-                            } else {
-                              NS.push(context, const MyStorePage());
-                            }
+                            //       NS.push(
+                            //           context,
+                            //           ConfirmPaymentV2(
+                            //             accountNumber:
+                            //                 SharedPrefs.getUserPhone(),
+                            //             description:
+                            //                 'Isi Saldo sebesar Rp 20.000',
+                            //             price: 20000,
+                            //             adminFee: 6500,
+                            //             productId:
+                            //                 "17805178-2f32-48a3-aab3-ce7a55eb3227",
+                            //             provider: 'asdasd',
+                            //             productName: 'Saldo',
+                            //             type: "topup",
+                            //           ));
+                            //     });
+                            //     return;
+                            //   }
+                              // NS.push(context, const StoreOpenPage());
+                            // } else {
+                              // NS.push(context, const MyStorePage());
+                            // } 
                           },
                           child: Container(
                             height: 80.0,
@@ -823,180 +819,179 @@ class _HomeScreenState extends State<HomeScreen> {
     } else {
       return SliverToBoxAdapter(
         child: !SharedPrefs.isLoggedIn()
-            ? Container(
-                margin: const EdgeInsets.only(
-                  top: 80.0,
-                  left: Dimensions.marginSizeLarge,
-                  right: Dimensions.marginSizeLarge,
+          ? Container(
+          margin: const EdgeInsets.only(
+            top: 80.0,
+            left: Dimensions.marginSizeLarge,
+            right: Dimensions.marginSizeLarge,
+          ),
+          child: Material(
+              color: ColorResources.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(15.0),
+                onTap: () {
+                  NS.pushDown(context, const SignInScreen());
+                },
+                child: Hero(
+                  tag: 'userBox',
+                  child: Card(
+                    margin: EdgeInsets.zero,
+                    elevation: 10.0,
+                    color: const Color.fromARGB(141, 68, 99, 158)
+                        .withOpacity(0.7),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0)),
+                    child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: Dimensions.marginSizeExtraSmall,
+                            vertical: Dimensions.marginSizeSmall),
+                        child: Center(
+                            child: Text(
+                          "Login",
+                          style: poppinsRegular.copyWith(
+                              fontSize: Dimensions.fontSizeLarge,
+                              color: ColorResources.white),
+                        ))),
+                  ),
                 ),
-                child: Material(
-                    color: ColorResources.transparent,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(15.0),
-                      onTap: () {
-                        NS.pushDown(context, const SignInScreen());
-                      },
-                      child: Hero(
-                        tag: 'userBox',
-                        child: Card(
-                          margin: EdgeInsets.zero,
-                          elevation: 10.0,
-                          color: const Color.fromARGB(141, 68, 99, 158)
-                              .withOpacity(0.7),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0)),
-                          child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: Dimensions.marginSizeExtraSmall,
-                                  vertical: Dimensions.marginSizeSmall),
-                              child: Center(
-                                  child: Text(
-                                "Login",
-                                style: poppinsRegular.copyWith(
-                                    fontSize: Dimensions.fontSizeLarge,
-                                    color: ColorResources.white),
-                              ))),
+              )),
+        )
+      : Container(
+          margin: const EdgeInsets.only(
+            top: 80.0,
+            left: Dimensions.marginSizeLarge,
+            right: Dimensions.marginSizeLarge,
+          ),
+          child: Material(
+            color: ColorResources.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(15.0),
+              onTap: () {
+                NS.pushDown(context, const ProfileScreen());
+              },
+              child: Hero(
+                tag: 'userBox',
+                child: Card(
+                  margin: EdgeInsets.zero,
+                  elevation: 10.0,
+                  color: const Color.fromARGB(141, 68, 99, 158)
+                      .withOpacity(0.7),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0)),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: Dimensions.marginSizeExtraSmall,
+                        vertical: Dimensions.marginSizeSmall),
+                    child: ListTile(
+                      horizontalTitleGap: 0.0,
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        radius: 40.0,
+                        child: Consumer<ProfileProvider>(
+                          builder: (BuildContext context, ProfileProvider profileProvider, Widget? child) {
+
+                            if (profileProvider.profileStatus == ProfileStatus.loading) {
+                              return const CircleAvatar(
+                                backgroundColor:ColorResources.backgroundDisabled,
+                                maxRadius: 40.0,
+                              );
+                            }
+
+                            if (profileProvider.profileStatus == ProfileStatus.error) {
+                              return const CircleAvatar(
+                                backgroundColor:ColorResources.backgroundDisabled,
+                                maxRadius: 40.0,
+                              );
+                            }
+                            
+                            UserData? user = profileProvider.user;
+
+                            return CachedNetworkImage(
+                              imageUrl: user?.avatar.toString() ?? "",
+                              imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
+                                return CircleAvatar(
+                                  backgroundColor: Colors.transparent,
+                                  maxRadius: 40.0,
+                                  backgroundImage: imageProvider,
+                                );
+                              },
+                              errorWidget: (BuildContext context, String url, dynamic error) {
+                                return Image.asset("assets/images/icons/ic-person.png");
+                              },
+                            );
+                          },
+
                         ),
                       ),
-                    )),
-              )
-            : Container(
-                margin: const EdgeInsets.only(
-                  top: 80.0,
-                  left: Dimensions.marginSizeLarge,
-                  right: Dimensions.marginSizeLarge,
-                ),
-                child: Material(
-                  color: ColorResources.transparent,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(15.0),
-                    onTap: () {
-                      NS.pushDown(context, const ProfileScreen());
-                    },
-                    child: Hero(
-                      tag: 'userBox',
-                      child: Card(
-                        margin: EdgeInsets.zero,
-                        elevation: 10.0,
-                        color: const Color.fromARGB(141, 68, 99, 158)
-                            .withOpacity(0.7),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0)),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: Dimensions.marginSizeExtraSmall,
-                              vertical: Dimensions.marginSizeSmall),
-                          child: ListTile(
-                            horizontalTitleGap: 0.0,
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.transparent,
-                              radius: 40.0,
-                              child: Consumer<ProfileProvider>(
-                                builder: (BuildContext context, ProfileProvider profileProvider, Widget? child) {
-
-                                  if (profileProvider.profileStatus == ProfileStatus.loading) {
-                                    return const CircleAvatar(
-                                      backgroundColor:ColorResources.backgroundDisabled,
-                                      maxRadius: 40.0,
-                                    );
-                                  }
-
-                                  if (profileProvider.profileStatus == ProfileStatus.error) {
-                                    return const CircleAvatar(
-                                      backgroundColor:ColorResources.backgroundDisabled,
-                                      maxRadius: 40.0,
-                                    );
-                                  }
-                                  
-                                  UserData? user = profileProvider.user;
-
-                                  return CachedNetworkImage(
-                                    imageUrl: user?.avatar.toString() ?? "",
-                                    imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
-                                      return CircleAvatar(
-                                        backgroundColor: Colors.transparent,
-                                        maxRadius: 40.0,
-                                        backgroundImage: imageProvider,
-                                      );
-                                    },
-                                    errorWidget: (BuildContext context, String url, dynamic error) {
-                                      return Image.asset("assets/images/icons/ic-person.png");
-                                    },
-                                  );
-                                },
-
-                              ),
-                            ),
-                            title: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(getTranslated("WELCOME", context),
-                                  style: poppinsRegular.copyWith(
-                                    color: ColorResources.white,
-                                    fontSize: Dimensions.fontSizeLarge,
-                                  ),
-                                ),
-                                Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    const Icon(
-                                      Icons.shopping_bag,
-                                      size: Dimensions.iconSizeSmall,
-                                      color: ColorResources.white,
-                                    ),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(getTranslated('MY_BALANCE', context),
-                                      style: poppinsRegular.copyWith(
-                                        fontSize: Dimensions.fontSizeDefault,
-                                        color: ColorResources.white
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            subtitle: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading
-                                    ? "..."
-                                    : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error
-                                    ? "-"
-                                    : 'Hi, ${context.read<ProfileProvider>().user?.fullname?.smallSentence() ?? "..."}',
-                                    maxLines: 1,
-                                    style: poppinsRegular.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: Dimensions.fontSizeExtraLarge,
-                                        color: ColorResources.white),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    Helper.formatCurrency(
-                                        context.read<PPOBProvider>().balance ??
-                                            0),
-                                    textAlign: TextAlign.right,
-                                    style: poppinsRegular.copyWith(
-                                      color: ColorResources.white,
-                                      fontSize: Dimensions.fontSizeDefault,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                      title: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(getTranslated("WELCOME", context),
+                            style: poppinsRegular.copyWith(
+                              color: ColorResources.white,
+                              fontSize: Dimensions.fontSizeLarge,
                             ),
                           ),
-                        ),
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              const Icon(
+                                Icons.shopping_bag,
+                                size: Dimensions.iconSizeSmall,
+                                color: ColorResources.white,
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text(getTranslated('MY_BALANCE', context),
+                                style: poppinsRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeDefault,
+                                  color: ColorResources.white
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      subtitle: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading
+                              ? "..."
+                              : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error
+                              ? "-"
+                              : 'Hi, ${context.read<ProfileProvider>().user?.fullname?.smallSentence() ?? "..."}',
+                              maxLines: 1,
+                              style: poppinsRegular.copyWith(
+                                fontWeight: FontWeight.w600,
+                                fontSize: Dimensions.fontSizeExtraLarge,
+                                color: ColorResources.white
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              Helper.formatCurrency(0),
+                              textAlign: TextAlign.right,
+                              style: poppinsRegular.copyWith(
+                                color: ColorResources.white,
+                                fontSize: Dimensions.fontSizeDefault,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
               ),
+            ),
+          ),
+        ),
       );
     }
   }
@@ -1418,72 +1413,72 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildProductsSection() {
-    List products = [
-      {
-        "name":
-            "Velg Racing Mobil Pajero Sport Ring 20 HSR TSUYOI Velk Mobil Fortuner Triton Dmax R20",
-        "image":
-            "https://s2.bukalapak.com/img/20200500103/large/data.jpeg.webp",
-        "price": "12400000",
-      },
-      {
-        "name":
-            "Velg Mobil Vellfire 18x7.5 Pcd 5x114.3 ET 40 Black Polish Alphard",
-        "image":
-            "https://images.tokopedia.net/img/cache/900/VqbcmM/2021/7/7/a5f5d5ac-fcf1-409c-973c-53234a7a5a80.jpg",
-        "price": "7000000",
-      },
-      {
-        "name":
-            "Aksesoris Variasi Stoplamp Taillamp LED Meteo Axis Alphard ANH30 15+",
-        "image":
-            "https://images.tokopedia.net/img/cache/900/VqbcmM/2020/12/7/980d289a-93c0-4829-ab7d-2856850e43b0.jpg",
-        "price": "8800000",
-      },
-      {
-        "name":
-            "Toyota Vellfire Sarung Cover Mobil Durable Rubik | Guardian |Xtrem – Rubik",
-        "image":
-            "https://images.tokopedia.net/img/cache/900/hDjmkQ/2023/4/27/8b6764ef-e2fd-463b-9198-ee41f398691f.jpg",
-        "price": "870000",
-      },
-      {
-        "name": "Tas Thule VNJ ",
-        "image":
-            "https://images.tokopedia.net/img/cache/900/hDjmkQ/2021/1/11/bbabfbf8-3f75-4630-bb9b-fa0df0e063fc.jpg",
-        "price": "3800000",
-      },
-      {
-        "name": "SHOCKBREAKER DEPAN PAJERO SPORT ORIGINAL 4062A085",
-        "image":
-            "https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full//88/MTA-12139144/mitsubishi_shockbreaker_pajero_sport_-_triton_depan_belakang_original_premium_hitam_full01_d42eef41.jpg",
-        "price": "1800000",
-      },
-      {
-        "name": "Pac Makeup Kit New Edition",
-        "image":
-            "https://images.tokopedia.net/img/cache/900/attachment/2019/9/14/156847459919831/156847459919831_fbd91887-c44f-41e0-8a9c-14e7153e85b8.png",
-        "price": "3800000",
-      },
-      {
-        "name": "Set Alat Rias 7-in-1 dengan Dompet Plastik",
-        "image":
-            "https://images.tokopedia.net/img/cache/900/product-1/2013/9/30/2519619/2519619_06b76f48-29ae-11e3-b923-c35c2523fab8.jpg",
-        "price": "29900",
-      },
-      {
-        "name": "Sanggul Modern Variasi Terbaru Sanggul Bali Sanggul Batak",
-        "image":
-            "https://s2.bukalapak.com/img/71414911003/large/data.jpeg.webp",
-        "price": "40000",
-      },
-      {
-        "name": "Lore Jewellery - Kinara Simple Moissanite Ring 0.01 Carat – 4",
-        "image":
-            "https://images.tokopedia.net/img/cache/900/VqbcmM/2023/3/20/461ff11b-0d40-4ec8-b960-36ad7f2d7481.jpg",
-        "price": "548900",
-      },
-    ];
+    // List products = [
+    //   {
+    //     "name":
+    //         "Velg Racing Mobil Pajero Sport Ring 20 HSR TSUYOI Velk Mobil Fortuner Triton Dmax R20",
+    //     "image":
+    //         "https://s2.bukalapak.com/img/20200500103/large/data.jpeg.webp",
+    //     "price": "12400000",
+    //   },
+    //   {
+    //     "name":
+    //         "Velg Mobil Vellfire 18x7.5 Pcd 5x114.3 ET 40 Black Polish Alphard",
+    //     "image":
+    //         "https://images.tokopedia.net/img/cache/900/VqbcmM/2021/7/7/a5f5d5ac-fcf1-409c-973c-53234a7a5a80.jpg",
+    //     "price": "7000000",
+    //   },
+    //   {
+    //     "name":
+    //         "Aksesoris Variasi Stoplamp Taillamp LED Meteo Axis Alphard ANH30 15+",
+    //     "image":
+    //         "https://images.tokopedia.net/img/cache/900/VqbcmM/2020/12/7/980d289a-93c0-4829-ab7d-2856850e43b0.jpg",
+    //     "price": "8800000",
+    //   },
+    //   {
+    //     "name":
+    //         "Toyota Vellfire Sarung Cover Mobil Durable Rubik | Guardian |Xtrem – Rubik",
+    //     "image":
+    //         "https://images.tokopedia.net/img/cache/900/hDjmkQ/2023/4/27/8b6764ef-e2fd-463b-9198-ee41f398691f.jpg",
+    //     "price": "870000",
+    //   },
+    //   {
+    //     "name": "Tas Thule VNJ ",
+    //     "image":
+    //         "https://images.tokopedia.net/img/cache/900/hDjmkQ/2021/1/11/bbabfbf8-3f75-4630-bb9b-fa0df0e063fc.jpg",
+    //     "price": "3800000",
+    //   },
+    //   {
+    //     "name": "SHOCKBREAKER DEPAN PAJERO SPORT ORIGINAL 4062A085",
+    //     "image":
+    //         "https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full//88/MTA-12139144/mitsubishi_shockbreaker_pajero_sport_-_triton_depan_belakang_original_premium_hitam_full01_d42eef41.jpg",
+    //     "price": "1800000",
+    //   },
+    //   {
+    //     "name": "Pac Makeup Kit New Edition",
+    //     "image":
+    //         "https://images.tokopedia.net/img/cache/900/attachment/2019/9/14/156847459919831/156847459919831_fbd91887-c44f-41e0-8a9c-14e7153e85b8.png",
+    //     "price": "3800000",
+    //   },
+    //   {
+    //     "name": "Set Alat Rias 7-in-1 dengan Dompet Plastik",
+    //     "image":
+    //         "https://images.tokopedia.net/img/cache/900/product-1/2013/9/30/2519619/2519619_06b76f48-29ae-11e3-b923-c35c2523fab8.jpg",
+    //     "price": "29900",
+    //   },
+    //   {
+    //     "name": "Sanggul Modern Variasi Terbaru Sanggul Bali Sanggul Batak",
+    //     "image":
+    //         "https://s2.bukalapak.com/img/71414911003/large/data.jpeg.webp",
+    //     "price": "40000",
+    //   },
+    //   {
+    //     "name": "Lore Jewellery - Kinara Simple Moissanite Ring 0.01 Carat – 4",
+    //     "image":
+    //         "https://images.tokopedia.net/img/cache/900/VqbcmM/2023/3/20/461ff11b-0d40-4ec8-b960-36ad7f2d7481.jpg",
+    //     "price": "548900",
+    //   },
+    // ];
 
     return SliverToBoxAdapter(
       child: Consumer<NewsProvider>(
@@ -1532,165 +1527,129 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ),
-              // context.watch<ProfileProvider>().isActive != 1
-              //     ? const SizedBox()
-              //     : Padding(
-              //         padding: const EdgeInsets.only(
-              //           left: Dimensions.marginSizeExtraLarge,
-              //           right: Dimensions.marginSizeExtraLarge,
-              //         ),
-              //         child: Row(
-              //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //           children: [
-              //             Text(
-              //               'Mart',
-              //               style: poppinsRegular.copyWith(
-              //                   fontSize: Dimensions.fontSizeExtraLarge,
-              //                   fontWeight: FontWeight.w600,
-              //                   color: ColorResources.white,
-              //                   shadows: boxShadow),
-              //             ),
-              //             GestureDetector(
-              //               onTap: () => NS.push(context, const ShopPage()),
-              //               child: Text(
-              //                 'Lihat Semua',
-              //                 style: poppinsRegular.copyWith(
-              //                     color: ColorResources.yellowSecondaryV5,
-              //                     shadows: boxShadow),
-              //               ),
-              //             ),
-              //           ],
-              //         ),
-              //       ),
               const SizedBox(height: 10),
               context.watch<ProfileProvider>().isActive != 1
-                  ? const SizedBox()
-                  : SizedBox(
-                      height: 280,
-                      width: double.infinity,
-                      child: ListView.builder(
-                        padding: const EdgeInsets.only(
-                          left: Dimensions.marginSizeExtraLarge,
-                        ),
-                        physics: const BouncingScrollPhysics(
-                            parent: AlwaysScrollableScrollPhysics()),
-                        scrollDirection: Axis.horizontal,
-                        // itemCount: newsProvider.news.length,
-                        itemCount: products.take(4).length,
-                        itemBuilder: (context, i) {
-                          
-                          final product = products[i];
+              ? const SizedBox()
+              : const SizedBox(),
+              // : SizedBox(
+              //     height: 280,
+              //     width: double.infinity,
+              //     child: ListView.builder(
+              //       padding: const EdgeInsets.only(
+              //         left: Dimensions.marginSizeExtraLarge,
+              //       ),
+              //       physics: const BouncingScrollPhysics(
+              //           parent: AlwaysScrollableScrollPhysics()),
+              //       scrollDirection: Axis.horizontal,
+              //       itemCount: products.take(4).length,
+              //       itemBuilder: (context, i) {
+                      
+              //         final product = products[i];
 
-                          return SizedBox(
-                            width: 180.0,
-                            child: Card(
-                              elevation: 5.0,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0)),
-                              color: const Color.fromARGB(141, 68, 99, 158)
-                                  .withOpacity(0.7),
-                              child: InkWell(
-                                onTap: () async {
-                                  // await context.read<StoreProvider>().getProductDetail(context, productId: storeProvider.elektronikProducts![index].uid!);
-                                  // Navigator.push(context,
-                                  //     ShopDetailPage.route(product.id));
-                                  NS.push(context, const MaintainScreen());
-                                },
-                                borderRadius: BorderRadius.circular(15.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(10.0),
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(15.0),
-                                      ),
-                                      child: CachedNetworkImage(
-                                        fit: BoxFit.cover,
-                                        imageUrl: product['image'],
-                                        imageBuilder: (BuildContext context,
-                                            ImageProvider imageProvider) {
-                                          return Container(
-                                            height: 165.0,
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(15.0),
-                                                image: DecorationImage(
-                                                    image: imageProvider,
-                                                    fit: BoxFit.cover)),
-                                          );
-                                        },
-                                        errorWidget: (BuildContext context, String value, dynamic _) {
-                                          return Container(
-                                            height: 165.0,
-                                            decoration: const BoxDecoration(
-                                              image: DecorationImage(
-                                                image: AssetImage("assets/images/logo/logo.png")
-                                              )
-                                            ),
-                                          );  
-                                        },
-                                        placeholder: (context, url) {
-                                          return Container(
-                                            height: 165.0,
-                                            decoration: const BoxDecoration(
-                                              image: DecorationImage(
-                                                image: AssetImage("assets/images/logo/logo.png")
-                                              )
-                                            ),
-                                          );  
-                                        },
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 2.0,
-                                        horizontal: 8.0,
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          // Text(storeProvider.elektronikProducts![index].title ?? "...",
-                                          Text(
-                                            product['name'],
-                                            style: interRegular.copyWith(
-                                              fontSize:
-                                                  Dimensions.fontSizeDefault,
-                                              color: ColorResources.white,
-                                            ),
-                                            maxLines: 2,
-                                            softWrap: true,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          const SizedBox(height: 10),
-                                          // Text(Helper.formatCurrency(double.parse(storeProvider.elektronikProducts![index].price.toString())),
-                                          Text(
-                                            Helper.formatCurrency(double.parse(
-                                              product['price'].toString(),
-                                            )),
-                                            style: interRegular.copyWith(
-                                              color: ColorResources.white,
-                                              fontSize:
-                                                  Dimensions.fontSizeExtraLarge,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          const SizedBox(height: 5),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+              //         return SizedBox(
+              //           width: 180.0,
+              //           child: Card(
+              //             elevation: 5.0,
+              //             shape: RoundedRectangleBorder(
+              //               borderRadius: BorderRadius.circular(15.0)
+              //             ),
+              //             color: const Color.fromARGB(141, 68, 99, 158).withOpacity(0.7),
+              //             child: InkWell(
+              //               onTap: () async {
+              //                 NS.push(context, const MaintainScreen());
+              //               },
+              //               borderRadius: BorderRadius.circular(15.0),
+              //               child: Column(
+              //                 crossAxisAlignment: CrossAxisAlignment.start,
+              //                 children: [
+              //                   Container(
+              //                     padding: const EdgeInsets.all(10.0),
+              //                     decoration: BoxDecoration(
+              //                       borderRadius: BorderRadius.circular(15.0),
+              //                     ),
+              //                     child: CachedNetworkImage(
+              //                       fit: BoxFit.cover,
+              //                       imageUrl: product['image'],
+              //                       imageBuilder: (BuildContext context,
+              //                           ImageProvider imageProvider) {
+              //                         return Container(
+              //                           height: 165.0,
+              //                           decoration: BoxDecoration(
+              //                               borderRadius:
+              //                                   BorderRadius.circular(15.0),
+              //                               image: DecorationImage(
+              //                                   image: imageProvider,
+              //                                   fit: BoxFit.cover)),
+              //                         );
+              //                       },
+              //                       errorWidget: (BuildContext context, String value, dynamic _) {
+              //                         return Container(
+              //                           height: 165.0,
+              //                           decoration: const BoxDecoration(
+              //                             image: DecorationImage(
+              //                               image: AssetImage("assets/images/logo/logo.png")
+              //                             )
+              //                           ),
+              //                         );  
+              //                       },
+              //                       placeholder: (context, url) {
+              //                         return Container(
+              //                           height: 165.0,
+              //                           decoration: const BoxDecoration(
+              //                             image: DecorationImage(
+              //                               image: AssetImage("assets/images/logo/logo.png")
+              //                             )
+              //                           ),
+              //                         );  
+              //                       },
+              //                     ),
+              //                   ),
+              //                   Padding(
+              //                     padding: const EdgeInsets.symmetric(
+              //                       vertical: 2.0,
+              //                       horizontal: 8.0,
+              //                     ),
+              //                     child: Column(
+              //                       crossAxisAlignment: CrossAxisAlignment.start,
+              //                       mainAxisAlignment: MainAxisAlignment.start,
+              //                       children: [
+
+              //                         Text(product['name'],
+              //                           style: interRegular.copyWith(
+              //                             fontSize: Dimensions.fontSizeDefault,
+              //                             color: ColorResources.white,
+              //                           ),
+              //                           maxLines: 2,
+              //                           softWrap: true,
+              //                           overflow: TextOverflow.ellipsis,
+              //                         ),
+                                      
+              //                         const SizedBox(height: 10),
+
+              //                         Text(Helper.formatCurrency(product['price'] ?? 0),
+              //                           style: interRegular.copyWith(
+              //                             color: ColorResources.white,
+              //                             fontSize: Dimensions.fontSizeExtraLarge,
+              //                             fontWeight: FontWeight.bold,
+              //                           ),
+              //                           maxLines: 1,
+              //                           overflow: TextOverflow.ellipsis,
+              //                         ),
+
+              //                         const SizedBox(height: 5),
+
+              //                       ],
+              //                     ),
+              //                   ),
+              //                 ],
+              //               ),
+              //             ),
+              //           ),
+              //         );
+              //       },
+              //     ),
+              //   ),
+
               //TO AVOID OVERLAPS WITH THE BOTTOM NAVBAR
               //THE HEIGHT IS BASED ON (NAVBAR'S HEIGHT + 40)
               const SizedBox(

@@ -8,6 +8,7 @@ class ColorResources {
   static const Color blueDrawerPrimary = Color(0xFF1984C5);
   static const Color backgroundGreenLightPrimary = Color(0xff2BE770);
   static const Color blueGrey = Color(0xffECEFF1);
+  static const Color countdown = Color(0xFFEB6C6C);
   static const Color labelFailBackground = Color(0xffF8CECC);
   static const Color labelFailText = Color(0xffFF0000);
   static const Color labelFailBackgroundSecondary = Color(0xffEEB2AF);
@@ -32,6 +33,8 @@ class ColorResources {
   static const Color greyDarkPrimary = Color(0xFF707070);
   static const Color gainsBoro = Color(0xffDBDBDB);
   static const Color primary = Color(0xff174DB9);
+  static const Color purple = Color(0xFF67328F);
+  static const Color purpleDark = Color(0xFF452160);
   static const Color green = Color(0xff23CB60);
   static const Color greenHour = Color(0xff388E3C);
   static const Color hintColor = Color(0xff9E9E9E);
@@ -50,7 +53,6 @@ class ColorResources {
   static const Color blueScholarship = Color(0xff60C7EA);
   static const Color starColor = Color(0xffF5963E);
   static const Color blackSport = Color(0xff1E1E1E);
-  static const Color purpleDark = Color(0xff542e71);
   static const Color purpleRetail = Color(0xff9160EA);
   static const Color purpleLight = Color(0xffa799b7);
   static const Color joinUs = Color(0xffffB449);
@@ -75,4 +77,5 @@ class ColorResources {
   static const Color third = Color(0xff2aa824);
   static const Color coin = Color(0xffFFDA00);
   static const Color bookCard = Color(0xffe07b39);
+  static const Color redOnboarding = Color(0xffDA251D);
 }

@@ -20,6 +20,7 @@ class CustomButton extends StatelessWidget {
   final Color btnColor;
   final Color btnTextColor;
   final Color btnBorderColor;
+  final double fontSize;
   final bool isBorder;
   final bool isBorderRadius;
   final bool isLoading;
@@ -35,6 +36,7 @@ class CustomButton extends StatelessWidget {
     this.text,
     this.width = double.infinity,
     this.height = 45.0,
+    this.fontSize = 14.0,
     this.sizeBorderRadius = 10.0,
     this.isLoading = false,
     this.loadingColor = ColorResources.white,
@@ -85,16 +87,20 @@ class CustomButton extends StatelessWidget {
             ),
           )
         : Row(
-          mainAxisAlignment: isPrefixIcon ? MainAxisAlignment.start : MainAxisAlignment.center,
-          children: [
-            isPrefixIcon ? const SizedBox(width: 15,) : Container(),
+            mainAxisAlignment: isPrefixIcon ? MainAxisAlignment.start : MainAxisAlignment.center,
+            children: [
+            isPrefixIcon 
+            ? const SizedBox(width: 15) 
+            : const SizedBox(),
             isPrefixIcon
               ? Image.asset('assets/images/logo/logo.png',
                 height: 48.0,
                 width: 48.0,
               )
-              : Container(),
-            isPrefixIcon ? const SizedBox(width: 15,) : Container(),
+              : const SizedBox(),
+            isPrefixIcon 
+            ? const SizedBox(width: 15) 
+            : const SizedBox(),
             customText
               ? text! 
               : Center(

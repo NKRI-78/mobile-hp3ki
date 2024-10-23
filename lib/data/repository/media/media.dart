@@ -2,40 +2,30 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'package:hp3ki/data/models/media/media.dart';
-import 'package:hp3ki/utils/exceptions.dart';
+import 'package:path/path.dart';
+
 import 'package:hp3ki/utils/constant.dart';
 import 'package:hp3ki/utils/dio.dart';
 
 class MediaRepo {
-  Dio? dioClient;
-
-  MediaRepo({ required this.dioClient }) {
-    dioClient ??=  DioManager.shared.getClient();
-  }
-
-  Future<MediaModel?> getMediaPath(String mediaType, File file) async {
+  Response? response;
+  
+  Future<Response> postMedia(File file) async {
     try {
-      String fileName = file.path.split('/').last;
-      var formData = FormData.fromMap({
-        "folder": mediaType,
-        "media": await MultipartFile.fromFile(
-          file.path,
-          filename: fileName,
-        ),
+      Dio dio = DioManager.shared.getClient();
+      FormData formData = FormData.fromMap({
+        "folder": "images",
+        "subfolder": "hp3ki",
+        "media": await MultipartFile.fromFile(file.path, filename: basename(file.path)),
       });
-      Response res = await dioClient!.post("${AppConstants.baseUrl}/api/v1/media",
-        data: formData,
-      );
-      Map<String, dynamic> data = res.data;
-      MediaModel mm = MediaModel.fromJson(data);
-      return mm;
+      Response res = await dio.post("${AppConstants.baseUrl}/media-service/upload", data: formData);
+      response = res;
     } on DioError catch(e) {
-      final errorMessage = DioExceptions.fromDioError(e).toString();
-      throw CustomException(errorMessage);
+      debugPrint(e.response!.data.toString());
     } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());
-      throw CustomException(e.toString());
     }
+    return response!;
   }
+  
 }
