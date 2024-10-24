@@ -25,6 +25,7 @@ import 'package:hp3ki/data/models/ecommerce/cart/cart.dart';
 import 'package:hp3ki/data/models/ecommerce/product/all.dart';
 import 'package:hp3ki/data/models/ecommerce/product/detail.dart';
 import 'package:hp3ki/data/models/ecommerce/store/owner.dart';
+import 'package:hp3ki/data/models/ecommerce/store/store.dart';
 import 'package:hp3ki/utils/shared_preferences.dart';
 
 import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
@@ -854,6 +855,27 @@ class EcommerceRepo {
     }
   }
 
+  Future<StoreModel> getStore() async {
+    try {
+      Dio dio = DioManager.shared.getClient();
+      Response res = await dio.post("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/stores",
+        data: {
+          "user_id": SharedPrefs.getUserId()
+        }
+      );
+      Map<String, dynamic> data = res.data;
+      StoreModel storeModel = StoreModel.fromJson(data);
+      return storeModel;
+    } on DioError catch(e) {
+      debugPrint(e.response!.data.toString());
+      throw Exception("Failed Get Store");
+    } catch(e, stacktrace) {  
+      debugPrint(e.toString());
+      debugPrint(stacktrace.toString());
+      throw Exception("Failed Get Store");
+    }
+  }
+
   Future<void> createStore({
     required String id,
     required String logo,
@@ -869,30 +891,31 @@ class EcommerceRepo {
     required String lat, 
     required String lng,
     required bool isOpen,
-    required String postalCode,
+    required String postCode,
   }) async {
     try {
+      var dataObj = {
+        "id": id,
+        "logo": logo,
+        "name": name,
+        "description": caption,
+        "province": province,
+        "city": city,
+        "district": district,
+        "subdistrict": subdistrict,
+        "address": address,
+        "email": email,
+        "phone": phone,
+        "lat": lat, 
+        "lng": lng,
+        "is_open": isOpen,
+        "postal_code": postCode,
+        "user_id": SharedPrefs.getUserId(),
+        "app_name": "hp3ki"
+      };      
       Dio dio = DioManager.shared.getClient();
       await dio.post("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/stores/assign",
-        data: {
-          "id": id,
-          "logo": logo,
-          "name": name,
-          "caption": caption,
-          "province": province,
-          "city": city,
-          "district": district,
-          "subdistrict": subdistrict,
-          "address": address,
-          "email": email,
-          "phone": phone,
-          "lat": lat, 
-          "lng": lng,
-          "is_open": isOpen,
-          "postal_code": postalCode,
-          "user_id": SharedPrefs.getUserId(),
-          "app_name": "hp3ki"
-        }
+        data: dataObj
       );
     } on DioError catch(e) {
       debugPrint(e.response!.toString());

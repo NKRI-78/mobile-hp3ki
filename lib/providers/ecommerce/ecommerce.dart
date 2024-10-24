@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:hp3ki/data/models/ecommerce/store/owner.dart';
 import 'package:multi_image_picker_plus/multi_image_picker_plus.dart';
 
 import 'package:flutter/material.dart';
@@ -13,7 +14,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:lecle_flutter_absolute_path/lecle_flutter_absolute_path.dart';
 
 import 'package:image_picker/image_picker.dart';
+
 import 'package:hp3ki/data/models/ecommerce/balance/balance.dart';
+
+import 'package:hp3ki/data/models/ecommerce/store/store.dart' as s;
 
 import 'package:hp3ki/data/models/ecommerce/cart/cart.dart';
 import 'package:hp3ki/data/models/ecommerce/checkout/list.dart';
@@ -51,6 +55,8 @@ import 'package:hp3ki/views/screens/ecommerce/payment/receipt_emoney.dart';
 import 'package:hp3ki/views/screens/ecommerce/payment/receipt_va.dart';
 
 enum CreateStoreStatus { idle, loading, loaded, empty, error }
+enum GetStoreStatus { idle, loading, loaded, empty, error }
+enum CheckStoreOwnerStatus { idle, loading, loaded, empty, error }
 
 enum ListProductStatus { idle, loading, loaded, empty, error }
 enum ListProductTransactionStatus { idle, loading, loaded, empty, error }
@@ -290,6 +296,9 @@ class EcommerceProvider extends ChangeNotifier {
 
   TextEditingController amountC = TextEditingController();
 
+  GetStoreStatus _getStoreStatus = GetStoreStatus.idle;
+  GetStoreStatus get getStoreStatus => _getStoreStatus;
+
   BalanceStatus _balanceStatus = BalanceStatus.idle;
   BalanceStatus get balanceStatus => _balanceStatus;
 
@@ -298,6 +307,9 @@ class EcommerceProvider extends ChangeNotifier {
 
   CreateStoreStatus _createStoreStatus = CreateStoreStatus.idle;
   CreateStoreStatus get createStoreStatus => _createStoreStatus;
+
+  CheckStoreOwnerStatus _checkStoreOwnerStatus = CheckStoreOwnerStatus.idle;
+  CheckStoreOwnerStatus get checkStoreOwnerStatus => _checkStoreOwnerStatus;
 
   CancelOrderStatus _cancelOrderStatus = CancelOrderStatus.idle;
   CancelOrderStatus get cancelOrderStatus => _cancelOrderStatus;
@@ -376,6 +388,12 @@ class EcommerceProvider extends ChangeNotifier {
 
   CheckoutListData _checkoutListData = CheckoutListData();
   CheckoutListData get checkoutListData => _checkoutListData;
+
+  OwnerModel _ownerModel = OwnerModel();
+  OwnerModel get ownerModel => _ownerModel;
+
+  s.StoreModel _store = s.StoreModel();
+  s.StoreModel get store => _store;
 
   List<DataHowToPayment> _mbank = [];
   List<DataHowToPayment> get mbank => [..._mbank];
@@ -578,8 +596,20 @@ class EcommerceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setStateGetStoreStatus(GetStoreStatus param) {
+    _getStoreStatus = param;
+
+    notifyListeners();
+  }
+
   void setStateCreateStoreStatus(CreateStoreStatus param) {
     _createStoreStatus = param;
+
+    notifyListeners();
+  }
+
+  void setStateCheckStoreOwnerStatus(CheckStoreOwnerStatus param) {
+    _checkStoreOwnerStatus = param;
 
     notifyListeners();
   }
@@ -625,6 +655,32 @@ class EcommerceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> checkStoreOwner() async {
+    setStateCheckStoreOwnerStatus(CheckStoreOwnerStatus.loading);
+    try {
+
+      final checkStoreOwner = await er.checkStoreOwner();
+      _ownerModel = checkStoreOwner;
+
+      setStateCheckStoreOwnerStatus(CheckStoreOwnerStatus.loaded);
+    } catch(e) {
+      setStateCheckStoreOwnerStatus(CheckStoreOwnerStatus.error);
+    }
+  }
+
+  Future<void> getStore() async {
+    setStateGetStoreStatus(GetStoreStatus.loading);
+    try {
+
+      final storeModel = await er.getStore();
+      _store = storeModel;
+
+      setStateGetStoreStatus(GetStoreStatus.loaded);
+    } catch(e) {
+      setStateGetStoreStatus(GetStoreStatus.error);
+    }
+  } 
+
   Future<void> createStore({
     required String id, 
     required File logo, 
@@ -640,14 +696,14 @@ class EcommerceProvider extends ChangeNotifier {
     required String lat,
     required String lng,
     required bool isOpen,
-    required String postalCode
+    required String postCode
   }) async {
     setStateCreateStoreStatus(CreateStoreStatus.loading);
     try {
  
       Response? res = await mr.postMedia(logo);
-      Map map = json.decode(res.data);
-    
+      Map map = res.data;
+
       String logoPath = map['data']['path'];
 
       await er.createStore(
@@ -665,7 +721,7 @@ class EcommerceProvider extends ChangeNotifier {
         lat: lat, 
         lng: lng, 
         isOpen: isOpen, 
-        postalCode: postalCode
+        postCode: postCode
       );
 
       setStateCreateStoreStatus(CreateStoreStatus.loaded);

@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:hp3ki/maps/src/utils/uuid.dart';
 import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -20,18 +22,20 @@ import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/providers/ecommerce/ecommerce.dart';
 import 'package:hp3ki/providers/profile/profile.dart';
 
-class CreateStore extends StatefulWidget {
-  const CreateStore({super.key});
+class CreateStoreOrUpdateScreen extends StatefulWidget {
+  const CreateStoreOrUpdateScreen({
+    super.key
+  });
 
   @override
-  State<CreateStore> createState() => CreateStoreState();
+  State<CreateStoreOrUpdateScreen> createState() => CreateStoreOrUpdateScreenState();
 }
 
-class CreateStoreState extends State<CreateStore> {
+class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  late EcommerceProvider ecommerceProvider;
+  String storeLogo = "";  
 
   String provinceName = "";
   String cityName = "";
@@ -43,7 +47,13 @@ class CreateStoreState extends State<CreateStore> {
   String lat = "";
   String lng = "";
 
-  bool isOpenStore = false;
+  bool isOpen = false;
+  bool isLoading = false;
+
+  File? file;
+
+  late EcommerceProvider ecommerceProvider;
+  late ProfileProvider profileProvider;
 
   late TextEditingController nameStoreC;
   late TextEditingController descStoreC;
@@ -55,8 +65,6 @@ class CreateStoreState extends State<CreateStore> {
   late TextEditingController addressC;
   late TextEditingController emailC;
   late TextEditingController phoneC;
-
-  File? file;
 
   Future<void> getData() async {
     if(!mounted) return;
@@ -93,12 +101,18 @@ class CreateStoreState extends State<CreateStore> {
     if (imageSource != null) {
       XFile? xfile = await ImagePicker().pickImage(source: imageSource, maxHeight: 720);
       File f = File(xfile!.path);
-      setState(() => file = f);      
+      setState(() {
+        storeLogo = "";
+        file = f;
+      });      
     }
 
   }
 
   Future<void> submit() async {
+
+    String id = Uuid().generateV4();
+
     if(nameStoreC.text.isEmpty) {
       ShowSnackbar.snackbar("Nama Toko wajib diisi", "", ColorResources.error);
       return;
@@ -125,20 +139,43 @@ class CreateStoreState extends State<CreateStore> {
     }
 
     if(subdistrictC.text.isEmpty) {
-      ShowSnackbar.snackbar("Kelurahan", "", ColorResources.error);
+      ShowSnackbar.snackbar("Kelurahan wajib diisi", "", ColorResources.error);
       return;
     }
 
     if(addressC.text.isEmpty) {
-      ShowSnackbar.snackbar("Alamat", "", ColorResources.error);
+      ShowSnackbar.snackbar("Alamat wajib diisi", "", ColorResources.error);
       return;
     }
+
+    await ecommerceProvider.createStore(
+      id: id, 
+      logo: file!, 
+      name: nameStoreC.text, 
+      caption: descStoreC.text, 
+      province: provinceC.text, 
+      city: cityC.text, 
+      district: districtC.text, 
+      subdistrict: subdistrictC.text, 
+      address: addressC.text, 
+      email: emailC.text, 
+      phone: phoneC.text, 
+      lat: lat, 
+      lng: lng, 
+      isOpen: isOpen,
+      postCode: postCodeC.text
+    );
   }
 
   @override
   void initState() {
     super.initState();
       
+    ecommerceProvider = context.read<EcommerceProvider>();
+    profileProvider = context.read<ProfileProvider>();
+
+    Future.microtask(() => getData());
+    
     nameStoreC = TextEditingController();
     descStoreC = TextEditingController();
     provinceC = TextEditingController();
@@ -147,17 +184,40 @@ class CreateStoreState extends State<CreateStore> {
     subdistrictC = TextEditingController();
     postCodeC = TextEditingController();
     addressC = TextEditingController();
-    emailC = TextEditingController(text: context.read<ProfileProvider>().user!.email);
-    phoneC = TextEditingController(text: context.read<ProfileProvider>().user!.phone);
+    emailC = TextEditingController(text: profileProvider.user?.email ?? "");
+    phoneC = TextEditingController(text: profileProvider.user?.phone ?? "");
       
     descStoreC = TextEditingController();
     descStoreC.addListener(() {
       setState(() {});
     });
 
-    ecommerceProvider = context.read<EcommerceProvider>();
+    setState(() => isLoading = true);
 
-    Future.microtask(() => getData());
+    Future.delayed(Duration.zero, () async {
+
+      await ecommerceProvider.getStore();
+
+      setState(() => isLoading = false);
+
+      final store =  ecommerceProvider.store.data;
+
+      setState(() {
+        storeLogo = store?.logo ?? "";
+        nameStoreC = TextEditingController(text: isLoading ? "" : store?.name ?? "");
+        descStoreC = TextEditingController(text: isLoading ? "" : store?.description ?? "");
+        provinceC = TextEditingController(text: isLoading ? "" : store?.province ?? "");
+        cityC = TextEditingController(text: isLoading ? "" : store?.city ?? "");
+        districtC = TextEditingController(text: isLoading ? "" : store?.district ?? "");
+        subdistrictC = TextEditingController(text: isLoading ? "" : store?.subdistrict ?? "");
+        postCodeC = TextEditingController(text: isLoading ? "" : store?.postalCode ?? "");
+        addressC = TextEditingController(text: isLoading ? "" : store?.address ?? "");
+        emailC = TextEditingController(text: isLoading ? "" : store?.email ?? "");
+        phoneC = TextEditingController(text: isLoading ? "" : store?.phone ?? "");
+      });
+
+    });
+    
   }
 
   @override
@@ -173,13 +233,14 @@ class CreateStoreState extends State<CreateStore> {
     emailC.dispose();
     phoneC.dispose();
 
-    descStoreC.dispose();
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    
+    profileProvider = context.watch<ProfileProvider>();
+
     return Scaffold(
       backgroundColor: ColorResources.backgroundColor,
       appBar: AppBar(
@@ -212,23 +273,75 @@ class CreateStoreState extends State<CreateStore> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   
-                  InkWell(
-                    onTap: pickImage,
-                    child: file == null 
-                    ? const CircleAvatar(
-                        backgroundColor: ColorResources.white,
-                        maxRadius: 50.0,
-                        child: Icon(
-                          Icons.store,
-                          size: 80.0,
-                          color: ColorResources.primary,
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+
+                      InkWell(
+                        onTap: pickImage,
+                        child: storeLogo.isNotEmpty 
+                        ? CachedNetworkImage(
+                            imageUrl: storeLogo,
+                            imageBuilder: (BuildContext context,  ImageProvider<Object> imageProvider) {
+                              return CircleAvatar(
+                                backgroundColor: ColorResources.white,
+                                backgroundImage: imageProvider,
+                                maxRadius: 50.0,
+                              );
+                            },
+                            placeholder: (BuildContext context, String url) {
+                              return const CircleAvatar(
+                                backgroundColor: ColorResources.white,
+                                maxRadius: 50.0,
+                                child: Icon(
+                                  Icons.store,
+                                  size: 80.0,
+                                  color: ColorResources.primary,
+                                ),
+                              ); 
+                            },
+                            errorWidget: (BuildContext context, String url, dynamic error) {
+                              return const CircleAvatar(
+                                backgroundColor: ColorResources.white,
+                                maxRadius: 50.0,
+                                child: Icon(
+                                  Icons.store,
+                                  size: 80.0,
+                                  color: ColorResources.primary,
+                                ),
+                              ); 
+                            },
+                          )
+                        : file == null 
+                        ? const CircleAvatar(
+                            backgroundColor: ColorResources.white,
+                            maxRadius: 50.0,
+                            child: Icon(
+                              Icons.store,
+                              size: 80.0,
+                              color: ColorResources.primary,
+                            ),
+                          )  
+                        : CircleAvatar(
+                            backgroundColor: ColorResources.white,
+                            maxRadius: 50.0,
+                            backgroundImage: FileImage(file!)
+                          )
                         ),
-                      )  
-                    : CircleAvatar(
-                        backgroundColor: ColorResources.white,
-                        maxRadius: 50.0,
-                        backgroundImage: FileImage(file!)
-                      )
+
+                      Positioned(
+                        bottom: 0.0,
+                        right: 0.0,
+                        child: InkWell(
+                          onTap: () {
+                            pickImage();
+                          },
+                          child: const Icon(Icons.edit)
+                        )
+                      ),
+
+                      
+                    ]
                   ),
                   
                   inputFieldStoreName("Nama Toko", nameStoreC, "Nama Toko"),
@@ -286,7 +399,7 @@ class CreateStoreState extends State<CreateStore> {
                     height: 15.0,
                   ),
 
-                  toggleOpenIsStore(),
+                  toggleIsOpen(),
 
                   const SizedBox(
                     height: 25.0,
@@ -303,7 +416,13 @@ class CreateStoreState extends State<CreateStore> {
                         )
                       ),
                       child: Center(
-                        child:  Text("Submit",
+                        child: context.watch<EcommerceProvider>().createStoreStatus == CreateStoreStatus.loading 
+                        ? const SizedBox(
+                            width: 16.0,
+                            height: 16.0,
+                            child: CircularProgressIndicator()
+                          ) 
+                        : Text("Submit",
                           style: robotoRegular.copyWith(
                             fontSize: Dimensions.fontSizeDefault,
                             color: ColorResources.white
@@ -479,8 +598,8 @@ class CreateStoreState extends State<CreateStore> {
                                             provinceName = notifier.provinces[i].provinceName;
                                             provinceC.text = provinceName;
                                           });
-                                          await ecommerceProvider.getCity(provinceName: provinceName, search: "");
                                           NS.pop();
+                                          await ecommerceProvider.getCity(provinceName: provinceName, search: "");
                                         },
                                       );
                                     },
@@ -637,8 +756,8 @@ class CreateStoreState extends State<CreateStore> {
                                               cityName = notifier.city[i].cityName;
                                               cityC.text = cityName;
                                             });
-                                            await ecommerceProvider.getDistrict(cityName: cityName, search: "");
                                             NS.pop();
+                                            await ecommerceProvider.getDistrict(cityName: cityName, search: "");
                                           },
                                         );
                                       },
@@ -795,6 +914,7 @@ class CreateStoreState extends State<CreateStore> {
                             location = result.formattedAddress!.isNotEmpty
                             ? result.formattedAddress.toString()
                             : '-';
+                            addressC.text = result.formattedAddress.toString();
                             lat = result.geometry?.location.lat.toString() ?? '-';
                             lng = result.geometry?.location.lng.toString() ?? '-';
                           });
@@ -936,8 +1056,8 @@ class CreateStoreState extends State<CreateStore> {
                                             districtName = notifier.district[i].districtName;
                                             districtC.text = districtName;
                                           });
-                                          await ecommerceProvider.getSubdistrict(districtName: districtName, search: "");
                                           NS.pop();
+                                          await ecommerceProvider.getSubdistrict(districtName: districtName, search: "");
                                         },
                                       );
                                     },
@@ -1195,7 +1315,7 @@ class CreateStoreState extends State<CreateStore> {
     );
   }
 
-  Widget inputFieldDetailAddress(String title, TextEditingController controller, String hintText) {
+  Widget inputFieldDetailAddress(String title, String hintText) {
     return Column(
       children: [
         Container(
@@ -1225,7 +1345,7 @@ class CreateStoreState extends State<CreateStore> {
           ),
           child: TextFormField(
             cursorColor: ColorResources.black,
-            controller: controller,
+            controller: addressC,
             keyboardType: TextInputType.text,
             style: robotoRegular,
             inputFormatters: [FilteringTextInputFormatter.singleLineFormatter],
@@ -1316,7 +1436,7 @@ class CreateStoreState extends State<CreateStore> {
     ); 
   }
 
-  Widget toggleOpenIsStore() {
+  Widget toggleIsOpen() {
     return SwitchListTile(
       title: Text('Buka toko',
         style: robotoRegular.copyWith(
@@ -1324,10 +1444,10 @@ class CreateStoreState extends State<CreateStore> {
           color: ColorResources.black
         ),
       ),
-      value: isOpenStore,
+      value: isOpen,
       onChanged: (bool val) {
         setState(() {
-          isOpenStore = val;
+          isOpen = val;
         });
       },
     );

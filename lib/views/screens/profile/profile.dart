@@ -21,6 +21,7 @@ import 'package:hp3ki/services/navigation.dart';
 
 import 'package:hp3ki/providers/media/media.dart';
 import 'package:hp3ki/providers/profile/profile.dart';
+import 'package:hp3ki/providers/ecommerce/ecommerce.dart';
 
 import 'package:hp3ki/utils/helper.dart';
 import 'package:hp3ki/utils/constant.dart';
@@ -36,7 +37,6 @@ import 'package:hp3ki/views/screens/auth/change_password.dart';
 import 'package:hp3ki/views/screens/privacy_policy/privacy_policy.dart';
 import 'package:hp3ki/views/screens/profile/edit.dart';
 import 'package:hp3ki/views/screens/maintain/maintain.dart';
-import 'package:hp3ki/views/screens/store/create.dart';
 
 final GlobalKey ktaImageKey = GlobalKey();
 
@@ -54,38 +54,41 @@ class ProfileScreenState extends State<ProfileScreen> {
 
   bool isDownload = false;
 
-  late bool isPlatinum;
-  late bool hasRemainder;
+  bool isPlatinum = false;
+  bool hasRemainder = false;
+
+  late EcommerceProvider ecommerceProvider;
+  late ProfileProvider profileProvider;
 
   late int remainderCount;
 
   Future<void> getData() async {
-    if (mounted) {
+    if (!mounted) return;
       context.read<ProfileProvider>().getProfile(context);
-    }
-    if (mounted) {
-      // context.read<PPOBProvider>().getBalance(context);
-    }
-    if (mounted) {
+
+    if(!mounted) return;
+      context.read<EcommerceProvider>().checkStoreOwner();
+    
+    if (!mounted) return;
       file = null;
-    }
-    if (mounted) {
+    
+    if (!mounted) return;
       context.read<ProfileProvider>().remote();
-    }
-    if (mounted) {
+    
+    if (!mounted) return;
       if (context.read<ProfileProvider>().user!.memberType != "PLATINUM") {
         isPlatinum = false;
       } else {
         isPlatinum = true;
       }
       final remainingDays = context.read<ProfileProvider>().user!.remainingDays!;
+
       if (remainingDays > 0 && remainingDays < 11) {
         hasRemainder = true;
         remainderCount = context.read<ProfileProvider>().user!.remainingDays ?? 0;
       } else {
         hasRemainder = false;
       }
-    }
   }
 
   Future<String?> uploadPicture(BuildContext context, File file) async {
@@ -99,9 +102,7 @@ class ProfileScreenState extends State<ProfileScreen> {
  
     await context.read<ProfileProvider>().updateProfilePicture(context, pfpPath: pfpPath!);
     
-    setState(() {
-      file = null;
-    });
+    setState(() => file = null);
   }
 
   Future<void> chooseFile() async {
@@ -198,7 +199,10 @@ class ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
 
-    Future.wait([getData()]);
+    profileProvider = context.read<ProfileProvider>();
+    ecommerceProvider = context.read<EcommerceProvider>();
+
+    Future.microtask(() => getData());
   }
 
   @override
@@ -223,6 +227,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                 slivers: [
                   buildUserKTA(),
                   buildCreateStore(),
+                  buildAddProduct(),
                   buildUserDetails(),
                   buildNoReferral(),
                   buildChangePassword(),
@@ -230,8 +235,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                   buildLogout(),
                 ],
               ),
-              Align(
-                  alignment: Alignment.bottomCenter, child: buildUserInfoBox()),
+              Align(alignment: Alignment.bottomCenter, child: buildUserInfoBox()),
             ],
           ),
         ),
@@ -916,18 +920,57 @@ class ProfileScreenState extends State<ProfileScreen> {
 
   SliverToBoxAdapter buildCreateStore() {
     return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 15.0),
-        child: buildOptionContainer(
-          color: Colors.white,
-          label: 'Buat Toko',
-          onTap: () {
-            NS.push(context, const CreateStore());
-          },
-        ),
-      ),
+      child: Consumer<EcommerceProvider>(
+        builder: (BuildContext context, EcommerceProvider notifier, Widget? child) {
+          if(notifier.checkStoreOwnerStatus == CheckStoreOwnerStatus.loading) {
+            return const SizedBox();
+          }
+          if(notifier.checkStoreOwnerStatus == CheckStoreOwnerStatus.error) {
+            return const SizedBox();
+          }
+          return Padding(
+            padding: const EdgeInsets.only(top: 15.0),
+            child: buildOptionContainer(
+              color: Colors.white,
+              label: notifier.ownerModel.data!.haveStore 
+              ? 'Ubah Toko' 
+              : 'Buat Toko',
+              onTap: () {
+                // NS.push(context, const CreateStoreOrUpdateScreen());
+              },
+            ),
+          );
+        },
+      )
     );
   }
+
+  SliverToBoxAdapter buildAddProduct() {
+    return SliverToBoxAdapter(
+      child: Consumer<EcommerceProvider>(
+        builder: (BuildContext context, EcommerceProvider notifier, Widget? child) {
+          if(notifier.checkStoreOwnerStatus == CheckStoreOwnerStatus.loading) {
+            return const SizedBox();
+          }
+          if(notifier.checkStoreOwnerStatus == CheckStoreOwnerStatus.error) {
+            return const SizedBox();
+          }
+          return notifier.ownerModel.data!.haveStore 
+          ? const SizedBox() 
+          : Padding(
+              padding: const EdgeInsets.only(top: 15.0),
+              child: buildOptionContainer(
+                color: Colors.white,
+                label: 'Tambah Produk',
+                onTap: () {
+                  // NS.push(context, const AddProductScree());
+                },
+              ),
+            );
+          },
+        )
+      );
+    }
 
   SliverToBoxAdapter buildChangePassword() {
     return SliverToBoxAdapter(

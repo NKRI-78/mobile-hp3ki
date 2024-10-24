@@ -32,12 +32,12 @@ dev_dependencies:
 
   # C
   cached_network_image: ^3.3.1
-  chips_choice_null_safety: ^2.0.6
   circular_countdown_timer: ^0.2.3
   currency_text_input_formatter: ^2.1.8
   carousel_indicator: ^1.0.6
   carousel_slider: 5.0.0 
   chewie: ^1.5.0
+  chips_choice: ^3.0.1
 
   # D
   dropdown_search: ^6.0.1 
