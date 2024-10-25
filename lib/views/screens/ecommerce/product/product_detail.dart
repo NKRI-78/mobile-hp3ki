@@ -408,7 +408,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                                     )
                                   ),
                                 
-                                  SizedBox(height: 8.0),
+                                  const SizedBox(height: 8.0),
 
                                   // RatingBar.builder(
                                   //   initialRating: double.parse(notifier.productDetailData.product!.rating.toString()),
@@ -466,12 +466,12 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                                         notifier.productDetailData.product!.reviews.isEmpty 
                                         ? const SizedBox() 
                                         : InkWell(
-                                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                                          borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                           onTap: () {
                                             
                                             showModalBottomSheet(
                                               context: context,
-                                              shape: RoundedRectangleBorder(
+                                              shape: const RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                                               ),
                                               isScrollControlled: true, 
@@ -489,7 +489,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                                                           borderRadius: BorderRadius.circular(10),
                                                         ),
                                                       ),
-                                                      SizedBox(height: 16),
+                                                      const SizedBox(height: 16),
                                                       ListView.builder(
                                                         shrinkWrap: true,
                                                         itemCount: notifier.productDetailData.product!.reviews.length,
@@ -514,7 +514,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                                                                       );
                                                                     },
                                                                     placeholder: (BuildContext context, String url) {
-                                                                      return Center(
+                                                                      return const Center(
                                                                         child: SizedBox(
                                                                           width: 32.0,
                                                                           height: 32.0,
@@ -559,7 +559,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                                                                         ],
                                                                       ),
                                                                                   
-                                                                      SizedBox(height: 5.0),
+                                                                      const SizedBox(height: 5.0),
 
                                                                       Row(
                                                                         children: List.generate(5, (i) {
@@ -573,7 +573,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                                                                         }),
                                                                       ),
                                                                       
-                                                                      SizedBox(height: 10.0),
+                                                                      const SizedBox(height: 10.0),
                                                                       
                                                                       Text(review.caption,
                                                                         style: robotoRegular.copyWith(
@@ -588,7 +588,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                                                                 ],
                                                               ),
                                                               subtitle: Container(
-                                                                margin: EdgeInsets.only(
+                                                                margin: const EdgeInsets.only(
                                                                   top: 10.0
                                                                 ),
                                                                 height: 50.0,  
@@ -611,7 +611,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                                                                           imageUrl: review.medias[i].path,  
                                                                           width: 50.0,
                                                                           fit: BoxFit.cover,
-                                                                          placeholder: (context, url) => Center(
+                                                                          placeholder: (context, url) => const Center(
                                                                             child: SizedBox(
                                                                               width: 32.0,
                                                                               height: 32.0,
@@ -653,7 +653,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                                     ),
                                   ),
 
-                                  SizedBox(height: 8.0),
+                                  const SizedBox(height: 8.0),
 
                                   Row(
                                     mainAxisSize: MainAxisSize.max,
@@ -683,7 +683,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                                       notifier.productDetailData.product!.stock != 0 
                                       ? const SizedBox()
                                       : Container(
-                                          padding: EdgeInsets.all(4.0),
+                                          padding: const EdgeInsets.all(4.0),
                                           decoration: BoxDecoration(
                                             color: ColorResources.white,
                                             borderRadius: BorderRadius.circular(8.0)
@@ -700,7 +700,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                                     ],
                                   ),
 
-                                  SizedBox(height: 8.0),
+                                  const SizedBox(height: 8.0),
 
                                   Row(
                                     mainAxisSize: MainAxisSize.max,
@@ -811,7 +811,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                                             );
                                           },
                                           placeholder: (BuildContext context, String url) {
-                                            return Center(
+                                            return const Center(
                                               child: SizedBox(
                                                 width: 32.0,
                                                 height: 32.0,
@@ -835,8 +835,8 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                                               color: ColorResources.purple,
                                               borderRadius: BorderRadius.circular(50.0)
                                             ),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(5.0),
+                                            child: const Padding(
+                                              padding: EdgeInsets.all(5.0),
                                               child: Icon(
                                                 Icons.check,
                                                 color: ColorResources.white,
@@ -898,11 +898,13 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
 
           Consumer<EcommerceProvider>(
             builder: (_, notifier, __) {
-              if(notifier.detailProductStatus == DetailProductStatus.loading) 
+              if(notifier.detailProductStatus == DetailProductStatus.loading) {
                 return const SizedBox();
+              }
 
-              if(notifier.detailProductStatus == DetailProductStatus.error) 
+              if(notifier.detailProductStatus == DetailProductStatus.error) {
                 return const SizedBox();
+              }
 
               return Align(
                 alignment: Alignment.bottomCenter,
@@ -941,7 +943,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                               borderRadius: BorderRadius.circular(10.0)
                             ),
                             child: notifier.addCartLiveStatus == AddCartLiveStatus.loading 
-                            ? SpinKitCircle(
+                            ? const SpinKitCircle(
                                 color: Colors.white,
                                 size: 20.0,
                               ) 
@@ -952,7 +954,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
                                   
-                                  Icon(
+                                  const Icon(
                                     Icons.shopping_bag,
                                     color: ColorResources.white,  
                                   ),
@@ -974,9 +976,9 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                         ))
                       ),
 
-                      Expanded(
+                      const Expanded(
                         flex: 1,
-                        child: const SizedBox()
+                        child: SizedBox()
                       ),
 
                       Expanded(
@@ -1004,7 +1006,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                                 borderRadius: BorderRadius.circular(10.0)
                               ),
                               child: notifier.addCartStatus == AddCartStatus.loading 
-                              ? SpinKitCircle(
+                              ? const SpinKitCircle(
                                   color: Colors.white,
                                   size: 20.0,
                                 ) 
@@ -1015,7 +1017,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
                                     
-                                    Icon(
+                                    const Icon(
                                       Icons.add_shopping_cart,
                                       color: ColorResources.white,  
                                     ),

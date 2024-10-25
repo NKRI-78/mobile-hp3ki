@@ -77,7 +77,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                               getTranslated('NEW_VERSION', context),
                               style: poppinsRegular.copyWith(
                                   fontSize: Dimensions.fontSizeLarge,
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: FontWeight.bold,
                                   color: ColorResources.black),
                             ),
                             const SizedBox(height: 10.0),
@@ -121,7 +121,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                             "UPDATE",
                             style: poppinsRegular.copyWith(
                                 fontSize: Dimensions.fontSizeLarge,
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.bold,
                                 letterSpacing: 1.5,
                                 color: ColorResources.white),
                           ),

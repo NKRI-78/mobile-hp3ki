@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ProductPage extends StatefulWidget {
+  const ProductPage({super.key});
+
   @override
   _ProductPageState createState() => _ProductPageState();
 }
@@ -17,7 +19,7 @@ class _ProductPageState extends State<ProductPage> with TickerProviderStateMixin
     // Initialize the animation controller for the cart shake
     _cartController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
     );
 
     _cartAnimation = Tween<double>(begin: 0, end: 8).chain(CurveTween(curve: Curves.elasticIn)).animate(_cartController!)
@@ -49,7 +51,7 @@ class _ProductPageState extends State<ProductPage> with TickerProviderStateMixin
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {},
         ),
         actions: [
@@ -59,7 +61,7 @@ class _ProductPageState extends State<ProductPage> with TickerProviderStateMixin
               return Transform.translate(
                 offset: Offset(0, _cartAnimation!.value),
                 child: IconButton(
-                  icon: Icon(Icons.shopping_cart),
+                  icon: const Icon(Icons.shopping_cart),
                   onPressed: () {},
                 ),
               );
@@ -73,11 +75,11 @@ class _ProductPageState extends State<ProductPage> with TickerProviderStateMixin
           Column(
             children: [
               Image.network('https://via.placeholder.com/300'),
-              Text('Rp 500'),
-              Text('Barang'),
+              const Text('Rp 500'),
+              const Text('Barang'),
               ElevatedButton(
                 onPressed: addToCart,
-                child: Text('Tambah Keranjang'),
+                child: const Text('Tambah Keranjang'),
               ),
             ],
           ),
@@ -86,13 +88,13 @@ class _ProductPageState extends State<ProductPage> with TickerProviderStateMixin
             AnimatedPositioned(
               top: 100,
               right: 50,
-              duration: Duration(milliseconds: 500),
+              duration: const Duration(milliseconds: 500),
               onEnd: () {
                 setState(() {
                   isAddedToCart = false;
                 });
               },
-              child: Icon(
+              child: const Icon(
                 Icons.shopping_bag,
                 size: 50,
                 color: Colors.purple,

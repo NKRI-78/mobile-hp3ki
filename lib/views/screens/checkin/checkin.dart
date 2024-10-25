@@ -258,7 +258,7 @@ class CheckInScreenState extends State<CheckInScreen> {
                   flex: 6,
                   child: Text(getTranslated("TITLE", context),
                     style: poppinsRegular.copyWith(
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.bold,
                       fontSize: Dimensions.fontSizeDefault
                     ),
                   )
@@ -291,7 +291,7 @@ class CheckInScreenState extends State<CheckInScreen> {
                   flex: 6,
                   child: Text(getTranslated("PLACE", context),
                     style: poppinsRegular.copyWith(
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.bold,
                       fontSize: Dimensions.fontSizeDefault
                     ),
                   )
@@ -324,7 +324,7 @@ class CheckInScreenState extends State<CheckInScreen> {
                   flex: 6,
                   child: Text(getTranslated('DATE', context),
                     style: poppinsRegular.copyWith(
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.bold,
                       fontSize: Dimensions.fontSizeDefault
                     ),
                   )
@@ -357,7 +357,7 @@ class CheckInScreenState extends State<CheckInScreen> {
                   flex: 6,
                   child: Text(getTranslated('TIME', context),
                     style: poppinsRegular.copyWith(
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.bold,
                       fontSize: Dimensions.fontSizeDefault
                     ),
                   )
@@ -396,7 +396,7 @@ class CheckInScreenState extends State<CheckInScreen> {
               const SizedBox(height: 5.0),
               Text(checkInProvider.checkInData[i].user?.name ?? "...",
                 style: poppinsRegular.copyWith(
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.bold,
                   fontSize: Dimensions.fontSizeSmall
                 ),
                 maxLines: 1,
@@ -613,7 +613,7 @@ class CheckInScreenState extends State<CheckInScreen> {
                   children: [
                     Text('Rincian Check-In', 
                       style: poppinsRegular.copyWith(
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.bold,
                         fontSize: Dimensions.fontSizeLarge,
                         color: ColorResources.white
                       ),
@@ -696,7 +696,7 @@ class ModalTile extends StatelessWidget {
     return ListTile(
       leading: Text(label ?? "-",
         style: poppinsRegular.copyWith(
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.bold,
         )
       ),
       minLeadingWidth: screenSize.width * 0.5,

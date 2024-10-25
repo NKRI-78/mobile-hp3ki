@@ -179,7 +179,7 @@ class CartScreenState extends State<CartScreen> {
                   ),
       
                   if(notifier.getCartStatus == GetCartStatus.loading)
-                    SliverFillRemaining(
+                    const SliverFillRemaining(
                       hasScrollBody: false,
                       child: Center(
                         child: SizedBox(
@@ -216,7 +216,7 @@ class CartScreenState extends State<CartScreen> {
                   
                   if(notifier.getCartStatus == GetCartStatus.loaded)
                     SliverPadding(
-                      padding: EdgeInsets.only(
+                      padding: const EdgeInsets.only(
                         top: 20.0,
                         bottom: 20.0,
                         left: 16.0,
@@ -269,7 +269,7 @@ class CartScreenState extends State<CartScreen> {
                                     
                                   ListView.separated(
                                     separatorBuilder: (context, index) {
-                                      return Divider(
+                                      return const Divider(
                                         color: ColorResources.hintColor,
                                       );
                                     },
@@ -308,7 +308,7 @@ class CartScreenState extends State<CartScreen> {
                                               );
                                             },
                                             placeholder: (BuildContext context, String url) {
-                                              return Center(
+                                              return const Center(
                                                 child: SizedBox(
                                                   width: 32.0,
                                                   height: 32.0,
@@ -578,7 +578,7 @@ class CartScreenState extends State<CartScreen> {
                                                                       notifier.incrementQty(i: i, z: z, qty: currval);
                                                                     }
                                                                   }, 
-                                                                  child: Icon(
+                                                                  child: const Icon(
                                                                     Icons.add,
                                                                     size: 15.0,
                                                                     color: ColorResources.black
@@ -660,7 +660,7 @@ class CartScreenState extends State<CartScreen> {
                                                                               child: Row(
                                                                                 mainAxisSize: MainAxisSize.max,
                                                                                 children: [
-                                                                                  Expanded(child: SizedBox()),
+                                                                                  const Expanded(child: SizedBox()),
                                                                                   Expanded(
                                                                                     flex: 5,
                                                                                     child: CustomButton(
@@ -674,7 +674,7 @@ class CartScreenState extends State<CartScreen> {
                                                                                       btnTxt: "Batal"
                                                                                     ),
                                                                                   ),
-                                                                                  Expanded(child: SizedBox()),
+                                                                                  const Expanded(child: SizedBox()),
                                                                                   Expanded(
                                                                                     flex: 5,
                                                                                     child: Consumer<EcommerceProvider>(
@@ -696,7 +696,7 @@ class CartScreenState extends State<CartScreen> {
                                                                                       },
                                                                                     )
                                                                                   ),
-                                                                                  Expanded(child: SizedBox()),
+                                                                                  const Expanded(child: SizedBox()),
                                                                                 ],
                                                                               ),
                                                                             )

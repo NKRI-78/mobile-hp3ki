@@ -117,7 +117,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
                           child: Text("Collection of your information",
                             textAlign: TextAlign.justify,
                             style: robotoRegular.copyWith(
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.bold,
                               fontSize: Dimensions.fontSizeDefault,
                               color: ColorResources.black,
                             ),
@@ -146,7 +146,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
                           child: Text("Personal Data",
                             textAlign: TextAlign.justify,
                             style: robotoRegular.copyWith(
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.bold,
                               fontSize: Dimensions.fontSizeDefault,
                               color: ColorResources.black,
                             ),
@@ -229,7 +229,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
                           child: Text("Contact Information",
                             textAlign: TextAlign.justify,
                             style: robotoRegular.copyWith(
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.bold,
                               fontSize: Dimensions.fontSizeDefault,
                               color: ColorResources.black,
                             ),
@@ -308,7 +308,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
                           child: Text("Log Data",
                             textAlign: TextAlign.justify,
                             style: robotoRegular.copyWith(
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.bold,
                               fontSize: Dimensions.fontSizeDefault,
                               color: ColorResources.black,
                             ),
@@ -351,7 +351,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
                           child: Text("Service Providers",
                             textAlign: TextAlign.justify,
                             style: robotoRegular.copyWith(
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.bold,
                               fontSize: Dimensions.fontSizeDefault,
                               color: ColorResources.black,
                             ),
@@ -441,7 +441,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
                           child: Text("Security",
                             textAlign: TextAlign.justify,
                             style: robotoRegular.copyWith(
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.bold,
                               fontSize: Dimensions.fontSizeDefault,
                               color: ColorResources.black,
                             ),
@@ -456,7 +456,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
                           child: Text("Children’s Privacy",
                             textAlign: TextAlign.justify,
                             style: robotoRegular.copyWith(
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.bold,
                               fontSize: Dimensions.fontSizeDefault,
                               color: ColorResources.black,
                             ),
@@ -485,7 +485,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
                           child: Text("Changes to This Privacy Policy",
                             textAlign: TextAlign.justify,
                             style: robotoRegular.copyWith(
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.bold,
                               fontSize: Dimensions.fontSizeDefault,
                               color: ColorResources.black,
                             ),
@@ -528,7 +528,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
                           child: Text("Contact Us",
                             textAlign: TextAlign.justify,
                             style: robotoRegular.copyWith(
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.bold,
                               fontSize: Dimensions.fontSizeDefault,
                               color: ColorResources.black,
                             ),

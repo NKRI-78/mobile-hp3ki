@@ -151,7 +151,7 @@ class DetailInboxScreenState extends State<DetailInboxScreen> {
         style: poppinsRegular.copyWith(
           color: ColorResources.black,
           fontSize: Dimensions.fontSizeExtraLarge,
-          fontWeight: FontWeight.w600
+          fontWeight: FontWeight.bold
         ),
       ),
       leading: Container(
@@ -193,7 +193,7 @@ class DetailInboxScreenState extends State<DetailInboxScreen> {
                   style: poppinsRegular.copyWith(
                     fontSize: Dimensions.fontSizeLarge,
                     color: ColorResources.black,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.bold,
                   )
                 ),
               ),
@@ -283,7 +283,7 @@ class DetailInboxScreenState extends State<DetailInboxScreen> {
   //                 style: poppinsRegular.copyWith(
   //                 color: ColorResources.black,
   //                 fontSize: Dimensions.fontSizeDefault,
-  //                 fontWeight: FontWeight.w600)
+  //                 fontWeight: FontWeight.bold)
   //               ),
   //               childrenPadding: const EdgeInsets.all(10.0),
   //               tilePadding: EdgeInsets.zero,

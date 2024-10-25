@@ -107,7 +107,7 @@ class CustomButton extends StatelessWidget {
                 child: Text(btnTxt!,
                   style: poppinsRegular.copyWith(
                     color: btnTextColor,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.bold,
                     fontSize: Dimensions.fontSizeDefault,
                   ) 
                 ),

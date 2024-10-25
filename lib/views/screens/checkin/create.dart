@@ -668,7 +668,7 @@ class CreateCheckInScreenState extends State<CreateCheckInScreen> {
         text: Text(getTranslated('CREATE_CHECKIN', context),
           style: poppinsRegular.copyWith(
             fontSize: Dimensions.fontSizeLarge,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.bold,
             letterSpacing: 1.5,
             color: ColorResources.white
           ),

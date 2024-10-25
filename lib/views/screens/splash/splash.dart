@@ -165,7 +165,7 @@ class _SplashScreenState extends State<SplashScreen> {
                         child: Text(
                           "${getTranslated("VERSION", context)} ${packageInfo.version}",
                           style: poppinsRegular.copyWith(
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.bold,
                               fontSize: Dimensions.fontSizeLarge,
                               color: ColorResources.white),
                           textAlign: TextAlign.center,

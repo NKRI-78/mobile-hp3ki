@@ -148,7 +148,7 @@ class ListrikScreenState extends State<ListrikScreen> {
                                             fontSize: Dimensions.fontSizeDefault,
                                             color: ColorResources.black,
                                             fontWeight: selectedChannelPln == 0
-                                              ? FontWeight.w600
+                                              ? FontWeight.bold
                                               : FontWeight.w300,
                                           ),
                                         ),
@@ -187,7 +187,7 @@ class ListrikScreenState extends State<ListrikScreen> {
                                             fontSize: Dimensions.fontSizeDefault,
                                             color: ColorResources.black,
                                             fontWeight: selectedChannelPln == 1
-                                              ? FontWeight.w600
+                                              ? FontWeight.bold
                                               : FontWeight.w300,
                                           ),
                                         ),
@@ -348,7 +348,7 @@ class ListrikScreenState extends State<ListrikScreen> {
                                       child: Text('Data tidak ditemukan',
                                         style: TextStyle(
                                           fontSize: Dimensions.fontSizeDefault,
-                                          fontWeight: FontWeight.w600
+                                          fontWeight: FontWeight.bold
                                         ),
                                       )
                                     ),
@@ -361,7 +361,7 @@ class ListrikScreenState extends State<ListrikScreen> {
                                       child: Text('Ada yang bermasalah',
                                         style: TextStyle(
                                           fontSize: Dimensions.fontSizeDefault,
-                                          fontWeight: FontWeight.w600
+                                          fontWeight: FontWeight.bold
                                         ),
                                       )
                                     ),

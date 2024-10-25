@@ -101,7 +101,7 @@ class PostVideoState extends State<PostVideo> with AutomaticKeepAliveClientMixin
     super.build(context);
 
     if (videoC == null || !videoC!.value.isInitialized) {
-      return SizedBox(
+      return const SizedBox(
         height: 80.0,
         child: Center(
           child: SpinKitChasingDots(
@@ -140,12 +140,12 @@ class PostVideoState extends State<PostVideo> with AutomaticKeepAliveClientMixin
               child: InkWell(
                 borderRadius: BorderRadius.circular(10.0),
                 child: Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: widget.isPlaying
-                  ? Icon(Icons.pause,
+                  ? const Icon(Icons.pause,
                       color: ColorResources.white,
                     )
-                  : Icon(Icons.play_arrow,
+                  : const Icon(Icons.play_arrow,
                       color: ColorResources.white,
                     )
                 ),

@@ -288,7 +288,7 @@ class _PulsaScreenState extends State<PulsaScreen> {
                                                           textAlign: TextAlign.center,
                                                           style: TextStyle(
                                                             fontSize: Dimensions.fontSizeSmall,
-                                                            fontWeight: FontWeight.w600,
+                                                            fontWeight: FontWeight.bold,
                                                             color: selected == i
                                                             ? Colors.white 
                                                             : Colors.black

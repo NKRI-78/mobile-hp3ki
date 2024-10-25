@@ -113,7 +113,7 @@ class OtpScreenState extends State<OtpScreen> {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Text(getTranslated('EMAIL_VERIFICATION', context),
         style: robotoRegular.copyWith(
-          fontWeight: FontWeight.w600, 
+          fontWeight: FontWeight.bold, 
           fontSize: Dimensions.fontSizeDefault
         ),
         textAlign: TextAlign.center,
@@ -132,7 +132,7 @@ class OtpScreenState extends State<OtpScreen> {
               text: loading ? "..." : " ${authProvider.changeEmailName}",
               style: robotoRegular.copyWith(
                 color: ColorResources.black,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.bold,
                 fontSize: Dimensions.fontSizeDefault
               )
             ),
@@ -256,7 +256,7 @@ class OtpScreenState extends State<OtpScreen> {
                   style: robotoRegular.copyWith(
                     color: ColorResources.primary,
                     fontSize: Dimensions.fontSizeDefault,
-                    fontWeight: FontWeight.w600
+                    fontWeight: FontWeight.bold
                   )
                 ),
                 onPressed: () {
@@ -294,7 +294,7 @@ class OtpScreenState extends State<OtpScreen> {
                   style: robotoRegular.copyWith(
                     color: ColorResources.secondary,
                     fontSize: Dimensions.fontSizeDefault,
-                    fontWeight: FontWeight.w600
+                    fontWeight: FontWeight.bold
                   )
                 ),
                 onPressed: () {
@@ -328,7 +328,7 @@ class OtpScreenState extends State<OtpScreen> {
         textStyle: robotoRegular.copyWith(
           fontSize: Dimensions.fontSizeDefault,
           color: ColorResources.white,
-          fontWeight: FontWeight.w600
+          fontWeight: FontWeight.bold
         ),
         textFormat: CountdownTextFormat.S,
         isReverse: true,
@@ -418,7 +418,7 @@ class OtpScreenState extends State<OtpScreen> {
           style: robotoRegular.copyWith(
             color: ColorResources.primary,
             fontSize: Dimensions.fontSizeDefault,
-            fontWeight: FontWeight.w600
+            fontWeight: FontWeight.bold
           )
         ),
         onPressed: () {
@@ -436,7 +436,7 @@ class OtpScreenState extends State<OtpScreen> {
           style: robotoRegular.copyWith(
             color: ColorResources.primary,
             fontSize: Dimensions.fontSizeDefault,
-            fontWeight: FontWeight.w600
+            fontWeight: FontWeight.bold
           )
         ),
         onPressed: () {

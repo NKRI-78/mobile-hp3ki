@@ -72,7 +72,7 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
           ),
           child: Text("Pembayaran",
             style: robotoRegular.copyWith(
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.bold,
               fontSize: Dimensions.fontSizeDefault,
               color: index == 0
               ? ColorResources.primary
@@ -140,7 +140,7 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
           child: Text(
             "SOS",
             style: robotoRegular.copyWith(
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.bold,
                 fontSize: Dimensions.fontSizeDefault,
                 color: index == 1
                     ? ColorResources.primary
@@ -207,7 +207,7 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
           child: Text(
             "Broadcast",
             style: robotoRegular.copyWith(
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.bold,
                 fontSize: Dimensions.fontSizeDefault,
                 color: index == 2
                     ? ColorResources.primary
@@ -277,7 +277,7 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
           child: Text(
             "Transaksi",
             style: robotoRegular.copyWith(
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.bold,
                 fontSize: Dimensions.fontSizeDefault,
                 color: index == 3
                     ? ColorResources.primary
@@ -835,7 +835,7 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
                   children: [
                   Text(inbox?[i].title?.customSentence(40) ?? "...",
                     style: robotoRegular.copyWith(
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.bold,
                       color: ColorResources.black,
                       fontSize: Dimensions.fontSizeExtraLarge
                     )
@@ -853,7 +853,7 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
                         style: robotoRegular.copyWith(
                           fontWeight: inbox[i].read == true
                           ? null
-                          : FontWeight.w600,
+                          : FontWeight.bold,
                           color: ColorResources.black.withOpacity(0.7),
                           fontSize: Dimensions.fontSizeLarge
                         )

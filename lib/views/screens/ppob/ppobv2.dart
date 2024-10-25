@@ -161,7 +161,7 @@ class _PPOBV2ScreenState extends State<PPOBV2Screen> {
                                               Text(ppobs[i]["name"],
                                                 textAlign: TextAlign.center,
                                                 style: poppinsRegular.copyWith(
-                                                  fontWeight: FontWeight.w600
+                                                  fontWeight: FontWeight.bold
                                                 ),
                                               ),
                                             ],

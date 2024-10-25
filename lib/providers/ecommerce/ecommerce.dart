@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:hp3ki/data/models/ecommerce/store/owner.dart';
@@ -59,6 +58,7 @@ enum GetStoreStatus { idle, loading, loaded, empty, error }
 enum CheckStoreOwnerStatus { idle, loading, loaded, empty, error }
 
 enum ListProductStatus { idle, loading, loaded, empty, error }
+enum CreateProductStatus { idle, loading, loaded, empty, error }
 enum ListProductTransactionStatus { idle, loading, loaded, empty, error }
 enum DetailProductStatus { idle, loading, loaded, empty, error }
 
@@ -308,6 +308,9 @@ class EcommerceProvider extends ChangeNotifier {
   CreateStoreStatus _createStoreStatus = CreateStoreStatus.idle;
   CreateStoreStatus get createStoreStatus => _createStoreStatus;
 
+  CreateProductStatus _createProductStatus = CreateProductStatus.idle;
+  CreateProductStatus get createProductStatus => _createProductStatus;
+
   CheckStoreOwnerStatus _checkStoreOwnerStatus = CheckStoreOwnerStatus.idle;
   CheckStoreOwnerStatus get checkStoreOwnerStatus => _checkStoreOwnerStatus;
 
@@ -472,6 +475,12 @@ class EcommerceProvider extends ChangeNotifier {
 
   void setStateGetProductCategoryStatus(GetProductCategoryStatus param) {
     _getProductCategoryStatus = param;
+
+    notifyListeners();
+  }
+
+  void setStateCreateProductStatus(CreateProductStatus param) {
+    _createProductStatus = param;
 
     notifyListeners();
   }
@@ -970,6 +979,51 @@ class EcommerceProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  Future<void> createProduct({
+    required String id,
+    required String title,
+    required List<File> files,
+    required String description,
+    required int price,
+    required int weight,
+    required int stock,
+    required bool isDraft,
+    required String catId,
+    required String storeId
+  }) async {
+    setStateCreateProductStatus(CreateProductStatus.loading);
+    
+    try {
+
+      await er.createProduct(
+        id: id, 
+        title: title, 
+        description: description, 
+        price: price,
+        weight: weight, 
+        stock: stock, 
+        isDraft: isDraft, 
+        catId: catId, 
+        storeId: storeId
+      );
+
+      for (File file in files) {
+        Response? res = await mr.postMedia(file);
+        Map map = res.data;
+        String path = map['data']['path'];
+
+        await er.createProductImage(
+          productId: id, 
+          path: path
+        );
+      }
+
+      setStateCreateProductStatus(CreateProductStatus.loaded);
+    } catch(e) {
+      setStateCreateProductStatus(CreateProductStatus.error);
+    }
+  }
   
   Future<void> fetchProduct({required String productId}) async {
     setStateDetailProductStatus(DetailProductStatus.loading);
@@ -993,7 +1047,7 @@ class EcommerceProvider extends ChangeNotifier {
     if(files.isNotEmpty) {
       for (File file in files) {
         Response? res = await mr.postMedia(file);
-        Map map = json.decode(res.data);
+        Map map = res.data;
         await er.productReviewMedia(
           productId: productId,
           path: map['data']['path'],

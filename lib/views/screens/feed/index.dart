@@ -193,7 +193,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                   });
                 },
                 child: ListView.separated(
-                  key: PageStorageKey<String>('feedRecentListView'),
+                  key: const PageStorageKey<String>('feedRecentListView'),
                   shrinkWrap: true,
                   separatorBuilder: (BuildContext context, int i) {
                     return Container(
@@ -446,7 +446,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                                                   builder: (BuildContext context, Function s) {
                                                   return ElevatedButton(
                                                   style: ButtonStyle(
-                                                    backgroundColor: MaterialStateProperty.all(
+                                                    backgroundColor: WidgetStateProperty.all(
                                                       ColorResources.error
                                                     ),
                                                   ),
@@ -490,7 +490,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                           PostImage(forum.user!.username!, forum.caption!, false, forum.media!),
                         if(forum.type == "video")
                           VisibilityDetector(
-                            key: Key('video-widget'),
+                            key: const Key('video-widget'),
                             onVisibilityChanged: onVisibilityChanged,
                             child: PostVideo(
                               media: forum.media!.first.path!, 
@@ -601,7 +601,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                                           
                                       Container(
                                         padding: const EdgeInsets.all(5.0),
-                                        child: Icon(
+                                        child: const Icon(
                                           Icons.thumb_up,
                                           size: 18.0,
                                           color: ColorResources.black 
@@ -773,7 +773,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                                   ),
                                   trailing: feedProvider.ar.getUserId() == forum.comment!.comments!.last.user!.id.toString()
                                   ? grantedDeleteComment(context, forum.comment!.comments!.last.id.toString(), forum.id.toString())
-                                  : TermsPopup()
+                                  : const TermsPopup()
                               ),
                     
                             ],
@@ -1001,12 +1001,12 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
           }
         });
         if(sc.position.pixels == 0.0) {
-          NS.push(context, DashboardScreen());
+          NS.push(context, const DashboardScreen());
         } else {
-          Future.delayed(Duration(milliseconds: 500),() {
+          Future.delayed(const Duration(milliseconds: 500),() {
             sc.animateTo(
               sc.position.minScrollExtent, 
-              duration: Duration(milliseconds: 500), 
+              duration: const Duration(milliseconds: 500), 
               curve: Curves.easeIn
             );
           });

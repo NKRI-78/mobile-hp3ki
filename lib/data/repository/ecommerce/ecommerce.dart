@@ -60,6 +60,65 @@ class EcommerceRepo {
     }
   }
 
+  Future<void> createProductImage({
+    required String productId,
+    required String path
+  }) async {
+    try {
+      Dio dio = DioManager.shared.getClient();
+      await dio.post("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/products/store/image",
+        data: {
+          "product_id": productId,
+          "path": path
+        }
+      );
+    } on DioError catch(e) {
+      debugPrint(e.response!.data.toString());
+      throw Exception("Failed create product image");
+    } catch(e, stacktrace) {
+      debugPrint(e.toString());
+      debugPrint(stacktrace.toString());
+      throw Exception("Failed create product image");
+    }
+  }
+
+  Future<void> createProduct({
+    required String id,
+    required String title,
+    required String description,
+    required int price,
+    required int weight,
+    required int stock,
+    required bool isDraft,
+    required String catId,
+    required String storeId
+  }) async {
+    try {
+      Dio dio = DioManager.shared.getClient();
+      await dio.post("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/products/store",
+        data: {
+          "id": id,
+          "title": title,
+          "caption": description,
+          "price": price,
+          "weight": weight,
+          "stock": stock,
+          "is_draft": isDraft,
+          "cat_id": catId,
+          "store_id": storeId,
+          "app_name": "hp3ki"
+        }
+      );
+    } on DioError catch(e) {
+      debugPrint(e.response!.data.toString());
+      throw Exception("Failed create product");
+    } catch(e, stacktrace) {
+      debugPrint(e.toString());
+      debugPrint(stacktrace.toString());
+      throw Exception('Failed screate product');
+    }
+  }
+
   Future<ProductModel> fetchAllProduct({
     required String search, 
     required String cat,
@@ -67,7 +126,7 @@ class EcommerceRepo {
   }) async {
     try {
       Dio dio = DioManager.shared.getClient();
-      Response response = await dio.get("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/products/all?page=$page&limit=5&search=${search}&app_name=saka&cat=$cat");
+      Response response = await dio.get("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/products/all?page=$page&limit=5&search=$search&app_name=saka&cat=$cat");
       Map<String, dynamic> data = response.data;
       ProductModel productModel = ProductModel.fromJson(data);
       return productModel;
@@ -81,7 +140,7 @@ class EcommerceRepo {
   Future<ProductCategoryModel> fetchProductCategory() async {
     try {
       Dio dio = DioManager.shared.getClient();
-      Response response = await dio.get("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/products/category");
+      Response response = await dio.get("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/products/category?app_name=saka");
       Map<String, dynamic> data = response.data;
       ProductCategoryModel productCategoryModel = ProductCategoryModel.fromJson(data);
       return productCategoryModel;
@@ -695,7 +754,7 @@ class EcommerceRepo {
   }) async {
     try {
       Dio dio = DioManager.shared.getClient();
-      Response response = await dio.get("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/regions/city/${provinceName}?search=$search");
+      Response response = await dio.get("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/regions/city/$provinceName?search=$search");
       Map<String, dynamic> data = response.data;
       CityModel cityModel = CityModel.fromJson(data);
       return cityModel;

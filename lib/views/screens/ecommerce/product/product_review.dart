@@ -19,7 +19,7 @@ import 'package:hp3ki/views/basewidgets/button/custom.dart';
 
 class ProductReviewScreen extends StatefulWidget {
   final String transactionId;
-  ProductReviewScreen({
+  const ProductReviewScreen({
     required this.transactionId,
     super.key
   });
@@ -58,7 +58,7 @@ class ProductReviewScreenState extends State<ProductReviewScreen> {
       body: Consumer<EcommerceProvider>(
         builder: (__, notifier, _) {
           return CustomScrollView(
-            physics: BouncingScrollPhysics(
+            physics: const BouncingScrollPhysics(
               parent: AlwaysScrollableScrollPhysics()
             ),
             slivers: [
@@ -81,7 +81,7 @@ class ProductReviewScreenState extends State<ProductReviewScreen> {
               ),
 
               if(notifier.listProductTransactionStatus == ListProductTransactionStatus.loading)
-                SliverFillRemaining(
+                const SliverFillRemaining(
                   hasScrollBody: false,
                   child: Center(
                     child: SizedBox(
@@ -118,7 +118,7 @@ class ProductReviewScreenState extends State<ProductReviewScreen> {
 
               if(notifier.listProductTransactionStatus == ListProductTransactionStatus.loaded)
                 SliverPadding(
-                  padding: EdgeInsets.only(
+                  padding: const EdgeInsets.only(
                     left: 16.0,
                     right: 16.0,
                     top: 30.0,
@@ -127,17 +127,17 @@ class ProductReviewScreenState extends State<ProductReviewScreen> {
                   sliver: SliverList.separated(
                     separatorBuilder: (context, index) {
                       return Container(
-                        margin: EdgeInsets.only(
+                        margin: const EdgeInsets.only(
                           top: 10.0,
                           bottom: 10.0
                         ),
-                        child: Divider()
+                        child: const Divider()
                       );
                     },
                     itemCount: notifier.productTransactions.length,
                     itemBuilder: (BuildContext context, int i) {
                       return Container(
-                        margin: EdgeInsets.only(
+                        margin: const EdgeInsets.only(
                           top: 10.0,
                           bottom: 10.0
                         ),
@@ -169,7 +169,7 @@ class ProductReviewScreenState extends State<ProductReviewScreen> {
                                     );
                                   },
                                   placeholder: (BuildContext context, String url) {
-                                    return Center(
+                                    return const Center(
                                       child: SizedBox(
                                         width: 32.0,
                                         height: 32.0,
@@ -183,7 +183,7 @@ class ProductReviewScreenState extends State<ProductReviewScreen> {
                                       height: 45.0,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(5.0),
-                                        image: DecorationImage(
+                                        image: const DecorationImage(
                                           image: NetworkImage('https://dummyimage.com/300x300/000/fff'),
                                           fit: BoxFit.cover
                                         )
@@ -195,7 +195,7 @@ class ProductReviewScreenState extends State<ProductReviewScreen> {
                                 const SizedBox(width: 10.0),
 
                                 Text(notifier.productTransactions[i].title,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 14.0,
                                     fontWeight: FontWeight.bold
                                   ),
@@ -208,7 +208,7 @@ class ProductReviewScreenState extends State<ProductReviewScreen> {
                         
                             TextField(    
                               controller: notifier.productTransactions[i].reviewC,
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 border: OutlineInputBorder()
                               ),
                               maxLength: 150,
@@ -339,7 +339,7 @@ class ProductReviewScreenState extends State<ProductReviewScreen> {
                                               }
                                             },
                                             child: notifier.productTransactions[i].files.length >= 5 
-                                            ? SizedBox()  
+                                            ? const SizedBox()  
                                             : Container(
                                               height: 50.0,
                                               width: 50.0,
@@ -373,8 +373,8 @@ class ProductReviewScreenState extends State<ProductReviewScreen> {
                                 direction: Axis.horizontal,
                                 allowHalfRating: true,
                                 itemCount: 5,
-                                itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                                itemBuilder: (context, _) => Icon(
+                                itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                itemBuilder: (context, _) => const Icon(
                                   Icons.star,
                                   color: Colors.amber,
                                 ),
@@ -393,7 +393,7 @@ class ProductReviewScreenState extends State<ProductReviewScreen> {
                                 Container(
                                   width: 80.0,
                                   height: 30.0,
-                                  margin: EdgeInsets.only(
+                                  margin: const EdgeInsets.only(
                                     left: 16.0,
                                     right: 16.0
                                   ),

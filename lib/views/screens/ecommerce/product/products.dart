@@ -104,7 +104,7 @@ class ProductsScreenState extends State<ProductsScreen> {
                 });
               },
               child: CustomScrollView(
-                physics: BouncingScrollPhysics(
+                physics: const BouncingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics()
                 ),
                 slivers: [
@@ -128,7 +128,7 @@ class ProductsScreenState extends State<ProductsScreen> {
               
                   SliverToBoxAdapter(
                     child: Container(
-                      padding: EdgeInsets.only(
+                      padding: const EdgeInsets.only(
                         top: 10.0,
                         left: 16.0,
                         right: 16.0
@@ -142,9 +142,9 @@ class ProductsScreenState extends State<ProductsScreen> {
                             Expanded(
                               child: GestureDetector(
                                 onTap: () {
-                                  NS.push(context, ListOrderScreen());
+                                  NS.push(context, const ListOrderScreen());
                                 },
-                                child: Icon(Icons.list)
+                                child: const Icon(Icons.list)
                               )
                             ),
               
@@ -162,7 +162,7 @@ class ProductsScreenState extends State<ProductsScreen> {
                                     fontSize: Dimensions.fontSizeDefault
                                   ),
                                   floatingLabelBehavior: FloatingLabelBehavior.auto,
-                                  contentPadding: EdgeInsets.only(
+                                  contentPadding: const EdgeInsets.only(
                                     top: 8.0,
                                     bottom: 8.0,
                                     left: 16.0,
@@ -180,9 +180,9 @@ class ProductsScreenState extends State<ProductsScreen> {
                             if(notifier.getCartStatus == GetCartStatus.loading)
                               Bouncing(
                                 onPress: () {
-                                  NS.push(context, CartScreen());
+                                  NS.push(context, const CartScreen());
                                 },
-                                child: Icon(
+                                child: const Icon(
                                   Icons.shopping_cart,
                                   size: 20.0
                                 ),
@@ -191,9 +191,9 @@ class ProductsScreenState extends State<ProductsScreen> {
                             if(notifier.getCartStatus == GetCartStatus.error)
                               Bouncing(
                                 onPress: () {
-                                  NS.push(context, CartScreen());
+                                  NS.push(context, const CartScreen());
                                 },
-                                child: Icon(
+                                child: const Icon(
                                   Icons.shopping_cart,
                                   size: 20.0
                                 ),
@@ -202,9 +202,9 @@ class ProductsScreenState extends State<ProductsScreen> {
                             if(notifier.getCartStatus == GetCartStatus.empty)
                               Bouncing(
                                 onPress: () {
-                                  NS.push(context, CartScreen());
+                                  NS.push(context, const CartScreen());
                                 },
-                                child: Icon(
+                                child: const Icon(
                                   Icons.shopping_cart,
                                   size: 20.0
                                 ),
@@ -213,7 +213,7 @@ class ProductsScreenState extends State<ProductsScreen> {
                            if(notifier.getCartStatus == GetCartStatus.loaded)
                               Bouncing(
                                 onPress: () {
-                                  NS.push(context, CartScreen());
+                                  NS.push(context, const CartScreen());
                                 },
                                 child: Badge(
                                   label: Text(notifier.cartData.totalItem.toString(),
@@ -221,7 +221,7 @@ class ProductsScreenState extends State<ProductsScreen> {
                                       fontSize: Dimensions.fontSizeSmall
                                     ),
                                   ),
-                                  child: Icon(
+                                  child: const Icon(
                                     Icons.shopping_cart,
                                     size: 20.0
                                   ),
@@ -236,7 +236,7 @@ class ProductsScreenState extends State<ProductsScreen> {
 
                   SliverToBoxAdapter(
                     child: Container(
-                      padding: EdgeInsets.only(
+                      padding: const EdgeInsets.only(
                         top: 8.0,
                         left: 16.0,
                         right: 16.0
@@ -261,7 +261,7 @@ class ProductsScreenState extends State<ProductsScreen> {
                                 ProductCategoryData category = notifier.productCategories[i];
 
                                 return Container(
-                                  margin: EdgeInsets.only(
+                                  margin: const EdgeInsets.only(
                                     top: 10.0,
                                     bottom: 10.0,
                                     left: 8.0,
@@ -302,7 +302,7 @@ class ProductsScreenState extends State<ProductsScreen> {
                   ),
 
                   if(notifier.listProductStatus == ListProductStatus.loading)
-                    SliverFillRemaining(
+                    const SliverFillRemaining(
                       hasScrollBody: false,
                       child: Center(
                         child: SizedBox(
@@ -357,16 +357,16 @@ class ProductsScreenState extends State<ProductsScreen> {
                               return ProductItem(product: product);
                             } else if (notifier.hasMore) {
                               if(notifier.reached) {
-                                return Center(
+                                return const Center(
                                   child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: EdgeInsets.all(8.0),
                                     child: CircularProgressIndicator(),
                                   ),
                                 );
                               }
                               return const SizedBox();
                             } else {
-                              return SizedBox.shrink(); 
+                              return const SizedBox.shrink(); 
                             }
                           },
                           childCount: notifier.hasMore

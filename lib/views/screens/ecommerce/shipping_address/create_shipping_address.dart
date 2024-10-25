@@ -344,7 +344,7 @@ class CreateShippingAddressScreenState extends State<CreateShippingAddressScreen
                               ),
 
                               Container(
-                                margin: EdgeInsets.only(
+                                margin: const EdgeInsets.only(
                                   top: 16.0,
                                   bottom: 16.0,
                                   left: 16.0,
@@ -363,9 +363,9 @@ class CreateShippingAddressScreenState extends State<CreateShippingAddressScreen
                                       fontSize: Dimensions.fontSizeDefault,
                                       color: ColorResources.black
                                     ),
-                                    border: OutlineInputBorder(),
-                                    enabledBorder: OutlineInputBorder(),
-                                    focusedBorder: OutlineInputBorder(),
+                                    border: const OutlineInputBorder(),
+                                    enabledBorder: const OutlineInputBorder(),
+                                    focusedBorder: const OutlineInputBorder(),
                                   ),
                                 )
                               ),
@@ -552,7 +552,7 @@ class CreateShippingAddressScreenState extends State<CreateShippingAddressScreen
                                 ),
 
                                 Container(
-                                  margin: EdgeInsets.only(
+                                  margin: const EdgeInsets.only(
                                     top: 16.0,
                                     bottom: 16.0,
                                     left: 16.0,
@@ -571,9 +571,9 @@ class CreateShippingAddressScreenState extends State<CreateShippingAddressScreen
                                         fontSize: Dimensions.fontSizeDefault,
                                         color: ColorResources.black
                                       ),
-                                      border: OutlineInputBorder(),
-                                      enabledBorder: OutlineInputBorder(),
-                                      focusedBorder: OutlineInputBorder(),
+                                      border: const OutlineInputBorder(),
+                                      enabledBorder: const OutlineInputBorder(),
+                                      focusedBorder: const OutlineInputBorder(),
                                     ),
                                   )
                                 ),
@@ -756,7 +756,7 @@ class CreateShippingAddressScreenState extends State<CreateShippingAddressScreen
                                 ),
 
                                 Container(
-                                  margin: EdgeInsets.only(
+                                  margin: const EdgeInsets.only(
                                     top: 16.0,
                                     bottom: 16.0,
                                     left: 16.0,
@@ -775,9 +775,9 @@ class CreateShippingAddressScreenState extends State<CreateShippingAddressScreen
                                         fontSize: Dimensions.fontSizeDefault,
                                         color: ColorResources.black
                                       ),
-                                      border: OutlineInputBorder(),
-                                      enabledBorder: OutlineInputBorder(),
-                                      focusedBorder: OutlineInputBorder(),
+                                      border: const OutlineInputBorder(),
+                                      enabledBorder: const OutlineInputBorder(),
+                                      focusedBorder: const OutlineInputBorder(),
                                     ),
                                   )
                                 ),
@@ -958,7 +958,7 @@ class CreateShippingAddressScreenState extends State<CreateShippingAddressScreen
                                 ),
 
                                 Container(
-                                  margin: EdgeInsets.only(
+                                  margin: const EdgeInsets.only(
                                     top: 16.0,
                                     bottom: 16.0,
                                     left: 16.0,
@@ -977,9 +977,9 @@ class CreateShippingAddressScreenState extends State<CreateShippingAddressScreen
                                         fontSize: Dimensions.fontSizeDefault,
                                         color: ColorResources.black
                                       ),
-                                      border: OutlineInputBorder(),
-                                      enabledBorder: OutlineInputBorder(),
-                                      focusedBorder: OutlineInputBorder(),
+                                      border: const OutlineInputBorder(),
+                                      enabledBorder: const OutlineInputBorder(),
+                                      focusedBorder: const OutlineInputBorder(),
                                     ),
                                   )
                                 ),

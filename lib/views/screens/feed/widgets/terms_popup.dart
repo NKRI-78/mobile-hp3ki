@@ -97,7 +97,7 @@ class TermsPopup extends StatelessWidget {
                           builder: (BuildContext context, Function s) {
                           return ElevatedButton(
                           style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
+                            backgroundColor: WidgetStateProperty.all(
                               ColorResources.error
                             ),
                           ),

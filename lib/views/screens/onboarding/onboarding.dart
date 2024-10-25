@@ -119,7 +119,7 @@ class OnboardingScreenState extends State<OnboardingScreen> {
                         onboardings[i]["title"],
                         style: poppinsRegular.copyWith(
                           color: ColorResources.white,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.bold,
                           fontSize: Dimensions.fontSizeLarge,
                         ),
                       ),

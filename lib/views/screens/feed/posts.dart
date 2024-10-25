@@ -279,7 +279,7 @@ class PostsState extends State<Posts> {
                                   builder: (BuildContext context, Function s) {
                                   return ElevatedButton(
                                   style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all(
+                                    backgroundColor: WidgetStateProperty.all(
                                       ColorResources.error
                                     ),
                                   ),
@@ -427,7 +427,7 @@ class PostsState extends State<Posts> {
                          
                       Container(
                         padding: const EdgeInsets.all(5.0),
-                        child: Icon(
+                        child: const Icon(
                           Icons.thumb_up,
                           size: 18.0,
                           color: ColorResources.black 
@@ -599,7 +599,7 @@ class PostsState extends State<Posts> {
                   ),
                   trailing: feedProviderV2.ar.getUserId() == widget.forum.comment!.comments!.last.user!.id.toString()
                   ? grantedDeleteComment(context, widget.forum.comment!.comments!.last.id.toString(), widget.forum.id.toString())
-                  : TermsPopup()
+                  : const TermsPopup()
               ),
     
             ],

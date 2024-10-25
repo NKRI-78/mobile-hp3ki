@@ -227,7 +227,7 @@ class NewsScreenState extends State<NewsScreen> {
                               style: poppinsRegular.copyWith(
                                 fontSize: Dimensions.fontSizeDefault,
                                 color: ColorResources.black,
-                                fontWeight: FontWeight.w600
+                                fontWeight: FontWeight.bold
                               ),
                             ),
                             const SizedBox(height: 15.0),

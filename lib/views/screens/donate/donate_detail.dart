@@ -227,7 +227,7 @@ class _DetailInfoPageState extends State<DonateDetailScreen> {
             maxLines: 1,
             style: poppinsRegular.copyWith(
               fontSize: Dimensions.fontSizeDefault,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.bold,
               color: ColorResources.black, 
             ),
           ),
@@ -291,7 +291,7 @@ class _DetailInfoPageState extends State<DonateDetailScreen> {
             style: robotoRegular.copyWith(
               color: ColorResources.primary, 
               fontSize: Dimensions.fontSizeLarge,
-              fontWeight: FontWeight.w600
+              fontWeight: FontWeight.bold
             ),
           ),
           const SizedBox(width: 15,),
@@ -338,7 +338,7 @@ class _DetailInfoPageState extends State<DonateDetailScreen> {
         Text(getTranslated('FUNDRAISER_INFO', context),
           style: poppinsRegular.copyWith(
             color: ColorResources.black,
-            fontWeight: FontWeight.w600
+            fontWeight: FontWeight.bold
           ),
         ),
         const SizedBox(height: 10,),
@@ -355,7 +355,7 @@ class _DetailInfoPageState extends State<DonateDetailScreen> {
               Text(getTranslated('FUNDRAISER', context),
                 style: poppinsRegular.copyWith(
                   color: ColorResources.black.withOpacity(0.5),
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 5,),
@@ -372,7 +372,7 @@ class _DetailInfoPageState extends State<DonateDetailScreen> {
                       Text('Bpk. Mike Jose',
                         style: poppinsRegular.copyWith(
                           color: ColorResources.black,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(getTranslated('PERSON_INCHARGE_DONATION', context),
@@ -413,7 +413,7 @@ class _DetailInfoPageState extends State<DonateDetailScreen> {
           Text(getTranslated('VICTIM', context),
             style: poppinsRegular.copyWith(
               color: ColorResources.black.withOpacity(0.5),
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 5,),
@@ -430,7 +430,7 @@ class _DetailInfoPageState extends State<DonateDetailScreen> {
                   Text('Warga RT 07',
                     style: poppinsRegular.copyWith(
                       color: ColorResources.black,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(getTranslated('VERIFIED_IDENTITY', context),
@@ -457,7 +457,7 @@ class _DetailInfoPageState extends State<DonateDetailScreen> {
                   Text('Kebanjiran',
                     style: poppinsRegular.copyWith(
                       color: ColorResources.black,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(getTranslated('PROVEN_INCIDENT', context),

@@ -95,7 +95,7 @@ class ProductReviewsView extends StatelessWidget {
                                   Text(
                                     review.name,
                                     style: const TextStyle(
-                                      fontWeight: FontWeight.w600,
+                                      fontWeight: FontWeight.bold,
                                       fontSize: 12,
                                     ),
                                   ),

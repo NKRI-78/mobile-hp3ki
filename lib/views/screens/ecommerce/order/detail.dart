@@ -60,7 +60,7 @@ class DetailOrderState extends State<DetailOrder> {
 
     try {
 
-      Future.delayed(Duration(seconds: 1), () async {
+      Future.delayed(const Duration(seconds: 1), () async {
         RenderRepaintBoundary boundary = globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
         ui.Image image = await boundary.toImage(pixelRatio: 3.0);
         ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
@@ -74,14 +74,14 @@ class DetailOrderState extends State<DetailOrder> {
         await GallerySaver.saveImage(imgFile.path);
       });
 
-      Future.delayed(Duration(seconds: 2), () {
+      Future.delayed(const Duration(seconds: 2), () {
         setState(() {
           btnUnduhResi = true;
           icCopyResi = true;
         });
       });
       
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Screenshot saved!')));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Screenshot saved!')));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to take screenshot: $e')));
     }
@@ -122,7 +122,7 @@ class DetailOrderState extends State<DetailOrder> {
       body: Consumer<EcommerceProvider>(
         builder: (_, notifier, __) {
           if(notifier.detailOrderStatus == DetailOrderStatus.loading) {
-            return Center(
+            return const Center(
               child: SizedBox(
                 width: 32.0,
                 height: 32.0,
@@ -146,7 +146,7 @@ class DetailOrderState extends State<DetailOrder> {
               });
             },
             child: ListView.builder(
-              padding: EdgeInsets.only(
+              padding: const EdgeInsets.only(
                 top: 20.0,
                 bottom: 20.0,
                 left: 16.0,
@@ -215,7 +215,7 @@ class DetailOrderState extends State<DetailOrder> {
                         ),
 
                         Container(
-                          padding: EdgeInsets.all(6.0),
+                          padding: const EdgeInsets.all(6.0),
                           decoration: BoxDecoration(
                             color: ColorResources.purple,
                             borderRadius: BorderRadius.circular(8.0)
@@ -232,7 +232,7 @@ class DetailOrderState extends State<DetailOrder> {
                       ],
                     ),
 
-                    Divider(
+                    const Divider(
                       color: ColorResources.hintColor,
                     ),
 
@@ -258,7 +258,7 @@ class DetailOrderState extends State<DetailOrder> {
                             );
                           },
                           placeholder: (BuildContext context, String url) {
-                            return Center(
+                            return const Center(
                               child: SizedBox(
                                 width: 32.0,
                                 height: 32.0,
@@ -272,7 +272,7 @@ class DetailOrderState extends State<DetailOrder> {
                               height: 45.0,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5.0),
-                                image: DecorationImage(
+                                image: const DecorationImage(
                                   image: NetworkImage('https://dummyimage.com/300x300/000/fff'),
                                   fit: BoxFit.cover
                                 )
@@ -297,11 +297,11 @@ class DetailOrderState extends State<DetailOrder> {
                     ListView.builder(
                       shrinkWrap: true,
                       padding: EdgeInsets.zero,
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       itemCount: notifier.detailOrders[i].items.length,
                       itemBuilder: (BuildContext context, int z) {
                         return Container(
-                          margin: EdgeInsets.only(
+                          margin: const EdgeInsets.only(
                             top: 10.0,
                             bottom: 10.0
                           ),
@@ -309,7 +309,7 @@ class DetailOrderState extends State<DetailOrder> {
                             elevation: 0.30,
                             margin: EdgeInsets.zero,
                             child: Padding(
-                              padding: EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(8.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
@@ -338,7 +338,7 @@ class DetailOrderState extends State<DetailOrder> {
                                           );
                                         },
                                         placeholder: (BuildContext context, String url) {
-                                          return Center(
+                                          return const Center(
                                             child: SizedBox(
                                               width: 32.0,
                                               height: 32.0,
@@ -352,7 +352,7 @@ class DetailOrderState extends State<DetailOrder> {
                                             height: 45.0,
                                             decoration: BoxDecoration(
                                               borderRadius: BorderRadius.circular(5.0),
-                                              image: DecorationImage(
+                                              image: const DecorationImage(
                                                 image: NetworkImage('https://dummyimage.com/300x300/000/fff'),
                                                 fit: BoxFit.cover
                                               )
@@ -419,12 +419,12 @@ class DetailOrderState extends State<DetailOrder> {
                     RepaintBoundary(
                       key: globalKey,
                       child: Container(
-                        margin: EdgeInsets.only(
+                        margin: const EdgeInsets.only(
                           left: 16.0,
                           right: 16.0
                         ),
-                        padding: EdgeInsets.all(8.0),
-                        decoration: BoxDecoration(
+                        padding: const EdgeInsets.all(8.0),
+                        decoration: const BoxDecoration(
                           color: ColorResources.white
                         ),
                         child: Column(
@@ -598,8 +598,8 @@ class DetailOrderState extends State<DetailOrder> {
                                             )),
                                           );
                                         },
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(5.0),
+                                        child: const Padding(
+                                          padding: EdgeInsets.all(5.0),
                                           child: Icon(
                                             Icons.copy,
                                             size: 12.0,
@@ -739,7 +739,7 @@ class DetailOrderState extends State<DetailOrder> {
                     ? const SizedBox()
                     : const SizedBox(height: 6.0),
 
-                    Divider(
+                    const Divider(
                       color: ColorResources.hintColor,
                     ),
 
@@ -792,7 +792,7 @@ class DetailOrderState extends State<DetailOrder> {
                             );
                           },
                           placeholder: (context, url) {
-                            return Center(
+                            return const Center(
                               child: CircularProgressIndicator()
                             );
                           },
@@ -825,8 +825,8 @@ class DetailOrderState extends State<DetailOrder> {
                                     )),
                                   );
                                 },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(5.0),
                                   child: Icon(
                                     Icons.copy,
                                     size: 12.0,
@@ -849,7 +849,7 @@ class DetailOrderState extends State<DetailOrder> {
 
                     const SizedBox(height: 8.0),
 
-                    Divider(
+                    const Divider(
                       color: ColorResources.hintColor,
                     ),
 
@@ -1028,7 +1028,7 @@ class DetailOrderState extends State<DetailOrder> {
                                                 child: Row(
                                                   mainAxisSize: MainAxisSize.max,
                                                   children: [
-                                                    Expanded(child: SizedBox()),
+                                                    const Expanded(child: SizedBox()),
                                                     Expanded(
                                                       flex: 5,
                                                       child: CustomButton(
@@ -1045,7 +1045,7 @@ class DetailOrderState extends State<DetailOrder> {
                                                         btnTxt: "Batal"
                                                       ),
                                                     ),
-                                                    Expanded(child: SizedBox()),
+                                                    const Expanded(child: SizedBox()),
                                                     Expanded(
                                                       flex: 5,
                                                       child: Consumer<EcommerceProvider>(
@@ -1060,7 +1060,7 @@ class DetailOrderState extends State<DetailOrder> {
                                                               NS.push(context, ProductReviewScreen(transactionId: notifier.detailOrders[i].transactionId))
                                                               .then((_) async {
                                                                 NS.pop();
-                                                                Future.delayed(Duration(seconds: 1), () async {
+                                                                Future.delayed(const Duration(seconds: 1), () async {
                                                                   await ep.detailOrder(transactionId: widget.transactionId);
                                                                 });
                                                               });
@@ -1070,7 +1070,7 @@ class DetailOrderState extends State<DetailOrder> {
                                                         },
                                                       )
                                                     ),
-                                                    Expanded(child: SizedBox()),
+                                                    const Expanded(child: SizedBox()),
                                                   ],
                                                 ),
                                               )
@@ -1170,7 +1170,7 @@ class DetailOrderState extends State<DetailOrder> {
                                                 child: Row(
                                                   mainAxisSize: MainAxisSize.max,
                                                   children: [
-                                                    Expanded(child: SizedBox()),
+                                                    const Expanded(child: SizedBox()),
                                                     Expanded(
                                                       flex: 5,
                                                       child: CustomButton(
@@ -1187,7 +1187,7 @@ class DetailOrderState extends State<DetailOrder> {
                                                         btnTxt: "Batal"
                                                       ),
                                                     ),
-                                                    Expanded(child: SizedBox()),
+                                                    const Expanded(child: SizedBox()),
                                                     Expanded(
                                                       flex: 5,
                                                       child: Consumer<EcommerceProvider>(
@@ -1202,14 +1202,14 @@ class DetailOrderState extends State<DetailOrder> {
                                                             btnColor: ColorResources.success,
                                                             btnTextColor: ColorResources.white,
                                                             onTap: () async {
-                                                              NS.push(context, ComplaintScreen());
+                                                              NS.push(context, const ComplaintScreen());
                                                             }, 
                                                             btnTxt: "Ya"
                                                           );
                                                         },
                                                       )
                                                     ),
-                                                    Expanded(child: SizedBox()),
+                                                    const Expanded(child: SizedBox()),
                                                   ],
                                                 ),
                                               )
@@ -1291,7 +1291,7 @@ class DetailOrderState extends State<DetailOrder> {
                                                 child: Row(
                                                   mainAxisSize: MainAxisSize.max,
                                                   children: [
-                                                    Expanded(child: SizedBox()),
+                                                    const Expanded(child: SizedBox()),
                                                     Expanded(
                                                       flex: 5,
                                                       child: CustomButton(
@@ -1308,7 +1308,7 @@ class DetailOrderState extends State<DetailOrder> {
                                                         btnTxt: "Batal"
                                                       ),
                                                     ),
-                                                    Expanded(child: SizedBox()),
+                                                    const Expanded(child: SizedBox()),
                                                     Expanded(
                                                       flex: 5,
                                                       child: Consumer<EcommerceProvider>(
@@ -1330,7 +1330,7 @@ class DetailOrderState extends State<DetailOrder> {
                                                         },
                                                       )
                                                     ),
-                                                    Expanded(child: SizedBox()),
+                                                    const Expanded(child: SizedBox()),
                                                   ],
                                                 ),
                                               )

@@ -3,11 +3,12 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class ShakingIconExample extends StatefulWidget {
+  const ShakingIconExample({super.key});
+
   @override
-  _ShakingIconExampleState createState() => _ShakingIconExampleState();
+  ShakingIconExampleState createState() => ShakingIconExampleState();
 }
-class _ShakingIconExampleState extends State<ShakingIconExample>
-    with SingleTickerProviderStateMixin {
+class ShakingIconExampleState extends State<ShakingIconExample> with SingleTickerProviderStateMixin {
   bool isLoading = false;
   late AnimationController _controller;
   late Animation<double> _animation;
@@ -42,7 +43,7 @@ class _ShakingIconExampleState extends State<ShakingIconExample>
     });
 
     // Simulate a loading delay
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 3));
 
     setState(() {
       isLoading = false;
@@ -53,7 +54,7 @@ class _ShakingIconExampleState extends State<ShakingIconExample>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Shaking Icon Example")),
+      appBar: AppBar(title: const Text("Shaking Icon Example")),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -74,10 +75,10 @@ class _ShakingIconExampleState extends State<ShakingIconExample>
                 );
               },
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: isLoading ? null : _simulateAddToCart,
-              child: isLoading ? CircularProgressIndicator() : Text("Add to Cart"),
+              child: isLoading ? const CircularProgressIndicator() : const Text("Add to Cart"),
             ),
           ],
         ),

@@ -154,7 +154,7 @@ class MembernearProvider with ChangeNotifier {
                     Text(membernear.user?.name ?? "...",
                       style: poppinsRegular.copyWith(
                         fontSize: Dimensions.fontSizeOverLarge,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.bold,
                         color: ColorResources.white
                       )
                     ),
@@ -164,7 +164,7 @@ class MembernearProvider with ChangeNotifier {
                       textAlign: TextAlign.center,
                       style: poppinsRegular.copyWith(
                         fontSize: Dimensions.fontSizeOverLarge,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.bold,
                         color: ColorResources.white,
                       )
                     ),

@@ -153,7 +153,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                 ),
             
                 isCheck
-                ? SizedBox()
+                ? const SizedBox()
                 : Container(
                     height: 35.0,
                     margin: const EdgeInsets.only(bottom: 15),
@@ -367,7 +367,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                               ),
 
                               Container(
-                                margin: EdgeInsets.only(
+                                margin: const EdgeInsets.only(
                                   top: 16.0,
                                   bottom: 16.0,
                                   left: 16.0,
@@ -386,9 +386,9 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                                       fontSize: Dimensions.fontSizeDefault,
                                       color: ColorResources.black
                                     ),
-                                    border: OutlineInputBorder(),
-                                    enabledBorder: OutlineInputBorder(),
-                                    focusedBorder: OutlineInputBorder(),
+                                    border: const OutlineInputBorder(),
+                                    enabledBorder: const OutlineInputBorder(),
+                                    focusedBorder: const OutlineInputBorder(),
                                   ),
                                 )
                               ),
@@ -575,7 +575,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                                 ),
 
                                 Container(
-                                  margin: EdgeInsets.only(
+                                  margin: const EdgeInsets.only(
                                     top: 16.0,
                                     bottom: 16.0,
                                     left: 16.0,
@@ -594,9 +594,9 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                                         fontSize: Dimensions.fontSizeDefault,
                                         color: ColorResources.black
                                       ),
-                                      border: OutlineInputBorder(),
-                                      enabledBorder: OutlineInputBorder(),
-                                      focusedBorder: OutlineInputBorder(),
+                                      border: const OutlineInputBorder(),
+                                      enabledBorder: const OutlineInputBorder(),
+                                      focusedBorder: const OutlineInputBorder(),
                                     ),
                                   )
                                 ),
@@ -780,7 +780,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                                 ),
 
                                 Container(
-                                  margin: EdgeInsets.only(
+                                  margin: const EdgeInsets.only(
                                     top: 16.0,
                                     bottom: 16.0,
                                     left: 16.0,
@@ -799,9 +799,9 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                                         fontSize: Dimensions.fontSizeDefault,
                                         color: ColorResources.black
                                       ),
-                                      border: OutlineInputBorder(),
-                                      enabledBorder: OutlineInputBorder(),
-                                      focusedBorder: OutlineInputBorder(),
+                                      border: const OutlineInputBorder(),
+                                      enabledBorder: const OutlineInputBorder(),
+                                      focusedBorder: const OutlineInputBorder(),
                                     ),
                                   )
                                 ),
@@ -984,7 +984,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                                 ),
 
                                 Container(
-                                  margin: EdgeInsets.only(
+                                  margin: const EdgeInsets.only(
                                     top: 16.0,
                                     bottom: 16.0,
                                     left: 16.0,
@@ -1003,9 +1003,9 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                                         fontSize: Dimensions.fontSizeDefault,
                                         color: ColorResources.black
                                       ),
-                                      border: OutlineInputBorder(),
-                                      enabledBorder: OutlineInputBorder(),
-                                      focusedBorder: OutlineInputBorder(),
+                                      border: const OutlineInputBorder(),
+                                      enabledBorder: const OutlineInputBorder(),
+                                      focusedBorder: const OutlineInputBorder(),
                                     ),
                                   )
                                 ),

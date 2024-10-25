@@ -2,17 +2,23 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hp3ki/providers/ecommerce/ecommerce.dart';
+
+import 'package:lecle_flutter_absolute_path/lecle_flutter_absolute_path.dart';
+
+import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 
 import 'package:provider/provider.dart';
 
-import 'package:chips_choice/chips_choice.dart';
 import 'package:flutter/services.dart';
 
 import 'package:image_picker/image_picker.dart';
 import 'package:multi_image_picker_plus/multi_image_picker_plus.dart';
 
-import 'package:lecle_flutter_absolute_path/lecle_flutter_absolute_path.dart';
+import 'package:hp3ki/providers/ecommerce/ecommerce.dart';
+
+import 'package:hp3ki/data/models/ecommerce/product/category.dart';
+
+import 'package:hp3ki/maps/src/utils/uuid.dart';
 
 import 'package:hp3ki/services/navigation.dart';
 
@@ -20,10 +26,16 @@ import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 
+import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
 
 class AddProductScreen extends StatefulWidget {
-  const AddProductScreen({super.key});
+  final String storeId;
+
+  const AddProductScreen({
+    super.key,
+    required this.storeId
+  });
 
   @override
   State<AddProductScreen> createState() => AddProductScreenState();
@@ -32,18 +44,14 @@ class AddProductScreen extends StatefulWidget {
 class AddProductScreenState extends State<AddProductScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  List<String> kindStuff = [
-    "Berbahaya",
-    "Mudah Terbakar",
-    "Cair",
-    "Mudah Pecah"
-  ];
+  String categoryId = "";
 
   List<dynamic> kindStuffSelected = [];
 
+  late EcommerceProvider ecommerceProvider;
+
   String typeConditionName = "NEW";
   int typeCondition = 0;
-  String? idCategoryparent;
 
   ImageSource? imageSource;
 
@@ -52,10 +60,16 @@ class AddProductScreenState extends State<AddProductScreen> {
   List<File> before = [];
 
   late TextEditingController nameC;
+  late TextEditingController categoryC;
+  late TextEditingController descC;
   late TextEditingController priceC;
   late TextEditingController stockC;
   late TextEditingController weightC;
-  late TextEditingController minOrderC;
+
+  Future<void> getData() async {
+    if(!mounted) return;
+      ecommerceProvider.fetchAllProductCategory();
+  }
 
   void pickImage() async {
     var imageSource = await showDialog<ImageSource>(context: context, 
@@ -144,24 +158,85 @@ class AddProductScreenState extends State<AddProductScreen> {
     }
   }
 
+  Future<void> submit() async {
+    if(categoryC.text.isEmpty) {
+      ShowSnackbar.snackbar("Kategori wajib diisi", "", ColorResources.error);
+      return;
+    }
+    
+    if(nameC.text.isEmpty) {
+      ShowSnackbar.snackbar("Nama wajib diisi", "", ColorResources.error);
+      return;
+    }
+    
+    if(priceC.text.isEmpty) {
+      ShowSnackbar.snackbar("Harga wajib diisi", "", ColorResources.error);
+      return;
+    }
+    
+    if(stockC.text.isEmpty) {
+      ShowSnackbar.snackbar("Stok wajib diisi", "", ColorResources.error);
+      return;
+    }
+    
+    if(weightC.text.isEmpty) {
+      ShowSnackbar.snackbar("Berat wajib diisi", "", ColorResources.error);
+      return;
+    }
+
+    if(descC.text.isEmpty) {
+      ShowSnackbar.snackbar("Deskripsi wajib diisi", "", ColorResources.error);
+      return;
+    }
+
+    if(files.isEmpty) {
+      ShowSnackbar.snackbar("Gambar wajib diisi", "", ColorResources.error);
+      return;
+    }
+
+    String cleanPrice = priceC.text.replaceAll("Rp ", "").replaceAll(".", "");
+
+    int price = int.parse(cleanPrice);
+
+    await ecommerceProvider.createProduct(
+      id: Uuid().generateV4(), 
+      title: nameC.text, 
+      files: files, 
+      description: descC.text,
+      price: price, 
+      weight: int.parse(weightC.text), 
+      stock: int.parse(stockC.text), 
+      isDraft: false, 
+      catId: categoryId, 
+      storeId: widget.storeId
+    );
+  }
+
   @override 
   void initState() {
     super.initState();
 
     nameC = TextEditingController();
+    descC = TextEditingController();
+    categoryC = TextEditingController();
     priceC = TextEditingController();
     stockC = TextEditingController();
     weightC = TextEditingController();
-    minOrderC = TextEditingController();
+
+    ecommerceProvider = context.read<EcommerceProvider>();
+
+    Future.microtask(() => getData());
   }
 
   @override 
   void dispose() {
+
     nameC.dispose();
+    descC.dispose();
+    categoryC.dispose();
     priceC.dispose();
     stockC.dispose();
     weightC.dispose();
-    minOrderC.dispose();
 
     super.dispose();
   }
@@ -172,313 +247,252 @@ class AddProductScreenState extends State<AddProductScreen> {
       backgroundColor: ColorResources.backgroundColor,
       appBar: AppBar(
       leading: CupertinoNavigationBarBackButton(
-        color: ColorResources.white,
+        color: ColorResources.black,
         onPressed: () {
-          
+          NS.pop();
         },
       ),
       centerTitle: true,
       elevation: 0,
-      title: Text( "Jual Barang",
+      title: Text( "Tambah Produk",
         style: robotoRegular.copyWith(
           fontSize: Dimensions.fontSizeDefault,
-          fontWeight: FontWeight.w600,
-          color: ColorResources.white
+          fontWeight: FontWeight.bold,
+          color: ColorResources.black
         ),
       ),
     ),
     body: ListView(
       physics: const BouncingScrollPhysics(),
       children: [
+
         Container(
           padding: const EdgeInsets.all(16.0),
           child: Form(
-          key: formKey,
-          child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            
-            inputFieldCategory("Kategori Barang *", "Kategori Barang"),
-            
-            const SizedBox(height: 15.0),
-
-            inputFieldName(nameC),
-            
-            const SizedBox(height: 15.0),
-            
-            inputFieldPrice(context, priceC),
-            
-            const SizedBox(
-              height: 15.0,
-            ),
-
-            Row(
+            key: formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(
-                  width: 120.0,
-                  child: inputFieldStock(context, stockC)
-                ),
-                const SizedBox(
-                  width: 10.0,
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      inputFieldWeight(),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+            
+              inputFieldCategory(),
+              
+              const SizedBox(height: 15.0),
 
-            const SizedBox(
-              height: 15.0,
-            ),
+              inputFieldName(),
+              
+              const SizedBox(height: 15.0),
+              
+              inputFieldPrice(),
+              
+              const SizedBox(
+                height: 15.0,
+              ),
+
+              Row(
+                children: [
+                  SizedBox(
+                    width: 120.0,
+                    child: inputFieldStock()
+                  ),
+                  const SizedBox(
+                    width: 10.0,
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        inputFieldWeight(),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(
+                height: 15.0,
+              ),
+              
+              inputFieldDescription(),
+              
+              const SizedBox(
+                height: 15.0,
+              ),
+              
+              Text("Gambar*",
+                style: robotoRegular.copyWith(
+                  fontSize: Dimensions.fontSizeDefault,
+                )
+              ),
+              
+              const SizedBox(
+                height: 10.0,
+              ),
             
-            Text("Kondisi *",
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeDefault,
-              )
-            ),
-            
-            const SizedBox(
-              height: 10.0,
-            ),
-            
-            Wrap(
-              children: [ 
-                SizedBox(
-                  height: 30.0,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: ['Baru', 'Bekas'].length,
-                    itemBuilder: (BuildContext context, int i) {
-                      return Container(
-                        margin: EdgeInsets.only(left: i == 0 ? 0.0 : 10.0),
-                        child: ChoiceChip(
-                          label: Text(['Baru', 'Bekas'][i],
-                            style: robotoRegular.copyWith(
-                              color: typeCondition == i 
-                              ? ColorResources.white
-                              : ColorResources.primaryOrange
+              Container(
+                height: 100.0,
+                padding: const EdgeInsets.all(10.0),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.grey.withOpacity(0.5)
+                  ),
+                  borderRadius: BorderRadius.circular(10.0)
+                ),
+                  child: files.isEmpty
+                    ? Row(
+                        children: [
+                          GestureDetector(
+                            onTap: pickImage,
+                            child: Container(
+                              height: 80.0,
+                              width: 80.0,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                                border: Border.all(color: Colors.grey.withOpacity(0.5)),
+                                color: Colors.grey.withOpacity(0.5)
+                              ),
+                              child: Center(
+                                child: files.isEmpty
+                                ? Icon(
+                                    Icons.camera_alt,
+                                    color: Colors.grey[600],
+                                    size: 35,
+                                  )
+                                : ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: FadeInImage(
+                                      fit: BoxFit.cover,
+                                      height: double.infinity,
+                                      width: double.infinity,
+                                      image: FileImage(files.first),
+                                      placeholder: const AssetImage("assets/images/default_image.png")
+                                    ),
+                                ),
+                              ),
                             ),
                           ),
-                          selectedColor: ColorResources.primaryOrange,
-                          selected: typeCondition == i,
-                          onSelected: (bool selected) {
-                            setState(() {
-                              typeCondition = (selected ? i : null)!;
-                              typeConditionName = ['Baru', 'Bekas'][i] == "Baru" ? "NEW" : "USED";
-                            });
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ]
-            ),
-
-            const SizedBox(
-              height: 10.0,
-            ),
-            
-            ChipsChoice.multiple(
-              wrapped: true,
-              padding: EdgeInsets.zero,
-              errorBuilder: (context) => Container(),
-              placeholder: "",
-              value: kindStuffSelected,
-              onChanged: (val) => setState(() => kindStuffSelected = val),
-              choiceItems: C2Choice.listFrom<int, String>(
-                source: kindStuff,
-                value: (i, v) => i,
-                label: (i, v) => v,
-              ), 
-            ),
-
-            const SizedBox(
-              height: 15.0,
-            ),
-            
-            inputFieldDescription(),
-            
-            const SizedBox(
-              height: 15.0,
-            ),
-            
-            Text("Gambar Barang *",
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeDefault,
-              )
-            ),
-            
-            const SizedBox(
-              height: 10.0,
-            ),
-            
-            Container(
-              height: 100.0,
-              padding: const EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.grey.withOpacity(0.5)
-                ),
-                borderRadius: BorderRadius.circular(10.0)
-              ),
-                child: files.isEmpty
-                  ? Row(
-                      children: [
-                        GestureDetector(
-                          onTap: pickImage,
-                          child: Container(
-                            height: 80.0,
-                            width: 80.0,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.0),
-                              border: Border.all(color: Colors.grey.withOpacity(0.5)),
-                              color: Colors.grey.withOpacity(0.5)
-                            ),
-                            child: Center(
-                              child: files.isEmpty
-                              ? Icon(
-                                  Icons.camera_alt,
-                                  color: Colors.grey[600],
-                                  size: 35,
+                          const SizedBox(
+                            width: 10.0,
+                          ),
+                          Expanded(
+                            child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("Upload Gambar",
+                                style: robotoRegular.copyWith(
+                                  fontSize: 12.0,
                                 )
-                              : ClipRRect(
+                              ),
+                              const SizedBox(
+                                height: 5.0,
+                              ),
+                              Text("Maksimum 5 gambar, ukuran minimal 300x300px berformat JPG atau PNG",
+                                style: robotoRegular.copyWith(
+                                  fontSize: 12.0,
+                                  color: Colors.grey[600]
+                                )
+                              ),
+                            ],
+                          ))
+                        ],
+                      )
+                    : ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: files.length + 1,
+                        itemBuilder: (context, index) {
+                          if (index < files.length) {
+                            return Container(
+                              height: 80,
+                              width: 80,
+                              margin: const EdgeInsets.only(right: 4),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                    color: Colors.grey[400]!
+                                ),
+                                color: Colors.grey[350]
+                              ),
+                              child: Center(
+                                child: ClipRRect(
                                   borderRadius: BorderRadius.circular(10),
                                   child: FadeInImage(
                                     fit: BoxFit.cover,
                                     height: double.infinity,
                                     width: double.infinity,
-                                    image: FileImage(files.first),
-                                    placeholder: const AssetImage("assets/images/logo/starlet.png")
+                                    image: FileImage(files[index]),
+                                    placeholder: const AssetImage("assets/images/default_image.png")
                                   ),
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10.0,
-                        ),
-                        Expanded(
-                          child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text("Upload Gambar Barang",
-                              style: robotoRegular.copyWith(
-                                fontSize: 12.0,
-                              )
-                            ),
-                            const SizedBox(
-                              height: 5.0,
-                            ),
-                            Text("Maksimum 5 gambar, ukuran minimal 300x300px berformat JPG atau PNG",
-                              style: robotoRegular.copyWith(
-                                fontSize: 12.0,
-                                color: Colors.grey[600]
-                              )
-                            ),
-                          ],
-                        ))
-                      ],
-                    )
-                  : ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: files.length + 1,
-                      itemBuilder: (context, index) {
-                        if (index < files.length) {
-                          return Container(
-                            height: 80,
-                            width: 80,
-                            margin: const EdgeInsets.only(right: 4),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                  color: Colors.grey[400]!
-                              ),
-                              color: Colors.grey[350]
-                            ),
-                            child: Center(
-                              child: ClipRRect(
+                            );
+                          } else {
+                            return GestureDetector(
+                              onTap: () {
+                                if (files.length < 5) {
+                                  pickImage();
+                                } else if (files.length >= 5) {
+                                  setState(() {
+                                    files.clear();
+                                    before.clear();
+                                    images.clear();
+                                  });
+                                }
+                              },
+                              child: Container(
+                                height: 80,
+                                width: 80,
+                                margin: const EdgeInsets.only(right: 4),
+                                decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                child: FadeInImage(
-                                  fit: BoxFit.cover,
-                                  height: double.infinity,
-                                  width: double.infinity,
-                                  image: FileImage(files[index]),
-                                  placeholder: const AssetImage("assets/images/logo/starlet.png")
+                                border: Border.all(
+                                  color: Colors.grey[400]!
+                                ),
+                                color: files.length < 5 ? Colors.grey[350] : Colors.red),
+                                child: Center(
+                                  child: Icon(
+                                    files.length < 5 ? Icons.camera_alt : Icons.delete,
+                                    color: files.length < 5 ? Colors.grey[600] : ColorResources.white,
+                                    size: 35,
+                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                        } else {
-                          return GestureDetector(
-                            onTap: () {
-                              if (files.length < 5) {
-                                pickImage();
-                              } else if (files.length >= 5) {
-                                setState(() {
-                                  files.clear();
-                                  before.clear();
-                                  images.clear();
-                                });
-                              }
-                            },
-                            child: Container(
-                              height: 80,
-                              width: 80,
-                              margin: const EdgeInsets.only(right: 4),
-                              decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                color: Colors.grey[400]!
-                              ),
-                              color: files.length < 5 ? Colors.grey[350] : Colors.red),
-                              child: Center(
-                                child: Icon(
-                                  files.length < 5 ? Icons.camera_alt : Icons.delete,
-                                  color: files.length < 5 ? Colors.grey[600] : ColorResources.white,
-                                  size: 35,
-                                ),
-                              ),
-                            ),
-                          );
-                        }
-                      },
+                            );
+                          }
+                        },
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 25.0,
-                  ),
-                  CustomButton(
-                    isBorder: false,
-                    isBoxShadow: false,
-                    isBorderRadius: true,
-                    btnColor: ColorResources.primary,
-                    btnTextColor: ColorResources.white,
-                    onTap: () {}, 
-                    btnTxt: "Jual Barang"
-                  )
-                ],
-              )
-            ),
-          )
+                    const SizedBox(
+                      height: 25.0,
+                    ),
+                    CustomButton(
+                      isBorder: false,
+                      isBoxShadow: false,
+                      isBorderRadius: true,
+                      isLoading: context.watch<EcommerceProvider>().createProductStatus == CreateProductStatus.loading 
+                      ? true 
+                      : false,
+                      btnColor: ColorResources.primary,
+                      btnTextColor: ColorResources.white,
+                      onTap: submit, 
+                      btnTxt: "Submit"
+                    )
+                  ],
+                )
+              ),
+            )
+
         ],
       )
     );
   }
 
-  Widget inputFieldName(TextEditingController controller) {
+  Widget inputFieldName() {
     return Column(
       children: [
         Container(
           alignment: Alignment.centerLeft,
-          child: Text("Nama Barang *",
+          child: Text("Nama",
             style: robotoRegular.copyWith(
               fontSize: Dimensions.fontSizeSmall,
             )
@@ -502,29 +516,25 @@ class AddProductScreenState extends State<AddProductScreen> {
             ],
           ),
           child: TextFormField(
-            controller: controller,
+            controller: nameC,
             cursorColor: ColorResources.black,
             keyboardType: TextInputType.text,
             textCapitalization: TextCapitalization.sentences,
             style: robotoRegular,
             inputFormatters: [FilteringTextInputFormatter.singleLineFormatter],
-            decoration: InputDecoration(
-              hintText: "Masukan Nama Barang",
-              contentPadding: const EdgeInsets.symmetric(
+            decoration: const InputDecoration(
+              contentPadding: EdgeInsets.symmetric(
                 vertical: 12.0, 
                 horizontal: 15.0
               ),
               isDense: true,
-              hintStyle: robotoRegular.copyWith(
-                color: Theme.of(context).hintColor
-              ),
-              focusedBorder: const OutlineInputBorder(
+              focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   color: Colors.grey,
                   width: 0.5
                 ),
               ),
-              enabledBorder: const OutlineInputBorder(
+              enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   color: Colors.grey,
                   width: 0.5
@@ -542,7 +552,7 @@ class AddProductScreenState extends State<AddProductScreen> {
       children: [
         Container(
           alignment: Alignment.centerLeft,
-          child: Text("Deskripsi Barang", 
+          child: Text("Deskripsi", 
             style: robotoRegular.copyWith(
               fontSize: Dimensions.fontSizeDefault,
             )
@@ -587,7 +597,7 @@ class AddProductScreenState extends State<AddProductScreen> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      GestureDetector(
+                                      InkWell(
                                         onTap: () {
                                           NS.pop();
                                         },
@@ -596,7 +606,7 @@ class AddProductScreenState extends State<AddProductScreen> {
                                         )
                                       ),
                                       Container(
-                                        margin: const EdgeInsets.only(left: 16.0),
+                                        margin: const EdgeInsets.only(left: 16),
                                         child: Text("Masukan Deskripsi",
                                           style: robotoRegular.copyWith(
                                             fontSize: Dimensions.fontSizeDefault,
@@ -604,17 +614,17 @@ class AddProductScreenState extends State<AddProductScreen> {
                                           )
                                         )
                                       ),
-                                      // storeProvider.descAddSellerStore != null
-                                      // ? GestureDetector(
-                                      //     onTap: () {
-                                      //       NS.pop();
-                                      //     },
-                                      //     child: const Icon(
-                                      //       Icons.done,
-                                      //       color: ColorResources.btnPrimary
-                                      //     )
-                                      //   )
-                                      // : const SizedBox(),
+                                      descC.text.isNotEmpty
+                                      ? InkWell(
+                                          onTap: () {
+                                            NS.pop();
+                                          },
+                                          child: const Icon(
+                                            Icons.done,
+                                            color: ColorResources.black
+                                          )
+                                        )
+                                      : const SizedBox(),
                                     ],
                                   ),
                                 ),
@@ -629,15 +639,9 @@ class AddProductScreenState extends State<AddProductScreen> {
                                   ),
                                   child: TextFormField(
                                     autofocus: true,
-                                    onChanged: (val) {
-                                
-                                    },
+                                    controller: descC,
                                     textCapitalization: TextCapitalization.sentences,
-                                    decoration: InputDecoration(
-                                      hintText: "Masukan Deskripsi Barang Anda",
-                                      hintStyle: robotoRegular.copyWith(
-                                        color: ColorResources.black
-                                      ),
+                                    decoration: const InputDecoration(
                                       fillColor: ColorResources.white,
                                       border: InputBorder.none,
                                       focusedBorder: InputBorder.none,
@@ -658,7 +662,9 @@ class AddProductScreenState extends State<AddProductScreen> {
                   }, 
                 );
               }
-            );
+            ).then((_) {
+              setState(() { });
+            });
           },
           child: Consumer<EcommerceProvider>(
             builder: (BuildContext context, EcommerceProvider notifier, Widget? child) {
@@ -667,10 +673,16 @@ class AddProductScreenState extends State<AddProductScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(10.0),
                 decoration: BoxDecoration(
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(6.0),
-                  border: Border.all(color: Colors.grey.withOpacity(0.5)),
+                  border: Border.all(
+                    color: Colors.grey,
+                    width: 0.5
+                  ),
                 ),
-                child: Text("Masukan Deskripsi Barang Anda",
+                child: Text(descC.text == '' 
+                  ? "" 
+                  : descC.text,
                   style: robotoRegular.copyWith(
                     fontSize: Dimensions.fontSizeDefault, 
                     color: ColorResources.black 
@@ -684,7 +696,7 @@ class AddProductScreenState extends State<AddProductScreen> {
     );             
   }
 
-  Widget inputFieldStock(BuildContext context, TextEditingController controller) {
+  Widget inputFieldStock() {
     return Column(
       children: [
         Container(
@@ -713,7 +725,7 @@ class AddProductScreenState extends State<AddProductScreen> {
             ],
           ),
           child: TextFormField(
-            controller: controller,
+            controller: stockC,
             cursorColor: ColorResources.black,
             keyboardType: TextInputType.number,
             style: robotoRegular,
@@ -743,7 +755,7 @@ class AddProductScreenState extends State<AddProductScreen> {
     );
   }
 
-  Widget inputFieldPrice(BuildContext context, TextEditingController controller) {
+  Widget inputFieldPrice() {
     return Column(
       children: [
         Container(
@@ -772,54 +784,50 @@ class AddProductScreenState extends State<AddProductScreen> {
             ],
           ),
           child: TextFormField(
-            controller: controller,
+            controller: priceC,
             cursorColor: ColorResources.black,
             keyboardType: TextInputType.number,
             style: robotoRegular,
+            inputFormatters: [
+              CurrencyTextInputFormatter.currency(
+                locale: 'id',
+                decimalDigits: 0,
+                symbol: 'Rp ',
+              ),
+            ],
             decoration: InputDecoration(
             fillColor: ColorResources.white,
-            prefixIcon: SizedBox(
-              width: 50,
-              child: Center(
-                child: Text("Rp",
-                  textAlign: TextAlign.center,
-                  style: robotoRegular.copyWith(
-                    fontWeight: FontWeight.w600
-                  ),
-                )),
-              ),
-              hintText: "0",
-              isDense: true,
-              hintStyle: robotoRegular.copyWith(
-                color: Theme.of(context).hintColor
-              ),
-              focusedBorder: const OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Colors.grey,
-                  width: 0.5
-                ),
-              ),
-              enabledBorder: const OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Colors.grey,
-                  width: 0.5
-                ),
+            hintText: "0",
+            isDense: true,
+            hintStyle: robotoRegular.copyWith(
+              color: Theme.of(context).hintColor
+            ),
+            focusedBorder: const OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.grey,
+                width: 0.5
               ),
             ),
-          ),
+            enabledBorder: const OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.grey,
+                width: 0.5
+              ),
+            ),
+          )),
         )
       ]
     );
   }
 
   
-  Widget inputFieldCategory(String title, String hintText) {
+  Widget inputFieldCategory() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
           alignment: Alignment.centerLeft,
-          child: Text(title,
+          child: Text("Kategori",
             style: robotoRegular.copyWith(
               fontSize: Dimensions.fontSizeDefault,
             )
@@ -888,7 +896,7 @@ class AddProductScreenState extends State<AddProductScreen> {
                                         ),
                                         Container(
                                           margin: const EdgeInsets.only(left: 16),
-                                          child: Text("Kategori Barang",
+                                          child: Text("Kategori",
                                             style: robotoRegular.copyWith(
                                               fontSize: Dimensions.fontSizeDefault,
                                               color: ColorResources.black
@@ -902,40 +910,51 @@ class AddProductScreenState extends State<AddProductScreen> {
                                     thickness: 3.0,
                                   ),
                                   Expanded(
-                                    child: ListView.separated(
-                                      separatorBuilder: (BuildContext context, int i) => const Divider(
-                                        color: ColorResources.dimGrey,
-                                        thickness: 0.1,
-                                      ),
-                                      shrinkWrap: true,
-                                      physics: const BouncingScrollPhysics(),
-                                      scrollDirection: Axis.vertical,
-                                      itemCount: ["text1", "text2", "text3"].length,
-                                      itemBuilder: (BuildContext context, int i) {
-                                        return Container(
-                                          margin: const EdgeInsets.only(top: 5.0, left: 16.0, right: 16.0),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(["text1", "text2", "text3"][i],
-                                                style: robotoRegular.copyWith(
-                                                  fontSize: Dimensions.fontSizeDefault,
-                                                  fontWeight: FontWeight.w600
-                                                )
-                                              ),
-                                              InkWell(
-                                                onTap: () {
-                                                  NS.pop();
-                                                },
-                                                child: const Text("Pilih",
-                                                  style: robotoRegular,
-                                                ),
-                                              )                                              
-                                            ],
+                                    child: Consumer<EcommerceProvider>(
+                                      builder: (BuildContext context, EcommerceProvider notifier, Widget? child) {
+                                        return ListView.separated(
+                                          separatorBuilder: (BuildContext context, int i) => const Divider(
+                                            color: ColorResources.dimGrey,
+                                            thickness: 0.1,
                                           ),
-                                        );                                                                      
+                                          shrinkWrap: true,
+                                          physics: const BouncingScrollPhysics(),
+                                          scrollDirection: Axis.vertical,
+                                          itemCount: notifier.productCategories.length,
+                                          itemBuilder: (BuildContext context, int i) {
+                                            
+                                            ProductCategoryData category = notifier.productCategories[i];
+
+                                            return Container(
+                                              margin: const EdgeInsets.only(top: 5.0, left: 16.0, right: 16.0),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text(category.name,
+                                                    style: robotoRegular.copyWith(
+                                                      fontSize: Dimensions.fontSizeDefault,
+                                                      fontWeight: FontWeight.bold
+                                                    )
+                                                  ),
+                                                  InkWell(
+                                                    onTap: () {
+                                                      setState(() {
+                                                        categoryId = category.id;
+                                                        categoryC.text = category.name;
+                                                      });
+                                                      NS.pop();
+                                                    },
+                                                    child: const Text("Pilih",
+                                                      style: robotoRegular,
+                                                    ),
+                                                  )                                              
+                                                ],
+                                              ),
+                                            );                                                                      
+                                          },
+                                        ); 
                                       },
-                                    )  
+                                    )
                                   )                                
                                 ],
                               ),
@@ -951,21 +970,18 @@ class AddProductScreenState extends State<AddProductScreen> {
             cursorColor: ColorResources.black,
             keyboardType: TextInputType.text,
             style: robotoRegular,
+            controller: categoryC,
             inputFormatters: [FilteringTextInputFormatter.singleLineFormatter],
-            decoration: InputDecoration(
-              hintText: "Kategori Barang",
-              contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
+            decoration: const InputDecoration(
+              contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
               isDense: true,
-              hintStyle: robotoRegular.copyWith(
-                color: Theme.of(context).hintColor
-              ),
-              focusedBorder: const OutlineInputBorder(
+              focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   color: Colors.grey,
                   width: 0.5
                 ),
               ),
-              enabledBorder: const OutlineInputBorder(
+              enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   color: Colors.grey,
                   width: 0.5
@@ -1027,7 +1043,7 @@ class AddProductScreenState extends State<AddProductScreen> {
                   child: Text("Gram",
                     textAlign: TextAlign.center,
                     style: robotoRegular.copyWith(
-                      fontWeight: FontWeight.w600
+                      fontWeight: FontWeight.bold
                     ),
                   ),
                 ),

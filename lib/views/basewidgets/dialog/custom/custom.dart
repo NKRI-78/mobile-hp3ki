@@ -85,7 +85,7 @@ class CustomDialog {
             style: robotoRegular.copyWith(
               fontSize: Dimensions.fontSizeExtraLarge,
               color: ColorResources.white,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(
@@ -119,7 +119,7 @@ class CustomDialog {
               style: robotoRegular.copyWith(
                 fontSize: Dimensions.fontSizeLarge,
                 color: ColorResources.white,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
@@ -148,7 +148,7 @@ class CustomDialog {
                 'Peringatan',
                 style: robotoRegular.copyWith(
                     fontSize: Dimensions.fontSizeExtraLarge,
-                    fontWeight: FontWeight.w600),
+                    fontWeight: FontWeight.bold),
               ),
               const SizedBox(
                 height: 15,
@@ -188,7 +188,7 @@ class CustomDialog {
                 'Peringatan',
                 style: robotoRegular.copyWith(
                     fontSize: Dimensions.fontSizeExtraLarge,
-                    fontWeight: FontWeight.w600),
+                    fontWeight: FontWeight.bold),
               ),
               const SizedBox(
                 height: 15,
@@ -226,7 +226,7 @@ class CustomDialog {
                 'Ada Kesalahan',
                 style: robotoRegular.copyWith(
                     fontSize: Dimensions.fontSizeExtraLarge,
-                    fontWeight: FontWeight.w600),
+                    fontWeight: FontWeight.bold),
               ),
               const SizedBox(
                 height: 15,
@@ -265,7 +265,7 @@ class CustomDialog {
                   title,
                   style: robotoRegular.copyWith(
                       fontSize: Dimensions.fontSizeExtraLarge,
-                      fontWeight: FontWeight.w600),
+                      fontWeight: FontWeight.bold),
                 ),
               const SizedBox(
                 height: 15,
@@ -306,7 +306,7 @@ class CustomDialog {
                 'Mohon Maaf',
                 style: robotoRegular.copyWith(
                     fontSize: Dimensions.fontSizeExtraLarge,
-                    fontWeight: FontWeight.w600),
+                    fontWeight: FontWeight.bold),
               ),
               const SizedBox(
                 height: 15,
@@ -344,7 +344,7 @@ class CustomDialog {
                 'Berhasil!',
                 style: robotoRegular.copyWith(
                     fontSize: Dimensions.fontSizeExtraLarge,
-                    fontWeight: FontWeight.w600),
+                    fontWeight: FontWeight.bold),
               ),
               const SizedBox(
                 height: 15,
@@ -382,7 +382,7 @@ class CustomDialog {
                 'Ada Kesalahan',
                 style: robotoRegular.copyWith(
                     fontSize: Dimensions.fontSizeExtraLarge,
-                    fontWeight: FontWeight.w600),
+                    fontWeight: FontWeight.bold),
               ),
               const SizedBox(
                 height: 15,

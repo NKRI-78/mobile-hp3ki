@@ -201,7 +201,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           Text(label,
             style: robotoRegular.copyWith(
               fontSize: Dimensions.fontSizeLarge,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 5,),

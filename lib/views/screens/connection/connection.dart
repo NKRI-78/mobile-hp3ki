@@ -64,7 +64,7 @@ class _NoConnectionScreenState extends State<NoConnectionScreen> {
             Text('Koneksi Bermasalah',
               style: poppinsRegular.copyWith(
                 color: ColorResources.black,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.bold,
                 fontSize: Dimensions.fontSizeExtraLarge,
               ),
               textAlign: TextAlign.center,

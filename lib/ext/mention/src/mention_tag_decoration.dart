@@ -6,7 +6,7 @@ class MentionTagDecoration {
     this.mentionBreak = ' ',
     this.maxWords = 1,
     this.mentionTextStyle =
-        const TextStyle(color: Colors.blue, fontWeight: FontWeight.w600),
+        const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
     this.allowDecrement = true,
     this.allowEmbedding = false,
     this.showMentionStartSymbol = true,

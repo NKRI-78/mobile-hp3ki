@@ -122,7 +122,7 @@ class _UpgradeMemberIndexScreenState extends State<UpgradeMemberIndexScreen>{
                             ),
                             title: Text(data.paymentName ?? "...",
                               style: poppinsRegular.copyWith(
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                             subtitle: Text(data.paymentDescription ?? "...",

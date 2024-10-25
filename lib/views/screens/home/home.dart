@@ -321,7 +321,7 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
                           hasStore ? 'Store' : 'Open Store',
                           style: poppinsRegular.copyWith(
                             color: const Color(0xff101660),
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.bold,
                           ),
                         )
                       ],
@@ -380,7 +380,7 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
               //                 menu[index]["name"],
               //                 style: poppinsRegular.copyWith(
               //                   color: const Color(0xff101660),
-              //                   fontWeight: FontWeight.w600,
+              //                   fontWeight: FontWeight.bold,
               //                 ),
               //               )
               //             ],
@@ -429,7 +429,7 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
                     menu[index]["name"],
                     style: poppinsRegular.copyWith(
                       color: const Color(0xff101660),
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.bold,
                     ),
                   )
                 ],
@@ -581,7 +581,7 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
         //  badgeContent: Text(
         //  inboxProvider.readCount?.toString() ?? "...",
         //   style: poppinsRegular.copyWith(
-        //     fontWeight: FontWeight.w600,
+        //     fontWeight: FontWeight.bold,
         //     color: ColorResources.white,
         //   ),
         // ),
@@ -967,7 +967,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               : 'Hi, ${context.read<ProfileProvider>().user?.fullname?.smallSentence() ?? "..."}',
                               maxLines: 1,
                               style: poppinsRegular.copyWith(
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.bold,
                                 fontSize: Dimensions.fontSizeExtraLarge,
                                 color: ColorResources.white
                               ),
@@ -1212,7 +1212,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   'Berita',
                   style: poppinsRegular.copyWith(
                       fontSize: Dimensions.fontSizeExtraLarge,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.bold,
                       color: ColorResources.white,
                       shadows: boxShadow),
                 ),
@@ -1519,7 +1519,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Text('Mart',
                         style: poppinsRegular.copyWith(
                           fontSize: Dimensions.fontSizeExtraLarge,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.bold,
                           color: ColorResources.white,
                           shadows: boxShadow
                         ),

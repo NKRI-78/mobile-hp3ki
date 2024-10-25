@@ -69,7 +69,7 @@ class CommentDetailScreenState extends State<CommentDetailScreen> {
       child: Consumer<FeedProvider>(
         builder: (BuildContext context, FeedProvider feedProvider, Widget? child) {
           if(feedProvider.singleCommentStatus == SingleCommentStatus.loading) {
-            return SizedBox(
+            return const SizedBox(
               height: 100.0,
               child: Center(
                 child: SpinKitThreeBounce(

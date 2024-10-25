@@ -134,7 +134,7 @@ class SosScreenV2State extends State<SosScreenV2> {
           child: Text("Hi, ${context.read<ProfileProvider>().user?.fullname ?? "..."}",
             style: poppinsRegular.copyWith(
               fontSize: Dimensions.fontSizeDefault,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.bold,
               color: ColorResources.primary
             ),
           )
@@ -152,7 +152,7 @@ class SosScreenV2State extends State<SosScreenV2> {
               Text(getTranslated("WHAT_WE_CAN_HELP", context),
                 style: poppinsRegular.copyWith(
                   fontSize: Dimensions.fontSizeOverLarge,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.bold,
                   color: ColorResources.black
                 ),
               )
@@ -252,7 +252,7 @@ class SosScreenV2State extends State<SosScreenV2> {
                             child: Text(getTranslated( categories[i]["name"], context),
                               style: poppinsRegular.copyWith(
                                 fontSize: Dimensions.fontSizeDefault,
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.bold,
                                 color: selectedSos == i 
                                 ? ColorResources.primary 
                                 : ColorResources.black,

@@ -80,7 +80,7 @@ class _ComingSoonScreenState extends State<ComingSoonScreen> {
             Text(widget.isMaintenance == true ? 'Maintenance' : 'Coming Soon',
               style: poppinsRegular.copyWith(
                 color: ColorResources.black,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.bold,
                 fontSize: Dimensions.fontSizeExtraLarge,
               ),
               textAlign: TextAlign.center,
@@ -106,7 +106,7 @@ class _ComingSoonScreenState extends State<ComingSoonScreen> {
                 text: Text(getTranslated('BACK', context),
                   style: poppinsRegular.copyWith(
                     fontSize: Dimensions.fontSizeLarge,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.bold,
                     letterSpacing: 1.5,
                     color: ColorResources.white
                   ),

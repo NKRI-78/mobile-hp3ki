@@ -90,7 +90,7 @@ class ShippingAddressListScreenState extends State<ShippingAddressListScreen> {
                     ),
 
                     if(notifier.getShippingAddressListStatus == GetShippingAddressListStatus.loading)
-                      SliverFillRemaining(
+                      const SliverFillRemaining(
                         hasScrollBody: false,
                         child: Center(
                           child: SizedBox(
@@ -250,7 +250,7 @@ class ShippingAddressListScreenState extends State<ShippingAddressListScreen> {
                                           ),
                                         ),
                               
-                                        Expanded(
+                                        const Expanded(
                                           child: SizedBox()
                                         ),
                               
@@ -306,7 +306,7 @@ class ShippingAddressListScreenState extends State<ShippingAddressListScreen> {
                                                                     child: Row(
                                                                       mainAxisSize: MainAxisSize.max,
                                                                       children: [
-                                                                        Expanded(child: SizedBox()),
+                                                                        const Expanded(child: SizedBox()),
                                                                         Expanded(
                                                                           flex: 5,
                                                                           child: CustomButton(
@@ -320,7 +320,7 @@ class ShippingAddressListScreenState extends State<ShippingAddressListScreen> {
                                                                             btnTxt: "Batal"
                                                                           ),
                                                                         ),
-                                                                        Expanded(child: SizedBox()),
+                                                                        const Expanded(child: SizedBox()),
                                                                         Expanded(
                                                                           flex: 5,
                                                                           child: Consumer<EcommerceProvider>(
@@ -342,7 +342,7 @@ class ShippingAddressListScreenState extends State<ShippingAddressListScreen> {
                                                                             },
                                                                           )
                                                                         ),
-                                                                        Expanded(child: SizedBox()),
+                                                                        const Expanded(child: SizedBox()),
                                                                       ],
                                                                     ),
                                                                   )
@@ -424,7 +424,7 @@ class ShippingAddressListScreenState extends State<ShippingAddressListScreen> {
               ),
               child: CustomButton(
                 onTap: () {
-                  NS.push(context, CreateShippingAddressScreen());
+                  NS.push(context, const CreateShippingAddressScreen());
                 },
                 btnTxt: "Tambah Alamat Baru",
                 isBorder: false,

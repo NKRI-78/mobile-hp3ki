@@ -183,7 +183,7 @@ class MembernearScreenState extends State<MembernearScreen> {
           child: Text(getTranslated("MEMBER_NEAR", context),
             style: poppinsRegular.copyWith(
               fontSize: Dimensions.fontSizeDefault,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.bold,
               color: ColorResources.primary,
             ),
           ),
@@ -244,7 +244,7 @@ class MembernearScreenState extends State<MembernearScreen> {
                   style: poppinsRegular.copyWith(
                     color: ColorResources.black,
                     fontSize: Dimensions.fontSizeDefault,
-                    fontWeight: FontWeight.w600
+                    fontWeight: FontWeight.bold
                   ),
                 ),
               );
@@ -255,7 +255,7 @@ class MembernearScreenState extends State<MembernearScreen> {
                   style: poppinsRegular.copyWith(
                     color: ColorResources.black,
                     fontSize: Dimensions.fontSizeDefault,
-                    fontWeight: FontWeight.w600
+                    fontWeight: FontWeight.bold
                   ),
                 ),
               );
@@ -331,13 +331,13 @@ class MembernearScreenState extends State<MembernearScreen> {
                             textAlign: TextAlign.center,
                             style: poppinsRegular.copyWith(
                               color: ColorResources.primary,
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(distance ?? "...",
                             style: poppinsRegular.copyWith(
                               color: ColorResources.primary,
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],

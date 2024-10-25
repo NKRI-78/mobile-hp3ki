@@ -91,7 +91,7 @@ class PaymentReceiptVaScreenState extends State<PaymentReceiptVaScreen> {
               const SizedBox(height: 15.0),
               CustomButton(
                 onTap: () {
-                  NS.pushReplacement(context, DashboardScreen());
+                  NS.pushReplacement(context, const DashboardScreen());
                 },
                 isBorderRadius: true,
                 isBoxShadow: false,

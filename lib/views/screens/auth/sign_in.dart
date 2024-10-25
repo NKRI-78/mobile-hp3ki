@@ -217,7 +217,7 @@ class SignInScreenState extends State<SignInScreen> with SingleTickerProviderSta
           'Selamat Datang di',
           style: poppinsRegular.copyWith(
             fontSize: Dimensions.fontSizeLarge,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.bold,
           ),
         ),
         Row(
@@ -236,7 +236,7 @@ class SignInScreenState extends State<SignInScreen> with SingleTickerProviderSta
               'Mobile',
               style: poppinsRegular.copyWith(
                 fontSize: Dimensions.fontSizeOverLarge,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.bold,
                 color: const Color(0xffDF0C0C),
               ),
             ),
@@ -275,7 +275,7 @@ class SignInScreenState extends State<SignInScreen> with SingleTickerProviderSta
                 ' Daftar Disini',
                 style: poppinsRegular.copyWith(
                   color: Colors.red,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],
@@ -291,7 +291,7 @@ class SignInScreenState extends State<SignInScreen> with SingleTickerProviderSta
           child: Text(
             'Lupa Password?',
             style: poppinsRegular.copyWith(
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),
@@ -362,7 +362,7 @@ class SignInScreenState extends State<SignInScreen> with SingleTickerProviderSta
             'LOGIN',
             style: poppinsRegular.copyWith(
               color: ColorResources.white,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.bold,
               fontSize: Dimensions.fontSizeOverLarge,
             ),
           ),

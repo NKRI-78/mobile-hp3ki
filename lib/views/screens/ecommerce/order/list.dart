@@ -46,32 +46,32 @@ class ListOrderScreenState extends State<ListOrderScreen> with SingleTickerProvi
     tabC.addListener(() {
       if(tabC.indexIsChanging) {
         if(tabC.index == 0) {
-          Future.delayed(Duration(milliseconds: 500), () async {
+          Future.delayed(const Duration(milliseconds: 500), () async {
             await ep.listOrder(orderStatus: "WAITING_PAYMENT");
           });
         }
         if(tabC.index == 1) {
-          Future.delayed(Duration(milliseconds: 500), () async {
+          Future.delayed(const Duration(milliseconds: 500), () async {
             await ep.listOrder(orderStatus: "PAID");
           });
         }
         if(tabC.index == 2) {
-          Future.delayed(Duration(milliseconds: 500), () async {
+          Future.delayed(const Duration(milliseconds: 500), () async {
             await ep.listOrder(orderStatus: "PACKING");
           });
         }
         if(tabC.index == 3) {
-          Future.delayed(Duration(milliseconds: 500), () async {
+          Future.delayed(const Duration(milliseconds: 500), () async {
             await ep.listOrder(orderStatus: "ON PROCESS");
            });
         }
         if(tabC.index == 4) {
-          Future.delayed(Duration(milliseconds: 500), () async {
+          Future.delayed(const Duration(milliseconds: 500), () async {
             await ep.listOrder(orderStatus: "DELIVERED");
           });
         }
         if(tabC.index == 5) {
-          Future.delayed(Duration(milliseconds: 500), () async {
+          Future.delayed(const Duration(milliseconds: 500), () async {
             await ep.listOrder(orderStatus: "REFUND");
           });
         }
@@ -115,7 +115,7 @@ class ListOrderScreenState extends State<ListOrderScreen> with SingleTickerProvi
           labelStyle: robotoRegular.copyWith(
             fontSize: Dimensions.fontSizeExtraSmall
           ),
-          tabs: [
+          tabs: const [
             Tab(text: 'Belum bayar'),
             Tab(text: 'Dibayar'),
             Tab(text: 'Dikemas'),
@@ -143,7 +143,7 @@ class ListOrderScreenState extends State<ListOrderScreen> with SingleTickerProvi
     return Consumer<EcommerceProvider>(
       builder: (_, notifier, __) {
         if(notifier.listOrderStatus == ListOrderStatus.loading) {
-          return Center(
+          return const Center(
             child: SizedBox(
               width: 32.0,
               height: 32.0,
@@ -177,8 +177,8 @@ class ListOrderScreenState extends State<ListOrderScreen> with SingleTickerProvi
           },
           child: ListView.builder(
             shrinkWrap: true,
-            physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-            padding: EdgeInsets.only(
+            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+            padding: const EdgeInsets.only(
               top: 20.0,
               bottom: 20.0,
               left: 16.0,
@@ -187,7 +187,7 @@ class ListOrderScreenState extends State<ListOrderScreen> with SingleTickerProvi
             itemCount: notifier.orders.length,
             itemBuilder: (BuildContext context, int i) {
               return Container(
-                margin: EdgeInsets.only(
+                margin: const EdgeInsets.only(
                   top: 5.0,
                   bottom: 5.0
                 ),
@@ -206,7 +206,7 @@ class ListOrderScreenState extends State<ListOrderScreen> with SingleTickerProvi
                         children: [
 
                           Container(
-                            margin: EdgeInsets.symmetric(
+                            margin: const EdgeInsets.symmetric(
                               vertical: 8.0
                             ),
                             child: Row(
@@ -235,8 +235,8 @@ class ListOrderScreenState extends State<ListOrderScreen> with SingleTickerProvi
                                           )),
                                         );
                                       },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(5.0),
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(5.0),
                                         child: Icon(
                                           Icons.copy,
                                           size: 12.0,
@@ -251,7 +251,7 @@ class ListOrderScreenState extends State<ListOrderScreen> with SingleTickerProvi
                                 ? const SizedBox() 
                                 : notifier.orders[i].orderStatus == "WAITING_PAYMENT"
                                 ? Container(
-                                    padding: EdgeInsets.all(5.0),
+                                    padding: const EdgeInsets.all(5.0),
                                     decoration: BoxDecoration(
                                       color: ColorResources.countdown,
                                       borderRadius: BorderRadius.circular(10.0)
@@ -304,7 +304,7 @@ class ListOrderScreenState extends State<ListOrderScreen> with SingleTickerProvi
                                       );
                                     },
                                     placeholder: (context, url) {
-                                      return Center(
+                                      return const Center(
                                         child: SizedBox(
                                           width: 32.0,
                                           height: 32.0,
@@ -318,7 +318,7 @@ class ListOrderScreenState extends State<ListOrderScreen> with SingleTickerProvi
                                         height: 20.0,
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(5.0),
-                                          image: DecorationImage(
+                                          image: const DecorationImage(
                                             image: NetworkImage('https://dummyimage.com/300x300/000/fff'),
                                             fit: BoxFit.cover
                                           )
@@ -364,7 +364,7 @@ class ListOrderScreenState extends State<ListOrderScreen> with SingleTickerProvi
                               ),
                                         
                               Container(
-                                padding: EdgeInsets.all(6.0),
+                                padding: const EdgeInsets.all(6.0),
                                 decoration: BoxDecoration(
                                   color: ColorResources.purple,
                                   borderRadius: BorderRadius.circular(8.0)

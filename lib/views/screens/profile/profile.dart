@@ -33,12 +33,13 @@ import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
 import 'package:hp3ki/views/basewidgets/dialog/custom/custom.dart';
 
+import 'package:hp3ki/views/screens/ecommerce/store/add_product.dart';
+import 'package:hp3ki/views/screens/ecommerce/store/create_update.dart';
 import 'package:hp3ki/views/screens/auth/change_password.dart';
 import 'package:hp3ki/views/screens/privacy_policy/privacy_policy.dart';
 import 'package:hp3ki/views/screens/profile/edit.dart';
 import 'package:hp3ki/views/screens/maintain/maintain.dart';
 
-final GlobalKey ktaImageKey = GlobalKey();
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -56,6 +57,8 @@ class ProfileScreenState extends State<ProfileScreen> {
 
   bool isPlatinum = false;
   bool hasRemainder = false;
+
+  final GlobalKey ktaImageKey = GlobalKey();
 
   late EcommerceProvider ecommerceProvider;
   late ProfileProvider profileProvider;
@@ -310,7 +313,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                                         .user
                                         ?.organizationBahasa ?? "...",
                                         style: poppinsRegular.copyWith(
-                                          fontWeight: FontWeight.w600,
+                                          fontWeight: FontWeight.bold,
                                           fontSize: 12,
                                           color: ColorResources.black,
                                         ),
@@ -321,7 +324,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                                     FittedBox(
                                       child: Text(context.read<ProfileProvider>().user?.organizationEnglish?.trim() ?? "...",
                                         style: poppinsRegular.copyWith(
-                                          fontWeight: FontWeight.w600,
+                                          fontWeight: FontWeight.bold,
                                           fontSize: 12,
                                           color: ColorResources.black,
                                         ),
@@ -453,7 +456,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                                           .toUpperCase(),
                               color: ColorResources.white,
                               fontSize: Dimensions.fontSizeDefault,
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.bold,
                               outlineColor: ColorResources.black,
                             ),
                             buildOutlineText(
@@ -475,7 +478,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                                           .firstFewWords(),
                               color: ColorResources.white,
                               fontSize: Dimensions.fontSizeOverLarge,
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.bold,
                               outlineColor: ColorResources.black,
                             ),
                           ],
@@ -538,7 +541,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                       //       //               ?.trim() ??
                       //       //           "...",
                       //       //       style: poppinsRegular.copyWith(
-                      //       //         fontWeight: FontWeight.w600,
+                      //       //         fontWeight: FontWeight.bold,
                       //       //         fontSize: Dimensions.fontSizeSmall,
                       //       //         color: ColorResources.black,
                       //       //       ),
@@ -551,7 +554,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                       //       //               ?.trim() ??
                       //       //           "...",
                       //       //       style: poppinsRegular.copyWith(
-                      //       //         fontWeight: FontWeight.w600,
+                      //       //         fontWeight: FontWeight.bold,
                       //       //         fontSize: Dimensions.fontSizeSmall,
                       //       //         color: ColorResources.black,
                       //       //       ),
@@ -709,13 +712,16 @@ class ProfileScreenState extends State<ProfileScreen> {
   SliverToBoxAdapter buildUserDetails() {
     return SliverToBoxAdapter(
       child: Stack(
+        clipBehavior: Clip.none,
         children: [
+          
           const SizedBox(
             height: 350,
             width: double.infinity,
           ),
+
           Padding(
-            padding: EdgeInsets.only(top: hasRemainder ? 70.0 : 20.0),
+            padding: EdgeInsets.only(top: hasRemainder ? 30.0 : 20.0),
             child: GestureDetector(
               onTap: () {
                 NS.push(context, const EditProfileScreen());
@@ -726,10 +732,10 @@ class ProfileScreenState extends State<ProfileScreen> {
                   horizontal: Dimensions.marginSizeExtraLarge,
                 ),
                 decoration: BoxDecoration(
-                    color:
-                        const Color.fromARGB(141, 68, 99, 158).withOpacity(0.7),
-                    borderRadius: BorderRadius.circular(30.0),
-                    boxShadow: kElevationToShadow[2]),
+                  color:const Color.fromARGB(141, 68, 99, 158).withOpacity(0.7),
+                  borderRadius: BorderRadius.circular(30.0),
+                  boxShadow: kElevationToShadow[2]
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(25.0),
                   child: Row(
@@ -739,50 +745,43 @@ class ProfileScreenState extends State<ProfileScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Text(
-                              'Nama : ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.fullname!}',
+                            Text('Nama : ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.fullname!}',
                               style: robotoRegular.copyWith(
                                 fontSize: Dimensions.fontSizeLarge,
                                 color: ColorResources.white,
                               ),
                             ),
-                            Text(
-                              'Email : ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.email!}',
+                            Text('Email : ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.email!}',
                               style: robotoRegular.copyWith(
                                 fontSize: Dimensions.fontSizeLarge,
                                 color: ColorResources.white,
                               ),
                             ),
-                            Text(
-                              'No. Telepon : ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.phone!}',
+                            Text('No. Telepon : ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.phone!}',
                               style: robotoRegular.copyWith(
                                 fontSize: Dimensions.fontSizeLarge,
                                 color: ColorResources.white,
                               ),
                             ),
-                            Text(
-                              'No. KTP  : ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.noKtp!}',
+                            Text('No. KTP  : ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.noKtp!}',
                               style: robotoRegular.copyWith(
                                 fontSize: Dimensions.fontSizeLarge,
                                 color: ColorResources.white,
                               ),
                             ),
-                            Text(
-                              'Alamat (KTP)  : ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.addressKtp!}',
+                            Text('Alamat (KTP) : ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.addressKtp!}',
                               style: robotoRegular.copyWith(
                                 fontSize: Dimensions.fontSizeLarge,
                                 color: ColorResources.white,
                               ),
                             ),
-                            Text(
-                              'Organisasi : ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.organization!}',
+                            Text('Organisasi : ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.organization!}',
                               style: robotoRegular.copyWith(
                                 fontSize: Dimensions.fontSizeLarge,
                                 color: ColorResources.white,
                               ),
                             ),
-                            Text(
-                              'Profesi : ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.job!}',
+                            Text('Profesi : ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.job!}',
                               style: robotoRegular.copyWith(
                                 fontSize: Dimensions.fontSizeLarge,
                                 color: ColorResources.white,
@@ -794,14 +793,15 @@ class ProfileScreenState extends State<ProfileScreen> {
                       Align(
                         alignment: Alignment.topRight,
                         child: IconButton(
-                            onPressed: () {
-                              NS.push(context, const EditProfileScreen());
-                            },
-                            icon: Icon(
-                              Icons.edit,
-                              color: ColorResources.white.withOpacity(0.5),
-                              size: Dimensions.iconSizeLarge,
-                            )),
+                          onPressed: () {
+                            NS.push(context, const EditProfileScreen());
+                          },
+                          icon: Icon(
+                            Icons.edit,
+                            color: ColorResources.white.withOpacity(0.5),
+                            size: Dimensions.iconSizeLarge,
+                          )
+                        ),
                       ),
                     ],
                   ),
@@ -809,19 +809,19 @@ class ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
           ),
+
           isPlatinum
-              ? hasRemainder
-                  ? context.read<ProfileProvider>().isActive == 0
-                      ? const SizedBox()
-                      : buildExtendPremiumButton(label: 'Perpanjang Membership')
-                  : Container()
-              : context.read<ProfileProvider>().isActive == 0
-                  ? const SizedBox()
-                  : Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 100.0),
-                      child:
-                          buildActionPremiumButton(label: 'UPGRADE MEMBERSHIP'),
-                    )
+          ? hasRemainder
+              ? context.read<ProfileProvider>().isActive == 0
+                ? const SizedBox()
+                : buildExtendPremiumButton(label: 'Perpanjang Membership')
+              : Container()
+          : context.read<ProfileProvider>().isActive == 0
+              ? const SizedBox()
+              : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 100.0),
+                  child: buildActionPremiumButton(label: 'UPGRADE MEMBERSHIP'),
+                )
         ],
       ),
     );
@@ -886,7 +886,7 @@ class ProfileScreenState extends State<ProfileScreen> {
         label,
         style: poppinsRegular.copyWith(
           color: ColorResources.primary,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.bold,
           fontSize: Dimensions.fontSizeLarge,
         ),
       ),
@@ -929,14 +929,16 @@ class ProfileScreenState extends State<ProfileScreen> {
             return const SizedBox();
           }
           return Padding(
-            padding: const EdgeInsets.only(top: 15.0),
+            padding: const EdgeInsets.only(top: 5.0),
             child: buildOptionContainer(
               color: Colors.white,
-              label: notifier.ownerModel.data!.haveStore 
+              label: notifier.ownerModel.data == null 
+              ? 'Buat Toko' 
+              : notifier.ownerModel.data!.haveStore 
               ? 'Ubah Toko' 
               : 'Buat Toko',
               onTap: () {
-                // NS.push(context, const CreateStoreOrUpdateScreen());
+                NS.push(context, const CreateStoreOrUpdateScreen());
               },
             ),
           );
@@ -955,18 +957,22 @@ class ProfileScreenState extends State<ProfileScreen> {
           if(notifier.checkStoreOwnerStatus == CheckStoreOwnerStatus.error) {
             return const SizedBox();
           }
-          return notifier.ownerModel.data!.haveStore 
+          return notifier.ownerModel.data == null 
           ? const SizedBox() 
-          : Padding(
-              padding: const EdgeInsets.only(top: 15.0),
+          : notifier.ownerModel.data!.haveStore 
+          ? Padding(
+              padding: const EdgeInsets.only(top: 5.0),
               child: buildOptionContainer(
                 color: Colors.white,
                 label: 'Tambah Produk',
                 onTap: () {
-                  // NS.push(context, const AddProductScree());
+                  NS.push(context, AddProductScreen(
+                    storeId: notifier.ownerModel.data?.storeId ?? "-"
+                  ));
                 },
               ),
-            );
+            ) 
+          : const SizedBox();
           },
         )
       );
@@ -1045,7 +1051,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                 Text(
                   label,
                   style: poppinsRegular.copyWith(
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.bold,
                     color: color,
                     fontSize: Dimensions.fontSizeExtraLarge,
                     shadows: kElevationToShadow[1],
@@ -1098,7 +1104,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                   child: Text(
                     label,
                     style: poppinsRegular.copyWith(
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.bold,
                       color: color,
                       fontSize: Dimensions.fontSizeExtraLarge,
                       shadows: kElevationToShadow[1],
@@ -1237,7 +1243,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                           'Hi, ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.fullname!.smallSentence()}',
                           maxLines: 1,
                           style: poppinsRegular.copyWith(
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.bold,
                               fontSize: Dimensions.fontSizeExtraLarge,
                               color: ColorResources.white),
                         ),

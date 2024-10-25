@@ -76,7 +76,7 @@ class _AboutMenuScreenState extends State<AboutMenuScreen> {
             style: poppinsRegular.copyWith(
               color: ColorResources.white,
               fontSize: Dimensions.fontSizeDefault,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.bold,
               letterSpacing: 1.0,
             ),
           ),

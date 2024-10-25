@@ -251,7 +251,7 @@ class NewsDetailScreenState extends State<NewsDetailScreen> {
             maxLines: 1,
             style: poppinsRegular.copyWith(
               fontSize: Dimensions.fontSizeDefault,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.bold,
               color: ColorResources.black, 
             ),
           ),
@@ -281,7 +281,7 @@ class NewsDetailScreenState extends State<NewsDetailScreen> {
                     style: poppinsRegular.copyWith(
                       fontSize: Dimensions.fontSizeLarge,
                       color: ColorResources.black,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.bold,
                     )
                   ),
                 ),

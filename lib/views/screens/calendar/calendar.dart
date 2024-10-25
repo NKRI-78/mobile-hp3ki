@@ -430,7 +430,7 @@ class CalendarScreenState extends State<CalendarScreen> {
                         Text(getTranslated("TITLE", context),
                           style: poppinsRegular.copyWith(
                             fontSize: Dimensions.fontSizeDefault,
-                            fontWeight: FontWeight.w600
+                            fontWeight: FontWeight.bold
                           )
                         ),
                         const SizedBox(height: 10.0),
@@ -453,7 +453,7 @@ class CalendarScreenState extends State<CalendarScreen> {
                         Text(getTranslated("DESCRIPTION", context),
                           style: poppinsRegular.copyWith(
                             fontSize: Dimensions.fontSizeDefault,
-                            fontWeight: FontWeight.w600
+                            fontWeight: FontWeight.bold
                           )
                         ),
                         const SizedBox(height: 10.0),
@@ -482,7 +482,7 @@ class CalendarScreenState extends State<CalendarScreen> {
                       Text(getTranslated("LOCATION", context),
                         style: poppinsRegular.copyWith(
                           fontSize: Dimensions.fontSizeDefault,
-                          fontWeight: FontWeight.w600
+                          fontWeight: FontWeight.bold
                         )
                       ),
                       const SizedBox(height: 6.0),
@@ -503,7 +503,7 @@ class CalendarScreenState extends State<CalendarScreen> {
                         Text(getTranslated("DATE", context),
                           style: poppinsRegular.copyWith(
                             fontSize: Dimensions.fontSizeDefault,
-                            fontWeight: FontWeight.w600
+                            fontWeight: FontWeight.bold
                           )
                         ),
                         const SizedBox(height: 6.0),
@@ -529,7 +529,7 @@ class CalendarScreenState extends State<CalendarScreen> {
                             Text(getTranslated("START", context),
                               style: poppinsRegular.copyWith(
                                 fontSize: Dimensions.fontSizeDefault,
-                                fontWeight: FontWeight.w600
+                                fontWeight: FontWeight.bold
                               )
                             ),
                             const SizedBox(width: 5.0),
@@ -548,7 +548,7 @@ class CalendarScreenState extends State<CalendarScreen> {
                             Text(getTranslated("END", context),
                               style: poppinsRegular.copyWith(
                                 fontSize: Dimensions.fontSizeDefault,
-                                fontWeight: FontWeight.w600
+                                fontWeight: FontWeight.bold
                               )
                             ),
                             const SizedBox(width: 5.0),

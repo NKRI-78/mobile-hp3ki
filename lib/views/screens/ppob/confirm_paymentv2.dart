@@ -114,7 +114,7 @@ class ConfirmPaymentV2State extends State<ConfirmPaymentV2> {
                                 Text(getTranslated("METHOD_PAYMENT", context),
                                   style: robotoRegular.copyWith(
                                     fontSize: Dimensions.fontSizeDefault,
-                                    fontWeight: FontWeight.w600
+                                    fontWeight: FontWeight.bold
                                   ),
                                 )
                               ],
@@ -327,7 +327,7 @@ class ConfirmPaymentV2State extends State<ConfirmPaymentV2> {
                     },
                     title: Text('Saldo',
                       style: robotoRegular.copyWith(
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.bold,
                         color: ColorResources.black
                       ),
                     ),
@@ -337,7 +337,7 @@ class ConfirmPaymentV2State extends State<ConfirmPaymentV2> {
                       ?  "..."
                       : Helper.formatCurrency(int.parse(ppobProvider.balance.toString())),
                         style: robotoRegular.copyWith(
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.bold,
                           fontSize: Dimensions.fontSizeDefault,
                           color: ColorResources.black
                         ),
@@ -409,7 +409,7 @@ class ConfirmPaymentV2State extends State<ConfirmPaymentV2> {
                                               child: Text(ppobProvider.listVa[i].name!,
                                                 style: robotoRegular.copyWith(
                                                   fontSize: Dimensions.fontSizeDefault,
-                                                  fontWeight: FontWeight.w600,
+                                                  fontWeight: FontWeight.bold,
                                                   color: ppobProvider.selectedPaymentMethodData != null 
                                                   ? (ppobProvider.selectedPaymentMethodData?.channel == ppobProvider.listVa[i].channel 
                                                   ? ColorResources.white

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:hp3ki/views/screens/home/home.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
@@ -16,13 +15,15 @@ import 'package:hp3ki/utils/currency.dart';
 
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
 
+import 'package:hp3ki/views/screens/home/home.dart';
+
 class PaymentReceiptEmoney extends StatefulWidget {
   final int amount;
   final int cost;
   final String type;
   final ResponseMidtransEmoneyData responseMidtransEmoneyData;
 
-  const PaymentReceiptEmoney({
+  const PaymentReceiptEmoney({super.key, 
     required this.amount,
     required this.cost,
     required this.type,
@@ -133,7 +134,7 @@ class PaymentReceiptEmoneyState extends State<PaymentReceiptEmoney> {
   
                 const Expanded(
                   flex: 1,
-                  child: const SizedBox(),
+                  child: SizedBox(),
                 ),
   
                 Expanded(

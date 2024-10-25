@@ -130,7 +130,7 @@ class _UpgradeMemberV2IndexScreenState
                               title: Text(
                                 data.paymentName ?? "...",
                                 style: poppinsRegular.copyWith(
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                               subtitle: Text(

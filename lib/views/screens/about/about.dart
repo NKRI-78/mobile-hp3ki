@@ -115,7 +115,7 @@ class _AboutScreenState extends State<AboutScreen> {
                 Text('Himpunan Pimpinan Pendidik Pelatihan dan Kewirausahaan Indonesia (HP3KI)',
                   style: poppinsRegular.copyWith(
                     fontSize: Dimensions.fontSizeExtraLarge,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 20,),
@@ -172,7 +172,7 @@ class _AboutScreenState extends State<AboutScreen> {
                 Text(' Visi dan Misi HP3KI ',
                   style: poppinsRegular.copyWith(
                     fontSize: Dimensions.fontSizeExtraLarge,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 5,),
@@ -188,7 +188,7 @@ class _AboutScreenState extends State<AboutScreen> {
                   textAlign: TextAlign.justify,
                   style: poppinsRegular.copyWith(
                     fontSize: Dimensions.fontSizeDefault,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 10,),
@@ -204,7 +204,7 @@ class _AboutScreenState extends State<AboutScreen> {
                   textAlign: TextAlign.justify,
                   style: poppinsRegular.copyWith(
                     fontSize: Dimensions.fontSizeDefault,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 10,),

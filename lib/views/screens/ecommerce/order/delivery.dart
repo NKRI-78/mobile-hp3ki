@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-
 import 'package:provider/provider.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -25,7 +23,7 @@ import 'package:hp3ki/views/screens/ecommerce/shipping_address/shipping_address_
 class DeliveryScreen extends StatefulWidget {
   final String from;
 
-  DeliveryScreen({
+  const DeliveryScreen({
     required this.from,
     super.key
   });
@@ -52,7 +50,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
       ep.clearPayment();
 
     if(!mounted) return;
-      Future.delayed(Duration(milliseconds: 500), () async {
+      Future.delayed(const Duration(milliseconds: 500), () async {
         await ep.getCheckoutList(from: widget.from);
       });
 
@@ -122,7 +120,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                   ),
       
                   if(notifier.getCheckoutStatus == GetCheckoutStatus.loading)
-                    SliverFillRemaining(
+                    const SliverFillRemaining(
                       hasScrollBody: false,
                       child: Center(
                         child: SizedBox(
@@ -134,7 +132,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                     ),
       
                   if(notifier.getShippingAddressDefaultStatus == GetShippingAddressDefaultStatus.loading) 
-                    SliverFillRemaining(
+                    const SliverFillRemaining(
                       hasScrollBody: false,
                       child: Center(
                         child: SizedBox(
@@ -190,7 +188,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                     ));
                                   },
                                   child: Padding(
-                                    padding: EdgeInsets.all(5.0),
+                                    padding: const EdgeInsets.all(5.0),
                                     child: Text("Pilih alamat lain",
                                       style: robotoRegular.copyWith(
                                         color: ColorResources.purple,
@@ -375,7 +373,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                             );
                                                           },
                                                           placeholder: (BuildContext context, String url) {
-                                                            return Center(
+                                                            return const Center(
                                                               child: SizedBox(
                                                                 width: 32.0,
                                                                 height: 32.0,
@@ -385,8 +383,8 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                           },
                                                           errorWidget: (BuildContext context, String url, dynamic error) {
                                                             return Container(
-                                                              decoration: BoxDecoration(
-                                                                borderRadius: const BorderRadius.only(
+                                                              decoration: const BoxDecoration(
+                                                                borderRadius: BorderRadius.only(
                                                                   topLeft: Radius.circular(8.0),
                                                                   topRight: Radius.circular(8.0)
                                                                 ),
@@ -486,7 +484,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                 color: const Color(0xFFD9D9D9)
                                               )
                                             ),
-                                            child: Column(
+                                            child: const Column(
                                               crossAxisAlignment: CrossAxisAlignment.center,
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
@@ -619,7 +617,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                 Expanded(
                                                   flex: 4,
                                                   child: Container(
-                                                    child: Icon(
+                                                    child: const Icon(
                                                       Icons.delivery_dining,
                                                       color: ColorResources.purple,
                                                     )
@@ -771,7 +769,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                                 NS.pop();
                                                               },
                                                               child: Padding(
-                                                                padding: EdgeInsets.all(10.0),
+                                                                padding: const EdgeInsets.all(10.0),
                                                                 child: Text("X",
                                                                   style: robotoRegular.copyWith(
                                                                     fontSize: Dimensions.fontSizeDefault,
@@ -926,7 +924,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                                 children: [
       
-                                                                  Flexible(
+                                                                  const Flexible(
                                                                     child: SizedBox(
                                                                       width: 100.0,
                                                                     )
@@ -958,8 +956,8 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                                     ) 
                                                                   ),
       
-                                                                  Expanded(
-                                                                    child: const SizedBox()
+                                                                  const Expanded(
+                                                                    child: SizedBox()
                                                                   ),
       
                                                                 ],
@@ -991,7 +989,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                                 children: [
       
-                                                                  Flexible(
+                                                                  const Flexible(
                                                                     child: SizedBox(
                                                                       width: 100.0,
                                                                     )
@@ -1132,7 +1130,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                         children: [
 
                                           notifier.paymentName == "Saldo" 
-                                          ? Expanded(
+                                          ? const Expanded(
                                               flex: 4,
                                               child: Icon(
                                                 Icons.payment,
@@ -1157,7 +1155,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                 return Container(
                                                   width: 40.0,
                                                   height: 40.0,
-                                                  decoration: BoxDecoration(
+                                                  decoration: const BoxDecoration(
                                                     image: DecorationImage(image: AssetImage('assets/images/default_image.png'))
                                                   ),
                                                 ); 
@@ -1165,9 +1163,9 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                             )
                                           ),
       
-                                          Expanded(
+                                          const Expanded(
                                             flex: 1,
-                                            child: const SizedBox(),
+                                            child: SizedBox(),
                                           ),
                                       
                                           Expanded(
@@ -1178,7 +1176,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                               children: [
                                                 Text(notifier.getPaymentChannelStatus == GetPaymentChannelStatus.loading 
                                                 ? "Mohon tunggu..."
-                                                : "${notifier.paymentName}",
+                                                : notifier.paymentName,
                                                   style: robotoRegular.copyWith(
                                                     fontSize: Dimensions.fontSizeDefault,
                                                     fontWeight: FontWeight.bold,
@@ -1204,7 +1202,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                             )
                                           ),
       
-                                          Expanded(
+                                          const Expanded(
                                             flex: 2,
                                             child: Icon(
                                               Icons.keyboard_arrow_right,
@@ -1245,7 +1243,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                         mainAxisSize: MainAxisSize.max,
                                         children: [
                                       
-                                          Expanded(
+                                          const Expanded(
                                             flex: 4,
                                             child: Icon(
                                               Icons.payment,
@@ -1266,7 +1264,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                             ),
                                           ),
       
-                                          Expanded(
+                                          const Expanded(
                                             flex: 2,
                                             child: Icon(
                                               Icons.keyboard_arrow_right,
@@ -1294,7 +1292,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               mainAxisSize: MainAxisSize.max,
                               children: [
-                                Expanded(
+                                const Expanded(
                                   flex: 6,
                                   child: SizedBox()
                                 ),

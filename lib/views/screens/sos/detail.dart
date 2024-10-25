@@ -90,7 +90,7 @@ class SosDetailScreenState extends State<SosDetailScreen> {
                   textAlign: TextAlign.center,
                   style: poppinsRegular.copyWith(
                     fontSize: Dimensions.fontSizeDefault,
-                    fontWeight: FontWeight.w600
+                    fontWeight: FontWeight.bold
                   ),
                 ),
               ),
@@ -180,7 +180,7 @@ class SosDetailScreenState extends State<SosDetailScreen> {
                       child: Text(getTranslated("AGREEMENT_SOS", context),
                         style: poppinsRegular.copyWith(
                           fontSize: Dimensions.fontSizeDefault,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.bold,
                           color: ColorResources.black
                         ),
                       )

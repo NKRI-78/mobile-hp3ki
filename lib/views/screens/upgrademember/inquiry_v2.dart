@@ -127,7 +127,7 @@ class _UpgradeMemberInquiryV2ScreenState
                 style: robotoRegular.copyWith(
                   color: ColorResources.black,
                   fontSize: Dimensions.fontSizeLarge,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
@@ -164,7 +164,7 @@ class _UpgradeMemberInquiryV2ScreenState
               title: Text(
                 data.paymentName ?? "...",
                 style: poppinsRegular.copyWith(
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               subtitle: Text(
@@ -199,7 +199,7 @@ class _UpgradeMemberInquiryV2ScreenState
                       child: Text(
                         'Pilihan Paket',
                         style: robotoRegular.copyWith(
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.bold,
                             fontSize: Dimensions.fontSizeLarge),
                       ),
                     ),
@@ -239,7 +239,7 @@ class _UpgradeMemberInquiryV2ScreenState
                                   child: Text(
                                     p.name,
                                     style: robotoRegular.copyWith(
-                                        fontWeight: FontWeight.w600,
+                                        fontWeight: FontWeight.bold,
                                         fontSize: Dimensions.fontSizeLarge),
                                   ),
                                 ),
@@ -274,7 +274,7 @@ class _UpgradeMemberInquiryV2ScreenState
                       child: Text(
                         'Ringkasan Harga',
                         style: robotoRegular.copyWith(
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.bold,
                             fontSize: Dimensions.fontSizeLarge),
                       ),
                     ),
@@ -334,7 +334,7 @@ class _UpgradeMemberInquiryV2ScreenState
               style: poppinsRegular.copyWith(
                 fontSize: Dimensions.fontSizeLarge,
                 color: ColorResources.white,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
@@ -398,7 +398,7 @@ class InfoTile extends StatelessWidget {
       leading: Text(
         label,
         style: robotoRegular.copyWith(
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.bold,
         ),
       ),
       title: Text(

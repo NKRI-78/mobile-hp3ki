@@ -40,7 +40,7 @@ class ComplaintScreenState extends State<ComplaintScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: Container(
-        padding: EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20.0),
         decoration: BoxDecoration(
           color: ColorResources.white,
           boxShadow: kElevationToShadow[1]
@@ -54,7 +54,7 @@ class ComplaintScreenState extends State<ComplaintScreen> {
         )
       ),
       body: CustomScrollView(
-        physics: BouncingScrollPhysics(
+        physics: const BouncingScrollPhysics(
           parent: AlwaysScrollableScrollPhysics(),
         ),
         slivers: [
@@ -78,7 +78,7 @@ class ComplaintScreenState extends State<ComplaintScreen> {
             delegate: SliverChildListDelegate([
 
               Container(
-                margin: EdgeInsets.only(
+                margin: const EdgeInsets.only(
                   top: 20.0,
                   bottom: 20.0,
                   left: 16.0,
@@ -92,7 +92,7 @@ class ComplaintScreenState extends State<ComplaintScreen> {
                     fontSize: Dimensions.fontSizeDefault,
                     color: ColorResources.black
                   ),
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: "Sertakan alasan untuk pengembalian barang",
                     hintStyle: robotoRegular,
                     border: OutlineInputBorder(

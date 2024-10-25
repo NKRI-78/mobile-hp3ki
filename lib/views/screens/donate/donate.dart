@@ -166,7 +166,7 @@ class _DonateScreenState extends State<DonateScreen> {
                         Text('Rp 175.000',
                           style: poppinsRegular.copyWith(
                             color: ColorResources.black,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(getTranslated('YOUR_BALANCE', context),
@@ -182,7 +182,7 @@ class _DonateScreenState extends State<DonateScreen> {
                   onTap: () => NS.push(context, const TopUpScreen()),
                   child: Text(getTranslated('TOPUP', context),
                     style: poppinsRegular.copyWith(
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.bold,
                       color: ColorResources.primary
                     ),
                   ),
@@ -235,7 +235,7 @@ class _DonateScreenState extends State<DonateScreen> {
             style: poppinsRegular.copyWith(
               fontSize: Dimensions.fontSizeLarge,
               color: ColorResources.black,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),
@@ -320,7 +320,7 @@ class _DonateScreenState extends State<DonateScreen> {
                                     Text('Rp 126.873.000',
                                       style: poppinsRegular.copyWith(
                                         fontSize: Dimensions.fontSizeLarge,
-                                        fontWeight: FontWeight.w600,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
@@ -388,7 +388,7 @@ class _DonateScreenState extends State<DonateScreen> {
         //       child: Text(getTranslated("THERE_IS_NO_DATA", context),
         //         style: poppinsRegular.copyWith(
         //           fontSize: Dimensions.fontSizeDefault,
-        //           fontWeight: FontWeight.w600,
+        //           fontWeight: FontWeight.bold,
         //           color: ColorResources.white
         //         ),
         //       ),
@@ -519,7 +519,7 @@ class _DonateScreenState extends State<DonateScreen> {
             style: poppinsRegular.copyWith(
               fontSize: Dimensions.fontSizeLarge,
               color: ColorResources.black,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),
@@ -605,7 +605,7 @@ class _DonateScreenState extends State<DonateScreen> {
                                     Text('Rp 126.873.000',
                                       style: poppinsRegular.copyWith(
                                         fontSize: Dimensions.fontSizeLarge,
-                                        fontWeight: FontWeight.w600,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,

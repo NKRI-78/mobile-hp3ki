@@ -82,7 +82,7 @@ class ProductItem extends StatelessWidget {
                       errorWidget: (_, __, ___) {
                         return Container(
                           decoration: const BoxDecoration(
-                            borderRadius: const BorderRadius.only(
+                            borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(8.0),
                               topRight: Radius.circular(8.0)
                             ),

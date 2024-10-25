@@ -257,7 +257,7 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
           style: robotoRegular.copyWith(
             color: ColorResources.white,
             fontSize: Dimensions.fontSizeDefault,
-            fontWeight: FontWeight.w600
+            fontWeight: FontWeight.bold
           ),
         ),
       ),
@@ -393,7 +393,7 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
                     height: 15.0,
                   ),
 
-                  inputFieldDescriptionStore(descStoreC),    
+                  inputFieldDescriptionStore(),    
                   
                   const SizedBox(
                     height: 15.0,
@@ -887,7 +887,7 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
                     children: [
                       Text("Alamat",
                         style: robotoRegular.copyWith(
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.bold,
                           fontSize: Dimensions.fontSizeDefault,
                           color: ColorResources.black
                         )
@@ -1453,7 +1453,7 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
     );
   }
 
-  Widget inputFieldDescriptionStore(TextEditingController controller) {
+  Widget inputFieldDescriptionStore() {
     return Column(
       children: [
         Container(
@@ -1515,7 +1515,7 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
                                         )
                                       )
                                     ),
-                                    controller.text.isNotEmpty
+                                    descStoreC.text.isNotEmpty
                                     ? InkWell(
                                       onTap: () {
                                         NS.pop();
@@ -1525,7 +1525,7 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
                                         color: ColorResources.black
                                       )
                                     )
-                                    : Container(),
+                                    : const SizedBox(),
                                   ],
                                 ),
                               ),
@@ -1539,7 +1539,7 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
                                   borderRadius: BorderRadius.circular(10.0)
                                 ),
                                 child: TextFormField(
-                                  controller: controller,
+                                  controller: descStoreC,
                                   autofocus: true,
                                   decoration: const InputDecoration(
                                     fillColor: ColorResources.white,
@@ -1560,7 +1560,9 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
                     )
                   );
                 }, 
-              );
+              ).then((_) {
+                setState(() {});
+              });
             },
             child: Container(
               height: 120.0,
@@ -1571,12 +1573,12 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
                 borderRadius: BorderRadius.circular(6.0),
                 border: Border.all(color: Colors.grey.withOpacity(0.5)),
               ),
-              child: Text(controller.text == '' 
+              child: Text(descStoreC.text == '' 
               ? "" 
-              : controller.text,
+              : descStoreC.text,
               style: robotoRegular.copyWith(
                 fontSize: Dimensions.fontSizeDefault, 
-                color: controller.text.isNotEmpty 
+                color: descStoreC.text.isNotEmpty 
                 ? ColorResources.black 
                 : Theme.of(context).hintColor
               )

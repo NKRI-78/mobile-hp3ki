@@ -189,7 +189,7 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
                 ),
                 trailing: feedDetailProvider.ar.getUserId() == feedDetailProvider.feedDetailData.forum!.user?.id
                 ? grantedDeletePost(context) 
-                : TermsPopup()
+                : const TermsPopup()
               ),
         
               Container(
@@ -487,7 +487,7 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
           return;
         }
         if(widget.from == "direct") {
-          NS.push(context, FeedIndex());
+          NS.push(context, const FeedIndex());
         } else {
           NS.pop();
         }
@@ -517,7 +517,7 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
                   color: ColorResources.black,
                   onPressed: () {
                     if(widget.from == "direct") {
-                      NS.push(context, FeedIndex());
+                      NS.push(context, const FeedIndex());
                     } else {
                       NS.pop();
                     }
@@ -651,7 +651,7 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
                                       ),
                                     trailing: feedDetailProvider.ar.getUserId() == comment.user.id 
                                     ? grantedDeleteComment(context, comment.id, widget.data["forum_id"])
-                                    : TermsPopup()
+                                    : const TermsPopup()
                                   ),
       
                                   Container(
@@ -880,7 +880,7 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
                                             ),
                                             trailing: feedDetailProvider.ar.getUserId() == reply.user.id 
                                             ? grantedDeleteReply(context, widget.data["forum_id"], reply.id)
-                                            : TermsPopup()
+                                            : const TermsPopup()
                                           ),
                                         );
                                       },
