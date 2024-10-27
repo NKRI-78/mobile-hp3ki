@@ -59,6 +59,7 @@ enum CheckStoreOwnerStatus { idle, loading, loaded, empty, error }
 
 enum ListProductStatus { idle, loading, loaded, empty, error }
 enum CreateProductStatus { idle, loading, loaded, empty, error }
+enum UpdateProductStatus { idle, loading, loaded, empty, error }
 enum ListProductTransactionStatus { idle, loading, loaded, empty, error }
 enum DetailProductStatus { idle, loading, loaded, empty, error }
 
@@ -311,6 +312,9 @@ class EcommerceProvider extends ChangeNotifier {
   CreateProductStatus _createProductStatus = CreateProductStatus.idle;
   CreateProductStatus get createProductStatus => _createProductStatus;
 
+  UpdateProductStatus _updateProductStatus = UpdateProductStatus.idle;
+  UpdateProductStatus get updateProductStatus => _updateProductStatus;
+
   CheckStoreOwnerStatus _checkStoreOwnerStatus = CheckStoreOwnerStatus.idle;
   CheckStoreOwnerStatus get checkStoreOwnerStatus => _checkStoreOwnerStatus;
 
@@ -355,9 +359,6 @@ class EcommerceProvider extends ChangeNotifier {
 
   GetCourierStatus _getCourierStatus = GetCourierStatus.loading;
   GetCourierStatus get getCourierStatus => _getCourierStatus;
-
-  final AddCourierStatus _addCourierStatus = AddCourierStatus.loading;
-  AddCourierStatus get addCourierStatus => _addCourierStatus;
 
   GetCheckoutStatus _getCheckoutStatus = GetCheckoutStatus.loading;
   GetCheckoutStatus get getCheckoutStatus => _getCheckoutStatus;
@@ -481,6 +482,12 @@ class EcommerceProvider extends ChangeNotifier {
 
   void setStateCreateProductStatus(CreateProductStatus param) {
     _createProductStatus = param;
+
+    notifyListeners();
+  }
+
+  void setStateUpdateProductStatus(UpdateProductStatus param) {
+    _updateProductStatus = param;
 
     notifyListeners();
   }
@@ -1022,6 +1029,27 @@ class EcommerceProvider extends ChangeNotifier {
       setStateCreateProductStatus(CreateProductStatus.loaded);
     } catch(e) {
       setStateCreateProductStatus(CreateProductStatus.error);
+    }
+  }
+
+  Future<void> updateProduct({
+    required String id,
+    required String title,
+    required List<File> files,
+    required String description,
+    required int price,
+    required int weight,
+    required int stock,
+    required bool isDraft,
+    required String catId,
+    required String storeId
+  }) async {
+    setStateUpdateProductStatus(UpdateProductStatus.loading);
+    try { 
+
+      setStateUpdateProductStatus(UpdateProductStatus.loaded);
+    } catch(e) {
+      setStateUpdateProductStatus(UpdateProductStatus.error);
     }
   }
   

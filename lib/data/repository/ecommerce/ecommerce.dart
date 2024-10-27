@@ -99,7 +99,7 @@ class EcommerceRepo {
         data: {
           "id": id,
           "title": title,
-          "caption": description,
+          "description": description,
           "price": price,
           "weight": weight,
           "stock": stock,
@@ -115,7 +115,42 @@ class EcommerceRepo {
     } catch(e, stacktrace) {
       debugPrint(e.toString());
       debugPrint(stacktrace.toString());
-      throw Exception('Failed screate product');
+      throw Exception('Failed create product');
+    }
+  }
+
+  Future<void> updateProduct({
+    required String id,
+    required String title,
+    required String description,
+    required int price,
+    required int weight,
+    required int stock,
+    required bool isDraft,
+    required String catId,
+    required String storeId
+  }) async {
+    try {
+     Dio dio = DioManager.shared.getClient();
+      await dio.put("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/products/update/$id",
+        data: {
+          "id": id,
+          "title": title,
+          "description": description,
+          "price": price,
+          "weight": weight,
+          "stock": stock,
+          "is_draft": isDraft,
+          "cat_id": catId,
+        }
+      );
+    } on DioError catch(e) {
+      debugPrint(e.response!.data.toString());
+      throw Exception("Failed update product");
+    } catch(e, stacktrace) {
+      debugPrint(e.toString());
+      debugPrint(stacktrace.toString());
+      throw Exception("Failed update product");
     }
   }
 

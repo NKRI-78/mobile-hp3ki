@@ -3,6 +3,11 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+
+import 'package:hp3ki/data/models/ecommerce/product/detail.dart';
+
 import 'package:lecle_flutter_absolute_path/lecle_flutter_absolute_path.dart';
 
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
@@ -18,8 +23,6 @@ import 'package:hp3ki/providers/ecommerce/ecommerce.dart';
 
 import 'package:hp3ki/data/models/ecommerce/product/category.dart';
 
-import 'package:hp3ki/maps/src/utils/uuid.dart';
-
 import 'package:hp3ki/services/navigation.dart';
 
 import 'package:hp3ki/utils/color_resources.dart';
@@ -29,31 +32,34 @@ import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
 
-class AddProductScreen extends StatefulWidget {
-  final String storeId;
+class EditProductScreen extends StatefulWidget {
+  final String productId;
 
-  const AddProductScreen({
+  const EditProductScreen({
     super.key,
-    required this.storeId
+    required this.productId
   });
 
   @override
-  State<AddProductScreen> createState() => AddProductScreenState();
+  State<EditProductScreen> createState() => EditProductScreenState();
 }
 
-class AddProductScreenState extends State<AddProductScreen> {
+class EditProductScreenState extends State<EditProductScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
-  late EcommerceProvider ecommerceProvider;
 
   String categoryId = "";
 
   List<dynamic> kindStuffSelected = [];
 
+  late EcommerceProvider ecommerceProvider;
+
   ImageSource? imageSource;
 
   List<File> files = [];
+  List<File> newFiles = [];
   List<File> before = [];
+
+  bool isLoading = false;
 
   late TextEditingController nameC;
   late TextEditingController categoryC;
@@ -61,11 +67,6 @@ class AddProductScreenState extends State<AddProductScreen> {
   late TextEditingController priceC;
   late TextEditingController stockC;
   late TextEditingController weightC;
-
-  Future<void> getData() async {
-    if(!mounted) return;
-      ecommerceProvider.fetchAllProductCategory();
-  }
 
   void pickImage() async {
     var imageSource = await showDialog<ImageSource>(context: context, 
@@ -90,11 +91,12 @@ class AddProductScreenState extends State<AddProductScreen> {
       )
     );
     if (imageSource != null) {
-      XFile? file = await ImagePicker().pickImage(source: imageSource, maxHeight: 720);
-      File f = File(file!.path);
+      XFile? xFile = await ImagePicker().pickImage(source: imageSource, maxHeight: 720);
+      File file = File(xFile!.path);
       setState(() {
-        before.add(f);
+        before.add(file);
         files = before.toSet().toList();
+        newFiles = before.toSet().toList();
       });
     }
   }
@@ -144,11 +146,12 @@ class AddProductScreenState extends State<AddProductScreen> {
     } 
     Navigator.of(context, rootNavigator: true).pop();
     for (Asset imageAsset in resultList) {
-      final filePath = await LecleFlutterAbsolutePath.getAbsolutePath(uri: imageAsset.identifier);
-      File tempFile = File(filePath!);
+      final path = await LecleFlutterAbsolutePath.getAbsolutePath(uri: imageAsset.identifier);
+      File file = File(path!);
       setState(() {
-        before.add(tempFile);
+        before.add(file);
         files = before.toSet().toList();
+        newFiles = before.toSet().toList();
       });
     }
   }
@@ -189,22 +192,37 @@ class AddProductScreenState extends State<AddProductScreen> {
       return;
     }
 
-    String cleanPrice = priceC.text.replaceAll("Rp ", "").replaceAll(".", "");
+    // String cleanPrice = priceC.text.replaceAll("Rp ", "").replaceAll(".", "");
 
-    int price = int.parse(cleanPrice);
+    // int price = int.parse(cleanPrice);
 
-    await ecommerceProvider.createProduct(
-      id: Uuid().generateV4(), 
-      title: nameC.text, 
-      files: files, 
-      description: descC.text,
-      price: price, 
-      weight: int.parse(weightC.text), 
-      stock: int.parse(stockC.text), 
-      isDraft: false, 
-      catId: categoryId, 
-      storeId: widget.storeId
-    );
+    // await ecommerceProvider.createProduct(
+    //   id: Uuid().generateV4(), 
+    //   title: nameC.text, 
+    //   files: files, 
+    //   description: descC.text,
+    //   price: price, 
+    //   weight: int.parse(weightC.text), 
+    //   stock: int.parse(stockC.text), 
+    //   isDraft: false, 
+    //   catId: categoryId, 
+    //   storeId: widget.storeId
+    // );
+  }
+
+  Future<File?> downloadFile(String url) async {
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final tempDir = await getTemporaryDirectory();
+        final file = File('${tempDir.path}/${url.split('/').last}');
+        await file.writeAsBytes(response.bodyBytes);
+        return file;
+      }
+    } catch (e) {
+      debugPrint("Error downloading file: $e");
+    }
+    return null;
   }
 
   @override 
@@ -220,7 +238,41 @@ class AddProductScreenState extends State<AddProductScreen> {
 
     ecommerceProvider = context.read<EcommerceProvider>();
 
-    Future.microtask(() => getData());
+    Future.delayed(Duration.zero, () async {
+      
+      setState(() => isLoading = true);
+
+      await ecommerceProvider.fetchProduct(productId: widget.productId);
+    
+      setState(() => isLoading = false);
+
+      setState(() {
+
+        String price = CurrencyTextInputFormatter.currency(
+          locale: 'id',
+          decimalDigits: 0,
+          symbol: 'Rp ',
+        ).formatString(ecommerceProvider.productDetailData.product!.price.toString());
+
+        categoryId = ecommerceProvider.productDetailData.product?.id ?? "-";
+        categoryC = TextEditingController(text: isLoading ? "" : ecommerceProvider.productDetailData.product?.category.name ?? "-");
+        nameC = TextEditingController(text: isLoading ? "" : ecommerceProvider.productDetailData.product?.title ?? "-");
+        priceC = TextEditingController(text: isLoading ? "" : price);
+        stockC = TextEditingController(text: isLoading ? "" : ecommerceProvider.productDetailData.product?.stock.toString() ?? "-");
+        weightC = TextEditingController(text: isLoading ? "" : ecommerceProvider.productDetailData.product?.weight.toString() ?? "-");
+        descC = TextEditingController(text: isLoading ? "" : ecommerceProvider.productDetailData.product?.caption ?? "-");
+
+      });
+
+      for (ProductMedia media in ecommerceProvider.productDetailData.product!.medias) {
+        File? file = await downloadFile(media.path);
+
+        setState(() {
+          before.add(file!);
+          files.add(file);
+        });
+      }
+    });
   }
 
   @override 
@@ -249,7 +301,7 @@ class AddProductScreenState extends State<AddProductScreen> {
       ),
       centerTitle: true,
       elevation: 0,
-      title: Text( "Tambah Produk",
+      title: Text( "Edit Produk",
         style: robotoRegular.copyWith(
           fontSize: Dimensions.fontSizeDefault,
           fontWeight: FontWeight.bold,
@@ -397,30 +449,64 @@ class AddProductScreenState extends State<AddProductScreen> {
                         itemCount: files.length + 1,
                         itemBuilder: (BuildContext context, int index) {
                           if (index < files.length) {
-                            return Container(
-                              height: 80,
-                              width: 80,
-                              margin: const EdgeInsets.only(right: 4),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                    color: Colors.grey[400]!
-                                ),
-                                color: Colors.grey[350]
-                              ),
-                              child: Center(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: FadeInImage(
-                                    fit: BoxFit.cover,
-                                    height: double.infinity,
-                                    width: double.infinity,
-                                    image: FileImage(files[index]),
-                                    placeholder: const AssetImage("assets/images/default_image.png")
+                            return Stack(
+                              clipBehavior: Clip.none,
+                              alignment: Alignment.topRight,
+                              children: [
+
+                                Container(
+                                  height: 80,
+                                  width: 80,
+                                  margin: const EdgeInsets.only(right: 4),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                      color: Colors.grey[400]!
+                                    ),
+                                    color: Colors.grey[350]
+                                  ),
+                                  child: Center(
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: FadeInImage(
+                                        fit: BoxFit.cover,
+                                        height: double.infinity,
+                                        width: double.infinity,
+                                        image: FileImage(files[index]),
+                                        placeholder: const AssetImage("assets/images/default_image.png")
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            );
+
+                                Positioned(
+                                  right: 0.0,
+                                  child: InkWell(
+                                    onTap: () {
+                                      int i = files.indexOf(files[index]);
+                                      setState(() {
+                                        files.removeAt(i);
+                                      });
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.all(5.0),
+                                      decoration: const BoxDecoration(
+                                        color: ColorResources.white,
+                                        borderRadius: BorderRadius.only(
+                                          bottomLeft: Radius.circular(10.0)
+                                        )
+                                      ),
+                                      child: const Icon(
+                                        Icons.delete,
+                                        size: 18.0,
+                                        color: ColorResources.error,
+                                      ),
+                                    ),
+                                  ),
+                                )
+
+                              ],
+                            ); 
                           } else {
                             return GestureDetector(
                               onTap: () {

@@ -127,7 +127,7 @@ class CartScreenState extends State<CartScreen> {
                   height: 40.0,
                   child: CustomButton(
                     onTap: () {
-                      NS.push(context, DeliveryScreen(
+                      NS.push(context, const DeliveryScreen(
                         from: "cart",
                       ));
                     },

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
+import 'package:hp3ki/views/screens/ecommerce/store/edit_product.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:path_provider/path_provider.dart';
@@ -231,6 +232,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                   buildUserKTA(),
                   buildCreateStore(),
                   buildAddProduct(),
+                  buildEditProduct(),
                   buildUserDetails(),
                   buildNoReferral(),
                   buildChangePassword(),
@@ -976,7 +978,24 @@ class ProfileScreenState extends State<ProfileScreen> {
           },
         )
       );
-    }
+  }
+
+  SliverToBoxAdapter buildEditProduct() {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 5.0),
+        child: buildOptionContainer(
+          color: Colors.white,
+          label: 'Edit Produk',
+          onTap: () {
+            NS.push(context, const EditProductScreen(
+              productId: '88acca47-84e1-4d2a-9390-a10b436b3ce1',
+            ));
+          },
+        ),
+      )
+    );
+  }
 
   SliverToBoxAdapter buildChangePassword() {
     return SliverToBoxAdapter(

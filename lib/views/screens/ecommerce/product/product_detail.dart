@@ -931,7 +931,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                                 productId: widget.productId, 
                                 note: ""
                               );
-                              NS.push(context, DeliveryScreen(from: "live"));
+                              NS.push(context, const DeliveryScreen(from: "live"));
                             } 
                           : () {},
                           child: Container(

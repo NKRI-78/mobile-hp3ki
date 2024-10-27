@@ -153,11 +153,6 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
 
   @override
   Widget build(BuildContext context) {
-    return buildUI();
-  }
-
-  Widget buildUI() {
-    final screenSize = MediaQuery.sizeOf(context);
     return WillPopScope(
       onWillPop: willPopScope,
       child: Scaffold(
@@ -168,7 +163,7 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
         ? widgetOptions.elementAt(selectedIndex)
         : SlidingUpPanel(
             controller: panelC,
-            maxHeight: screenSize.height,
+            maxHeight: MediaQuery.of(context).size.height,
             color: Colors.transparent,
             panelSnapping: true,
             panel: buildMenuPanel(),
