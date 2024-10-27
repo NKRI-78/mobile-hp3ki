@@ -110,7 +110,7 @@ class ProductsScreenState extends State<ProductsScreen> {
                 slivers: [
               
                   SliverAppBar(
-                    title: Text("Toko Saka",
+                    title: Text("Toko HP3KI",
                       style: robotoRegular.copyWith(
                         fontSize: Dimensions.fontSizeLarge,
                         fontWeight: FontWeight.bold,

@@ -192,22 +192,21 @@ class EditProductScreenState extends State<EditProductScreen> {
       return;
     }
 
-    // String cleanPrice = priceC.text.replaceAll("Rp ", "").replaceAll(".", "");
+    String cleanPrice = priceC.text.replaceAll("Rp ", "").replaceAll(".", "");
 
-    // int price = int.parse(cleanPrice);
+    int price = int.parse(cleanPrice);
 
-    // await ecommerceProvider.createProduct(
-    //   id: Uuid().generateV4(), 
-    //   title: nameC.text, 
-    //   files: files, 
-    //   description: descC.text,
-    //   price: price, 
-    //   weight: int.parse(weightC.text), 
-    //   stock: int.parse(stockC.text), 
-    //   isDraft: false, 
-    //   catId: categoryId, 
-    //   storeId: widget.storeId
-    // );
+    await ecommerceProvider.updateProduct(
+      id: widget.productId, 
+      title: nameC.text, 
+      files: newFiles, 
+      description: descC.text,
+      price: price, 
+      weight: int.parse(weightC.text), 
+      stock: int.parse(stockC.text), 
+      isDraft: false, 
+      catId: categoryId, 
+    );
   }
 
   Future<File?> downloadFile(String url) async {
@@ -254,7 +253,7 @@ class EditProductScreenState extends State<EditProductScreen> {
           symbol: 'Rp ',
         ).formatString(ecommerceProvider.productDetailData.product!.price.toString());
 
-        categoryId = ecommerceProvider.productDetailData.product?.id ?? "-";
+        categoryId = ecommerceProvider.productDetailData.product?.category.id ?? "-";
         categoryC = TextEditingController(text: isLoading ? "" : ecommerceProvider.productDetailData.product?.category.name ?? "-");
         nameC = TextEditingController(text: isLoading ? "" : ecommerceProvider.productDetailData.product?.title ?? "-");
         priceC = TextEditingController(text: isLoading ? "" : price);
@@ -549,7 +548,7 @@ class EditProductScreenState extends State<EditProductScreen> {
                       isBorder: false,
                       isBoxShadow: false,
                       isBorderRadius: true,
-                      isLoading: context.watch<EcommerceProvider>().createProductStatus == CreateProductStatus.loading 
+                      isLoading: context.watch<EcommerceProvider>().updateProductStatus == UpdateProductStatus.loading 
                       ? true 
                       : false,
                       btnColor: ColorResources.primary,

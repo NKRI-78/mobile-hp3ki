@@ -4,9 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:hp3ki/maps/src/utils/uuid.dart';
-import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
 import 'package:image_picker/image_picker.dart';
+
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 
 import 'package:provider/provider.dart';
 
@@ -14,6 +15,9 @@ import 'package:hp3ki/maps/src/place_picker.dart';
 
 import 'package:hp3ki/services/navigation.dart';
 
+import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
+
+import 'package:hp3ki/maps/src/utils/uuid.dart';
 import 'package:hp3ki/utils/constant.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/color_resources.dart';
@@ -32,9 +36,9 @@ class CreateStoreOrUpdateScreen extends StatefulWidget {
 }
 
 class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
-
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
+  String storeId = "";
   String storeLogo = "";  
 
   String provinceName = "";
@@ -111,7 +115,9 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
 
   Future<void> submit() async {
 
-    String id = Uuid().generateV4();
+    String id = storeId == "" 
+    ? Uuid().generateV4() 
+    : storeId;
 
     if(nameStoreC.text.isEmpty) {
       ShowSnackbar.snackbar("Nama Toko wajib diisi", "", ColorResources.error);
@@ -167,6 +173,21 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
     );
   }
 
+  Future<File?> downloadFile(String url) async {
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final tempDir = await getTemporaryDirectory();
+        final file = File('${tempDir.path}/${url.split('/').last}');
+        await file.writeAsBytes(response.bodyBytes);
+        return file;
+      }
+    } catch (e) {
+      debugPrint("Error downloading file: $e");
+    }
+    return null;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -196,25 +217,71 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
 
     Future.delayed(Duration.zero, () async {
 
-      await ecommerceProvider.getStore();
+      try {
 
-      setState(() => isLoading = false);
+        await ecommerceProvider.getStore();
 
-      final store =  ecommerceProvider.store.data;
+        setState(() => isLoading = false);
 
-      setState(() {
-        storeLogo = store?.logo ?? "";
-        nameStoreC = TextEditingController(text: isLoading ? "" : store?.name ?? "");
-        descStoreC = TextEditingController(text: isLoading ? "" : store?.description ?? "");
-        provinceC = TextEditingController(text: isLoading ? "" : store?.province ?? "");
-        cityC = TextEditingController(text: isLoading ? "" : store?.city ?? "");
-        districtC = TextEditingController(text: isLoading ? "" : store?.district ?? "");
-        subdistrictC = TextEditingController(text: isLoading ? "" : store?.subdistrict ?? "");
-        postCodeC = TextEditingController(text: isLoading ? "" : store?.postalCode ?? "");
-        addressC = TextEditingController(text: isLoading ? "" : store?.address ?? "");
-        emailC = TextEditingController(text: isLoading ? "" : store?.email ?? "");
-        phoneC = TextEditingController(text: isLoading ? "" : store?.phone ?? "");
-      });
+        final store =  ecommerceProvider.store!.data;
+
+        File? savedLogo = await downloadFile(store?.logo ?? "");
+
+        setState(() {
+          storeId = store?.id ?? "";
+          storeLogo = store?.logo ?? "";
+
+          nameStoreC = TextEditingController(text: isLoading ? "" : store?.name ?? "");
+          descStoreC = TextEditingController(text: isLoading ? "" : store?.description ?? "");
+          provinceC = TextEditingController(text: isLoading ? "" : store?.province ?? "");
+          cityC = TextEditingController(text: isLoading ? "" : store?.city ?? "");
+          districtC = TextEditingController(text: isLoading ? "" : store?.district ?? "");
+          subdistrictC = TextEditingController(text: isLoading ? "" : store?.subdistrict ?? "");
+          postCodeC = TextEditingController(text: isLoading ? "" : store?.postalCode ?? "");
+          addressC = TextEditingController(text: isLoading ? "" : store?.address ?? "");
+          emailC = TextEditingController(text: isLoading ? "" : store?.email ?? "");
+          phoneC = TextEditingController(text: isLoading ? "" : store?.phone ?? "");
+
+          location = store?.address ?? "";
+
+          lat = store?.lat ?? "";
+          lng = store?.lng ?? "";
+
+          isOpen = store?.isOpen ?? false;
+
+          file = savedLogo;
+        });
+
+      } catch(_) {
+
+        setState(() {
+
+          storeId = "";
+          storeLogo = "";
+
+          nameStoreC.clear();
+          descStoreC.clear();
+          provinceC.clear();
+          cityC.clear();
+          districtC.clear();
+          subdistrictC.clear();
+          postCodeC.clear();
+          addressC.clear();
+          emailC.clear();
+          phoneC.clear();
+
+          location = "";
+
+          lat = "";
+          lng = "";
+
+          isOpen = false;
+
+          file = null;
+
+        });
+
+      }
 
     });
     
@@ -244,7 +311,7 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
     return Scaffold(
       backgroundColor: ColorResources.backgroundColor,
       appBar: AppBar(
-        backgroundColor: ColorResources.primary,
+        backgroundColor: ColorResources.purple,
         centerTitle: true,
         elevation: 0.0,
         leading: CupertinoNavigationBarBackButton(
@@ -253,7 +320,9 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
             NS.pop();
           },
         ),
-        title: Text("Buka Toko",
+        title: Text(storeId == "" 
+        ? "Buka Toko" 
+        : "Ubah Toko",
           style: robotoRegular.copyWith(
             color: ColorResources.white,
             fontSize: Dimensions.fontSizeDefault,
@@ -262,188 +331,184 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
         ),
       ),
       body: ListView(
-        physics: const BouncingScrollPhysics(),
         children: [
+          Container(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: formKey,
+              child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
 
-            Container(
-              padding: const EdgeInsets.all(16.0),
-              child: Form(
-                key: formKey,
-                child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  
-                  Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-
-                      InkWell(
-                        onTap: pickImage,
-                        child: storeLogo.isNotEmpty 
-                        ? CachedNetworkImage(
-                            imageUrl: storeLogo,
-                            imageBuilder: (BuildContext context,  ImageProvider<Object> imageProvider) {
-                              return CircleAvatar(
-                                backgroundColor: ColorResources.white,
-                                backgroundImage: imageProvider,
-                                maxRadius: 50.0,
-                              );
-                            },
-                            placeholder: (BuildContext context, String url) {
-                              return const CircleAvatar(
-                                backgroundColor: ColorResources.white,
-                                maxRadius: 50.0,
-                                child: Icon(
-                                  Icons.store,
-                                  size: 80.0,
-                                  color: ColorResources.primary,
-                                ),
-                              ); 
-                            },
-                            errorWidget: (BuildContext context, String url, dynamic error) {
-                              return const CircleAvatar(
-                                backgroundColor: ColorResources.white,
-                                maxRadius: 50.0,
-                                child: Icon(
-                                  Icons.store,
-                                  size: 80.0,
-                                  color: ColorResources.primary,
-                                ),
-                              ); 
-                            },
-                          )
-                        : file == null 
-                        ? const CircleAvatar(
-                            backgroundColor: ColorResources.white,
-                            maxRadius: 50.0,
-                            child: Icon(
-                              Icons.store,
-                              size: 80.0,
-                              color: ColorResources.primary,
-                            ),
-                          )  
-                        : CircleAvatar(
-                            backgroundColor: ColorResources.white,
-                            maxRadius: 50.0,
-                            backgroundImage: FileImage(file!)
-                          )
-                        ),
-
-                      Positioned(
-                        bottom: 0.0,
-                        right: 0.0,
-                        child: InkWell(
-                          onTap: () {
-                            pickImage();
+                    InkWell(
+                      onTap: pickImage,
+                      child: storeLogo.isNotEmpty 
+                      ? CachedNetworkImage(
+                          imageUrl: storeLogo,
+                          imageBuilder: (BuildContext context,  ImageProvider<Object> imageProvider) {
+                            return CircleAvatar(
+                              backgroundColor: ColorResources.white,
+                              backgroundImage: imageProvider,
+                              maxRadius: 50.0,
+                            );
                           },
-                          child: const Icon(Icons.edit)
+                          placeholder: (BuildContext context, String url) {
+                            return const CircleAvatar(
+                              backgroundColor: ColorResources.white,
+                              maxRadius: 50.0,
+                              child: Icon(
+                                Icons.store,
+                                size: 80.0,
+                                color: ColorResources.primary,
+                              ),
+                            ); 
+                          },
+                          errorWidget: (BuildContext context, String url, dynamic error) {
+                            return const CircleAvatar(
+                              backgroundColor: ColorResources.white,
+                              maxRadius: 50.0,
+                              child: Icon(
+                                Icons.store,
+                                size: 80.0,
+                                color: ColorResources.primary,
+                              ),
+                            ); 
+                          },
+                        )
+                      : file == null 
+                      ? const CircleAvatar(
+                          backgroundColor: ColorResources.white,
+                          maxRadius: 50.0,
+                          child: Icon(
+                            Icons.store,
+                            size: 80.0,
+                            color: ColorResources.purple,
+                          ),
+                        )  
+                      : CircleAvatar(
+                          backgroundColor: ColorResources.white,
+                          maxRadius: 50.0,
+                          backgroundImage: FileImage(file!)
                         )
                       ),
 
-                      
-                    ]
-                  ),
-                  
-                  inputFieldStoreName("Nama Toko", nameStoreC, "Nama Toko"),
-                  
-                  const SizedBox(
-                    height: 15.0,
-                  ),
-                  
-                  inputFieldProvince("Provinsi", "Provinsi"),
-                  
-                  const SizedBox(
-                    height: 15.0,
-                  ),
-                  
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      inputFieldCity("Kota", "Kota"),    
-                      
-                      const SizedBox(width: 15.0), 
-
-                      inputFieldPostCode("Kode Pos", postCodeC, "Kode Pos"),
-                    ],
-                  ),
-                  
-                  const SizedBox(height: 15.0),
-                  
-                  inputFieldDistrict(),
-                  
-                  const SizedBox(height: 15.0),
-                  
-                  inputFieldSubdistrict("Kelurahan", "Kelurahan"),
-                  
-                  const SizedBox(height: 15.0),
-                  
-                  inputFieldEmailAddress("E-mail Address", emailC, "E-mail Address"),
-                  
-                  const SizedBox(height: 15.0),
-                  
-                  inputFieldPhoneNumber("Nomor HP", phoneC, "Nomor HP"),
-                  
-                  const SizedBox(
-                    height: 15.0,
-                  ),
-
-                  inputFieldAddress(),
-                  
-                  const SizedBox(
-                    height: 15.0,
-                  ),
-
-                  inputFieldDescriptionStore(),    
-                  
-                  const SizedBox(
-                    height: 15.0,
-                  ),
-
-                  toggleIsOpen(),
-
-                  const SizedBox(
-                    height: 25.0,
-                  ),
-
-                  SizedBox(
-                    height: 55.0,
-                    width: double.infinity,
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: ColorResources.primary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        )
-                      ),
-                      child: Center(
-                        child: context.watch<EcommerceProvider>().createStoreStatus == CreateStoreStatus.loading 
-                        ? const SizedBox(
-                            width: 16.0,
-                            height: 16.0,
-                            child: CircularProgressIndicator()
-                          ) 
-                        : Text("Submit",
-                          style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
-                            color: ColorResources.white
-                          )
-                        ),
-                      ),
-                      onPressed: submit
+                    Positioned(
+                      bottom: 0.0,
+                      right: 0.0,
+                      child: InkWell(
+                        onTap: () {
+                          pickImage();
+                        },
+                        child: const Icon(Icons.edit)
+                      )
                     ),
-                  )
 
-                ],
-              )
+                    
+                  ]
+                ),
+                
+                inputFieldStoreName(),
+                
+                const SizedBox(
+                  height: 15.0,
+                ),
+                
+                inputFieldProvince(),
+                
+                const SizedBox(
+                  height: 15.0,
+                ),
+                
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    inputFieldCity(),    
+                    
+                    const SizedBox(width: 15.0), 
+
+                    inputFieldPostCode(),
+                  ],
+                ),
+                
+                const SizedBox(height: 15.0),
+                
+                inputFieldDistrict(),
+                
+                const SizedBox(height: 15.0),
+                
+                inputFieldSubdistrict(),
+                
+                const SizedBox(height: 15.0),
+                
+                inputFieldEmailAddress(),
+                
+                const SizedBox(height: 15.0),
+                
+                inputFieldPhoneNumber(),
+                
+                const SizedBox(
+                  height: 15.0,
+                ),
+
+                inputFieldAddress(),
+                
+                const SizedBox(
+                  height: 15.0,
+                ),
+
+                inputFieldDescriptionStore(),    
+                
+                const SizedBox(
+                  height: 15.0,
+                ),
+
+                toggleIsOpen(),
+
+                const SizedBox(
+                  height: 25.0,
+                ),
+
+                SizedBox(
+                  height: 55.0,
+                  width: double.infinity,
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      backgroundColor: ColorResources.purple,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      )
+                    ),
+                    child: Center(
+                      child: context.watch<EcommerceProvider>().createStoreStatus == CreateStoreStatus.loading 
+                      ? const SizedBox(
+                          width: 16.0,
+                          height: 16.0,
+                          child: CircularProgressIndicator()
+                        ) 
+                      : Text("Submit",
+                        style: robotoRegular.copyWith(
+                          fontSize: Dimensions.fontSizeDefault,
+                          color: ColorResources.white
+                        )
+                      ),
+                    ),
+                    onPressed: submit
+                  ),
+                )
+
+              ],
             )
           )
-
-        ]
-      ),
+        )
+      ]),
     );
   }
 
-  Widget inputFieldStoreName(String title, TextEditingController controller, String hintText) {
+  Widget inputFieldStoreName() {
     return Column(
       children: [
         Container(
@@ -465,7 +530,7 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
           child: TextFormField(
             readOnly: false,
             cursorColor: ColorResources.black,
-            controller: controller,
+            controller: nameStoreC,
             keyboardType: TextInputType.text,
             style: robotoRegular,
             inputFormatters: [FilteringTextInputFormatter.singleLineFormatter],
@@ -494,12 +559,12 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
     );
   }
 
-  Widget inputFieldProvince(String title, String hintText) {
+  Widget inputFieldProvince() {
     return Column(
       children: [
         Container(
           alignment: Alignment.centerLeft,
-          child: Text(title,
+          child: Text("Provinsi",
             style: robotoRegular.copyWith(
               fontSize: Dimensions.fontSizeDefault,
             )
@@ -647,12 +712,12 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
     );          
   }
 
-  Widget inputFieldCity(String title, String hintText) {
+  Widget inputFieldCity() {
     return Expanded(
       child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, 
+        Text("Kota", 
           style: robotoRegular.copyWith(
             fontSize: Dimensions.fontSizeDefault,
           )
@@ -806,12 +871,12 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
     ));
   }
 
-  Widget inputFieldPhoneNumber(String title, TextEditingController controller, String hintText) {
+  Widget inputFieldPhoneNumber() {
     return Column(
       children: [
       Container(
         alignment: Alignment.centerLeft,
-          child: Text(title,
+          child: Text("Nomor HP",
             style: robotoRegular.copyWith(
               fontSize: Dimensions.fontSizeDefault,
             )
@@ -835,26 +900,21 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
             ],
           ),
           child: TextFormField(
-            readOnly: true,
             cursorColor: ColorResources.black,
-            controller: controller,
+            controller: phoneC,
             keyboardType: TextInputType.text,
             style: robotoRegular,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            decoration: InputDecoration(
-              hintText: hintText,
-              contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
+            decoration: const InputDecoration(
+              contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
               isDense: true,
-              hintStyle: robotoRegular.copyWith(
-                color: Theme.of(context).hintColor
-              ),
-              focusedBorder: const OutlineInputBorder(
+              focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   color: Colors.grey,
                   width: 0.5
                 ),
               ),
-              enabledBorder: const OutlineInputBorder(
+              enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   color: Colors.grey,
                   width: 0.5
@@ -1105,12 +1165,12 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
     );       
   }
 
-  Widget inputFieldSubdistrict(String title, String hintText) {
+  Widget inputFieldSubdistrict() {
     return Column(
       children: [
         Container(
           alignment: Alignment.centerLeft,
-          child: Text(title,
+          child: Text("Kelurahan",
             style: robotoRegular.copyWith(
               fontSize: Dimensions.fontSizeDefault,
             )
@@ -1258,14 +1318,14 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
     );
   }
 
-  Widget inputFieldPostCode(String title, TextEditingController controller, String hintText) {
+  Widget inputFieldPostCode() {
     return SizedBox(
     width: 150.0,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Text(title,
+        Text("Kode Pos",
           style: robotoRegular.copyWith(
             fontSize: Dimensions.fontSizeDefault,
           )
@@ -1289,7 +1349,7 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
           ),
           child: TextFormField(
             readOnly: true,
-            controller: controller,
+            controller: postCodeC,
             keyboardType: TextInputType.text,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             decoration: const InputDecoration(
@@ -1375,12 +1435,12 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
     );
   }
 
-  Widget inputFieldEmailAddress(String title, TextEditingController controller, String hintText) {
+  Widget inputFieldEmailAddress() {
     return Column(
       children: [
         Container(
           alignment: Alignment.centerLeft,
-          child: Text(title,
+          child: Text("E-mail Address",
             style: robotoRegular.copyWith(
               fontSize: Dimensions.fontSizeDefault,
             )
@@ -1404,26 +1464,21 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
             ],
           ),
           child: TextFormField(
-            readOnly: true , 
             cursorColor: ColorResources.black,
-            controller: controller,
+            controller: emailC,
             keyboardType: TextInputType.text,
             style: robotoRegular,
             inputFormatters: [FilteringTextInputFormatter.singleLineFormatter],
-            decoration: InputDecoration(
-              hintText: hintText,
-              contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
+            decoration: const InputDecoration(
+              contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
               isDense: true,
-              hintStyle: robotoRegular.copyWith(
-                color: Theme.of(context).hintColor
-              ),
-              focusedBorder: const OutlineInputBorder(
+              focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   color: Colors.grey,
                   width: 0.5
                 ),
               ),
-              enabledBorder: const OutlineInputBorder(
+              enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   color: Colors.grey,
                   width: 0.5
@@ -1438,7 +1493,7 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
 
   Widget toggleIsOpen() {
     return SwitchListTile(
-      title: Text('Buka toko',
+      title: Text('Buka Toko',
         style: robotoRegular.copyWith(
           fontSize: Dimensions.fontSizeDefault,
           color: ColorResources.black

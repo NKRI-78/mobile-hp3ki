@@ -396,8 +396,8 @@ class EcommerceProvider extends ChangeNotifier {
   OwnerModel _ownerModel = OwnerModel();
   OwnerModel get ownerModel => _ownerModel;
 
-  s.StoreModel _store = s.StoreModel();
-  s.StoreModel get store => _store;
+  s.StoreModel? _store = s.StoreModel();
+  s.StoreModel? get store => _store!;
 
   List<DataHowToPayment> _mbank = [];
   List<DataHowToPayment> get mbank => [..._mbank];
@@ -693,6 +693,8 @@ class EcommerceProvider extends ChangeNotifier {
 
       setStateGetStoreStatus(GetStoreStatus.loaded);
     } catch(e) {
+      _store = null;
+
       setStateGetStoreStatus(GetStoreStatus.error);
     }
   } 
@@ -716,7 +718,7 @@ class EcommerceProvider extends ChangeNotifier {
   }) async {
     setStateCreateStoreStatus(CreateStoreStatus.loading);
     try {
- 
+
       Response? res = await mr.postMedia(logo);
       Map map = res.data;
 
@@ -739,6 +741,11 @@ class EcommerceProvider extends ChangeNotifier {
         isOpen: isOpen, 
         postCode: postCode
       );
+
+      NS.pop();
+
+      getStore();
+      checkStoreOwner();
 
       setStateCreateStoreStatus(CreateStoreStatus.loaded);
     } catch(e) {
@@ -1041,11 +1048,33 @@ class EcommerceProvider extends ChangeNotifier {
     required int weight,
     required int stock,
     required bool isDraft,
-    required String catId,
-    required String storeId
+    required String catId
   }) async {
     setStateUpdateProductStatus(UpdateProductStatus.loading);
+
     try { 
+
+      await er.updateProduct(
+        id: id, 
+        title: title,
+        description: description, 
+        price: price, 
+        weight: weight, 
+        stock: stock, 
+        isDraft: isDraft,
+        catId: catId
+      );
+    
+      for (File file in files) {
+        Response? res = await mr.postMedia(file);
+        Map map = res.data;
+        String path = map['data']['path'];
+
+        await er.createProductImage(
+          productId: id, 
+          path: path
+        );
+      }
 
       setStateUpdateProductStatus(UpdateProductStatus.loaded);
     } catch(e) {

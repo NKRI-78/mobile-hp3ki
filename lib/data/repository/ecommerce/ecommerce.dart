@@ -127,14 +127,12 @@ class EcommerceRepo {
     required int weight,
     required int stock,
     required bool isDraft,
-    required String catId,
-    required String storeId
+    required String catId
   }) async {
     try {
-     Dio dio = DioManager.shared.getClient();
+      Dio dio = DioManager.shared.getClient();
       await dio.put("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/products/update/$id",
         data: {
-          "id": id,
           "title": title,
           "description": description,
           "price": price,
