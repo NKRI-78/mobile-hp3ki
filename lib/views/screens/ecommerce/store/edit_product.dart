@@ -33,10 +33,12 @@ import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
 
 class EditProductScreen extends StatefulWidget {
+  final String storeId;
   final String productId;
 
   const EditProductScreen({
     super.key,
+    required this.storeId,
     required this.productId
   });
 
@@ -206,6 +208,7 @@ class EditProductScreenState extends State<EditProductScreen> {
       stock: int.parse(stockC.text), 
       isDraft: false, 
       catId: categoryId, 
+      storeId: widget.storeId
     );
   }
 

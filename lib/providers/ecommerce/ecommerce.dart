@@ -62,6 +62,7 @@ enum CreateProductStatus { idle, loading, loaded, empty, error }
 enum UpdateProductStatus { idle, loading, loaded, empty, error }
 enum ListProductTransactionStatus { idle, loading, loaded, empty, error }
 enum DetailProductStatus { idle, loading, loaded, empty, error }
+enum DeleteProductStatus { idle, loading, loaded, empty, error }
 
 enum BalanceStatus { idle, loading, loaded, empty, error }
 
@@ -312,6 +313,9 @@ class EcommerceProvider extends ChangeNotifier {
   CreateProductStatus _createProductStatus = CreateProductStatus.idle;
   CreateProductStatus get createProductStatus => _createProductStatus;
 
+  DeleteProductStatus _deleteProductStatus = DeleteProductStatus.idle;
+  DeleteProductStatus get deleteProductStatus => _deleteProductStatus;
+
   UpdateProductStatus _updateProductStatus = UpdateProductStatus.idle;
   UpdateProductStatus get updateProductStatus => _updateProductStatus;
 
@@ -479,6 +483,12 @@ class EcommerceProvider extends ChangeNotifier {
 
   void setStateGetProductCategoryStatus(GetProductCategoryStatus param) {
     _getProductCategoryStatus = param;
+
+    notifyListeners();
+  }
+
+  void setStateDeleteProductStatus(DeleteProductStatus param) {
+    _deleteProductStatus = param;
 
     notifyListeners();
   }
@@ -1031,6 +1041,27 @@ class EcommerceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> deleteProduct({
+    required String storeId,
+    required String productId,
+  }) async {
+    setStateDeleteProductStatus(DeleteProductStatus.loading);
+
+    try {
+      await er.deleteProduct(productId: productId);
+
+      NS.pop();
+
+      fetchAllProductSeller(search: "", storeId: "");
+
+      fetchAllProduct(search: "");
+    
+      setStateDeleteProductStatus(DeleteProductStatus.loaded);
+    } catch(e) {
+      setStateDeleteProductStatus(DeleteProductStatus.error);  
+    }
+  }
+
   Future<void> createProduct({
     required String id,
     required String title,
@@ -1074,6 +1105,8 @@ class EcommerceProvider extends ChangeNotifier {
 
       fetchAllProductSeller(search: "", storeId: storeId);
 
+      fetchAllProduct(search: "");
+
       setStateCreateProductStatus(CreateProductStatus.loaded);
     } catch(e) {
       setStateCreateProductStatus(CreateProductStatus.error);
@@ -1089,7 +1122,8 @@ class EcommerceProvider extends ChangeNotifier {
     required int weight,
     required int stock,
     required bool isDraft,
-    required String catId
+    required String catId,
+    required String storeId
   }) async {
     setStateUpdateProductStatus(UpdateProductStatus.loading);
 
@@ -1116,6 +1150,10 @@ class EcommerceProvider extends ChangeNotifier {
           path: path
         );
       }
+
+      NS.pop();
+      
+      fetchProduct(productId: id);
 
       setStateUpdateProductStatus(UpdateProductStatus.loaded);
     } catch(e) {

@@ -56,7 +56,7 @@ class EcommerceRepo {
     } catch(e, stacktrace) {
       debugPrint(e.toString());
       debugPrint(stacktrace.toString());
-      throw Exception('Failed to get balance');
+      throw Exception('Failed get balance');
     }
   }
 
@@ -79,6 +79,22 @@ class EcommerceRepo {
       debugPrint(e.toString());
       debugPrint(stacktrace.toString());
       throw Exception("Failed create product image");
+    }
+  }
+
+  Future<void> deleteProduct({
+    required String productId
+  }) async {
+    try {
+      Dio dio = DioManager.shared.getClient();
+      await dio.delete("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/products/delete/$productId");
+    } on DioError catch(e) {
+      debugPrint(e.response!.data.toString());
+      throw Exception("Failed delete product");
+    } catch(e, stacktrace) {
+      debugPrint(e.toString());
+      debugPrint(stacktrace.toString());
+      throw Exception("Failed delete product");
     }
   }
 
@@ -163,11 +179,14 @@ class EcommerceRepo {
       Map<String, dynamic> data = response.data;
       ProductModel productModel = ProductModel.fromJson(data);
       return productModel;
+    } on DioError catch(e) {
+      debugPrint(e.response!.data.toString());
+      throw Exception("Failed fetch all product");
     } catch(e, stacktrace) {
       debugPrint(e.toString());
       debugPrint(stacktrace.toString());
-      throw Exception('Failed to load products');
-    }
+      throw Exception('Failed fetch all product');
+    } 
   }
 
   Future<ProductModel> fetchAllProductSeller({
@@ -182,10 +201,13 @@ class EcommerceRepo {
       Map<String, dynamic> data = response.data;
       ProductModel productModel = ProductModel.fromJson(data);
       return productModel;
+    } on DioError catch(e) {
+      debugPrint(e.response!.data.toString());
+      throw Exception("Failed fetch all product seller");
     } catch(e, stacktrace) {
       debugPrint(e.toString());
       debugPrint(stacktrace.toString());
-      throw Exception('Failed to load products');
+      throw Exception('Failed fetch all product seller');
     }
   }
 
@@ -199,7 +221,7 @@ class EcommerceRepo {
     } catch(e, stacktrace) {
       debugPrint(e.toString());
       debugPrint(stacktrace.toString());
-      throw Exception('Failed to load product categories');
+      throw Exception('Failed fetch product category');
     }
   }
 
@@ -215,7 +237,7 @@ class EcommerceRepo {
     } catch(e, stacktrace) {
       debugPrint(e.toString());
       debugPrint(stacktrace.toString());
-      throw Exception('Failed to load product transaction');
+      throw Exception('Failed fetch product transaction');
     }
   }
 
@@ -229,7 +251,7 @@ class EcommerceRepo {
     } catch(e, stacktrace) {
       debugPrint(e.toString());
       debugPrint(stacktrace.toString());
-      throw Exception("Failed to load product");
+      throw Exception("Failed get product");
     }
   }
 
@@ -252,7 +274,7 @@ class EcommerceRepo {
       );
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception("Failed to add product review");
+      throw Exception("Failed product review");
     }
   }
 
@@ -270,7 +292,7 @@ class EcommerceRepo {
       );
     } catch(e) {
       debugPrint(e.toString()); 
-      throw Exception("Failed to product review media");
+      throw Exception("Failed product review media");
     }
   }
 
@@ -285,10 +307,10 @@ class EcommerceRepo {
       );
     } on DioError catch(e) {
       debugPrint(e.response!.data.toString());
-      throw Exception("Failed to cancel order");
+      throw Exception("Failed cancel order");
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception("Failed to cancel order");
+      throw Exception("Failed cancel order");
     }
   }
 
@@ -307,7 +329,7 @@ class EcommerceRepo {
       return listOrderModel;
     } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());
-      throw Exception("Failed to order list");
+      throw Exception("Failed order list");
     }
   }
 
@@ -325,11 +347,11 @@ class EcommerceRepo {
       return detailOrderModel;
     } on DioError catch(e) {
       debugPrint(e.response!.data.toString());
-      throw Exception("Failed to order detail");
+      throw Exception("Failed order detail");
     } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());
       debugPrint(e.toString());
-      throw Exception("Failed to order detail");
+      throw Exception("Failed order detail");
     }
   }
 
@@ -346,7 +368,7 @@ class EcommerceRepo {
       return trackingModel;
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception("Failed to get tracking");
+      throw Exception("Failed tracking");
     }
   }
 
@@ -363,7 +385,7 @@ class EcommerceRepo {
       return cartModel;
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception('Failed to get cart');
+      throw Exception('Failed get cart');
     }
   }
 
@@ -390,7 +412,7 @@ class EcommerceRepo {
       debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception('Failed to add to cart');
+      throw Exception('Failed add to cart');
     }
     return "";
   }
@@ -416,7 +438,7 @@ class EcommerceRepo {
       debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception('Failed to add to cart');
+      throw Exception('Failed add to cart live');
     }
     return "";
   }
@@ -432,7 +454,7 @@ class EcommerceRepo {
       );
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception('Failed to delete cart');
+      throw Exception('Failed delete cart');
     }
   } 
 
@@ -446,7 +468,7 @@ class EcommerceRepo {
       );
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception("Failed to delete cart all");
+      throw Exception("Failed delete cart all");
     }
   }
 
@@ -460,7 +482,7 @@ class EcommerceRepo {
       );
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception("Failed to delete cart all");
+      throw Exception("Failed delete cart live all");
     }
   }
 
@@ -477,7 +499,7 @@ class EcommerceRepo {
       debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception('Failed to update qty');
+      throw Exception('Failed update qty');
     }
   }
 
@@ -497,7 +519,7 @@ class EcommerceRepo {
       debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception("Failed to update selected");
+      throw Exception("Failed update selected");
     }
   }
 
@@ -516,7 +538,7 @@ class EcommerceRepo {
       debugPrint(e.response!.data.toString());
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception("Failed to update selected all");
+      throw Exception("Failed update selected all");
     }
   }
  
@@ -531,7 +553,7 @@ class EcommerceRepo {
       );
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception('Failed to update note');
+      throw Exception('Failed update note');
     }
   }
 
@@ -549,10 +571,10 @@ class EcommerceRepo {
       return checkoutListModel;
     } on DioError catch(e) {
       debugPrint(e.response!.data.toString());
-      throw Exception('Failed to get checkout list');
+      throw Exception('Failed get checkout list');
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception('Failed to get checkout list');
+      throw Exception('Failed get checkout list');
     }
   }
 
@@ -574,10 +596,10 @@ class EcommerceRepo {
       return courierListModel;
     } on DioError catch(e) {
       ShowSnackbar.snackbar(e.response!.data["message"], "", ColorResources.error);
-      throw Exception('Failed to get courier');
+      throw Exception('Failed get courier');
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception('Failed to get courier');
+      throw Exception('Failed get courier');
     }
   }
 
@@ -612,7 +634,7 @@ class EcommerceRepo {
 
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception('Failed to add courier');
+      throw Exception('Failed add courier');
     }
   } 
 
@@ -630,7 +652,7 @@ class EcommerceRepo {
 
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception('Failed to clear courier');
+      throw Exception('Failed clear courier');
     }
   }
 
@@ -648,7 +670,7 @@ class EcommerceRepo {
       return shippingAddressModel;
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception('Failed to get shipping address list');
+      throw Exception('Failed get shipping address list');
     }
   }
 
@@ -678,7 +700,7 @@ class EcommerceRepo {
       );
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception('Failed to create shipping address');
+      throw Exception('Failed create shipping address');
     }
   }
 
@@ -690,7 +712,7 @@ class EcommerceRepo {
       await dio.delete("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/shipping/address/delete/$id");
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception('Failed to delete shipping address');
+      throw Exception('Failed delete shipping address');
     }
   }
 
@@ -720,7 +742,7 @@ class EcommerceRepo {
       );
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception('Failed to load update shipping address');
+      throw Exception('Failed update shipping address');
     }
   }
 
@@ -736,7 +758,7 @@ class EcommerceRepo {
       );
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception('Failed to load select primary address');
+      throw Exception('Failed select primary address');
     }
   }
 
@@ -753,7 +775,7 @@ class EcommerceRepo {
       return howToPaymentModel;
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception('Failed to load how to payment');
+      throw Exception('Failed how to payment');
     }
   } 
  
@@ -770,7 +792,7 @@ class EcommerceRepo {
       return shippingAddressModelDefault;
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception('Failed to load shipping address default');
+      throw Exception('Failed shipping address default');
     }
   }
 
@@ -783,7 +805,7 @@ class EcommerceRepo {
       return shippingAddressModelDetail;
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception('Failed to load shipping address detail');
+      throw Exception('Failed shipping address detail');
     }
   }
   
@@ -796,7 +818,7 @@ class EcommerceRepo {
       return provinceModel;
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception("Failed to load province");
+      throw Exception("Failed province");
     }
   }
 
@@ -812,7 +834,7 @@ class EcommerceRepo {
       return cityModel;
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception("Failed to load city");
+      throw Exception("Failed city");
     }
   }
 
@@ -828,7 +850,7 @@ class EcommerceRepo {
       return districtModel;
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception("Failed to load district");
+      throw Exception("Failed district");
     }
   }  
 
@@ -844,7 +866,7 @@ class EcommerceRepo {
       return subdistrictModel;
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception("Failed to load subdistrict");
+      throw Exception("Failed subdistrict");
     }
   }
 
@@ -857,7 +879,7 @@ class EcommerceRepo {
       return paymentChannelModel;
     } catch(e) {
       debugPrint(e.toString());
-      throw Exception("Failed to load payment");
+      throw Exception("Failed payment channel");
     }
   } 
 
@@ -889,11 +911,11 @@ class EcommerceRepo {
     } on DioError catch(e) {
       debugPrint(e.response!.toString());
       ShowSnackbar.snackbar("Hmm... Mohon tunggu yaa", "", ColorResources.error);
-      throw Exception("Failed to pay");
+      throw Exception("Failed pay");
     } catch(e, stacktrace) {
       debugPrint(e.toString());
       debugPrint(stacktrace.toString());
-      throw Exception("Failed to pay");
+      throw Exception("Failed pay");
     }
   }
 
@@ -925,10 +947,10 @@ class EcommerceRepo {
     } on DioError catch(e) {
       debugPrint(e.response!.toString());
       ShowSnackbar.snackbar("Hmm... Mohon tunggu yaa", "", ColorResources.error);
-      throw Exception("Failed to pay");
+      throw Exception("Failed EmoneyPay");
     } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());
-      throw Exception("Failed to pay");
+      throw Exception("Failed EmoneyPay");
     }
   }
 
@@ -958,11 +980,11 @@ class EcommerceRepo {
     } on DioError catch(e) {
       debugPrint(e.response!.toString());
       ShowSnackbar.snackbar("Hmm... Mohon tunggu yaa", "", ColorResources.error);
-      throw Exception("Failed to pay");
+      throw Exception("Failed payTopup");
     } catch(e, stacktrace) {
       debugPrint(e.toString());
       debugPrint(stacktrace.toString());
-      throw Exception("Failed to pay");
+      throw Exception("Failed payTopup");
     }
   }
 
@@ -1087,10 +1109,10 @@ class EcommerceRepo {
     } on DioError catch(e) {
       debugPrint(e.response!.toString());
       ShowSnackbar.snackbar("Hmm... Mohon tunggu yaa", "", ColorResources.error);
-      throw Exception("Failed to pay");
+      throw Exception("Failed EmoneyPayTopup");
     } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());
-      throw Exception("Failed to pay");
+      throw Exception("Failed EmoneyPayTopup");
     }
   }
 

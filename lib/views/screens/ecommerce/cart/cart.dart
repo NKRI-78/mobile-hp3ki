@@ -637,7 +637,7 @@ class CartScreenState extends State<CartScreen> {
                                                                                                       
                                                                       Align(
                                                                         alignment: Alignment.center,
-                                                                        child: Text("Apakah kamu yakin ingin hapus dari keranjang",
+                                                                        child: Text("Apakah kamu yakin ingin hapus dari Keranjang ?",
                                                                           style: robotoRegular.copyWith(
                                                                             fontSize: Dimensions.fontSizeDefault,
                                                                             fontWeight: FontWeight.bold,

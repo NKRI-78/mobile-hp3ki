@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hp3ki/views/basewidgets/button/custom.dart';
+import 'package:hp3ki/views/screens/ecommerce/store/edit_product.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -46,6 +48,9 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
   Future<void> getData() async {
     if(!mounted) return;
       await ep.fetchProduct(productId: widget.productId);
+
+    if(!mounted) return;
+      await ep.checkStoreOwner();
 
     if(!mounted) return;
       await ep.getCart();
@@ -225,7 +230,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                       ],
                     ),
                 
-                    if(notifier.detailProductStatus == DetailProductStatus.loading) 
+                    if(notifier.detailProductStatus == DetailProductStatus.loading)
                       const SliverFillRemaining(
                         hasScrollBody: false,
                         child: Center(
@@ -917,28 +922,149 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                   child: Row(
                   mainAxisSize: MainAxisSize.max,
                   children: [
-            
-                    Expanded(
-                      flex: 5,
-                      child:  Material(
-                        color: ColorResources.transparent,
-                        child: Bouncing(
+                    
+                    context.watch<EcommerceProvider>().checkStoreOwnerStatus == CheckStoreOwnerStatus.loading 
+                    ? const SizedBox() 
+                    : Expanded(
+                        flex: 5,
+                        child:  Material(
+                          color: ColorResources.transparent,
+                          child: Bouncing(
                           onPress: notifier.addCartLiveStatus == AddCartLiveStatus.loading 
                           ? () {} 
                           : notifier.productDetailData.product!.stock > 0 
                           ? () async {
-                              await notifier.addToCartLive(
-                                productId: widget.productId, 
-                                note: ""
-                              );
-                              NS.push(context, const DeliveryScreen(from: "live"));
+                              if( notifier.ownerModel.data?.storeId == notifier.productDetailData.product?.store.id) {
+                                showGeneralDialog(
+                                  context: context,
+                                  barrierLabel: "Barrier",
+                                  barrierDismissible: true,
+                                  barrierColor: Colors.black.withOpacity(0.5),
+                                  transitionDuration: const Duration(milliseconds: 700),
+                                  pageBuilder: (BuildContext context, Animation<double> double, _) {
+                                    return Center(
+                                      child: Material(
+                                        color: ColorResources.transparent,
+                                        child: Container(
+                                          margin: const EdgeInsets.all(20.0),
+                                          height: 250.0,
+                                          decoration: BoxDecoration(
+                                            color: ColorResources.purple, 
+                                            borderRadius: BorderRadius.circular(20.0)
+                                          ),
+                                          child: Stack(
+                                            clipBehavior: Clip.none,
+                                            children: [
+                                                                              
+                                              Align(
+                                                alignment: Alignment.center,
+                                                child: Text("Apakah kamu yakin ingin hapus Produk ?",
+                                                  style: robotoRegular.copyWith(
+                                                    fontSize: Dimensions.fontSizeDefault,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: ColorResources.white
+                                                  ),
+                                                )
+                                              ),
+                                                                              
+                                              Align(
+                                                alignment: Alignment.bottomCenter,
+                                                child: Column(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                  children: [
+                                                    Container(
+                                                      margin: const EdgeInsets.only(
+                                                        top: 20.0,
+                                                        bottom: 20.0
+                                                      ),
+                                                      child: Row(
+                                                        mainAxisSize: MainAxisSize.max,
+                                                        children: [
+                                                          const Expanded(child: SizedBox()),
+                                                          Expanded(
+                                                            flex: 5,
+                                                            child: CustomButton(
+                                                              isBorderRadius: true,
+                                                              isBoxShadow: false,
+                                                              btnColor: ColorResources.white,
+                                                              btnTextColor: ColorResources.black,
+                                                              onTap: () {
+                                                                NS.pop();
+                                                              }, 
+                                                              btnTxt: "Batal"
+                                                            ),
+                                                          ),
+                                                          const Expanded(child: SizedBox()),
+                                                          Expanded(
+                                                            flex: 5,
+                                                            child: Consumer<EcommerceProvider>(
+                                                              builder: (_, notifier, __) {
+                                                                return CustomButton(
+                                                                  isBorderRadius: true,
+                                                                  isBoxShadow: false,
+                                                                  isLoading: notifier.deleteProductStatus == DeleteProductStatus.loading 
+                                                                  ? true 
+                                                                  : false,
+                                                                  btnColor: ColorResources.error,
+                                                                  btnTextColor: ColorResources.white,
+                                                                  onTap: () async {
+                                                                    await notifier.deleteProduct(
+                                                                      storeId: notifier.ownerModel.data?.storeId ?? "-", 
+                                                                      productId: widget.productId
+                                                                    );
+                                                                    NS.pop();
+                                                                  }, 
+                                                                  btnTxt: "OK"
+                                                                );
+                                                              },
+                                                            )
+                                                          ),
+                                                          const Expanded(child: SizedBox()),
+                                                        ],
+                                                      ),
+                                                    )
+                                                  ],
+                                                ) 
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                    );
+                                  },
+                                  transitionBuilder: (_, anim, __, child) {
+                                    Tween<Offset> tween;
+                                    if (anim.status == AnimationStatus.reverse) {
+                                      tween = Tween(begin: const Offset(-1, 0), end: Offset.zero);
+                                    } else {
+                                      tween = Tween(begin: const Offset(1, 0), end: Offset.zero);
+                                    }
+                                    return SlideTransition(
+                                      position: tween.animate(anim),
+                                      child: FadeTransition(
+                                        opacity: anim,
+                                        child: child,
+                                      ),
+                                    );
+                                  },
+                                );
+                              } else {
+                                await notifier.addToCartLive(
+                                  productId: widget.productId, 
+                                  note: ""
+                                );
+                                NS.push(context, const DeliveryScreen(from: "live"));
+                              }
                             } 
                           : () {},
                           child: Container(
                             height: 40.0,
                             decoration: BoxDecoration(
                               color: notifier.productDetailData.product!.stock > 0 
-                              ? ColorResources.purple 
+                              ? notifier.ownerModel.data?.storeId == notifier.productDetailData.product?.store.id 
+                              ? ColorResources.error
+                              : ColorResources.purple 
                               : ColorResources.hintColor,
                               borderRadius: BorderRadius.circular(10.0)
                             ),
@@ -954,14 +1080,27 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
                                   
-                                  const Icon(
-                                    Icons.shopping_bag,
-                                    color: ColorResources.white,  
-                                  ),
+                                  notifier.ownerModel.data?.storeId == notifier.productDetailData.product?.store.id 
+                                  ? const Icon(
+                                      Icons.delete,
+                                      color: ColorResources.white,  
+                                    )
+                                  : const Icon(
+                                      Icons.shopping_bag,
+                                      color: ColorResources.white,  
+                                    ),
                               
                                   const SizedBox(width: 8.0),
                                   
-                                  Text("Beli langsung",
+                                  notifier.ownerModel.data?.storeId == notifier.productDetailData.product?.store.id
+                                  ? Text("Hapus Produk",
+                                      style: robotoRegular.copyWith(
+                                        fontSize: Dimensions.fontSizeSmall,
+                                        fontWeight: FontWeight.bold,
+                                        color: ColorResources.white
+                                      ),
+                                    )
+                                  : Text("Beli langsung",
                                     style: robotoRegular.copyWith(
                                       fontSize: Dimensions.fontSizeSmall,
                                       fontWeight: FontWeight.bold,
@@ -981,20 +1120,29 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                         child: SizedBox()
                       ),
 
-                      Expanded(
-                        flex: 6,
-                        child: Material(
+                      context.watch<EcommerceProvider>().checkStoreOwnerStatus == CheckStoreOwnerStatus.loading 
+                      ? const SizedBox() 
+                      : Expanded(
+                          flex: 6,
+                          child: Material(
                           color: ColorResources.transparent,
                           child: Bouncing(
                             onPress: notifier.addCartStatus == AddCartStatus.loading 
                             ? () {} 
                             : notifier.productDetailData.product!.stock > 0 
                             ? () async {
-                                await notifier.addToCart(
-                                  productId: widget.productId, 
-                                  qty: 1, 
-                                  note: ""
-                                );
+                                if(notifier.ownerModel.data?.storeId == notifier.productDetailData.product?.store.id) {
+                                  NS.push(context, EditProductScreen(
+                                    storeId: notifier.ownerModel.data?.storeId ?? "-",
+                                    productId: widget.productId,
+                                  ));
+                                } else {
+                                  await notifier.addToCart(
+                                    productId: widget.productId, 
+                                    qty: 1, 
+                                    note: ""
+                                  );
+                                }
                               } 
                             : () {},
                             child: Container(
@@ -1017,14 +1165,21 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
                                     
-                                    const Icon(
-                                      Icons.add_shopping_cart,
-                                      color: ColorResources.white,  
-                                    ),
+                                    notifier.ownerModel.data?.storeId == notifier.productDetailData.product?.store.id 
+                                    ? const Icon(
+                                        Icons.edit,
+                                        color: ColorResources.white,  
+                                      )
+                                    : const Icon(
+                                        Icons.add_shopping_cart,
+                                        color: ColorResources.white,  
+                                      ),
                                 
                                     const SizedBox(width: 8.0),
                                     
-                                    Text("Tambah Keranjang",
+                                    Text(notifier.ownerModel.data?.storeId == notifier.productDetailData.product?.store.id 
+                                      ? "Ubah Produk" 
+                                      : "Tambah Keranjang",
                                       style: robotoRegular.copyWith(
                                         fontSize: Dimensions.fontSizeSmall,
                                         fontWeight: FontWeight.bold,
