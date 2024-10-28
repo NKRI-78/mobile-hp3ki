@@ -1,13 +1,10 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
 
 import 'package:hp3ki/data/models/ecommerce/product/category.dart';
-
-import 'package:hp3ki/providers/ecommerce/ecommerce.dart';
 
 import 'package:hp3ki/services/navigation.dart';
 
@@ -15,20 +12,24 @@ import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 
-import 'package:hp3ki/views/basewidgets/button/bounce.dart';
-
-import 'package:hp3ki/views/screens/ecommerce/cart/cart.dart';
-import 'package:hp3ki/views/screens/ecommerce/order/list.dart';
 import 'package:hp3ki/views/screens/ecommerce/product/widget/product_item.dart';
+import 'package:hp3ki/views/screens/ecommerce/store/add_product.dart';
 
-class ProductsScreen extends StatefulWidget {
-  const ProductsScreen({super.key});
+import 'package:hp3ki/providers/ecommerce/ecommerce.dart';
+
+class ProductsSellerScreen extends StatefulWidget {
+  final String storeId;
+
+  const ProductsSellerScreen({
+    required this.storeId,
+    super.key
+  });
 
   @override
-  State<ProductsScreen> createState() => ProductsScreenState();
+  State<ProductsSellerScreen> createState() => ProductsSellerScreenState();
 }
 
-class ProductsScreenState extends State<ProductsScreen> {
+class ProductsSellerScreenState extends State<ProductsSellerScreen> {
 
   Timer? debounce;
 
@@ -39,13 +40,10 @@ class ProductsScreenState extends State<ProductsScreen> {
 
   Future<void> getData() async {
     if(!mounted) return; 
-      await ep.fetchAllProduct(search: "");
+      await ep.fetchAllProductSeller(search: "", storeId: widget.storeId);
 
     if(!mounted) return;
       await ep.fetchAllProductCategory();
-
-    if(!mounted) return;
-      await ep.getCart();
   }
 
   @override 
@@ -62,7 +60,10 @@ class ProductsScreenState extends State<ProductsScreen> {
       if(searchC.text.isNotEmpty) {
         if (debounce?.isActive ?? false) debounce?.cancel();
           debounce = Timer(const Duration(milliseconds: 1000), () {
-            ep.fetchAllProduct(search: searchC.text);
+            ep.fetchAllProductSeller(
+              search: searchC.text, 
+              storeId: widget.storeId
+            );
           });
       }
 
@@ -83,7 +84,7 @@ class ProductsScreenState extends State<ProductsScreen> {
   
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+     return Scaffold(
       body: Consumer<EcommerceProvider>(
         builder: (_, notifier, __) {
           return NotificationListener(
@@ -110,7 +111,7 @@ class ProductsScreenState extends State<ProductsScreen> {
                 slivers: [
               
                   SliverAppBar(
-                    title: Text("Toko HP3KI",
+                    title: Text("Daftar Produk",
                       style: robotoRegular.copyWith(
                         fontSize: Dimensions.fontSizeLarge,
                         fontWeight: FontWeight.bold,
@@ -124,6 +125,17 @@ class ProductsScreenState extends State<ProductsScreen> {
                         NS.pop();
                       },
                     ),
+                    actions: [
+                      IconButton(
+                        onPressed: () {
+                          NS.push(context, AddProductScreen(storeId: widget.storeId));
+                        }, 
+                        splashRadius: 15.0,
+                        icon: const Icon(
+                          Icons.add_circle,
+                        )
+                      )
+                    ],
                   ),
               
                   SliverToBoxAdapter(
@@ -138,15 +150,6 @@ class ProductsScreenState extends State<ProductsScreen> {
                         mainAxisSize: MainAxisSize.max,
                         children: [
                   
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () {
-                                NS.push(context, const ListOrderScreen());
-                              },
-                              child: const Icon(Icons.list)
-                            )
-                          ),
-            
                           Expanded(
                             flex: 5,
                             child: TextField(
@@ -173,59 +176,6 @@ class ProductsScreenState extends State<ProductsScreen> {
                               ),
                             ),
                           ),
-                  
-                          const SizedBox(width: 15.0),
-            
-                          if(notifier.getCartStatus == GetCartStatus.loading)
-                            Bouncing(
-                              onPress: () {
-                                NS.push(context, const CartScreen());
-                              },
-                              child: const Icon(
-                                Icons.shopping_cart,
-                                size: 20.0
-                              ),
-                            ),
-            
-                          if(notifier.getCartStatus == GetCartStatus.error)
-                            Bouncing(
-                              onPress: () {
-                                NS.push(context, const CartScreen());
-                              },
-                              child: const Icon(
-                                Icons.shopping_cart,
-                                size: 20.0
-                              ),
-                            ),
-            
-                          if(notifier.getCartStatus == GetCartStatus.empty)
-                            Bouncing(
-                              onPress: () {
-                                NS.push(context, const CartScreen());
-                              },
-                              child: const Icon(
-                                Icons.shopping_cart,
-                                size: 20.0
-                              ),
-                            ),
-                        
-                          if(notifier.getCartStatus == GetCartStatus.loaded)
-                            Bouncing(
-                              onPress: () {
-                                NS.push(context, const CartScreen());
-                              },
-                              child: Badge(
-                                label: Text(notifier.cartData.totalItem.toString(),
-                                  style: robotoRegular.copyWith(
-                                    fontSize: Dimensions.fontSizeSmall
-                                  ),
-                                ),
-                                child: const Icon(
-                                  Icons.shopping_cart,
-                                  size: 20.0
-                                ),
-                              ),
-                            ),
             
                         ],
                       )
@@ -352,8 +302,8 @@ class ProductsScreenState extends State<ProductsScreen> {
                         ),
                         delegate: SliverChildBuilderDelegate(
                           (BuildContext context, int i) {
-                            if (i < notifier.products.length) {
-                              final product = notifier.products[i];
+                            if (i < notifier.productSellers.length) {
+                              final product = notifier.productSellers[i];
                               return ProductItem(product: product);
                             } else if (notifier.hasMore) {
                               if(notifier.reached) {
@@ -370,8 +320,8 @@ class ProductsScreenState extends State<ProductsScreen> {
                             }
                           },
                           childCount: notifier.hasMore
-                          ? notifier.products.length + 1 
-                          : notifier.products.length,
+                          ? notifier.productSellers.length + 1 
+                          : notifier.productSellers.length,
                         ),
                       ),
                     ),

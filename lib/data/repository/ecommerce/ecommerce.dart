@@ -159,7 +159,26 @@ class EcommerceRepo {
   }) async {
     try {
       Dio dio = DioManager.shared.getClient();
-      Response response = await dio.get("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/products/all?page=$page&limit=5&search=$search&app_name=saka&cat=$cat");
+      Response response = await dio.get("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/products/all?page=$page&limit=5&search=$search&app_name=hp3ki&cat=$cat");
+      Map<String, dynamic> data = response.data;
+      ProductModel productModel = ProductModel.fromJson(data);
+      return productModel;
+    } catch(e, stacktrace) {
+      debugPrint(e.toString());
+      debugPrint(stacktrace.toString());
+      throw Exception('Failed to load products');
+    }
+  }
+
+  Future<ProductModel> fetchAllProductSeller({
+    required String search, 
+    required String cat,
+    required String storeId,
+    required int page,
+  }) async {
+    try {
+      Dio dio = DioManager.shared.getClient();
+      Response response = await dio.get("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/products/seller/all?page=$page&limit=5&search=$search&app_name=hp3ki&store_id=$storeId&cat=$cat");
       Map<String, dynamic> data = response.data;
       ProductModel productModel = ProductModel.fromJson(data);
       return productModel;
@@ -173,7 +192,7 @@ class EcommerceRepo {
   Future<ProductCategoryModel> fetchProductCategory() async {
     try {
       Dio dio = DioManager.shared.getClient();
-      Response response = await dio.get("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/products/category?app_name=saka");
+      Response response = await dio.get("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/products/category?app_name=hp3ki");
       Map<String, dynamic> data = response.data;
       ProductCategoryModel productCategoryModel = ProductCategoryModel.fromJson(data);
       return productCategoryModel;
@@ -261,7 +280,7 @@ class EcommerceRepo {
       await dio.post("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/order/cancel",
         data: {
           "transaction_id": transactionId,
-          "app": "saka"
+          "app": "hp3ki"
         }
       );
     } on DioError catch(e) {
@@ -278,7 +297,7 @@ class EcommerceRepo {
       Dio dio = DioManager.shared.getClient();
       Response response = await dio.post("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/order/list",
         data: {
-          "app": "saka",
+          "app": "hp3ki",
           "order_status": orderStatus,
           "user_id": SharedPrefs.getUserId()
         }
@@ -298,7 +317,7 @@ class EcommerceRepo {
       Response response = await dio.post("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/order/detail",
         data: {
           "transaction_id": transactionId, 
-          "app": "saka"
+          "app": "hp3ki"
         }
       );
       Map<String, dynamic> data = response.data;

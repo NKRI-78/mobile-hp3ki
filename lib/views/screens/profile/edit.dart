@@ -15,7 +15,6 @@ import 'package:hp3ki/views/basewidgets/button/custom.dart';
 import 'package:provider/provider.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  
   const EditProfileScreen({ Key? key}) : super(key: key);
 
   @override

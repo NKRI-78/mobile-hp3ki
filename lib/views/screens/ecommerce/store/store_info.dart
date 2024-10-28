@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hp3ki/views/screens/ecommerce/store/create_update_store.dart';
+import 'package:hp3ki/views/screens/ecommerce/store/seller/products.dart';
 import 'package:provider/provider.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -234,7 +235,7 @@ class StoreInfoScreenState extends State<StoreInfoScreen> {
                         ),
                         leading: const Icon(Icons.list),
                         onTap: () {
-                              
+                          NS.push(context, ProductsSellerScreen(storeId: notifier.store!.data?.id ?? "-"));
                         },
                       ),
 
@@ -246,9 +247,6 @@ class StoreInfoScreenState extends State<StoreInfoScreen> {
                     ])
                   ),
                 )
-                
-            
-                
             
               ],
             );

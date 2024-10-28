@@ -410,6 +410,9 @@ class EcommerceProvider extends ChangeNotifier {
 
   List<Product> _products = [];
   List<Product> get products => [..._products];
+
+  List<Product> _productSellers = [];
+  List<Product> get productSellers => [..._productSellers];
   
   List<ProductTransactionData> _productTransactions = [];
   List<ProductTransactionData> get productTransactions => [..._productTransactions];
@@ -931,6 +934,40 @@ class EcommerceProvider extends ChangeNotifier {
     } 
   }
 
+  Future<void> fetchAllProductSeller({
+    required String search,
+    required String storeId
+  }) async {
+    setStateListProductStatus(ListProductStatus.loading);
+
+    page = 1;
+    reached = false;
+
+    try {
+      
+      ProductModel productModel = await er.fetchAllProductSeller(
+        search: search, 
+        page: page,
+        storeId: storeId,
+        cat: cat,
+      );
+
+      hasMore = productModel.data.pageDetail.hasMore;
+
+      _productSellers = [];
+      _productSellers.addAll(productModel.data.products);
+      
+      setStateListProductStatus(ListProductStatus.loaded);
+
+      if(productSellers.isEmpty) {
+        setStateListProductStatus(ListProductStatus.empty);
+      }
+
+    } catch (e) {
+      setStateListProductStatus(ListProductStatus.error);
+    } 
+  }
+
   Future<void> fetchAllProductCategory() async {
     try {
 
@@ -1032,6 +1069,10 @@ class EcommerceProvider extends ChangeNotifier {
           path: path
         );
       }
+
+      NS.pop();
+
+      fetchAllProductSeller(search: "", storeId: storeId);
 
       setStateCreateProductStatus(CreateProductStatus.loaded);
     } catch(e) {
@@ -1295,7 +1336,7 @@ class EcommerceProvider extends ChangeNotifier {
       setStateGetCartStatus(GetCartStatus.loaded);
 
       if(cartData.stores!.isEmpty) {
-           setStateGetCartStatus(GetCartStatus.empty);
+        setStateGetCartStatus(GetCartStatus.empty);
       }
        
     } catch(e) {
@@ -1953,7 +1994,7 @@ class EcommerceProvider extends ChangeNotifier {
 
         ResponseMidtransEmoney responseMidtransEmoney = await er.EmoneyPay(
           amount: amount, 
-          app: "saka", 
+          app: "hp3ki", 
           from: from,
           channelId: channelId, 
           platform: platform,
@@ -1974,7 +2015,7 @@ class EcommerceProvider extends ChangeNotifier {
        
         ResponseMidtransVa responseMidtransVa = await er.pay(
           amount: amount, 
-          app: "saka", 
+          app: "hp3ki", 
           from: from,
           channelId: channelId, 
           platform: platform,
@@ -2029,7 +2070,7 @@ class EcommerceProvider extends ChangeNotifier {
 
         ResponseMidtransEmoney responseMidtransEmoney = await er.EmoneyPayTopup(
           amount: selectedTopupPrice, 
-          app: "saka", 
+          app: "hp3ki", 
           channelId: channelId, 
           platform: platform,
           paymentCode: paymentCode
@@ -2049,7 +2090,7 @@ class EcommerceProvider extends ChangeNotifier {
        
         ResponseMidtransVa responseMidtransVa = await er.payTopup(
           amount: selectedTopupPrice, 
-          app: "saka", 
+          app: "hp3ki", 
           channelId: channelId, 
           platform: platform,
           paymentCode: paymentCode

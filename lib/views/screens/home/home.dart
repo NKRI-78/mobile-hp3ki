@@ -22,7 +22,6 @@ import 'package:hp3ki/providers/banner/banner.dart';
 import 'package:hp3ki/providers/inbox/inbox.dart';
 import 'package:hp3ki/providers/location/location.dart';
 import 'package:hp3ki/providers/news/news.dart';
-import 'package:hp3ki/providers/ppob/ppob.dart';
 import 'package:hp3ki/providers/profile/profile.dart';
 import 'package:hp3ki/providers/firebase/firebase.dart';
 
@@ -32,6 +31,7 @@ import 'package:hp3ki/views/screens/about/about_menu.dart';
 import 'package:hp3ki/views/screens/auth/sign_in.dart';
 import 'package:hp3ki/views/screens/calendar/calendar.dart';
 import 'package:hp3ki/views/screens/checkin/checkin.dart';
+import 'package:hp3ki/views/screens/ecommerce/product/products.dart';
 import 'package:hp3ki/views/screens/feed/index.dart';
 import 'package:hp3ki/views/screens/maintain/maintain.dart';
 import 'package:hp3ki/views/screens/media/media.dart';
@@ -223,7 +223,7 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
       {
         "name": "Mart",
         "icon": "bottomsheet/icon-mart.png",
-        "screen": const MaintainScreen(),
+        "screen": const ProductsScreen(),
       },
     ];
 
@@ -253,77 +253,7 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
             itemCount: menu.length,
             padding: const EdgeInsets.symmetric(horizontal: 75.0),
             itemBuilder: (context, index) {
-              if (menu[index]['name'] == "SHOP") {
-                return Consumer<PPOBProvider>(builder: (context, ppob, child) {
-                  return Consumer<ProfileProvider>(
-                    builder: (context, notifier, child) {
-                    bool hasStore = notifier.user?.storeId != null;
-                    return Column(
-                      children: [
-                        Bouncing(
-                          onPress: () {
-                            // if (!hasStore) {
-                            //   if ((ppob.balance ?? 0) <= 20000) {
-                            //     GeneralModal.error(context,
-                            //         msg: getTranslated(
-                            //             "TXT_OPEN_STORE_MINIM_WALLET", context),
-                            //         onOk: () {
-                            //       Navigator.pop(context);
-
-                            //       NS.push(
-                            //           context,
-                            //           ConfirmPaymentV2(
-                            //             accountNumber:
-                            //                 SharedPrefs.getUserPhone(),
-                            //             description:
-                            //                 'Isi Saldo sebesar Rp 20.000',
-                            //             price: 20000,
-                            //             adminFee: 6500,
-                            //             productId:
-                            //                 "17805178-2f32-48a3-aab3-ce7a55eb3227",
-                            //             provider: 'asdasd',
-                            //             productName: 'Saldo',
-                            //             type: "topup",
-                            //           ));
-                            //     });
-                            //     return;
-                            //   }
-                              // NS.push(context, const StoreOpenPage());
-                            // } else {
-                              // NS.push(context, const MyStorePage());
-                            // } 
-                          },
-                          child: Container(
-                            height: 80.0,
-                            width: 80.0,
-                            padding: const EdgeInsets.all(10.0),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25.0),
-                              boxShadow: kElevationToShadow[2],
-                              color: const Color(0xffE7E4F5),
-                            ),
-                            child: const Icon(
-                              Icons.store_outlined,
-                              color: Colors.blue,
-                              size: 40,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          hasStore ? 'Store' : 'Open Store',
-                          style: poppinsRegular.copyWith(
-                            color: const Color(0xff101660),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        )
-                      ],
-                    );
-                  });
-                });
-              }
+           
               // return menu[index]["name"] == "Mart" ||
               //         menu[index]["name"] == "SOS" ||
               //         menu[index]["name"] == "Calender"
@@ -391,14 +321,10 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
                       final selectedMenu = menu[index];
                       final String selectedMenuName = selectedMenu["name"];
                       final selectedMenuScreen = selectedMenu["screen"];
-                      if (membershipStatus != "PLATINUM" ||
-                          membershipStatus == "-") {
-                        if (selectedMenuName.contains("Member") ||
-                            selectedMenuName.contains('Check') ||
-                            selectedMenuName.contains('SOS')) {
-                          context
-                              .read<ProfileProvider>()
-                              .showNonPlatinumLimit(context);
+
+                      if (membershipStatus != "PLATINUM" || membershipStatus == "-") {
+                        if (selectedMenuName.contains("Member") || selectedMenuName.contains('Check') || selectedMenuName.contains('SOS')) {
+                          context.read<ProfileProvider>().showNonPlatinumLimit(context);
                         } else {
                           NS.push(context, selectedMenuScreen);
                         }

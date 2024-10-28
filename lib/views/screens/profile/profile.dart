@@ -4,7 +4,6 @@ import 'dart:io';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
-import 'package:hp3ki/views/screens/ecommerce/store/edit_product.dart';
 import 'package:hp3ki/views/screens/ecommerce/store/store_info.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
@@ -35,7 +34,6 @@ import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
 import 'package:hp3ki/views/basewidgets/dialog/custom/custom.dart';
 
-import 'package:hp3ki/views/screens/ecommerce/store/add_product.dart';
 import 'package:hp3ki/views/screens/ecommerce/store/create_update_store.dart';
 import 'package:hp3ki/views/screens/auth/change_password.dart';
 import 'package:hp3ki/views/screens/privacy_policy/privacy_policy.dart';
@@ -950,22 +948,6 @@ class ProfileScreenState extends State<ProfileScreen> {
       )
     );
   }
-  // SliverToBoxAdapter buildEditProduct() {
-  //   return SliverToBoxAdapter(
-  //     child: Padding(
-  //       padding: const EdgeInsets.only(top: 5.0),
-  //       child: buildOptionContainer(
-  //         color: Colors.white,
-  //         label: 'Edit Produk',
-  //         onTap: () {
-  //           NS.push(context, const EditProductScreen(
-  //             productId: '88acca47-84e1-4d2a-9390-a10b436b3ce1',
-  //           ));
-  //         },
-  //       ),
-  //     )
-  //   );
-  // }
 
   SliverToBoxAdapter buildChangePassword() {
     return SliverToBoxAdapter(
