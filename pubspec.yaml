@@ -25,7 +25,6 @@ dev_dependencies:
   awesome_dialog: ^3.0.2
 
   # B
-  badges: ^2.0.3
   barcode_widget: ^2.0.4
   bottom_picker: ^2.0.1
   bubble_tab_indicator: ^0.1.6

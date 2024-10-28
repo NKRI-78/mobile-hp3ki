@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:badges/badges.dart' as b;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:hp3ki/localization/language_constraints.dart';
@@ -54,10 +53,8 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
             height: 40.0,
           )
         : context.read<InboxProvider>().inboxPaymentStatus == InboxPaymentStatus.loaded && context.read<InboxProvider>().inboxPaymentCount != 0
-        ? b.Badge(
-            position: const b.BadgePosition(top: -15.0, end: -15.0),
-            padding: EdgeInsets.zero,
-            badgeContent: Container(
+        ? Badge(
+            label: Container(
               padding: const EdgeInsets.all(8.0),
               child: Text(context.read<InboxProvider>().inboxPaymentCount.toString()),
             ),
@@ -101,187 +98,123 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
                       //     ? ColorResources.primary
                       //     : ColorResources.grey,
                     )
-                  : context.read<InboxProvider>().inboxPanicStatus ==
-                              InboxPanicStatus.loaded &&
-                          context.read<InboxProvider>().inboxPanicCount != 0
-                      ? b.Badge(
-                          position:
-                              const b.BadgePosition(top: -15.0, end: -15.0),
-                          padding: EdgeInsets.zero,
-                          badgeContent: Container(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              context
-                                  .read<InboxProvider>()
-                                  .inboxPanicCount
-                                  .toString(),
-                              style: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeSmall,
-                                  color: ColorResources.white),
-                            ),
+                  : context.read<InboxProvider>().inboxPanicStatus == InboxPanicStatus.loaded &&
+                    context.read<InboxProvider>().inboxPanicCount != 0
+                  ? Badge(
+                      padding: EdgeInsets.zero,
+                      label: Container(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          context.read<InboxProvider>().inboxPanicCount.toString(),
+                          style: robotoRegular.copyWith(
+                            fontSize: Dimensions.fontSizeSmall,
+                            color: ColorResources.white
                           ),
-                          child: Image.asset(
-                            "assets/images/icons/sos.png",
-                            width: 40.0,
-                            height: 40.0,
-                            // color: index == 1
-                            //     ? ColorResources.primary
-                            //     : ColorResources.grey,
-                          ),
-                        )
-                      : Image.asset(
-                          "assets/images/icons/sos.png",
-                          width: 40.0,
-                          height: 40.0,
-                          // color: index == 1
-                          //     ? ColorResources.primary
-                          //     : ColorResources.grey,
                         ),
-          child: Text(
-            "SOS",
-            style: robotoRegular.copyWith(
-                fontWeight: FontWeight.bold,
-                fontSize: Dimensions.fontSizeDefault,
-                color: index == 1
-                    ? ColorResources.primary
-                    : ColorResources.grey),
-          ),
-        ),
-        Tab(
-          icon: context.read<InboxProvider>().inboxInfoStatus ==
-                  InboxInfoStatus.loading
-              ? Image.asset(
-                  "assets/images/icons/broadcast.png",
-                  width: 40.0,
-                  height: 40.0,
-                  // color: index == 2
-                  //     ? ColorResources.primary
-                  //     : ColorResources.grey,
-                )
-              : context.read<InboxProvider>().inboxInfoStatus ==
-                      InboxInfoStatus.error
-                  ? Image.asset(
-                      "assets/images/icons/broadcast.png",
+                      ),
+                      child: Image.asset("assets/images/icons/sos.png",
+                        width: 40.0,
+                        height: 40.0,
+                      ),
+                    )
+                  : Image.asset("assets/images/icons/sos.png",
                       width: 40.0,
                       height: 40.0,
-                      // color: index == 2
-                      //     ? ColorResources.primary
-                      //     : ColorResources.grey,
-                    )
-                  : context.read<InboxProvider>().inboxInfoStatus ==
-                              InboxInfoStatus.loaded &&
-                          context.read<InboxProvider>().inboxInfoCount != 0
-                      ? b.Badge(
-                          position:
-                              const b.BadgePosition(top: -15.0, end: -15.0),
-                          padding: EdgeInsets.zero,
-                          badgeContent: Container(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              context
-                                  .read<InboxProvider>()
-                                  .inboxInfoCount!
-                                  .toString(),
-                              style: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeSmall,
-                                  color: ColorResources.white),
-                            ),
-                          ),
-                          child: Image.asset(
-                            "assets/images/icons/broadcast.png",
-                            width: 40.0,
-                            height: 40.0,
-                            // color: index == 2
-                            //     ? ColorResources.primary
-                            //     : ColorResources.grey,
-                          ),
-                        )
-                      : Image.asset(
-                          "assets/images/icons/broadcast.png",
-                          width: 40.0,
-                          height: 40.0,
-                          // color: index == 2
-                          //     ? ColorResources.primary
-                          //     : ColorResources.grey,
-                        ),
-          child: Text(
-            "Broadcast",
-            style: robotoRegular.copyWith(
+                    ),
+                  child: Text("SOS",
+                    style: robotoRegular.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: Dimensions.fontSizeDefault,
+                    color: index == 1
+                    ? ColorResources.primary
+                    : ColorResources.grey
+                  ),
+                ),
+              ),
+          Tab(
+            icon: context.read<InboxProvider>().inboxInfoStatus == InboxInfoStatus.loading
+            ? Image.asset( "assets/images/icons/broadcast.png",
+                width: 40.0,
+                height: 40.0,
+              )
+            : context.read<InboxProvider>().inboxInfoStatus == InboxInfoStatus.error
+            ? Image.asset("assets/images/icons/broadcast.png",
+                width: 40.0,
+                height: 40.0,
+              )
+            : context.read<InboxProvider>().inboxInfoStatus == InboxInfoStatus.loaded && context.read<InboxProvider>().inboxInfoCount != 0
+            ? Badge(
+                padding: EdgeInsets.zero,
+                label: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    context.read<InboxProvider>().inboxInfoCount!.toString(),
+                    style: robotoRegular.copyWith(
+                      fontSize: Dimensions.fontSizeSmall,
+                      color: ColorResources.white
+                    ),
+                  ),
+                ),
+                child: Image.asset("assets/images/icons/broadcast.png",
+                  width: 40.0,
+                  height: 40.0,
+                ),
+              )
+            : Image.asset("assets/images/icons/broadcast.png",
+                width: 40.0,
+                height: 40.0,
+              ),
+              child: Text("Broadcast",
+                style: robotoRegular.copyWith(
                 fontWeight: FontWeight.bold,
                 fontSize: Dimensions.fontSizeDefault,
                 color: index == 2
-                    ? ColorResources.primary
-                    : ColorResources.grey),
+                ? ColorResources.primary
+                : ColorResources.grey
+              ),
+            ),
           ),
-        ),
         Tab(
-          icon: context.read<InboxProvider>().inboxInfoStatus ==
-                  InboxInfoStatus.loading
-              ? Image.asset(
-                  "assets/images/icons/transaksi.png",
+          icon: context.read<InboxProvider>().inboxInfoStatus == InboxInfoStatus.loading
+          ? Image.asset("assets/images/icons/transaksi.png",
+              width: 40.0,
+              height: 40.0,
+            )
+          : context.read<InboxProvider>().inboxInfoStatus == InboxInfoStatus.error
+              ? Image.asset("assets/images/icons/transaksi.png",
                   width: 40.0,
                   height: 40.0,
-                  // color: index == 2
-                  //     ? ColorResources.primary
-                  //     : ColorResources.grey,
                 )
-              : context.read<InboxProvider>().inboxInfoStatus ==
-                      InboxInfoStatus.error
-                  ? Image.asset(
-                      "assets/images/icons/transaksi.png",
+              : context.read<InboxProvider>().inboxInfoStatus == InboxInfoStatus.loaded &&
+                context.read<InboxProvider>().inboxTransactionCount != 0
+                ? Badge(
+                    padding: EdgeInsets.zero,
+                    label: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(context.read<InboxProvider>().inboxTransactionCount.toString(),
+                        style: robotoRegular.copyWith(
+                          fontSize: Dimensions.fontSizeSmall,
+                          color: ColorResources.white
+                        ),
+                      ),
+                    ),
+                    child: Image.asset("assets/images/icons/transaksi.png",
                       width: 40.0,
                       height: 40.0,
-                      // color: index == 2
-                      //     ? ColorResources.primary
-                      //     : ColorResources.grey,
-                    )
-                  : context.read<InboxProvider>().inboxInfoStatus ==
-                              InboxInfoStatus.loaded &&
-                          context
-                                  .read<InboxProvider>()
-                                  .inboxTransactionCount !=
-                              0
-                      ? b.Badge(
-                          position:
-                              const b.BadgePosition(top: -15.0, end: -15.0),
-                          padding: EdgeInsets.zero,
-                          badgeContent: Container(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              context
-                                  .read<InboxProvider>()
-                                  .inboxTransactionCount
-                                  .toString(),
-                              style: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeSmall,
-                                  color: ColorResources.white),
-                            ),
-                          ),
-                          child: Image.asset(
-                            "assets/images/icons/transaksi.png",
-                            width: 40.0,
-                            height: 40.0,
-                            // color: index == 3
-                            //     ? ColorResources.primary
-                            //     : ColorResources.grey,
-                          ),
-                        )
-                      : Image.asset(
-                          "assets/images/icons/transaksi.png",
-                          width: 40.0,
-                          height: 40.0,
-                          // color: index == 2
-                          //     ? ColorResources.primary
-                          //     : ColorResources.grey,
-                        ),
-          child: Text(
-            "Transaksi",
+                    ),
+                  )
+                : Image.asset("assets/images/icons/transaksi.png",
+                  width: 40.0,
+                  height: 40.0,
+                ),
+            child: Text("Transaksi",
             style: robotoRegular.copyWith(
-                fontWeight: FontWeight.bold,
-                fontSize: Dimensions.fontSizeDefault,
-                color: index == 3
-                    ? ColorResources.primary
-                    : ColorResources.grey),
+              fontWeight: FontWeight.bold,
+              fontSize: Dimensions.fontSizeDefault,
+              color: index == 3
+              ? ColorResources.primary
+              : ColorResources.grey
+            ),
           ),
         ),
       ]
@@ -292,9 +225,6 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
       context.read<InboxProvider>().resetInboxInfoPageCount();
     }
     if (mounted) {
-      // context.read<InboxProvider>().resetInboxPaymentPageCount();
-    }
-    if (mounted) {
       context.read<InboxProvider>().resetInboxPanicPageCount();
     }
     if (mounted) {
@@ -302,9 +232,6 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
     }
     if (mounted) {
       context.read<InboxProvider>().getInboxPanic(context);
-    }
-    if (mounted) {
-      // context.read<InboxProvider>().getInboxPayment(context);
     }
   }
 

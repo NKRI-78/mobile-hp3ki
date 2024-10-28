@@ -46,7 +46,7 @@ class PostVideoDetailState extends State<PostVideoDetail> with AutomaticKeepAliv
       ..addListener(updateState);
       await videoC!.initialize();
     } catch (e) {
-      print('Error initializing video player: $e');
+      debugPrint('Error initializing video player: $e');
     } finally {
       if (mounted) {
         setState(() {});

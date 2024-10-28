@@ -919,7 +919,7 @@ class EcommerceRepo {
     }
   }
 
-  Future<ResponseMidtransEmoney> EmoneyPay({
+  Future<ResponseMidtransEmoney> emoneyPay({
     required String app, 
     required String from,
     required int channelId,
@@ -947,10 +947,10 @@ class EcommerceRepo {
     } on DioError catch(e) {
       debugPrint(e.response!.toString());
       ShowSnackbar.snackbar("Hmm... Mohon tunggu yaa", "", ColorResources.error);
-      throw Exception("Failed EmoneyPay");
+      throw Exception("Failed emoneyPay");
     } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());
-      throw Exception("Failed EmoneyPay");
+      throw Exception("Failed emoneyPay");
     }
   }
 
@@ -1083,7 +1083,7 @@ class EcommerceRepo {
     }
   } 
 
-  Future<ResponseMidtransEmoney> EmoneyPayTopup({
+  Future<ResponseMidtransEmoney> emoneyPayTopup({
     required String app, 
     required int channelId,
     required String platform,
@@ -1109,10 +1109,10 @@ class EcommerceRepo {
     } on DioError catch(e) {
       debugPrint(e.response!.toString());
       ShowSnackbar.snackbar("Hmm... Mohon tunggu yaa", "", ColorResources.error);
-      throw Exception("Failed EmoneyPayTopup");
+      throw Exception("Failed emoneyPayTopup");
     } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());
-      throw Exception("Failed EmoneyPayTopup");
+      throw Exception("Failed emoneyPayTopup");
     }
   }
 

@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hp3ki/views/basewidgets/button/custom.dart';
-import 'package:hp3ki/views/screens/ecommerce/store/edit_product.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -22,9 +20,11 @@ import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/utils/helper.dart';
 
+import 'package:hp3ki/views/basewidgets/button/custom.dart';
 import 'package:hp3ki/views/basewidgets/button/bounce.dart';
 import 'package:hp3ki/views/basewidgets/preview/preview_review.dart';
 
+import 'package:hp3ki/views/screens/ecommerce/store/edit_product.dart';
 import 'package:hp3ki/views/screens/ecommerce/cart/cart.dart';
 import 'package:hp3ki/views/screens/ecommerce/order/delivery.dart';
 
@@ -178,18 +178,6 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                                   ),
                                 );
                               },
-                              // builder: (context, child) {
-                              //   return Transform.translate(
-                              //     offset: Offset(
-                              //       sin(ep.animation.value), // Shake left and right
-                              //       cos(ep.animation.value), // Shake up and down
-                              //     ),
-                              //     child: Icon(
-                              //       Icons.shopping_cart,
-                              //       size: 20.0,
-                              //     ),
-                              //   );
-                              // },
                             ),
                           ),
                         ),
@@ -197,6 +185,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                       if(notifier.getCartStatus == GetCartStatus.loaded)
                         Container(
                           margin: const EdgeInsets.only(
+                            top: 25.0,
                             right: 16.0,
                             left: 16.0
                           ),
@@ -225,7 +214,6 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                             ),
                           ),
                         ),
-
 
                       ],
                     ),

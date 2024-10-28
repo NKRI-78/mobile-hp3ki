@@ -274,7 +274,6 @@ class EcommerceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool selectedAll = true;
   bool reached = false;
   bool hasMore = false;
   int page = 1;
@@ -766,34 +765,82 @@ class EcommerceProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> storeItemSelectedAll({
-    required int i
-  }) async {
 
-    selectedAll = !selectedAll;
-    notifyListeners();
+  Future<void> storeSelected({required int i, required bool selected}) async {
+    _cartData.stores![i].selected = !_cartData.stores![i].selected;
 
-    int totalPrice = 0;
-    
-    for (StoreItem cis in cartData.stores!) {
+    for (StoreData item in cartData.stores![i].items) {
+      if(item.cart.selected) {   
 
-      for (StoreData cii in cis.items) {
-        cii.cart.selected = selectedAll;
+        item.cart.selected = false;
+   
+        int totalPrice = 0;
+        
+          for (StoreItem cis in cartData.stores!.where((el) => el.selected == true)) {
+            for (StoreData cii in cis.items.where((el) => el.cart.selected == true)) {
+              totalPrice += cii.price * cii.cart.qty;
+            }
+          }
+          _cartData.totalPrice = totalPrice; 
 
-        await er.updateSelectedAll(selected: selectedAll);
+         await er.updateSelected( 
+          selected: item.cart.selected, 
+          cartId: item.cart.id
+        );
+      } else {
+
+        if(_cartData.stores![i].selected == false) {
+          item.cart.selected = false;
+        } else {
+          item.cart.selected = true;
+        }
+        
+        int totalPrice = 0;
+        
+        for (StoreItem cis in cartData.stores!.where((el) => el.selected == true)) {
+          for (StoreData cii in cis.items.where((el) => el.cart.selected == true)) {
+            totalPrice += cii.price * cii.cart.qty;
+          }
+        }
+
+        _cartData.totalPrice = totalPrice;   
+
+        await er.updateSelected( 
+          selected: item.cart.selected, 
+          cartId: item.cart.id
+        );
       }
-
-      for (StoreData cii in cis.items.where((el) => el.cart.selected == true)) {
-        totalPrice += cii.price * cii.cart.qty;
-      }
-
     }
 
-    cartData.totalPrice = totalPrice;
-
     notifyListeners();
-
   }
+
+
+  // Future<void> storeItemSelectedAll({
+  //   required int i
+  // }) async {
+
+  //   int totalPrice = 0;
+    
+  //   for (StoreItem cis in cartData.stores!) {
+
+  //     for (StoreData cii in cis.items) {
+  //       cii.cart.selected = true;
+
+  //       await er.updateSelectedAll(selected: selectedAll);
+  //     }
+
+  //     for (StoreData cii in cis.items.where((el) => el.cart.selected == true)) {
+  //       totalPrice += cii.price * cii.cart.qty;
+  //     }
+
+  //   }
+
+  //   cartData.totalPrice = totalPrice;
+
+  //   notifyListeners();
+
+  // }
 
   Future<void> storeItemSelected({
     required int i,
@@ -802,12 +849,10 @@ class EcommerceProvider extends ChangeNotifier {
   }) async {
     if(cartData.stores![i].items[z].cart.selected)  {
 
-      cartData.stores![i].items[z].cart.selected = false;
-
-      selectedAll = false;
+      _cartData.stores![i].items[z].cart.selected = false;
 
       if(cartData.stores![i].items.where((el) => el.cart.selected == true).toList().isEmpty) {
-        cartData.stores![i].selected = false;
+        _cartData.stores![i].selected = false;
       }
 
       int totalPrice = 0;
@@ -818,14 +863,14 @@ class EcommerceProvider extends ChangeNotifier {
         }
       }
 
-      cartData.totalPrice = totalPrice;
+      _cartData.totalPrice = totalPrice;
 
       await er.updateSelected(selected: false, cartId: cartIdParam);
 
     }  else {
       
-      cartData.stores![i].selected = true;
-      cartData.stores![i].items[z].cart.selected = true;
+      _cartData.stores![i].selected = true;
+      _cartData.stores![i].items[z].cart.selected = true;
 
       int totalPrice = 0;
       
@@ -833,13 +878,9 @@ class EcommerceProvider extends ChangeNotifier {
         for (StoreData cii in cis.items.where((el) => el.cart.selected == true)) {
           totalPrice += cii.price * cii.cart.qty;
         }
-
-        if(cis.items.every((el) => el.cart.selected == true)) {
-          selectedAll = true;
-        }
       }
 
-      cartData.totalPrice = totalPrice;
+      _cartData.totalPrice = totalPrice;
 
       await er.updateSelected(selected: true, cartId: cartIdParam);
     }
@@ -1152,7 +1193,7 @@ class EcommerceProvider extends ChangeNotifier {
       }
 
       NS.pop();
-      
+
       fetchProduct(productId: id);
 
       setStateUpdateProductStatus(UpdateProductStatus.loaded);
@@ -2030,7 +2071,7 @@ class EcommerceProvider extends ChangeNotifier {
       
       if(paymentCode == "gopay" || paymentCode == "shopee" || paymentCode == "ovo" || paymentCode == "dana") {
 
-        ResponseMidtransEmoney responseMidtransEmoney = await er.EmoneyPay(
+        ResponseMidtransEmoney responseMidtransEmoney = await er.emoneyPay(
           amount: amount, 
           app: "hp3ki", 
           from: from,
@@ -2106,7 +2147,7 @@ class EcommerceProvider extends ChangeNotifier {
 
       if(paymentCode == "gopay" || paymentCode == "shopee" || paymentCode == "ovo" || paymentCode == "dana") {
 
-        ResponseMidtransEmoney responseMidtransEmoney = await er.EmoneyPayTopup(
+        ResponseMidtransEmoney responseMidtransEmoney = await er.emoneyPayTopup(
           amount: selectedTopupPrice, 
           app: "hp3ki", 
           channelId: channelId, 
