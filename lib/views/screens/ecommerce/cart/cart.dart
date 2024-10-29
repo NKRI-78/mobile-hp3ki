@@ -150,7 +150,7 @@ class CartScreenState extends State<CartScreen> {
       body: RefreshIndicator.adaptive(
         onRefresh: () {
           return Future.sync(() {
-            
+            getData();
           });
         },
         child: Consumer<EcommerceProvider>(
@@ -224,6 +224,21 @@ class CartScreenState extends State<CartScreen> {
                       ),
                       sliver: SliverList(
                         delegate: SliverChildListDelegate([
+
+                          CheckboxListTile( 
+                            title: Text('Pilih semua',
+                              style: robotoRegular.copyWith(
+                                fontSize: Dimensions.fontSizeDefault,
+                                color: ColorResources.black
+                              ),
+                            ),
+                            value: notifier.selectedAll, 
+                            onChanged: (bool? val) {
+                              notifier.onSelectedAll(val!);
+                            }
+                          ),
+                          
+                          const SizedBox(height: 5.0),
                                     
                           ListView.builder(
                             physics: const NeverScrollableScrollPhysics(),

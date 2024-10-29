@@ -57,6 +57,8 @@ class EditProductScreenState extends State<EditProductScreen> {
 
   ImageSource? imageSource;
 
+  List<int> dataFiles = [];
+
   List<File> files = [];
   List<File> newFiles = [];
   List<File> before = [];
@@ -270,6 +272,7 @@ class EditProductScreenState extends State<EditProductScreen> {
         File? file = await downloadFile(media.path);
 
         setState(() {
+          dataFiles.add(media.id);
           before.add(file!);
           files.add(file);
         });
@@ -484,11 +487,13 @@ class EditProductScreenState extends State<EditProductScreen> {
                                 Positioned(
                                   right: 0.0,
                                   child: InkWell(
-                                    onTap: () {
+                                    onTap: () async {
                                       int i = files.indexOf(files[index]);
-                                      setState(() {
-                                        files.removeAt(i);
-                                      });
+                                      setState(() => files.removeAt(i));
+
+                                      int id = dataFiles[i];
+                                      
+                                      await ecommerceProvider.deleteProductImage(id: id);
                                     },
                                     child: Container(
                                       padding: const EdgeInsets.all(5.0),

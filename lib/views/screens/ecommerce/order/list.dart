@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -113,7 +114,8 @@ class ListOrderScreenState extends State<ListOrderScreen> with SingleTickerProvi
           tabAlignment: TabAlignment.center,
           controller: tabC,
           labelStyle: robotoRegular.copyWith(
-            fontSize: Dimensions.fontSizeExtraSmall
+            fontSize: Dimensions.fontSizeExtraSmall,
+            color: ColorResources.black
           ),
           tabs: const [
             Tab(text: 'Belum bayar'),

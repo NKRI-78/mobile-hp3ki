@@ -2,6 +2,17 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:hp3ki/providers/ecommerce/ecommerce.dart';
+import 'package:hp3ki/views/screens/ecommerce/product/widget/product_item.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/services.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_glow/flutter_glow.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'package:hp3ki/localization/language_constraints.dart';
 
@@ -41,17 +52,6 @@ import 'package:hp3ki/views/screens/notification/index.dart';
 import 'package:hp3ki/views/screens/profile/profile.dart';
 import 'package:hp3ki/views/screens/sos/indexv2.dart';
 import 'package:hp3ki/views/screens/news/index.dart';
-
-import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/services.dart';
-import 'package:shimmer/shimmer.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter_glow/flutter_glow.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:permission_handler/permission_handler.dart';
-// import 'package:badges/badges.dart' as b;
 
 class DashboardScreen extends StatefulWidget {
   final int? index;
@@ -128,8 +128,10 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
   }
 
   Future<void> getData() async {
-     if (!mounted) return;
+    if (!mounted) return;
       await context.read<ProfileProvider>().remote();
+    if (!mounted) return;
+      await context.read<EcommerceProvider>().fetchAllProduct(search: "");
   }
 
   @override
@@ -138,7 +140,9 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
 
     panelC = PanelController();
 
-    selectedIndex = widget.index == null ? 0 : widget.index!;
+    selectedIndex = widget.index == null 
+    ? 0 
+    : widget.index!;
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (context.read<ProfileProvider>().isActive == 1) {
@@ -160,20 +164,24 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
         endDrawerEnableOpenDragGesture: false,
         extendBody: true,
         body: !SharedPrefs.isLoggedIn()
-        ? widgetOptions.elementAt(selectedIndex)
-        : SlidingUpPanel(
-            controller: panelC,
-            maxHeight: MediaQuery.of(context).size.height,
-            color: Colors.transparent,
-            panelSnapping: true,
-            panel: buildMenuPanel(),
-            body: widgetOptions.isEmpty
-            ? Container()
-            : widgetOptions.elementAt(selectedIndex),
-          ),
+      ? widgetOptions.elementAt(selectedIndex)
+      : SlidingUpPanel(
+          controller: panelC,
+          maxHeight: MediaQuery.of(context).size.height,
+          color: Colors.transparent,
+          panelSnapping: true,
+          panel: buildMenuPanel(),
+          body: widgetOptions.isEmpty
+          ? const SizedBox()
+          : widgetOptions.elementAt(selectedIndex),
+        ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: !SharedPrefs.isLoggedIn() ? const SizedBox() : buildMenuBar(),
-        bottomNavigationBar: !SharedPrefs.isLoggedIn() ? const SizedBox() : buildNavbar(),
+        floatingActionButton: !SharedPrefs.isLoggedIn() 
+        ? const SizedBox() 
+        : buildMenuBar(),
+        bottomNavigationBar: !SharedPrefs.isLoggedIn() 
+        ? const SizedBox() 
+        : buildNavbar(),
       ),
     );
   }
@@ -556,22 +564,12 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<HomeScreen> createState() => HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreenState extends State<HomeScreen> {
 
   int currentIndex = 0;
-
-  // Future<void> initShop() async {
-  //   try {
-  //     final client = DioManager.shared.getClient();
-  //     final res = await client.get("${AppConstants.baseUrl}/api/v1/product/list?page=1&cat=");
-  //     shops = ShopModel.fromJson(res.data["data"]);
-  //   } catch (e) {
-  //     debugPrint(e.toString());
-  //   }
-  // }
 
   Future<void> getData() async {
     if (mounted) {
@@ -1334,73 +1332,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildProductsSection() {
-    // List products = [
-    //   {
-    //     "name":
-    //         "Velg Racing Mobil Pajero Sport Ring 20 HSR TSUYOI Velk Mobil Fortuner Triton Dmax R20",
-    //     "image":
-    //         "https://s2.bukalapak.com/img/20200500103/large/data.jpeg.webp",
-    //     "price": "12400000",
-    //   },
-    //   {
-    //     "name":
-    //         "Velg Mobil Vellfire 18x7.5 Pcd 5x114.3 ET 40 Black Polish Alphard",
-    //     "image":
-    //         "https://images.tokopedia.net/img/cache/900/VqbcmM/2021/7/7/a5f5d5ac-fcf1-409c-973c-53234a7a5a80.jpg",
-    //     "price": "7000000",
-    //   },
-    //   {
-    //     "name":
-    //         "Aksesoris Variasi Stoplamp Taillamp LED Meteo Axis Alphard ANH30 15+",
-    //     "image":
-    //         "https://images.tokopedia.net/img/cache/900/VqbcmM/2020/12/7/980d289a-93c0-4829-ab7d-2856850e43b0.jpg",
-    //     "price": "8800000",
-    //   },
-    //   {
-    //     "name":
-    //         "Toyota Vellfire Sarung Cover Mobil Durable Rubik | Guardian |Xtrem – Rubik",
-    //     "image":
-    //         "https://images.tokopedia.net/img/cache/900/hDjmkQ/2023/4/27/8b6764ef-e2fd-463b-9198-ee41f398691f.jpg",
-    //     "price": "870000",
-    //   },
-    //   {
-    //     "name": "Tas Thule VNJ ",
-    //     "image":
-    //         "https://images.tokopedia.net/img/cache/900/hDjmkQ/2021/1/11/bbabfbf8-3f75-4630-bb9b-fa0df0e063fc.jpg",
-    //     "price": "3800000",
-    //   },
-    //   {
-    //     "name": "SHOCKBREAKER DEPAN PAJERO SPORT ORIGINAL 4062A085",
-    //     "image":
-    //         "https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full//88/MTA-12139144/mitsubishi_shockbreaker_pajero_sport_-_triton_depan_belakang_original_premium_hitam_full01_d42eef41.jpg",
-    //     "price": "1800000",
-    //   },
-    //   {
-    //     "name": "Pac Makeup Kit New Edition",
-    //     "image":
-    //         "https://images.tokopedia.net/img/cache/900/attachment/2019/9/14/156847459919831/156847459919831_fbd91887-c44f-41e0-8a9c-14e7153e85b8.png",
-    //     "price": "3800000",
-    //   },
-    //   {
-    //     "name": "Set Alat Rias 7-in-1 dengan Dompet Plastik",
-    //     "image":
-    //         "https://images.tokopedia.net/img/cache/900/product-1/2013/9/30/2519619/2519619_06b76f48-29ae-11e3-b923-c35c2523fab8.jpg",
-    //     "price": "29900",
-    //   },
-    //   {
-    //     "name": "Sanggul Modern Variasi Terbaru Sanggul Bali Sanggul Batak",
-    //     "image":
-    //         "https://s2.bukalapak.com/img/71414911003/large/data.jpeg.webp",
-    //     "price": "40000",
-    //   },
-    //   {
-    //     "name": "Lore Jewellery - Kinara Simple Moissanite Ring 0.01 Carat – 4",
-    //     "image":
-    //         "https://images.tokopedia.net/img/cache/900/VqbcmM/2023/3/20/461ff11b-0d40-4ec8-b960-36ad7f2d7481.jpg",
-    //     "price": "548900",
-    //   },
-    // ];
-
     return SliverToBoxAdapter(
       child: Consumer<NewsProvider>(
         builder: (context, provider, _) {
@@ -1428,6 +1359,8 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           } else {
             return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
                   padding: const EdgeInsets.only(
@@ -1448,135 +1381,72 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ),
-              const SizedBox(height: 10),
-              context.watch<ProfileProvider>().isActive != 1
-              ? const SizedBox()
-              : const SizedBox(),
-              // : SizedBox(
-              //     height: 280,
-              //     width: double.infinity,
-              //     child: ListView.builder(
-              //       padding: const EdgeInsets.only(
-              //         left: Dimensions.marginSizeExtraLarge,
-              //       ),
-              //       physics: const BouncingScrollPhysics(
-              //           parent: AlwaysScrollableScrollPhysics()),
-              //       scrollDirection: Axis.horizontal,
-              //       itemCount: products.take(4).length,
-              //       itemBuilder: (context, i) {
-                      
-              //         final product = products[i];
+                const SizedBox(height: 10),
 
-              //         return SizedBox(
-              //           width: 180.0,
-              //           child: Card(
-              //             elevation: 5.0,
-              //             shape: RoundedRectangleBorder(
-              //               borderRadius: BorderRadius.circular(15.0)
-              //             ),
-              //             color: const Color.fromARGB(141, 68, 99, 158).withOpacity(0.7),
-              //             child: InkWell(
-              //               onTap: () async {
-              //                 NS.push(context, const MaintainScreen());
-              //               },
-              //               borderRadius: BorderRadius.circular(15.0),
-              //               child: Column(
-              //                 crossAxisAlignment: CrossAxisAlignment.start,
-              //                 children: [
-              //                   Container(
-              //                     padding: const EdgeInsets.all(10.0),
-              //                     decoration: BoxDecoration(
-              //                       borderRadius: BorderRadius.circular(15.0),
-              //                     ),
-              //                     child: CachedNetworkImage(
-              //                       fit: BoxFit.cover,
-              //                       imageUrl: product['image'],
-              //                       imageBuilder: (BuildContext context,
-              //                           ImageProvider imageProvider) {
-              //                         return Container(
-              //                           height: 165.0,
-              //                           decoration: BoxDecoration(
-              //                               borderRadius:
-              //                                   BorderRadius.circular(15.0),
-              //                               image: DecorationImage(
-              //                                   image: imageProvider,
-              //                                   fit: BoxFit.cover)),
-              //                         );
-              //                       },
-              //                       errorWidget: (BuildContext context, String value, dynamic _) {
-              //                         return Container(
-              //                           height: 165.0,
-              //                           decoration: const BoxDecoration(
-              //                             image: DecorationImage(
-              //                               image: AssetImage("assets/images/logo/logo.png")
-              //                             )
-              //                           ),
-              //                         );  
-              //                       },
-              //                       placeholder: (context, url) {
-              //                         return Container(
-              //                           height: 165.0,
-              //                           decoration: const BoxDecoration(
-              //                             image: DecorationImage(
-              //                               image: AssetImage("assets/images/logo/logo.png")
-              //                             )
-              //                           ),
-              //                         );  
-              //                       },
-              //                     ),
-              //                   ),
-              //                   Padding(
-              //                     padding: const EdgeInsets.symmetric(
-              //                       vertical: 2.0,
-              //                       horizontal: 8.0,
-              //                     ),
-              //                     child: Column(
-              //                       crossAxisAlignment: CrossAxisAlignment.start,
-              //                       mainAxisAlignment: MainAxisAlignment.start,
-              //                       children: [
+                Consumer<EcommerceProvider>(
+                  builder: (_, notifier, __) {
 
-              //                         Text(product['name'],
-              //                           style: interRegular.copyWith(
-              //                             fontSize: Dimensions.fontSizeDefault,
-              //                             color: ColorResources.white,
-              //                           ),
-              //                           maxLines: 2,
-              //                           softWrap: true,
-              //                           overflow: TextOverflow.ellipsis,
-              //                         ),
-                                      
-              //                         const SizedBox(height: 10),
+                    if(notifier.listProductStatus == ListProductStatus.loading) {
+                      return const SizedBox(
+                        height: 300.0,
+                        child: Center(
+                          child: SizedBox(
+                            width: 16.0,
+                            height: 16.0,
+                            child: CircularProgressIndicator(
+                              color: ColorResources.white,  
+                            ),
+                          )
+                        )
+                      );
+                    }
 
-              //                         Text(Helper.formatCurrency(product['price'] ?? 0),
-              //                           style: interRegular.copyWith(
-              //                             color: ColorResources.white,
-              //                             fontSize: Dimensions.fontSizeExtraLarge,
-              //                             fontWeight: FontWeight.bold,
-              //                           ),
-              //                           maxLines: 1,
-              //                           overflow: TextOverflow.ellipsis,
-              //                         ),
+                    if(notifier.listProductStatus == ListProductStatus.empty) {
+                      return SizedBox(
+                        height: 300.0,
+                        child: Center(
+                          child: SizedBox(
+                            width: 16.0,
+                            height: 16.0,
+                            child: Text("Yaa.. Produk tidak ditemukan",
+                              style: robotoRegular.copyWith(
+                                fontSize: Dimensions.fontSizeDefault
+                              ),
+                            )
+                          )
+                        )
+                      );
+                    }
 
-              //                         const SizedBox(height: 5),
+                    return SizedBox(
+                      height: 300.0,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.only(
+                          top: 10.0,
+                          left: 16.0,
+                          right: 16.0
+                        ),
+                        itemCount: notifier.products.take(5).length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final product = notifier.products[index];
+                          return ProductItem(product: product);
+                        },
+                      ),
+                    );
 
-              //                       ],
-              //                     ),
-              //                   ),
-              //                 ],
-              //               ),
-              //             ),
-              //           ),
-              //         );
-              //       },
-              //     ),
-              //   ),
+                  },
+                ),
+             
+                //TO AVOID OVERLAPS WITH THE BOTTOM NAVBAR
+                //THE HEIGHT IS BASED ON (NAVBAR'S HEIGHT + 40)
+                const SizedBox(
+                  height: 130,
+                )
 
-              //TO AVOID OVERLAPS WITH THE BOTTOM NAVBAR
-              //THE HEIGHT IS BASED ON (NAVBAR'S HEIGHT + 40)
-              const SizedBox(
-                height: 130,
-              )
-            ]);
+              ]
+            );
           }
         },
       ),

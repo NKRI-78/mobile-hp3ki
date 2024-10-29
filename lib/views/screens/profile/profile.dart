@@ -4,7 +4,6 @@ import 'dart:io';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
-import 'package:hp3ki/views/screens/ecommerce/store/store_info.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:path_provider/path_provider.dart';
@@ -34,6 +33,7 @@ import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
 import 'package:hp3ki/views/basewidgets/dialog/custom/custom.dart';
 
+import 'package:hp3ki/views/screens/ecommerce/store/store_info.dart';
 import 'package:hp3ki/views/screens/ecommerce/store/create_update_store.dart';
 import 'package:hp3ki/views/screens/auth/change_password.dart';
 import 'package:hp3ki/views/screens/privacy_policy/privacy_policy.dart';
@@ -228,7 +228,11 @@ class ProfileScreenState extends State<ProfileScreen> {
                 ),
                 slivers: [
                   buildUserKTA(),
-                  buildCreateStore(),
+                  isPlatinum  
+                  ? buildCreateStore()
+                  : const SliverToBoxAdapter(
+                      child: SizedBox()
+                    ),
                   buildUserDetails(),
                   buildNoReferral(),
                   buildChangePassword(),
@@ -236,7 +240,10 @@ class ProfileScreenState extends State<ProfileScreen> {
                   buildLogout(),
                 ],
               ),
-              Align(alignment: Alignment.bottomCenter, child: buildUserInfoBox()),
+              Align(
+                alignment: Alignment.bottomCenter, 
+                child: buildUserInfoBox()
+              ),
             ],
           ),
         ),

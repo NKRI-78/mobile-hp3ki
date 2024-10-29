@@ -63,6 +63,7 @@ enum UpdateProductStatus { idle, loading, loaded, empty, error }
 enum ListProductTransactionStatus { idle, loading, loaded, empty, error }
 enum DetailProductStatus { idle, loading, loaded, empty, error }
 enum DeleteProductStatus { idle, loading, loaded, empty, error }
+enum DeleteProductImageStatus { idle, loading, loaded, empty, error }
 
 enum BalanceStatus { idle, loading, loaded, empty, error }
 
@@ -276,6 +277,8 @@ class EcommerceProvider extends ChangeNotifier {
 
   bool reached = false;
   bool hasMore = false;
+  bool selectedAll = false;
+  
   int page = 1;
 
   int listenQty = -1;
@@ -314,6 +317,9 @@ class EcommerceProvider extends ChangeNotifier {
 
   DeleteProductStatus _deleteProductStatus = DeleteProductStatus.idle;
   DeleteProductStatus get deleteProductStatus => _deleteProductStatus;
+
+  DeleteProductImageStatus _deleteProductImageStatus = DeleteProductImageStatus.idle;
+  DeleteProductImageStatus get deleteProductImageStatus => _deleteProductImageStatus;
 
   UpdateProductStatus _updateProductStatus = UpdateProductStatus.idle;
   UpdateProductStatus get updateProductStatus => _updateProductStatus;
@@ -488,6 +494,12 @@ class EcommerceProvider extends ChangeNotifier {
 
   void setStateDeleteProductStatus(DeleteProductStatus param) {
     _deleteProductStatus = param;
+
+    notifyListeners();
+  }
+
+  void setStateDeleteProductImageStatus(DeleteProductImageStatus param) {
+    _deleteProductImageStatus = param;
 
     notifyListeners();
   }
@@ -765,6 +777,47 @@ class EcommerceProvider extends ChangeNotifier {
     }
   }
 
+  void onSelectedAll(bool val) {
+    selectedAll = val;
+
+    if(selectedAll) {
+      
+      int totalPrice = 0;
+
+      for (StoreItem store in cartData.stores!) {
+        store.selected = selectedAll;
+
+        for (StoreData storeData in store.items) {
+          storeData.cart.selected = selectedAll;
+
+          totalPrice += storeData.price * storeData.cart.qty;
+        }
+      }
+
+      _cartData.totalPrice = totalPrice; 
+
+      er.updateSelectedAll(selected: selectedAll);
+
+    } else {
+
+      int totalPrice = 0;
+
+      for (StoreItem store in cartData.stores!) {
+        store.selected = selectedAll;
+
+        for (StoreData storeData in store.items) {
+          storeData.cart.selected = selectedAll;
+        }
+      }
+
+      _cartData.totalPrice = totalPrice; 
+
+      er.updateSelectedAll(selected: selectedAll);
+
+    }
+
+    notifyListeners();
+  }
 
   Future<void> storeSelected({required int i, required bool selected}) async {
     _cartData.stores![i].selected = !_cartData.stores![i].selected;
@@ -776,25 +829,26 @@ class EcommerceProvider extends ChangeNotifier {
    
         int totalPrice = 0;
         
-          for (StoreItem cis in cartData.stores!.where((el) => el.selected == true)) {
-            for (StoreData cii in cis.items.where((el) => el.cart.selected == true)) {
-              totalPrice += cii.price * cii.cart.qty;
-            }
+        for (StoreItem cis in cartData.stores!.where((el) => el.selected == true)) {
+          for (StoreData cii in cis.items.where((el) => el.cart.selected == true)) {
+            totalPrice += cii.price * cii.cart.qty;
           }
-          _cartData.totalPrice = totalPrice; 
+        }
 
-         await er.updateSelected( 
+        _cartData.totalPrice = totalPrice; 
+
+        await er.updateSelected( 
           selected: item.cart.selected, 
           cartId: item.cart.id
         );
       } else {
 
-        if(_cartData.stores![i].selected == false) {
+        if(cartData.stores![i].selected == false) {
           item.cart.selected = false;
         } else {
           item.cart.selected = true;
         }
-        
+          
         int totalPrice = 0;
         
         for (StoreItem cis in cartData.stores!.where((el) => el.selected == true)) {
@@ -810,37 +864,19 @@ class EcommerceProvider extends ChangeNotifier {
           cartId: item.cart.id
         );
       }
+
+    }
+
+    bool allStoreActive = cartData.stores!.every((item) => item.selected == true);
+
+    if(allStoreActive) {
+      selectedAll = true;
+    } else {
+      selectedAll = false;
     }
 
     notifyListeners();
   }
-
-
-  // Future<void> storeItemSelectedAll({
-  //   required int i
-  // }) async {
-
-  //   int totalPrice = 0;
-    
-  //   for (StoreItem cis in cartData.stores!) {
-
-  //     for (StoreData cii in cis.items) {
-  //       cii.cart.selected = true;
-
-  //       await er.updateSelectedAll(selected: selectedAll);
-  //     }
-
-  //     for (StoreData cii in cis.items.where((el) => el.cart.selected == true)) {
-  //       totalPrice += cii.price * cii.cart.qty;
-  //     }
-
-  //   }
-
-  //   cartData.totalPrice = totalPrice;
-
-  //   notifyListeners();
-
-  // }
 
   Future<void> storeItemSelected({
     required int i,
@@ -883,6 +919,14 @@ class EcommerceProvider extends ChangeNotifier {
       _cartData.totalPrice = totalPrice;
 
       await er.updateSelected(selected: true, cartId: cartIdParam);
+    }
+
+    bool allStoreActive = cartData.stores!.every((item) => item.selected == true);
+
+    if(allStoreActive) {
+      selectedAll = true;
+    } else {
+      selectedAll = false;
     }
 
     notifyListeners();
@@ -1100,6 +1144,20 @@ class EcommerceProvider extends ChangeNotifier {
       setStateDeleteProductStatus(DeleteProductStatus.loaded);
     } catch(e) {
       setStateDeleteProductStatus(DeleteProductStatus.error);  
+    }
+  }
+
+  Future<void> deleteProductImage({
+    required int id
+  }) async {
+    setStateDeleteProductImageStatus(DeleteProductImageStatus.loading);
+    try {
+
+      await er.deleteProductImage(id: id);
+
+      setStateDeleteProductImageStatus(DeleteProductImageStatus.loaded);
+    } catch(e) {
+      setStateDeleteProductImageStatus(DeleteProductImageStatus.error);
     }
   }
 

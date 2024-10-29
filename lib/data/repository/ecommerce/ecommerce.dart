@@ -82,6 +82,26 @@ class EcommerceRepo {
     }
   }
 
+  Future<void> deleteProductImage({
+    required int id
+  }) async {
+    try {
+      Dio dio = DioManager.shared.getClient();
+      await dio.delete("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/products/delete-product-image",
+        data: {
+          "id": id
+        }
+      );
+    } on DioError catch(e) {
+      debugPrint(e.response!.data.toString());
+      throw Exception("Failed delete product image");
+    } catch(e, stacktrace) {
+      debugPrint(e.toString());
+      debugPrint(stacktrace.toString());
+      throw Exception("Failed delete product image");
+    }
+  }
+
   Future<void> deleteProduct({
     required String productId
   }) async {
