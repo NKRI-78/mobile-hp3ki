@@ -1348,7 +1348,7 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
             ],
           ),
           child: TextFormField(
-            readOnly: true,
+            readOnly: false,
             controller: postCodeC,
             keyboardType: TextInputType.text,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -1595,6 +1595,7 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
                                 ),
                                 child: TextFormField(
                                   controller: descStoreC,
+                                  maxLines: null,
                                   autofocus: true,
                                   decoration: const InputDecoration(
                                     fillColor: ColorResources.white,

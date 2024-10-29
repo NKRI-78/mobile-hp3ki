@@ -626,14 +626,17 @@ class AddProductScreenState extends State<AddProductScreen> {
                                   thickness: 3,
                                 ),
                                 Container(
-                                  padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 16.0),
+                                  padding: const EdgeInsets.only(
+                                    left: 16.0, right: 16.0, 
+                                    top: 8.0, bottom: 16.0
+                                  ),
                                   decoration: BoxDecoration(
                                     color: ColorResources.white,
                                     borderRadius: BorderRadius.circular(10.0)
                                   ),
                                   child: TextFormField(
                                     autofocus: true,
-                                    controller: descC,
+                                    maxLines: null,
                                     textCapitalization: TextCapitalization.sentences,
                                     decoration: const InputDecoration(
                                       fillColor: ColorResources.white,
@@ -643,6 +646,7 @@ class AddProductScreenState extends State<AddProductScreen> {
                                       errorBorder: InputBorder.none,
                                       disabledBorder: InputBorder.none,
                                     ),
+                                    controller: descC,
                                     keyboardType: TextInputType.multiline,
                                     style: robotoRegular
                                   ),
@@ -674,7 +678,7 @@ class AddProductScreenState extends State<AddProductScreen> {
                     width: 0.5
                   ),
                 ),
-                child: Text(descC.text == '' 
+                child: Text(descC.text == ""
                   ? "" 
                   : descC.text,
                   style: robotoRegular.copyWith(

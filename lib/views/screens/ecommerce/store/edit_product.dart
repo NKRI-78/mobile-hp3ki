@@ -726,7 +726,7 @@ class EditProductScreenState extends State<EditProductScreen> {
                                   ),
                                   child: TextFormField(
                                     autofocus: true,
-                                    controller: descC,
+                                    maxLines: null,
                                     textCapitalization: TextCapitalization.sentences,
                                     decoration: const InputDecoration(
                                       fillColor: ColorResources.white,
@@ -736,6 +736,7 @@ class EditProductScreenState extends State<EditProductScreen> {
                                       errorBorder: InputBorder.none,
                                       disabledBorder: InputBorder.none,
                                     ),
+                                    controller: descC,
                                     keyboardType: TextInputType.multiline,
                                     style: robotoRegular
                                   ),
