@@ -43,7 +43,7 @@ class ProductsSellerScreenState extends State<ProductsSellerScreen> {
       await ep.fetchAllProductSeller(search: "", storeId: widget.storeId);
 
     if(!mounted) return;
-      await ep.fetchAllProductCategory();
+      await ep.fetchAllProductCategory(isFromCreateProduct: false);
   }
 
   @override 

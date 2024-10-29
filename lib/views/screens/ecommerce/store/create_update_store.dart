@@ -339,6 +339,8 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
               child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+
+                toggleIsOpen(),
                 
                 Stack(
                   clipBehavior: Clip.none,
@@ -461,13 +463,7 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
                 ),
 
                 inputFieldDescriptionStore(),    
-                
-                const SizedBox(
-                  height: 15.0,
-                ),
-
-                toggleIsOpen(),
-
+     
                 const SizedBox(
                   height: 25.0,
                 ),

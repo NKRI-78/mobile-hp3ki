@@ -42,7 +42,7 @@ class ProductsScreenState extends State<ProductsScreen> {
       await ep.fetchAllProduct(search: "");
 
     if(!mounted) return;
-      await ep.fetchAllProductCategory();
+      await ep.fetchAllProductCategory(isFromCreateProduct: false);
 
     if(!mounted) return;
       await ep.getCart();

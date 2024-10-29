@@ -64,7 +64,9 @@ class AddProductScreenState extends State<AddProductScreen> {
 
   Future<void> getData() async {
     if(!mounted) return;
-      ecommerceProvider.fetchAllProductCategory();
+      ecommerceProvider.fetchAllProductCategory(
+        isFromCreateProduct: true
+      );
   }
 
   void pickImage() async {
@@ -397,30 +399,60 @@ class AddProductScreenState extends State<AddProductScreen> {
                         itemCount: files.length + 1,
                         itemBuilder: (BuildContext context, int index) {
                           if (index < files.length) {
-                            return Container(
-                              height: 80,
-                              width: 80,
-                              margin: const EdgeInsets.only(right: 4),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                    color: Colors.grey[400]!
-                                ),
-                                color: Colors.grey[350]
-                              ),
-                              child: Center(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: FadeInImage(
-                                    fit: BoxFit.cover,
-                                    height: double.infinity,
-                                    width: double.infinity,
-                                    image: FileImage(files[index]),
-                                    placeholder: const AssetImage("assets/images/default_image.png")
+                            return Stack(
+                              children: [
+                                
+                                Container(
+                                  height: 80,
+                                  width: 80,
+                                  margin: const EdgeInsets.only(right: 4),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                        color: Colors.grey[400]!
+                                    ),
+                                    color: Colors.grey[350]
+                                  ),
+                                  child: Center(
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: FadeInImage(
+                                        fit: BoxFit.cover,
+                                        height: double.infinity,
+                                        width: double.infinity,
+                                        image: FileImage(files[index]),
+                                        placeholder: const AssetImage("assets/images/default_image.png")
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            );
+
+                                Positioned(
+                                  right: 0.0,
+                                  child: InkWell(
+                                    onTap: () async {
+                                      int i = files.indexOf(files[index]);
+                                      setState(() => files.removeAt(i));
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.all(5.0),
+                                      decoration: const BoxDecoration(
+                                        color: ColorResources.white,
+                                        borderRadius: BorderRadius.only(
+                                          bottomLeft: Radius.circular(10.0)
+                                        )
+                                      ),
+                                      child: const Icon(
+                                        Icons.delete,
+                                        size: 18.0,
+                                        color: ColorResources.error,
+                                      ),
+                                    ),
+                                  ),
+                                )
+
+                              ]
+                            ); 
                           } else {
                             return GestureDetector(
                               onTap: () {

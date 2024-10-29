@@ -1063,18 +1063,21 @@ class EcommerceProvider extends ChangeNotifier {
     } 
   }
 
-  Future<void> fetchAllProductCategory() async {
+  Future<void> fetchAllProductCategory({required bool isFromCreateProduct}) async {
     try {
 
       ProductCategoryModel productCategoryModel = await er.fetchProductCategory();
 
       _productCategories = [];
-      _productCategories.add(
-        ProductCategoryData(
-          id: "30a58b87-4157-44fd-b840-f5b3d6691820",
-          name: "Semua"
-        )
-      );
+
+      if(!isFromCreateProduct) {
+        _productCategories.add(
+          ProductCategoryData(
+            id: "30a58b87-4157-44fd-b840-f5b3d6691820",
+            name: "Semua"
+          )
+        );
+      }
       _productCategories.addAll(productCategoryModel.data);
       setStateGetProductCategoryStatus(GetProductCategoryStatus.loaded);
 
