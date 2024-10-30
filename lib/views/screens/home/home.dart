@@ -1370,14 +1370,28 @@ class HomeScreenState extends State<HomeScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+
                       Text('Mart',
-                        style: poppinsRegular.copyWith(
+                        style: robotoRegular.copyWith(
                           fontSize: Dimensions.fontSizeExtraLarge,
                           fontWeight: FontWeight.bold,
                           color: ColorResources.white,
                           shadows: boxShadow
                         ),
                       ),
+
+                      GestureDetector(
+                        onTap: () {
+                          NS.push(context, const ProductsScreen());
+                        },
+                        child: Text('Lihat semua',
+                          style: robotoRegular.copyWith(
+                            color: ColorResources.yellowSecondaryV5,
+                            shadows: boxShadow
+                          ),
+                        ),
+                      )
+
                     ],
                   ),
                 ),

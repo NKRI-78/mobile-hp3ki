@@ -46,18 +46,18 @@ class CartScreen extends StatefulWidget {
 
 class CartScreenState extends State<CartScreen> {
 
-  late EcommerceProvider ep;
+  late EcommerceProvider ecommerceProvider;
 
   Future<void> getData() async {
     if(!mounted) return;
-      ep.getCart();
+      ecommerceProvider.getCart();
   }
 
   @override 
   void initState() {
     super.initState();
 
-    ep = context.read<EcommerceProvider>();
+    ecommerceProvider = context.read<EcommerceProvider>();
 
     Future.microtask(() => getData());
   }
@@ -119,28 +119,35 @@ class CartScreenState extends State<CartScreen> {
                   ),
                 ),
                 
-                Container(
-                  margin: const EdgeInsets.only(
-                    right: 10.0
+                Flexible(
+                  child: Container(
+                    width: 110.0,
+                    margin: const EdgeInsets.only(
+                      left: 10.0,
+                      right: 10.0
+                    ),
+                    child: CustomButton(
+                      onTap: notifier.cartData.totalPrice == 0 
+                      ? () {} 
+                      : () {
+                        NS.push(context, const DeliveryScreen(
+                          from: "cart",
+                        ));
+                      },
+                      isBorder: false,
+                      isBorderRadius: true,
+                      sizeBorderRadius: 5.0,
+                      isBoxShadow: false,
+                      fontSize: Dimensions.fontSizeSmall,
+                      isLoading: false,
+                      btnColor: notifier.cartData.totalPrice == 0 
+                      ? ColorResources.grey 
+                      : ColorResources.purple,
+                      btnTxt: "Selanjutnya",
+                    ),
                   ),
-                  width: 90.0,
-                  height: 40.0,
-                  child: CustomButton(
-                    onTap: () {
-                      NS.push(context, const DeliveryScreen(
-                        from: "cart",
-                      ));
-                    },
-                    isBorder: false,
-                    isBorderRadius: true,
-                    sizeBorderRadius: 5.0,
-                    isBoxShadow: false,
-                    fontSize: Dimensions.fontSizeSmall,
-                    isLoading: false,
-                    btnColor: ColorResources.purple,
-                    btnTxt: "Selanjutnya",
-                  ),
-                )
+                ),
+
               ],
             ),
           );

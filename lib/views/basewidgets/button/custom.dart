@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:hp3ki/utils/box_shadow.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
-import 'package:hp3ki/utils/dimensions.dart';
 
 import 'package:hp3ki/views/basewidgets/button/bounce.dart';
 
@@ -108,7 +107,7 @@ class CustomButton extends StatelessWidget {
                   style: poppinsRegular.copyWith(
                     color: btnTextColor,
                     fontWeight: FontWeight.bold,
-                    fontSize: Dimensions.fontSizeDefault,
+                    fontSize: fontSize
                   ) 
                 ),
               ),

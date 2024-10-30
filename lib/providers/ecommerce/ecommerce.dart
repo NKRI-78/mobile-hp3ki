@@ -278,6 +278,7 @@ class EcommerceProvider extends ChangeNotifier {
   bool reached = false;
   bool hasMore = false;
   bool selectedAll = false;
+  bool selectedAllProduct = false;
   
   int page = 1;
 
@@ -777,6 +778,24 @@ class EcommerceProvider extends ChangeNotifier {
     }
   }
 
+  void onSelectedAllProduct(bool val) {
+    selectedAllProduct = val;
+
+    for (Product productSeller in productSellers) {
+      productSeller.selected = val;
+    }
+  
+    notifyListeners();
+  }
+
+  void onSelectedProduct({required String id, required bool val}) {
+    int i = productSellers.indexWhere((el) => el.id == id);
+
+    _productSellers[i].selected = val;
+
+    notifyListeners();
+  }
+
   void onSelectedAll(bool val) {
     selectedAll = val;
 
@@ -1145,6 +1164,22 @@ class EcommerceProvider extends ChangeNotifier {
       fetchAllProduct(search: "");
     
       setStateDeleteProductStatus(DeleteProductStatus.loaded);
+    } catch(e) {
+      setStateDeleteProductStatus(DeleteProductStatus.error);  
+    }
+  }
+
+  Future<void> deleteProductSelect() async {
+    setStateDeleteProductStatus(DeleteProductStatus.loading);  
+    try {
+
+      for (Product product in productSellers.where((el) => el.selected == true)) {
+        String productId = product.id;
+    
+        await er.deleteProduct(productId: productId);
+      }
+
+      setStateDeleteProductStatus(DeleteProductStatus.loaded);  
     } catch(e) {
       setStateDeleteProductStatus(DeleteProductStatus.error);  
     }

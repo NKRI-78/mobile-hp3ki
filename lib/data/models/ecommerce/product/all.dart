@@ -78,6 +78,7 @@ class Product {
   List<Review> reviews;
   Category category;
   Store store;
+  bool selected;
 
   Product({
     required this.id,
@@ -90,6 +91,7 @@ class Product {
     required this.reviews,
     required this.category,
     required this.store,
+    this.selected = false
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(

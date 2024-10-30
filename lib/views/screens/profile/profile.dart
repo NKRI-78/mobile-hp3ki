@@ -944,7 +944,9 @@ class ProfileScreenState extends State<ProfileScreen> {
               : 'Buat Toko',
               onTap: () {
                 if(notifier.ownerModel.data!.haveStore) {
-                  NS.push(context, const StoreInfoScreen());
+                  NS.push(context, StoreInfoScreen(
+                    storeId: notifier.ownerModel.data!.storeId,
+                  ));
                 } else {
                   NS.push(context, const CreateStoreOrUpdateScreen());
                 }
