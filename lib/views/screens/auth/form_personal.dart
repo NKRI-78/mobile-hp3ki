@@ -1,35 +1,39 @@
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:hp3ki/data/models/user/user.dart';
-import 'package:hp3ki/providers/media/media.dart';
-import 'package:hp3ki/providers/profile/profile.dart';
-import 'package:hp3ki/providers/region_dropdown/region_dropdown.dart';
-import 'package:hp3ki/utils/shared_preferences.dart';
-import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:dotted_border/dotted_border.dart';
-import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
-import 'package:hp3ki/views/basewidgets/dropdown/dropdown.dart';
 import 'package:provider/provider.dart';
+
+import 'package:hp3ki/data/models/user/user.dart';
+
 import 'package:hp3ki/localization/language_constraints.dart';
+
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
+import 'package:hp3ki/utils/shared_preferences.dart';
+
+import 'package:hp3ki/providers/media/media.dart';
+import 'package:hp3ki/providers/profile/profile.dart';
+import 'package:hp3ki/providers/region_dropdown/region_dropdown.dart';
+
 import 'package:hp3ki/views/basewidgets/textfield/textfield_two.dart';
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
+import 'package:hp3ki/views/basewidgets/appbar/custom.dart';
+import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
+import 'package:hp3ki/views/basewidgets/dropdown/dropdown.dart';
 
 class FormPersonalScreen extends StatefulWidget {
   const FormPersonalScreen({Key? key}) : super(key: key);
 
   @override
-  State<FormPersonalScreen> createState() => _FormPersonalScreenState();
+  State<FormPersonalScreen> createState() => FormPersonalScreenState();
 }
 
-class _FormPersonalScreenState extends State<FormPersonalScreen> {
+class FormPersonalScreenState extends State<FormPersonalScreen> {
   File? selfiePhoto;
   File? ktpPhoto;
   ImageSource? imageSource;
@@ -109,8 +113,8 @@ class _FormPersonalScreenState extends State<FormPersonalScreen> {
       final ktpPhotoPath = await context.read<MediaProvider>().postMedia(ktpPhoto!);
       final selfiePhotoPath = await context.read<MediaProvider>().postMedia(selfiePhoto!);
 
-      String picKtp = json.decode(ktpPhotoPath!.data)['data']['path'];
-      String avatar = json.decode(selfiePhotoPath!.data)['data']['path'];
+      String picKtp = ktpPhotoPath!.data['data']['path'];
+      String avatar = selfiePhotoPath!.data['data']['path'];
 
       SharedPrefs.writePersonalData(
         fullname: name,

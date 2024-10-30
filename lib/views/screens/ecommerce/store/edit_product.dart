@@ -242,6 +242,10 @@ class EditProductScreenState extends State<EditProductScreen> {
     ecommerceProvider = context.read<EcommerceProvider>();
 
     Future.delayed(Duration.zero, () async {
+
+      await ecommerceProvider.fetchAllProductCategory(
+        isFromCreateProduct: true
+      );
       
       setState(() => isLoading = true);
 
