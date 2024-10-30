@@ -87,7 +87,7 @@ class EcommerceRepo {
   }) async {
     try {
       Dio dio = DioManager.shared.getClient();
-      await dio.delete("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/products/delete-product-image",
+      await dio.delete("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/delete-product-image",
         data: {
           "id": id
         }

@@ -100,7 +100,6 @@ class EditProductScreenState extends State<EditProductScreen> {
       setState(() {
         before.add(file);
         files = before.toSet().toList();
-        newFiles = before.toSet().toList();
       });
     }
   }
@@ -495,7 +494,7 @@ class EditProductScreenState extends State<EditProductScreen> {
                                       });
 
                                       int id = dataFiles[i];
-                                      
+
                                       await ecommerceProvider.deleteProductImage(id: id);
                                     },
                                     child: Container(

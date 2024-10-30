@@ -1,8 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hp3ki/views/basewidgets/button/custom.dart';
-import 'package:hp3ki/views/screens/ecommerce/store/create_update_store.dart';
-import 'package:hp3ki/views/screens/ecommerce/store/seller/products.dart';
 import 'package:provider/provider.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -11,8 +8,13 @@ import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 
+import 'package:hp3ki/views/basewidgets/button/custom.dart';
+
 import 'package:hp3ki/providers/ecommerce/ecommerce.dart';
 import 'package:hp3ki/services/navigation.dart';
+
+import 'package:hp3ki/views/screens/ecommerce/store/create_update_store.dart';
+import 'package:hp3ki/views/screens/ecommerce/store/seller/products.dart';
 
 class StoreInfoScreen extends StatefulWidget {
   final String storeId;
@@ -279,9 +281,14 @@ class StoreInfoScreenState extends State<StoreInfoScreen> {
                             ),
                           ),
 
-                          Flexible(
-                            flex: 2,
-                            child: SizedBox(
+                          notifier.productSellers.isEmpty 
+                          ? const Flexible(
+                              flex: 2,
+                              child: SizedBox()
+                            ) 
+                          : Flexible(
+                              flex: 2,
+                              child: SizedBox(
                               width: 28.0,
                               height: 28.0,
                               child: Container(
