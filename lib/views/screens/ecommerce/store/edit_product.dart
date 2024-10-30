@@ -489,7 +489,10 @@ class EditProductScreenState extends State<EditProductScreen> {
                                   child: InkWell(
                                     onTap: () async {
                                       int i = files.indexOf(files[index]);
-                                      setState(() => files.removeAt(i));
+                                      setState(() {
+                                        before.removeAt(i);
+                                        files.removeAt(i);
+                                      });
 
                                       int id = dataFiles[i];
                                       

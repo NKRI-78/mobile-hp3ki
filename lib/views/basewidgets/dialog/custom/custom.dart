@@ -362,8 +362,7 @@ class CustomDialog {
       ..show();
   }
 
-  static AwesomeDialog showUnexpectedError(BuildContext context,
-      {required String errorCode}) {
+  static AwesomeDialog showUnexpectedError(BuildContext context, {required String errorCode}) {
     return AwesomeDialog(
         autoHide: const Duration(seconds: 5),
         context: context,

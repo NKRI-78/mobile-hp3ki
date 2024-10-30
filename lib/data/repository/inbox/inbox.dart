@@ -88,44 +88,4 @@ class InboxRepo {
     }
   }
 
-  // Future<InboxPaymentModel?> getInboxPayment(
-  //     {required String userId, int? page = 1}) async {
-  //   try {
-  //     Response res = await dioClient!
-  //         .post("${AppConstants.baseUrlPpob}/inbox?page=$page&limit=6", data: {
-  //       "user_id": userId,
-  //       "origin": "hp3ki",
-  //     });
-  //     InboxPaymentModel data = InboxPaymentModel.fromJson(res.data);
-  //     return data;
-  //   } on DioError catch (e) {
-  //     final errorMessage = DioExceptions.fromDioError(e).toString();
-  //     throw CustomException(errorMessage);
-  //   } catch (e, stacktrace) {
-  //     debugPrint(stacktrace.toString());
-  //     throw CustomException(stacktrace.toString());
-  //   }
-  // }
-
-  // Future<InboxCountPaymentModel?> getInboxCountPayment({
-  //   required String userId
-  // }) async {
-  //   try {
-  //     Response res = await dioClient!
-  //         .post("${AppConstants.baseUrlPpob}/inbox/badges", data: {
-  //       "user_id": userId,
-  //       "origin": "hp3ki",
-  //     });
-  //     Map<String, dynamic> dataJson = res.data;
-  //     InboxCountPaymentModel data = InboxCountPaymentModel.fromJson(dataJson);
-  //     return data;
-  //   } on DioError catch (e) {
-  //     debugPrint(e.response!.data.toString());
-  //     final errorMessage = DioExceptions.fromDioError(e).toString();
-  //     throw CustomException(errorMessage);
-  //   } catch (e, stacktrace) {
-  //     debugPrint(stacktrace.toString());
-  //     throw CustomException(stacktrace.toString());
-  //   }
-  // }
 }

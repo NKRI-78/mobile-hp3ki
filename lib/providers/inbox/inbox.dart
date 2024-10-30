@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hp3ki/data/models/inbox/detail.dart';
 
 import 'package:hp3ki/data/repository/inbox/inbox.dart';
 
+import 'package:hp3ki/data/models/inbox/detail.dart';
 import 'package:hp3ki/data/models/inbox/count.dart';
 import 'package:hp3ki/data/models/inbox/inbox_payment.dart';
 import 'package:hp3ki/data/models/inbox/inbox.dart';
@@ -14,19 +14,19 @@ import 'package:hp3ki/views/basewidgets/dialog/custom/custom.dart';
 
 enum InboxInfoStatus { idle, loading, loaded, error, empty }
 
-enum FetchInboxInfoStatus { idle, loading, loaded, error, empty }
-
-enum InboxPanicStatus { idle, loading, loaded, error, empty }
-
-enum FetchInboxPanicStatus { idle, loading, loaded, error, empty }
-
 enum InboxPaymentStatus { idle, loading, loaded, error, empty }
-
-enum FetchInboxPaymentStatus { idle, loading, loaded, error, empty }
 
 enum InboxCountStatus { idle, loading, loaded, error, empty }
 
 enum InboxDetailStatus { idle, loading, loaded, error, empty }
+
+enum InboxPanicStatus { idle, loading, loaded, error, empty }
+
+enum FetchInboxInfoStatus { idle, loading, loaded, error, empty }
+
+enum FetchInboxPanicStatus { idle, loading, loaded, error, empty }
+
+enum FetchInboxPaymentStatus { idle, loading, loaded, error, empty }
 
 class InboxProvider with ChangeNotifier {
   final InboxRepo ir;
@@ -55,29 +55,26 @@ class InboxProvider with ChangeNotifier {
   bool isLoadInboxInfo = false;
   bool isLoadInboxPayment = false;
   bool isLoadInboxPanic = false;
-
-  List<InboxData>? _inboxInfo;
-  List<InboxData>? get inboxInfo => _inboxInfo;
-
-  int? _inboxInfoCount;
-
-  int? get inboxInfoCount => _inboxInfoCount;
-  int inboxTransactionCount = 0;
-
-  InboxPaymentModel? _inboxPaymentModel;
-  InboxPaymentModel? get inboxPaymentModel => _inboxPaymentModel;
-
-  List<InboxPaymentData>? _inboxPayment;
-  List<InboxPaymentData>? get inboxPayment => _inboxPayment;
-
-  int? _inboxPaymentCount;
-  int? get inboxPaymentCount => _inboxPaymentCount;
-
+  
   InboxModel? _inboxPanicModel;
   InboxModel? get inboxPanicModel => _inboxPanicModel;
 
-  List<InboxData>? _inboxPanic;
-  List<InboxData>? get inboxPanic => _inboxPanic;
+  List<InboxData> _inboxInfo = [];
+  List<InboxData> get inboxInfo => [..._inboxInfo];
+  
+  List<InboxData> _inboxPanic = [];
+  List<InboxData> get inboxPanic => [..._inboxPanic];
+
+  List<InboxData> _inboxPayment = [];
+  List<InboxData> get inboxPayment => [..._inboxPayment];
+
+  int _inboxInfoCount = 0;
+
+  int get inboxInfoCount => _inboxInfoCount;
+  int inboxTransactionCount = 0;
+
+  int? _inboxPaymentCount;
+  int? get inboxPaymentCount => _inboxPaymentCount;
 
   int? _inboxPanicCount;
   int? get inboxPanicCount => _inboxPanicCount;
@@ -201,6 +198,7 @@ class InboxProvider with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
+
   Future<void> getInboxDetail({
     required String id
   }) async {
@@ -219,9 +217,7 @@ class InboxProvider with ChangeNotifier {
     setStateInboxCountStatus(InboxCountStatus.loading);
     try {
       InboxCountModel? icm = await ir.getInboxCount(userId: SharedPrefs.getUserId());
-      // InboxCountPaymentModel? icpm = await ir.getInboxCountPayment(userId: SharedPrefs.getUserId());
       int? icmCount = icm?.data?.total;
-      //  icpm?.data?.total;
       int? icpmCount = 0;
       if (icmCount == 0 && icpmCount == 0 || icpmCount == 0 && icmCount == null) {
         setStateInboxCountStatus(InboxCountStatus.empty);
@@ -246,16 +242,16 @@ class InboxProvider with ChangeNotifier {
   Future<void> getInboxInfo(BuildContext context, {int? page}) async {
     setStateInboxInfoStatus(InboxInfoStatus.loading);
     try {
-      _inboxInfo = [];
       _inboxModel = await ir.getInbox(
         userId: SharedPrefs.getUserId(),
         type: 'default',
         page: page,
       );
-      _inboxInfo!.addAll(inboxModel!.data!);
+      _inboxInfo = [];
+      _inboxInfo.addAll(inboxModel!.data!);
       _inboxInfoCount = inboxModel!.pageDetail!.badges!;
       setStateInboxInfoStatus(InboxInfoStatus.loaded);
-      if (inboxInfo!.isEmpty) {
+      if (inboxInfo.isEmpty) {
         setStateInboxInfoStatus(InboxInfoStatus.empty);
       }
     } on CustomException catch (e) {
@@ -268,6 +264,56 @@ class InboxProvider with ChangeNotifier {
       setStateInboxInfoStatus(InboxInfoStatus.error);
     }
   }
+  
+  Future<void> getInboxPanic(BuildContext context) async {
+    setStateInboxPanicStatus(InboxPanicStatus.loading);
+    try {
+      _inboxModel = await ir.getInbox(
+        userId: SharedPrefs.getUserId(),
+        type: 'sos'
+      );
+      _inboxPanic = [];
+      _inboxPanic.addAll(inboxModel!.data!);
+      _inboxPanicCount = inboxModel!.pageDetail!.badges!;
+      setStateInboxPanicStatus(InboxPanicStatus.loaded);
+      if (inboxPanic.isEmpty) {
+        setStateInboxPanicStatus(InboxPanicStatus.empty);
+      }
+    } on CustomException catch (e) {
+      debugPrint(e.toString());
+      CustomDialog.showUnexpectedError(context, errorCode: 'IR04');
+      setStateInboxPanicStatus(InboxPanicStatus.error);
+    } catch (e, stacktrace) {
+      debugPrint(stacktrace.toString());
+      CustomDialog.showUnexpectedError(context, errorCode: 'IP04');
+      setStateInboxPanicStatus(InboxPanicStatus.error);
+    }
+  }
+  
+  Future<void> getInboxPayment(BuildContext context) async {
+    setStateInboxPaymentStatus(InboxPaymentStatus.loading);
+    try {
+      _inboxModel = await ir.getInbox(
+        userId: SharedPrefs.getUserId(), 
+        type: 'payment'
+      );
+      _inboxPayment = [];
+      _inboxPayment.addAll(inboxModel!.data!);
+      _inboxPaymentCount = inboxModel!.pageDetail!.badges!;
+      setStateInboxPaymentStatus(InboxPaymentStatus.loaded);
+      if (inboxPayment.isEmpty) {
+        setStateInboxPaymentStatus(InboxPaymentStatus.empty);
+      }
+    } on CustomException catch (e) {
+      debugPrint(e.toString());
+      CustomDialog.showUnexpectedError(context, errorCode: 'IR06');
+      setStateInboxPaymentStatus(InboxPaymentStatus.error);
+    } catch (e, stacktrace) {
+      debugPrint(stacktrace.toString());
+      CustomDialog.showUnexpectedError(context, errorCode: 'IP06');
+      setStateInboxPaymentStatus(InboxPaymentStatus.error);
+    }
+  }
 
   Future<void> fetchMoreInboxInfo(BuildContext context, {int? page}) async {
     setStateFetchInboxInfoStatus(FetchInboxInfoStatus.loading);
@@ -277,10 +323,10 @@ class InboxProvider with ChangeNotifier {
         type: 'default',
         page: page,
       );
-      _inboxInfo!.addAll(inboxModel!.data!);
+      _inboxInfo.addAll(inboxModel!.data!);
       _inboxInfoCount = inboxModel!.pageDetail!.badges!;
       setStateFetchInboxInfoStatus(FetchInboxInfoStatus.loaded);
-      if (inboxInfo!.isEmpty) {
+      if (inboxInfo.isEmpty) {
         setStateFetchInboxInfoStatus(FetchInboxInfoStatus.empty);
       }
     } on CustomException catch (e) {
@@ -294,28 +340,6 @@ class InboxProvider with ChangeNotifier {
     }
   }
 
-  Future<void> getInboxPanic(BuildContext context) async {
-    setStateInboxPanicStatus(InboxPanicStatus.loading);
-    try {
-      _inboxPanic = [];
-      _inboxModel =await ir.getInbox(userId: SharedPrefs.getUserId(), type: 'sos');
-      _inboxPanic!.addAll(inboxModel!.data!);
-      _inboxPanicCount = inboxModel!.pageDetail!.badges!;
-      setStateInboxPanicStatus(InboxPanicStatus.loaded);
-      if (inboxPanic!.isEmpty) {
-        setStateInboxPanicStatus(InboxPanicStatus.empty);
-      }
-    } on CustomException catch (e) {
-      debugPrint(e.toString());
-      CustomDialog.showUnexpectedError(context, errorCode: 'IR04');
-      setStateInboxPanicStatus(InboxPanicStatus.error);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      CustomDialog.showUnexpectedError(context, errorCode: 'IP04');
-      setStateInboxPanicStatus(InboxPanicStatus.error);
-    }
-  }
-
   Future<void> fetchMoreInboxPanic(BuildContext context, {int? page}) async {
     setStateFetchInboxPanicStatus(FetchInboxPanicStatus.loading);
     try {
@@ -324,10 +348,10 @@ class InboxProvider with ChangeNotifier {
         type: 'sos',
         page: page,
       );
-      _inboxPanic!.addAll(inboxModel!.data!);
+      _inboxPanic.addAll(inboxModel!.data!);
       _inboxPanicCount = inboxModel!.pageDetail!.badges!;
       setStateFetchInboxPanicStatus(FetchInboxPanicStatus.loaded);
-      if (inboxPanic!.isEmpty) {
+      if (inboxPanic.isEmpty) {
         setStateFetchInboxPanicStatus(FetchInboxPanicStatus.empty);
       }
     } on CustomException catch (e) {
@@ -341,49 +365,19 @@ class InboxProvider with ChangeNotifier {
     }
   }
 
-  Future<void> getInboxPayment(BuildContext context) async {
-    setStateInboxPaymentStatus(InboxPaymentStatus.loading);
-    try {
-      _inboxPayment = [];
-      // _inboxPaymentModel = await ir.getInboxPayment(
-      //   userId: SharedPrefs.getUserId(),
-      // );
-      // InboxCountPaymentModel? count = await ir.getInboxCountPayment(userId: SharedPrefs.getUserId());
-      Body body = inboxPaymentModel!.body!;
-      if (body.data!.isEmpty) {
-        setStateInboxPaymentStatus(InboxPaymentStatus.empty);
-      } else {
-        _inboxPayment!.addAll(body.data!);
-        // count!.data!.total;
-        _inboxPaymentCount = 0;
-        setStateInboxPaymentStatus(InboxPaymentStatus.loaded);
-      }
-    } on CustomException catch (e) {
-      debugPrint(e.toString());
-      CustomDialog.showUnexpectedError(context, errorCode: 'IR06');
-      setStateInboxPaymentStatus(InboxPaymentStatus.error);
-    } catch (e, stacktrace) {
-      debugPrint(stacktrace.toString());
-      CustomDialog.showUnexpectedError(context, errorCode: 'IP06');
-      setStateInboxPaymentStatus(InboxPaymentStatus.error);
-    }
-  }
-
   Future<void> fetchMoreInboxPayment(BuildContext context, {int? page}) async {
     setStateFetchInboxPaymentStatus(FetchInboxPaymentStatus.loading);
     try {
-      // _inboxPaymentModel = await ir.getInboxPayment(
-      //   userId: SharedPrefs.getUserId(),
-      //   page: page,
-      // );
-      // InboxCountPaymentModel? count = await ir.getInboxCountPayment(userId: SharedPrefs.getUserId());
-      Body body = inboxPaymentModel!.body!;
-      _inboxPayment!.addAll(body.data!);
-      //  count!.data!.total;
-      _inboxPaymentCount = 0;
-      setStateInboxPaymentStatus(InboxPaymentStatus.loaded);
-      if (inboxPayment!.isEmpty) {
-        setStateInboxPaymentStatus(InboxPaymentStatus.empty);
+      _inboxModel = await ir.getInbox(
+        userId: SharedPrefs.getUserId(),
+        type: 'payment',
+        page: page,
+      );
+      _inboxPayment.addAll(inboxModel!.data!);
+      _inboxPaymentCount = inboxModel!.pageDetail!.badges!;
+      setStateFetchInboxPaymentStatus(FetchInboxPaymentStatus.loaded);
+      if (inboxPayment.isEmpty) {
+        setStateFetchInboxPaymentStatus(FetchInboxPaymentStatus.empty);
       }
     } on CustomException catch (e) {
       debugPrint(e.toString());

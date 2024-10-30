@@ -1419,14 +1419,11 @@ class HomeScreenState extends State<HomeScreen> {
                       return SizedBox(
                         height: 300.0,
                         child: Center(
-                          child: SizedBox(
-                            width: 16.0,
-                            height: 16.0,
-                            child: Text("Yaa.. Produk tidak ditemukan",
-                              style: robotoRegular.copyWith(
-                                fontSize: Dimensions.fontSizeDefault
-                              ),
-                            )
+                          child: Text("Yaa.. Produk tidak ditemukan",
+                            style: robotoRegular.copyWith(
+                              fontSize: Dimensions.fontSizeDefault,
+                              color: ColorResources.white
+                            ),
                           )
                         )
                       );

@@ -432,7 +432,10 @@ class AddProductScreenState extends State<AddProductScreen> {
                                   child: InkWell(
                                     onTap: () async {
                                       int i = files.indexOf(files[index]);
-                                      setState(() => files.removeAt(i));
+                                      setState(() {
+                                        before.removeAt(i);
+                                        files.removeAt(i);
+                                      });
                                     },
                                     child: Container(
                                       padding: const EdgeInsets.all(5.0),
