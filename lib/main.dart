@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'package:device_preview/device_preview.dart';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -66,11 +67,16 @@ Future<void> main() async {
     debugPrint(details.stack.toString());
   };
 
-  runApp(MultiProvider(
-    providers: providers,
-    child: const AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light, child: MyApp()
-    ),
+  runApp(DevicePreview(
+    enabled: false,
+    builder: (context) {
+      return MultiProvider(
+        providers: providers,
+        child: const AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.light, child: MyApp()
+        ),
+      );
+    },
   ));
 }
 

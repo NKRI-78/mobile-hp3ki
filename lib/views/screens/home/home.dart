@@ -657,9 +657,6 @@ class HomeScreenState extends State<HomeScreen> {
               context.read<NewsProvider>().getNews(context);
               context.read<BannerProvider>().getBanner(context);
               context.read<FirebaseProvider>().initFcm(context);
-              // context.read<PPOBProvider>().initPaymentGatewayFCM(context);
-              // context.read<PPOBProvider>().getBalance(context);
-              // context.read<InboxProvider>().getReadCount(context);
               context.read<LocationProvider>().getCurrentPosition(context);
             });
           },

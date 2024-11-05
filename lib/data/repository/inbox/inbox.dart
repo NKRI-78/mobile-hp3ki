@@ -74,7 +74,7 @@ class InboxRepo {
     }
   }
   
-  Future<void> updateInboxPayment({required int inboxId}) async {
+  Future<void> updateInbox({required int inboxId}) async {
     try {
       await dioClient!.post("${AppConstants.baseUrlPpob}/inbox/update", data: {
         "id": inboxId,

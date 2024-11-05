@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hp3ki/providers/location/location.dart';
 
 import 'package:hp3ki/providers/profile/profile.dart';
 import 'package:hp3ki/services/navigation.dart';
@@ -40,16 +41,11 @@ class SosDetailScreenState extends State<SosDetailScreen> {
 
   @override  
   void dispose() {
-    
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return buildUI();
-  }
-
-  Widget buildUI() {
     return Scaffold(
       appBar: buildAppBar(),
       body: buildBodyContent(),
@@ -105,6 +101,7 @@ class SosDetailScreenState extends State<SosDetailScreen> {
                   },
                 ),
               )
+
             ] 
           ),  
         )
@@ -208,46 +205,61 @@ class SosDetailScreenState extends State<SosDetailScreen> {
                       children: [
                         Container(
                           margin: const EdgeInsets.only(bottom: 30.0),
-                          child: Builder(
-                            builder: (BuildContext context) {
-                              return Row(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Expanded(child: Container()),
-                                  Expanded(
-                                    flex: 5,
-                                    child: CustomButton(
-                                      isBorderRadius: true,
-                                      btnColor: ColorResources.white,
-                                      btnTextColor: ColorResources.primary,
-                                      onTap: () {
-                                        NS.pop();
-                                      }, 
-                                      btnTxt: getTranslated("CANCEL", context)
-                                    ),
-                                  ),
-                                  Expanded(child: Container()),
-                                  Expanded(
-                                    flex: 5,
-                                    child: CustomButton(
-                                      isBorderRadius: true,
-                                      btnColor: ColorResources.primary,
-                                      btnTextColor: ColorResources.white,
-                                      isLoading: context.watch<SosProvider>().sosStatus == SosStatus.loading ? true : false,
-                                      onTap: () async {
-                                        await context.read<SosProvider>().sendSos(
-                                          context, 
-                                          type: widget.label,
-                                          message: "${context.read<ProfileProvider>().user!.fullname} ${widget.message}"
-                                        );
-                                      }, 
-                                      btnTxt: "OK"
-                                    ),
-                                  ),
-                                  Expanded(child: Container()),
-                                ],
-                              );
-                            },
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              const Expanded(child: SizedBox()),
+                              Expanded(
+                                flex: 5,
+                                child: CustomButton(
+                                  isBorderRadius: true,
+                                  btnColor: ColorResources.white,
+                                  btnTextColor: ColorResources.primary,
+                                  onTap: () {
+                                    NS.pop();
+                                  }, 
+                                  btnTxt: getTranslated("CANCEL", context)
+                                ),
+                              ),
+                              const Expanded(child: SizedBox()),
+                              Expanded(
+                                flex: 5,
+                                child: CustomButton(
+                                  isBorderRadius: true,
+                                  btnColor: ColorResources.primary,
+                                  btnTextColor: ColorResources.white,
+                                  isLoading: context.watch<SosProvider>().sosStatus == SosStatus.loading ? true : false,
+                                  onTap: () async {
+                                    
+                                    String? fullname = context.read<ProfileProvider>().user!.fullname;
+                                    String? location = context.read<LocationProvider>().getCurrentNameAddress;
+
+                                    String label = widget.label;
+                                    String need = label == "Kecelakaan" 
+                                    ? "membutuhkan" 
+                                    : label == "Pencurian" 
+                                    ? "mengalami"
+                                    : label == "Kebakaran" 
+                                    ? "mengalami"
+                                    : label == "Bencana Alam" 
+                                    ? "mengalami"
+                                    : label == "Perampokan" 
+                                    ? "mengalami" 
+                                    : label == "Kerusuhan" 
+                                    ? "mengalami" 
+                                    : label;
+
+                                    await context.read<SosProvider>().sendSos(
+                                      context, 
+                                      type: label,
+                                      message: "$fullname ${widget.message}, $fullname $need ${widget.label}, di $location"
+                                    );
+                                  }, 
+                                  btnTxt: "OK"
+                                ),
+                              ),
+                              const Expanded(child: SizedBox()),
+                            ],
                           )
                         )
                       ],

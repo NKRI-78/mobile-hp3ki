@@ -1,11 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:provider/provider.dart';
-import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +12,8 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:gallery_saver_plus/gallery_saver.dart';
+
 
 import 'package:hp3ki/localization/language_constraints.dart';
 
@@ -33,12 +33,12 @@ import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
 import 'package:hp3ki/views/basewidgets/dialog/custom/custom.dart';
 
+import 'package:hp3ki/views/screens/upgrademember/index.dart';
 import 'package:hp3ki/views/screens/ecommerce/store/store_info.dart';
 import 'package:hp3ki/views/screens/ecommerce/store/create_update_store.dart';
 import 'package:hp3ki/views/screens/auth/change_password.dart';
 import 'package:hp3ki/views/screens/privacy_policy/privacy_policy.dart';
 import 'package:hp3ki/views/screens/profile/edit.dart';
-import 'package:hp3ki/views/screens/maintain/maintain.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -95,7 +95,7 @@ class ProfileScreenState extends State<ProfileScreen> {
 
   Future<String?> uploadPicture(BuildContext context, File file) async {
     final res = await context.read<MediaProvider>().postMedia(file);
-    Map data = json.decode(res!.data);
+    Map data = res!.data;
     return data["data"]["path"];
   }
 
@@ -413,12 +413,12 @@ class ProfileScreenState extends State<ProfileScreen> {
                                   : ColorResources.primary),
                           child: InkWell(
                             onTap: file != null
-                                ? () {
-                                    setState(() {
-                                      file = null;
-                                    });
-                                  }
-                                : chooseFile,
+                            ? () {
+                                setState(() {
+                                  file = null;
+                                });
+                              }
+                            : chooseFile,
                             child: Padding(
                               padding: const EdgeInsets.all(
                                   Dimensions.paddingSizeExtraSmall),
@@ -628,18 +628,17 @@ class ProfileScreenState extends State<ProfileScreen> {
                         final ui.Image image = await boundary.toImage(pixelRatio: 10);
                         ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
                         var pngBytes = byteData!.buffer.asUint8List();
-                        // var bs64 = base64Encode(pngBytes);
 
                         String dir = (await getTemporaryDirectory()).path;
                         File file = File("$dir/kta-hp3ki-${DateTime.now()}.jpg");
                         await file.writeAsBytes(
                           pngBytes,
                         );
-                        final params = SaveFileDialogParams(sourceFilePath: file.path);
-                        final finalPath = await FlutterFileDialog.saveFile(params: params);
 
-                        debugPrint(finalPath ?? 'Cannot save');
+                        await GallerySaver.saveImage(file.path);
 
+                        // final params = SaveFileDialogParams(sourceFilePath: file.path);
+                        // final finalPath = await FlutterFileDialog.saveFile(params: params);
                       });
 
                       Future.delayed(const Duration(seconds: 2), () {
@@ -879,8 +878,7 @@ class ProfileScreenState extends State<ProfileScreen> {
   Widget buildActionPremiumButton({required String label}) {
     return CustomButton(
       onTap: () {
-        NS.push(context, const MaintainScreen());
-        // NS.push(context, const UpgradeMemberIndexScreen());
+        NS.push(context, const UpgradeMemberScreen());
       },
       btnColor: ColorResources.white,
       isBoxShadow: hasRemainder ? true : false,

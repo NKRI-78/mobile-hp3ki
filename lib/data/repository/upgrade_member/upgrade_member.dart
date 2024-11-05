@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+
 import 'package:hp3ki/data/models/package_account/package_account_model.dart';
-import 'package:hp3ki/data/models/ppob_v2/payment_list.dart';
-import 'package:hp3ki/data/models/upgrade_member/inquiry.dart';
+import 'package:hp3ki/data/models/payment_channel/payment_channel.dart';
+
 import 'package:hp3ki/utils/exceptions.dart';
 import 'package:hp3ki/utils/constant.dart';
 import 'package:hp3ki/utils/dio.dart';
@@ -14,15 +15,14 @@ class UpgradeMemberRepo {
     dioClient ??= DioManager.shared.getClient();
   }
 
-  Future<PaymentListModel?> getPaymentChannel() async {
+  Future<PaymentChannelModel?> getPaymentChannel() async {
     try {
-      Response res = await dioClient!.get(
-        "${AppConstants.baseUrlPpob}/payment_v2/pub/v1/payment/channels",
-      );
+      Response res = await dioClient!.get("${AppConstants.baseUrl}/api/v1/payment");
       Map<String, dynamic> dataJson = res.data;
-      PaymentListModel data = PaymentListModel.fromJson(dataJson);
+      PaymentChannelModel data = PaymentChannelModel.fromJson(dataJson);
       return data;
     } on DioError catch (e) {
+      debugPrint(e.toString());
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw CustomException(errorMessage);
     } catch (e, stacktrace) {
@@ -31,19 +31,20 @@ class UpgradeMemberRepo {
     }
   }
 
-  Future<InquiryModel?> sendPaymentInquiry(
-      {required String userId,
-      required String paymentCode,
-      PackageAccount? package}) async {
+  Future<void> sendPaymentInquiry({
+    required String userId,
+    required String paymentCode,
+    required String channelId,
+    PackageAccount? package
+  }) async {
     try {
-      Response res = await dioClient!
-          .post('${AppConstants.baseUrl}/api/v1/payment/inquiry', data: {
+      var data = {
         "user_id": userId,
         "payment_code": paymentCode,
+        "payment_channel": channelId,
         "package": package?.toJson()
-      });
-      InquiryModel data = InquiryModel.fromJson(res.data);
-      return data;
+      };
+      await dioClient!.post('${AppConstants.baseUrl}/api/v1/payment/inquiry', data: data);
     } on DioError catch (e) {
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw CustomException(errorMessage);
@@ -54,11 +55,9 @@ class UpgradeMemberRepo {
     }
   }
 
-  Future<void> getPaymentCallback(
-      {required String trxId, required String amount}) async {
+  Future<void> getPaymentCallback({required String trxId, required String amount}) async {
     try {
-      await dioClient!.get(
-          '${AppConstants.baseUrl}/api/v1/callback?trx_id=$trxId&amount=$amount');
+      await dioClient!.get('${AppConstants.baseUrl}/api/v1/callback?trx_id=$trxId&amount=$amount');
     } on DioError catch (e) {
       final errorMessage = DioExceptions.fromDioError(e).toString();
       throw CustomException(errorMessage);

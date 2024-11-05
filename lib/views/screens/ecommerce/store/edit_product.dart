@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
-import 'package:hp3ki/data/models/ecommerce/product/detail.dart';
-
 import 'package:lecle_flutter_absolute_path/lecle_flutter_absolute_path.dart';
 
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
@@ -21,6 +19,7 @@ import 'package:multi_image_picker_plus/multi_image_picker_plus.dart';
 
 import 'package:hp3ki/providers/ecommerce/ecommerce.dart';
 
+import 'package:hp3ki/data/models/ecommerce/product/detail.dart';
 import 'package:hp3ki/data/models/ecommerce/product/category.dart';
 
 import 'package:hp3ki/services/navigation.dart';
@@ -49,15 +48,14 @@ class EditProductScreen extends StatefulWidget {
 class EditProductScreenState extends State<EditProductScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  String categoryId = "";
-
-  List<dynamic> kindStuffSelected = [];
-
   late EcommerceProvider ecommerceProvider;
+
+  String categoryId = "";
 
   ImageSource? imageSource;
 
-  List<int> dataFiles = [];
+  List<int> dataFilesId = [];
+  List<String> dataFilesPath = [];
 
   List<File> files = [];
   List<File> newFiles = [];
@@ -100,6 +98,7 @@ class EditProductScreenState extends State<EditProductScreen> {
       setState(() {
         before.add(file);
         files = before.toSet().toList();
+        newFiles = files;
       });
     }
   }
@@ -154,7 +153,7 @@ class EditProductScreenState extends State<EditProductScreen> {
       setState(() {
         before.add(file);
         files = before.toSet().toList();
-        newFiles = before.toSet().toList();
+        newFiles = files;
       });
     }
   }
@@ -199,10 +198,19 @@ class EditProductScreenState extends State<EditProductScreen> {
 
     int price = int.parse(cleanPrice);
 
+    List<File> appendFile = [];
+
+    for (File newFile in newFiles) {
+
+      if(newFile.path.split('/').last.split('_').length <= 2) {
+        appendFile.add(newFile);
+      } 
+    }
+
     await ecommerceProvider.updateProduct(
       id: widget.productId, 
       title: nameC.text, 
-      files: newFiles, 
+      files: appendFile, 
       description: descC.text,
       price: price, 
       weight: int.parse(weightC.text), 
@@ -262,6 +270,7 @@ class EditProductScreenState extends State<EditProductScreen> {
         ).formatString(ecommerceProvider.productDetailData.product!.price.toString());
 
         categoryId = ecommerceProvider.productDetailData.product?.category.id ?? "-";
+
         categoryC = TextEditingController(text: isLoading ? "" : ecommerceProvider.productDetailData.product?.category.name ?? "-");
         nameC = TextEditingController(text: isLoading ? "" : ecommerceProvider.productDetailData.product?.title ?? "-");
         priceC = TextEditingController(text: isLoading ? "" : price);
@@ -275,7 +284,8 @@ class EditProductScreenState extends State<EditProductScreen> {
         File? file = await downloadFile(media.path);
 
         setState(() {
-          dataFiles.add(media.id);
+          dataFilesId.add(media.id);
+          dataFilesPath.add(media.path);
           before.add(file!);
           files.add(file);
         });
@@ -497,7 +507,7 @@ class EditProductScreenState extends State<EditProductScreen> {
                                         files.removeAt(i);
                                       });
 
-                                      int id = dataFiles[i];
+                                      int id = dataFilesId[i];
 
                                       await ecommerceProvider.deleteProductImage(id: id);
                                     },

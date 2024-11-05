@@ -22,6 +22,9 @@ class SosScreenV2 extends StatefulWidget {
 }
 
 class SosScreenV2State extends State<SosScreenV2> {
+
+  late LocationProvider lp; 
+
   String label = "";
   String content = "";
   String message = "";
@@ -33,44 +36,45 @@ class SosScreenV2State extends State<SosScreenV2> {
       "id": 1,
       "name": "ACCIDENT",
       "image": "assets/images/sos/accident.png",
-      "message": "Kecelakaan"
+      "message": "sedang membutuhkan bantuan cepat"
     },
     {
       "id": 2,
       "name": "THEFT",
       "image": "assets/images/sos/theft.png",
-      "message": "Pencurian"
+      "message": "sedang membutuhkan bantuan cepat"
     },
     {
       "id": 3,
       "name": "WILDFIRE",
       "image": "assets/images/sos/wildfire.png",
-      "message": "Kebakaran"
+      "message": "sedang membutuhkan bantuan cepat"
     },
     {
       "id": 4,
       "name": "DISASTER",
       "image": "assets/images/sos/disaster.png",
-      "message": "Bencana Alam"
+      "message": "sedang membutuhkan bantuan cepat"
     },
     {
       "id": 5,
       "name": "ROBBERY",
       "image": "assets/images/sos/robbery.png",
-      "message": "Perampokan"
+      "message": "sedang membutuhkan bantuan cepat"
     },
     {
       "id": 6,
       "name": "NOISE",
       "image": "assets/images/sos/noise.png",
-      "message": "Kerusuhan"
+      "message": "sedang membutuhkan bantuan cepat"
     }
   ];
 
   Future<void> getData() async {
-    if(mounted) {
-      context.read<LocationProvider>().getCurrentPosition(context);
-    }
+    lp = context.read<LocationProvider>();
+
+    if(!mounted) return;
+      lp.getCurrentPosition(context);
   }
 
   @override 
@@ -78,6 +82,7 @@ class SosScreenV2State extends State<SosScreenV2> {
     super.initState();
 
     getData();
+    Future.microtask(() => getData());
   }
 
   @override 
@@ -87,34 +92,25 @@ class SosScreenV2State extends State<SosScreenV2> {
 
   @override
   Widget build(BuildContext context) {
-    return buildUI();
-  }
-
-  Widget buildUI() {
     return Scaffold(
       backgroundColor: ColorResources.backgroundColor,
-      body: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
+      body: Stack(
+        clipBehavior: Clip.none,
+        children: [
 
-          return Stack(
-            clipBehavior: Clip.none,
-            children: [
-
-              CustomScrollView(
-                physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-                slivers: [
-                  buildAppBar(context),
-                  buildBodyContent(context)
-                ],
-              ),
-              selectedSos == -1 
-              ? Container() 
-              : buildSubmitButton(context)
+          CustomScrollView(
+            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+            slivers: [
+              buildAppBar(context),
+              buildBody(context)
             ],
-          ); 
+          ),
+          selectedSos == -1 
+          ? const SizedBox() 
+          : buildSubmitButton(context)
 
-        },
-      ),
+        ],
+      )      
     );
   }
 
@@ -122,7 +118,7 @@ class SosScreenV2State extends State<SosScreenV2> {
     return const CustomAppBar(title: 'SOS').buildSliverAppBar(context);
   }
 
-  SliverList buildBodyContent(BuildContext context) {
+  SliverList buildBody(BuildContext context) {
     return SliverList(
       delegate: SliverChildListDelegate([
 
@@ -275,38 +271,37 @@ class SosScreenV2State extends State<SosScreenV2> {
 
   Align buildSubmitButton(BuildContext context) {
     return Align(
-        alignment: Alignment.bottomCenter,
-        child: Container(
-        margin: const EdgeInsets.only(
-          left: Dimensions.marginSizeDefault,
-          right: Dimensions.marginSizeDefault,
-          bottom: Dimensions.marginSizeDefault
-        ),
-        child: CustomButton(
-          customText: true,
-          text: Text(
-            getTranslated('CONTINUE', context),
-            style: poppinsRegular.copyWith(
-              fontSize: Dimensions.fontSizeLarge,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.5,
-              color: ColorResources.white
-            ),
-          ),
-          btnColor: ColorResources.primary,
-          isBorderRadius: true,
-          sizeBorderRadius: 10.0,
-          isBoxShadow: true,
-          onTap: () {
-            NS.push(context, SosDetailScreen(
-              label: label, 
-              content: content,
-              message: message,
-            ));
-          }, 
-        )
+      alignment: Alignment.bottomCenter,
+      child: Container(
+      margin: const EdgeInsets.only(
+        left: Dimensions.marginSizeDefault,
+        right: Dimensions.marginSizeDefault,
+        bottom: Dimensions.marginSizeDefault
       ),
-    );
+      child: CustomButton(
+        customText: true,
+        text: Text(
+          getTranslated('CONTINUE', context),
+          style: poppinsRegular.copyWith(
+            fontSize: Dimensions.fontSizeLarge,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.5,
+            color: ColorResources.white
+          ),
+        ),
+        btnColor: ColorResources.primary,
+        isBorderRadius: true,
+        sizeBorderRadius: 10.0,
+        isBoxShadow: true,
+        onTap: () {
+          NS.push(context, SosDetailScreen(
+            label: label, 
+            content: content,
+            message: message,
+          ));
+        }, 
+      )
+    ));
   }
 
 }

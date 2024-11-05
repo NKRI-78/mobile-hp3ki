@@ -400,7 +400,7 @@ class InboxProvider with ChangeNotifier {
     try {
       _inboxDetail = null;
       _inboxPaymentDetail = inboxSelected;
-      await ir.updateInboxPayment(inboxId: inboxId);
+      await ir.updateInbox(inboxId: inboxId);
       setStateInboxDetailStatus(InboxDetailStatus.loaded);
       Future.delayed(
         const Duration(

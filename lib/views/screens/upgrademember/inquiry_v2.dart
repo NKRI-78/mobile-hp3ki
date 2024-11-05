@@ -8,8 +8,8 @@ import 'package:hp3ki/providers/upgrade_member/upgrade_member.dart';
 
 import 'package:hp3ki/services/navigation.dart';
 
+import 'package:hp3ki/data/models/payment_channel/payment_channel.dart';
 import 'package:hp3ki/data/models/package_account/package_account_model.dart';
-import 'package:hp3ki/data/models/ppob_v2/payment_list.dart';
 
 import 'package:hp3ki/utils/constant.dart';
 import 'package:hp3ki/utils/dio.dart';
@@ -107,10 +107,9 @@ class _UpgradeMemberInquiryV2ScreenState
 
   SliverToBoxAdapter buildItems() {
     return SliverToBoxAdapter(
-      child: Consumer<UpgradeMemberProvider>(builder: (BuildContext context,
-          UpgradeMemberProvider upgradeMemberProvider, Widget? child) {
-        PaymentListData? data = upgradeMemberProvider.selectedPaymentChannel;
-        final double adminFee = data?.totalAdminFee?.toDouble() ?? 0;
+      child: Consumer<UpgradeMemberProvider>(builder: (BuildContext context, UpgradeMemberProvider upgradeMemberProvider, Widget? child) {
+        PaymentChannelData? data = upgradeMemberProvider.selectedPaymentChannel;
+        final double adminFee = data?.fee?.toDouble() ?? 0;
         // const double basePrice = 100000;
         return Wrap(children: [
           InkWell(
@@ -145,7 +144,7 @@ class _UpgradeMemberInquiryV2ScreenState
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10.0),
                     child: CachedNetworkImage(
-                      imageUrl: data.paymentLogo ?? "",
+                      imageUrl: data.logo.toString(),
                       placeholder: (context, url) {
                         return const CircleAvatar(
                           backgroundColor: ColorResources.backgroundDisabled,
@@ -162,14 +161,14 @@ class _UpgradeMemberInquiryV2ScreenState
                 ),
               ),
               title: Text(
-                data.paymentName ?? "...",
+                data.name,
                 style: poppinsRegular.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
               subtitle: Text(
                 "Biaya admin: " +
-                    Helper.formatCurrency(data.totalAdminFee!),
+                    Helper.formatCurrency(data.fee!),
                 style: poppinsRegular,
               ),
             )
@@ -271,11 +270,11 @@ class _UpgradeMemberInquiryV2ScreenState
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Ringkasan Harga',
+                      child: Text('Ringkasan Harga',
                         style: robotoRegular.copyWith(
-                            fontWeight: FontWeight.bold,
-                            fontSize: Dimensions.fontSizeLarge),
+                          fontWeight: FontWeight.bold,
+                          fontSize: Dimensions.fontSizeLarge
+                        ),
                       ),
                     ),
                     InfoTile(
@@ -309,28 +308,22 @@ class _UpgradeMemberInquiryV2ScreenState
           padding: const EdgeInsets.all(10.0),
           child: CustomButton(
             onTap: () {
-              PaymentListData? data = provider.selectedPaymentChannel;
+              PaymentChannelData? data = provider.selectedPaymentChannel;
               if (data == null) {
-                CustomDialog.showErrorCustom(context,
-                    title: '', message: "Harap pilih metode pembayaran");
+                CustomDialog.showErrorCustom(context, title: '', message: "Harap pilih metode pembayaran");
                 return;
               }
               if (package == null) {
-                CustomDialog.showErrorCustom(context,
-                    title: '', message: "Harap pilih paket terlebih dahulu");
+                CustomDialog.showErrorCustom(context, title: '', message: "Harap pilih paket terlebih dahulu");
                 return;
               }
               buildAskDialog(context);
             },
-            isLoading: context.watch<UpgradeMemberProvider>().inquiryStatus ==
-                    InquiryStatus.loading
-                ? true
-                : false,
+            isLoading: context.watch<UpgradeMemberProvider>().inquiryStatus == InquiryStatus.loading ? true : false,
             btnColor: ColorResources.secondary,
             customText: true,
             isBorderRadius: true,
-            text: Text(
-              'Bayar',
+            text: Text('Bayar',
               style: poppinsRegular.copyWith(
                 fontSize: Dimensions.fontSizeLarge,
                 color: ColorResources.white,
@@ -350,8 +343,7 @@ class _UpgradeMemberInquiryV2ScreenState
       dialogType: DialogType.question,
       body: Padding(
         padding: const EdgeInsets.all(15.0),
-        child: Text(
-          "Apakah anda sudah yakin ingin melakukan transaksi ini?",
+        child: Text("Apakah anda sudah yakin ingin melakukan transaksi ini?",
           style: robotoRegular.copyWith(
             color: ColorResources.black,
             fontSize: Dimensions.fontSizeLarge,
@@ -363,14 +355,12 @@ class _UpgradeMemberInquiryV2ScreenState
       btnOkColor: ColorResources.secondary,
       btnOkOnPress: () async {
         context.read<UpgradeMemberProvider>().sendPaymentInquiryV2(
-              context,
-              userId: SharedPrefs.getUserId(),
-              paymentCode: context
-                  .read<UpgradeMemberProvider>()
-                  .selectedPaymentChannel!
-                  .paymentCode!,
-              package: package!,
-            );
+          context,
+          userId: SharedPrefs.getUserId(),
+          paymentCode: context.read<UpgradeMemberProvider>().selectedPaymentChannel!.nameCode,
+          channelId: context.read<UpgradeMemberProvider>().selectedPaymentChannel!.id.toString(),
+          package: package!,
+        );
         context.read<UpgradeMemberProvider>().undoSelectedPaymentChannel();
       },
       btnCancelText: "Tidak",

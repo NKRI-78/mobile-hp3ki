@@ -614,13 +614,11 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                               crossAxisAlignment: CrossAxisAlignment.center,
                                               children: [
                                                 
-                                                Expanded(
+                                                const Expanded(
                                                   flex: 4,
-                                                  child: Container(
-                                                    child: const Icon(
-                                                      Icons.delivery_dining,
-                                                      color: ColorResources.purple,
-                                                    )
+                                                  child: Icon(
+                                                    Icons.delivery_dining,
+                                                    color: ColorResources.purple,
                                                   )
                                                 ),
                                             

@@ -602,6 +602,10 @@ class EcommerceRepo {
     required String storeId,
     required String from
   }) async {
+    debugPrint("store id $storeId");
+    debugPrint("from $from");
+    debugPrint("user id ${SharedPrefs.getUserId()}");
+
     try {
       Dio dio = DioManager.shared.getClient();
       Response response = await dio.post("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/couriers/cost/list",

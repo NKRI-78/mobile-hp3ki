@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+import 'package:hp3ki/data/models/payment_channel/payment_channel.dart';
 import 'package:hp3ki/data/models/package_account/package_account_model.dart';
-import 'package:hp3ki/data/models/ppob_v2/payment_list.dart';
 
 import 'package:hp3ki/providers/upgrade_member/upgrade_member.dart';
 
@@ -25,61 +25,57 @@ class UpgradeMemberInquiryScreen extends StatefulWidget {
   const UpgradeMemberInquiryScreen({super.key});
 
   @override
-  State<UpgradeMemberInquiryScreen> createState() =>
-      _UpgradeMemberInquiryScreenState();
+  State<UpgradeMemberInquiryScreen> createState() => UpgradeMemberInquiryScreenState();
 }
 
-class _UpgradeMemberInquiryScreenState
-    extends State<UpgradeMemberInquiryScreen> {
+class UpgradeMemberInquiryScreenState extends State<UpgradeMemberInquiryScreen> {
+  
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      init();
-    });
+
+    Future.microtask(() => init());
   }
 
   List<PackageAccount> packages = [];
 
   PackageAccount? package;
 
-  Dio client = DioManager().getClient();
-
   Future<void> init() async {
     try {
-      final res = await client
-          .get('${AppConstants.baseUrl}/api/v1/pricelist/pricing-account');
-      packages = (res.data['data'] as List)
-          .map((e) => PackageAccount.fromJson(e))
-          .toList();
+      Dio dio = DioManager().getClient();
+      final res = await dio.get('${AppConstants.baseUrl}/api/v1/pricelist/pricing-account');
+      packages = (res.data['data'] as List).map((e) => PackageAccount.fromJson(e)).toList();
 
       if (packages.isNotEmpty) {
         package = packages[0];
       }
 
       setState(() {});
-    } on DioError {
-      ///
+    } on DioError catch(e) {
+      debugPrint(e.toString());
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return buildUI();
-  }
-
-  Scaffold buildUI() {
     return Scaffold(
-      backgroundColor: const Color(0xffD9D9D9),
-      body: Stack(children: [
-        CustomScrollView(
-          slivers: [
-            buildAppBar(),
-            buildItems(),
-          ],
-        ),
-        buildNavbar(),
-      ]),
+      body: packages.isEmpty 
+      ? const SizedBox() 
+      : Stack(
+        children: [
+
+          CustomScrollView(
+            slivers: [
+              buildAppBar(),
+              buildItems(),
+            ],
+          ),
+
+          buildNavbar(),
+      
+        ]
+      ),
     );
   }
 
@@ -89,175 +85,177 @@ class _UpgradeMemberInquiryScreenState
 
   SliverToBoxAdapter buildItems() {
     return SliverToBoxAdapter(
-      child: Consumer<UpgradeMemberProvider>(builder: (BuildContext context,
-          UpgradeMemberProvider upgradeMemberProvider, Widget? child) {
-        PaymentListData data = upgradeMemberProvider.selectedPaymentChannel!;
-        final double adminFee = data.totalAdminFee!.toDouble();
-        // const double basePrice = 100000;
-        return Wrap(children: [
-          Container(
-            width: double.infinity,
-            color: ColorResources.white,
-            padding: const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0),
-            child: Text(
-              'Metode Pembayaran',
-              style: robotoRegular.copyWith(
-                color: ColorResources.black,
-                fontSize: Dimensions.fontSizeLarge,
-                fontWeight: FontWeight.bold,
+      child: Consumer<UpgradeMemberProvider>(
+        builder: (BuildContext context, UpgradeMemberProvider upgradeMemberProvider, Widget? child) {
+        
+        PaymentChannelData data = upgradeMemberProvider.selectedPaymentChannel!;
+        int adminFee = data.fee ?? 0;
+
+        return Wrap(
+          children: [
+            Container(
+              width: double.infinity,
+              color: ColorResources.white,
+              padding: const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0),
+              child: Text('Metode Pembayaran',
+                style: robotoRegular.copyWith(
+                  color: ColorResources.black,
+                  fontSize: Dimensions.fontSizeLarge,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          ),
-          ListTile(
-            tileColor: ColorResources.white,
-            leading: CircleAvatar(
-              backgroundColor: ColorResources.transparent,
-              maxRadius: 40.0,
-              child: SizedBox.expand(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: CachedNetworkImage(
-                    imageUrl: data.paymentLogo!,
-                    placeholder: (context, url) {
-                      return const CircleAvatar(
-                        backgroundColor: ColorResources.backgroundDisabled,
-                      );
-                    },
-                    errorWidget: (context, url, error) {
-                      return const CircleAvatar(
+            ListTile(
+              tileColor: ColorResources.white,
+              leading: CircleAvatar(
+                backgroundColor: ColorResources.transparent,
+                maxRadius: 40.0,
+                child: SizedBox.expand(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10.0),
+                    child: CachedNetworkImage(
+                      imageUrl: data.logo.toString(),
+                      placeholder: (context, url) {
+                        return const CircleAvatar(
+                          backgroundColor: ColorResources.backgroundDisabled,
+                        );
+                      },
+                      errorWidget: (context, url, error) {
+                        return const CircleAvatar(
                           backgroundColor: ColorResources.transparent,
-                          backgroundImage:
-                              AssetImage("assets/images/icons/ic-empty.png"));
-                    },
-                  ),
-                ),
-              ),
-            ),
-            title: Text(
-              data.paymentName ?? "...",
-              style: poppinsRegular.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            subtitle: Text(
-              "Biaya admin: " + Helper.formatCurrency(int.parse(data.totalAdminFee.toString())),
-              style: poppinsRegular,
-            ),
-          ),
-          Container(
-            color: ColorResources.white,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  height: 10,
-                  color: const Color(0xffD9D9D9),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Pilihan Paket',
-                        style: robotoRegular.copyWith(
-                            fontWeight: FontWeight.bold,
-                            fontSize: Dimensions.fontSizeLarge),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 12,
-                    ),
-                    ...List.generate(
-                      packages.length,
-                      (index) {
-                        final p = packages[index];
-                        return InkWell(
-                          onTap: () {
-                            setState(() {
-                              package = p;
-                            });
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                              left: 16,
-                              right: 8,
-                              bottom: 8,
-                            ),
-                            child: Row(
-                              children: [
-                                Radio<PackageAccount>.adaptive(
-                                    value: p,
-                                    groupValue: package,
-                                    onChanged: (pack) {
-                                      setState(() {
-                                        package = pack;
-                                      });
-                                    }),
-                                const SizedBox(
-                                  width: 12,
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    p.name,
-                                    style: robotoRegular.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: Dimensions.fontSizeLarge),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                          backgroundImage: AssetImage("assets/images/icons/ic-empty.png")
                         );
                       },
                     ),
-                    const SizedBox(
-                      height: 12,
-                    ),
-                  ],
+                  ),
                 ),
-              ],
+              ),
+              title: Text(
+                data.name,
+                style: poppinsRegular.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              subtitle: Text(
+                "Biaya admin: " + Helper.formatCurrency(adminFee),
+                style: poppinsRegular,
+              ),
             ),
-          ),
-          Container(
-            color: ColorResources.white,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  height: 10,
-                  color: const Color(0xffD9D9D9),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Ringkasan Harga',
-                        style: robotoRegular.copyWith(
-                            fontWeight: FontWeight.bold,
-                            fontSize: Dimensions.fontSizeLarge),
+            Container(
+              color: ColorResources.white,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 10,
+                    color: const Color(0xffD9D9D9),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Pilihan Paket',
+                          style: robotoRegular.copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: Dimensions.fontSizeLarge),
+                        ),
                       ),
-                    ),
-                    InfoTile(
-                      label: 'Biaya Upgrade Member',
-                      price: package?.price.toDouble() ?? 0,
-                    ),
-                    InfoTile(
-                      label: 'Biaya Admin',
-                      price: adminFee,
-                    ),
-                    InfoTile(
-                      label: 'Total Harga',
-                      price: (package?.price.toDouble() ?? 0) + adminFee,
-                    ),
-                  ],
-                ),
-              ],
+                      const SizedBox(
+                        height: 12,
+                      ),
+                      ...List.generate(
+                        packages.length,
+                        (index) {
+                          final p = packages[index];
+                          return InkWell(
+                            onTap: () {
+                              setState(() {
+                                package = p;
+                              });
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                left: 16,
+                                right: 8,
+                                bottom: 8,
+                              ),
+                              child: Row(
+                                children: [
+                                  Radio<PackageAccount>.adaptive(
+                                      value: p,
+                                      groupValue: package,
+                                      onChanged: (pack) {
+                                        setState(() {
+                                          package = pack;
+                                        });
+                                      }),
+                                  const SizedBox(
+                                    width: 12,
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      p.name,
+                                      style: robotoRegular.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: Dimensions.fontSizeLarge),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(
+                        height: 12,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          )
-        ]);
+            Container(
+              color: ColorResources.white,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 10,
+                    color: const Color(0xffD9D9D9),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('Ringkasan Harga',
+                          style: robotoRegular.copyWith(
+                            fontWeight: FontWeight.bold,
+                            fontSize: Dimensions.fontSizeLarge
+                          ),
+                        ),
+                      ),
+                      InfoTile(
+                        label: 'Biaya Upgrade Member',
+                        price: package!.price,
+                      ),
+                      InfoTile(
+                        label: 'Biaya Admin',
+                        price: adminFee,
+                      ),
+                      InfoTile(
+                        label: 'Total Harga',
+                        price: (package!.price + adminFee),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            )
+          ]
+        );
       }),
     );
   }
@@ -271,21 +269,20 @@ class _UpgradeMemberInquiryScreenState
         child: CustomButton(
           onTap: () async {
             if (package == null) {
-              CustomDialog.showErrorCustom(context,
-                  title: '', message: "Harap pilih paket terlebih dahulu");
+              CustomDialog.showErrorCustom(
+                context, 
+                title: "", 
+                message: "Harap pilih paket terlebih dahulu"
+              );
               return;
             }
             buildAskDialog(context);
           },
-          isLoading: context.watch<UpgradeMemberProvider>().inquiryStatus ==
-                  InquiryStatus.loading
-              ? true
-              : false,
+          isLoading: context.watch<UpgradeMemberProvider>().inquiryStatus == InquiryStatus.loading ? true : false,
           btnColor: ColorResources.secondary,
           customText: true,
           isBorderRadius: true,
-          text: Text(
-            'Bayar',
+          text: Text('Bayar',
             style: poppinsRegular.copyWith(
               fontSize: Dimensions.fontSizeLarge,
               color: ColorResources.white,
@@ -316,13 +313,12 @@ class _UpgradeMemberInquiryScreenState
       btnOkText: "Yakin",
       btnOkColor: ColorResources.secondary,
       btnOkOnPress: () async {
-        context.read<UpgradeMemberProvider>().sendPaymentInquiryV2(context,
-            userId: SharedPrefs.getUserId(),
-            paymentCode: context
-                .read<UpgradeMemberProvider>()
-                .selectedPaymentChannel!
-                .paymentCode!,
-            package: package!);
+        await context.read<UpgradeMemberProvider>().sendPaymentInquiryV2(context,
+          userId: SharedPrefs.getUserId(),
+          paymentCode: context.read<UpgradeMemberProvider>().selectedPaymentChannel!.nameCode,
+          channelId: context.read<UpgradeMemberProvider>().selectedPaymentChannel!.id.toString(),
+          package: package!
+        );
       },
       btnCancelText: "Tidak",
       btnCancelColor: Colors.red,
@@ -338,7 +334,7 @@ class InfoTile extends StatelessWidget {
     required this.label,
   });
 
-  final double price;
+  final int? price;
   final String label;
 
   @override
@@ -353,7 +349,7 @@ class InfoTile extends StatelessWidget {
         ),
       ),
       title: Text(
-        Helper.formatCurrency(int.parse(price.toString())),
+        Helper.formatCurrency(price ?? 0),
         style: robotoRegular,
         textAlign: TextAlign.end,
       ),

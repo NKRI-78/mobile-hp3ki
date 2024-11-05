@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:hp3ki/data/models/package_account/package_account_model.dart';
-import 'package:hp3ki/data/models/ppob_v2/payment_list.dart';
+import 'package:hp3ki/data/models/payment_channel/payment_channel.dart';
+
 import 'package:hp3ki/data/repository/upgrade_member/upgrade_member.dart';
+
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/exceptions.dart';
+
+import 'package:hp3ki/data/models/package_account/package_account_model.dart';
+
 import 'package:hp3ki/views/basewidgets/dialog/custom/custom.dart';
 import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
 
@@ -29,11 +33,11 @@ class UpgradeMemberProvider with ChangeNotifier {
   PaymentCallbackStatus _paymentCallbackStatus = PaymentCallbackStatus.empty;
   PaymentCallbackStatus get paymentCallbackStatus => _paymentCallbackStatus;
 
-  List<PaymentListData>? _paymentChannel = [];
-  List<PaymentListData>? get paymentChannel => _paymentChannel;
+  List<PaymentChannelData> _paymentChannel = [];
+  List<PaymentChannelData> get paymentChannel => _paymentChannel;
 
-  PaymentListData? _selectedPaymentChannel;
-  PaymentListData? get selectedPaymentChannel => _selectedPaymentChannel;
+  PaymentChannelData? _selectedPaymentChannel;
+  PaymentChannelData? get selectedPaymentChannel => _selectedPaymentChannel;
 
   void setStatePaymentChannelStatus(PaymentChannelStatus paymentChannelStatus) {
     _paymentChannelStatus = paymentChannelStatus;
@@ -51,7 +55,7 @@ class UpgradeMemberProvider with ChangeNotifier {
     Future.delayed(Duration.zero, () => notifyListeners());
   }
 
-  void setSelectedPaymentChannel(PaymentListData data) {
+  void setSelectedPaymentChannel(PaymentChannelData data) {
     _selectedPaymentChannel = data;
     Future.delayed(Duration.zero, () => notifyListeners());
   }
@@ -64,16 +68,15 @@ class UpgradeMemberProvider with ChangeNotifier {
   Future<void> getPaymentChannel(BuildContext context) async {
     setStatePaymentChannelStatus(PaymentChannelStatus.loading);
     try {
+      PaymentChannelModel? paymentChannelModel = await umr.getPaymentChannel();
       _paymentChannel = [];
-      PaymentListModel? plm = await umr.getPaymentChannel();
-      if (plm!.body!.isNotEmpty) {
-        _paymentChannel!.addAll(plm.body!);
+      if (paymentChannelModel!.data.isNotEmpty) {
+        _paymentChannel.addAll(paymentChannelModel.data);
         setStatePaymentChannelStatus(PaymentChannelStatus.loaded);
       } else {
         setStatePaymentChannelStatus(PaymentChannelStatus.empty);
       }
     } on CustomException catch (e) {
-      //UR01
       debugPrint(e.toString());
       setStatePaymentChannelStatus(PaymentChannelStatus.error);
     } catch (e, stacktrace) {
@@ -86,10 +89,11 @@ class UpgradeMemberProvider with ChangeNotifier {
     BuildContext context, {
     required String userId,
     required String paymentCode,
+    required String channelId
   }) async {
     setStateInquiryStatus(InquiryStatus.loading);
     try {
-      await umr.sendPaymentInquiry(userId: userId, paymentCode: paymentCode);
+      await umr.sendPaymentInquiry(userId: userId, paymentCode: paymentCode, channelId: channelId);
       CustomDialog.buildPaymentSuccessDialog(context);
       setStateInquiryStatus(InquiryStatus.loaded);
     } on CustomException catch (e) {
@@ -103,14 +107,15 @@ class UpgradeMemberProvider with ChangeNotifier {
     }
   }
 
-  Future<void> sendPaymentInquiryV2(BuildContext context,
-      {required String userId,
-      required String paymentCode,
-      required PackageAccount package}) async {
+  Future<void> sendPaymentInquiryV2(BuildContext context, {
+    required String userId,
+    required String paymentCode,
+    required String channelId,
+    required PackageAccount package
+  }) async {
     setStateInquiryStatus(InquiryStatus.loading);
     try {
-      await umr.sendPaymentInquiry(
-          userId: userId, paymentCode: paymentCode, package: package);
+      await umr.sendPaymentInquiry(userId: userId, paymentCode: paymentCode, channelId: channelId, package: package);
       CustomDialog.buildPaymentSuccessDialog(context);
       setStateInquiryStatus(InquiryStatus.loaded);
     } on CustomException catch (e) {

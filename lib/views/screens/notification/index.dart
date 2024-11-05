@@ -128,23 +128,23 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
       ),
     ),
     Tab(
-      icon: context.read<InboxProvider>().inboxInfoStatus == InboxInfoStatus.loading
+      icon: context.read<InboxProvider>().inboxPaymentStatus == InboxPaymentStatus.loading
       ? Image.asset("assets/images/icons/transaksi.png",
         width: 40.0,
         height: 40.0,
       )
-      : context.read<InboxProvider>().inboxInfoStatus == InboxInfoStatus.error
+      : context.read<InboxProvider>().inboxPaymentStatus == InboxPaymentStatus.error
         ? Image.asset("assets/images/icons/transaksi.png",
             width: 40.0,
             height: 40.0,
           )
-        : context.read<InboxProvider>().inboxInfoStatus == InboxInfoStatus.loaded &&
-          context.read<InboxProvider>().inboxTransactionCount != 0
+        : context.read<InboxProvider>().inboxPaymentStatus == InboxPaymentStatus.loaded &&
+          context.read<InboxProvider>().inboxPaymentCount != 0
           ? Badge(
               padding: EdgeInsets.zero,
               label: Container(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(context.read<InboxProvider>().inboxTransactionCount.toString(),
+                child: Text(context.read<InboxProvider>().inboxPaymentCount.toString(),
                   style: robotoRegular.copyWith(
                     fontSize: Dimensions.fontSizeSmall,
                     color: ColorResources.white
@@ -597,7 +597,6 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
     );
   }
 
-
   Widget buildNotificationItem(
     List<InboxData>? inbox, i, IconData icon, 
     ScrollController scrollPosition, 
@@ -632,13 +631,13 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
         child: Container(
           decoration: BoxDecoration(
             color: inbox?[i].read == true
-                ? ColorResources.white.withOpacity(0.9)
-                : ColorResources.primary.withOpacity(0.2),
+            ? ColorResources.white.withOpacity(0.9)
+            : ColorResources.primary.withOpacity(0.2),
           ),
           child: Container(
             decoration: BoxDecoration(
-                border:
-                    Border.all(width: 0.5, color: ColorResources.hintColor)),
+              border: Border.all(width: 0.5, color: ColorResources.hintColor)
+            ),
             padding: const EdgeInsets.all(15.0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
