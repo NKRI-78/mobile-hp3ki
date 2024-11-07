@@ -290,7 +290,7 @@ class DetailOrderData {
   String? orderStatus;
   String? paymentStatus;
   dynamic waybill;
-  DateTime? expire;
+  dynamic expire;
   int? totalCost;
   int? totalPrice;
   String? invoice;
@@ -336,6 +336,7 @@ class DetailOrderData {
 class DetailOrderItem {
   Store store;
   List<ProductElement> products;
+  String waybill;
   String courierId;
   int courierPrice;
   String courierService;
@@ -345,6 +346,7 @@ class DetailOrderItem {
 
   DetailOrderItem({
     required this.store,
+    required this.waybill,
     required this.products,
     required this.courierId,
     required this.courierPrice,
@@ -357,6 +359,7 @@ class DetailOrderItem {
   factory DetailOrderItem.fromJson(Map<String, dynamic> json) => DetailOrderItem(
     store: Store.fromJson(json["store"]),
     products: List<ProductElement>.from(json["products"].map((x) => ProductElement.fromJson(x))),
+    waybill: json["waybill"],
     courierId: json["courier_id"],
     courierPrice: json["courier_price"],
     courierService: json["courier_service"],

@@ -228,9 +228,9 @@ class ListOrderScreenState extends State<ListOrderScreen> with SingleTickerProvi
 
                                     InkWell(
                                       onTap: () {
-                                        Clipboard.setData(ClipboardData(text: notifier.detailOrderData.waybill));
+                                        Clipboard.setData(ClipboardData(text: notifier.detailOrders[i].waybill));
                                         ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(content: Text(notifier.detailOrderData.waybill,
+                                          SnackBar(content: Text(notifier.detailOrders[i].waybill,
                                             style: robotoRegular.copyWith(
                                               fontSize: Dimensions.fontSizeDefault
                                             ),
