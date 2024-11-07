@@ -1,10 +1,13 @@
-import 'package:hp3ki/services/navigation.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:hp3ki/providers/inbox/inbox.dart';
+
+import 'package:hp3ki/services/navigation.dart';
 
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
@@ -14,11 +17,15 @@ class DetailInboxScreen extends StatefulWidget {
   const DetailInboxScreen({
     Key? key, 
     required this.inboxId,
-    required this.type
+    required this.type,
+    required this.paymentMethod,
+    required this.paymentChannel,
   }) : super(key: key);
 
   final String inboxId;
   final String type;
+  final String paymentMethod;
+  final String paymentChannel;
 
   @override
   DetailInboxScreenState createState() => DetailInboxScreenState();
@@ -30,6 +37,7 @@ class DetailInboxScreenState extends State<DetailInboxScreen> {
   
   String title = "";
   String content = "";
+  String link = "";
   String date = "";
 
   String latitude = "";
@@ -70,6 +78,7 @@ class DetailInboxScreenState extends State<DetailInboxScreen> {
 
       title = loading ? "..." : provider.inboxDetailData.title ?? "...";
       content = loading ? "..." : provider.inboxDetailData.description ?? "...";
+      link = loading ? "..." : provider.inboxDetailData.link ?? "..."; 
       latitude = loading ? "..." : provider.inboxDetailData.lat ?? "...";
       longitude = loading ? "..." : provider.inboxDetailData.lng ?? "...";
       date = loading ? "..." : provider.inboxDetailData.createdAt ?? '...';
@@ -155,101 +164,133 @@ class DetailInboxScreenState extends State<DetailInboxScreen> {
         ),
       ),
       leading: Container(
-          margin: const EdgeInsets.all(8.0),
-          height: 40.0,
-          width: 40.0,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(50.0), color: Colors.black54),
-          child: IconButton(
-            color: ColorResources.white,
-            onPressed: () {
-              NS.pop();
-            },
-            icon: const Icon(
-              Icons.arrow_back,
-              size: Dimensions.iconSizeDefault,
-            ),
-          )),
+        margin: const EdgeInsets.all(8.0),
+        height: 40.0,
+        width: 40.0,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(50.0), color: Colors.black54),
+        child: IconButton(
+          color: ColorResources.white,
+          onPressed: () {
+            NS.pop();
+          },
+          icon: const Icon(
+            Icons.arrow_back,
+            size: Dimensions.iconSizeDefault,
+          ),
+        )
+      ),
     );
   }
 
   SliverList buildBodyContent() {
     return SliverList(
       delegate: SliverChildListDelegate([
-      Container(
-        margin: const EdgeInsets.all(Dimensions.marginSizeExtraLarge),
-        width: double.infinity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: double.infinity,
-              margin: const EdgeInsets.only(bottom: 5.0),
-              child: AnimatedOpacity(
-                opacity: isShrink ? 0.0 : 1.0,
-                duration: const Duration(milliseconds: 250),
-                child: Text(title,
-                  textAlign: TextAlign.start,
+
+        Container(
+          margin: const EdgeInsets.all(Dimensions.marginSizeExtraLarge),
+          width: double.infinity,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(bottom: 5.0),
+                child: AnimatedOpacity(
+                  opacity: isShrink ? 0.0 : 1.0,
+                  duration: const Duration(milliseconds: 250),
+                  child: Text(title,
+                    textAlign: TextAlign.start,
+                    style: poppinsRegular.copyWith(
+                      fontSize: Dimensions.fontSizeLarge,
+                      color: ColorResources.black,
+                      fontWeight: FontWeight.bold,
+                    )
+                  ),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(bottom: 10.0),
+                child: Text(
+                  date,
                   style: poppinsRegular.copyWith(
+                  color: ColorResources.grey,
+                  fontSize: Dimensions.fontSizeDefault),
+                )
+              ),
+              const Divider(
+                height: 4.0,
+                thickness: 1.0,
+              ),
+              widget.type == "sos" 
+              ? Container(
+                  margin: const EdgeInsets.only(
+                    top: 10.0,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text("Mayday Mayday",
+                        style: robotoRegular.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: ColorResources.black
+                        ),
+                      ),
+                      const SizedBox(height: 8.0),
+                      Text(content,
+                        style: robotoRegular.copyWith(
+                          color: ColorResources.black
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : widget.type == "payment.va" 
+              ? Container(
+                  margin: const EdgeInsets.only(top: 5.0, bottom: 10.0),
+                  child: Text("Silahkan melakukan pembayaran menggunakan VIRTUAL ACCOUNT ${widget.paymentMethod} dengan no VA $link",
+                    style: interRegular.copyWith(
+                      fontSize: Dimensions.fontSizeLarge,
+                      color: ColorResources.black,
+                    ),
+                  ),
+                ) 
+              : widget.type == "payment.emoney" 
+              ? Container(
+                  margin: const EdgeInsets.only(top: 5.0, bottom: 10.0),
+                  child: Column(
+                    children: [
+                        
+                      Text("Silahkan melakukan pembayaran menggunakan ${widget.paymentMethod}",
+                        style: interRegular.copyWith(
+                          fontSize: Dimensions.fontSizeLarge,
+                          color: ColorResources.black,
+                        ),
+                      ),   
+
+                      CachedNetworkImage(
+                        imageUrl: link
+                      )
+
+                    ]
+                  )
+                ) 
+              : Container(
+                  margin: const EdgeInsets.only(top: 5.0, bottom: 10.0),
+                  child: Text(content,
+                  style: interRegular.copyWith(
                     fontSize: Dimensions.fontSizeLarge,
                     color: ColorResources.black,
-                    fontWeight: FontWeight.bold,
-                  )
+                  ),
                 ),
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(bottom: 10.0),
-              child: Text(
-                date,
-                style: poppinsRegular.copyWith(
-                color: ColorResources.grey,
-                fontSize: Dimensions.fontSizeDefault),
-              )
-            ),
-            const Divider(
-              height: 4.0,
-              thickness: 1.0,
-            ),
-            widget.type == "sos" 
-            ? Container(
-                margin: const EdgeInsets.only(
-                  top: 10.0,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text("Mayday Mayday",
-                      style: robotoRegular.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: ColorResources.black
-                      ),
-                     ),
-                    const SizedBox(height: 8.0),
-                    Text(content,
-                      style: robotoRegular.copyWith(
-                        color: ColorResources.black
-                      ),
-                    ),
-                  ],
-               ),
-            )
-            : Container(
-                margin: const EdgeInsets.only(top: 5.0, bottom: 10.0),
-                child: Text(content,
-                style: interRegular.copyWith(
-                  fontSize: Dimensions.fontSizeLarge,
-                  color: ColorResources.black,
-                ),
-              ),
-            ),
-          
-            
-          ],
-        ),
-      )
-    ]));
+              )    
+            ],
+          ),
+        )
+
+      ])
+    );
   }
 
 

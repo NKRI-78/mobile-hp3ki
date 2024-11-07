@@ -413,7 +413,7 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
                         context.read<InboxProvider>().inboxInfo,
                         i,
                         Icons.info,
-                        inboxInfoViewC,
+                        inboxPaymentViewC,
                         "info"
                       );
                     }
@@ -604,7 +604,6 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
   ) {
     return InkWell(
       onTap: () async {
-        final currentScrollPosition = scrollPosition.position.pixels;
 
         await context.read<InboxProvider>().getInboxDetailAndUpdateInbox(
           context,
@@ -615,9 +614,13 @@ class NotificationScreenState extends State<NotificationScreen> with TickerProvi
         final isRefetch = await Navigator.push(context, MaterialPageRoute(builder: (context) {
           return DetailInboxScreen(
             inboxId: inbox[i].id!,
-            type: type
+            type: inbox[i].type!,
+            paymentChannel: inbox[i].paymentChannel ?? "",
+            paymentMethod: inbox[i].paymentMethod ?? "",
           );
         }));
+
+        final currentScrollPosition = scrollPosition.position.pixels;
 
         if(isRefetch != null) {
           Future.delayed(const Duration(milliseconds: 500), () {

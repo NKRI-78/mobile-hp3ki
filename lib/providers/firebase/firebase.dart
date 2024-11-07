@@ -70,6 +70,8 @@ class FirebaseProvider with ChangeNotifier {
         DetailInboxScreen(
           inboxId: message.data["inbox_id"],
           type: "broadcast",
+          paymentChannel: "",
+          paymentMethod: "",
         )
       );
     }
@@ -80,7 +82,9 @@ class FirebaseProvider with ChangeNotifier {
         navigatorKey.currentContext!,
         DetailInboxScreen(
           inboxId: message.data["inbox_id"], 
-          type: message.data["inbox_type"]
+          type: message.data["inbox_type"],
+          paymentChannel: "",
+          paymentMethod: "",
         )
       );    
     }

@@ -1,21 +1,31 @@
 import 'dart:io';
 
-import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
-import 'package:hp3ki/views/screens/auth/forgot_password.dart';
-import 'package:hp3ki/views/screens/auth/sign_up.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hp3ki/providers/internet/internet.dart';
-import 'package:hp3ki/views/screens/connection/connection.dart';
 import 'package:simple_animations/simple_animations.dart';
-import 'package:hp3ki/providers/auth/auth.dart';
+
 import 'package:provider/provider.dart';
+
+import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
+
+import 'package:hp3ki/providers/auth/auth.dart';
+
+import 'package:hp3ki/providers/internet/internet.dart';
+
+import 'package:hp3ki/views/screens/connection/connection.dart';
+
 import 'package:hp3ki/localization/language_constraints.dart';
+
 import 'package:hp3ki/services/navigation.dart';
+
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
+
+import 'package:hp3ki/views/screens/auth/forgot_password.dart';
+import 'package:hp3ki/views/screens/auth/sign_up.dart';
+
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
 import 'package:hp3ki/views/basewidgets/textfield/textfield.dart';
 

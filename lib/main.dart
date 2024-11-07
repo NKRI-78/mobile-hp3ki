@@ -137,6 +137,8 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
         DetailInboxScreen(
           inboxId: data["inbox_id"],
           type: "broadcast",
+          paymentChannel: "",
+          paymentMethod: "",
         )
       );
     }
@@ -147,7 +149,9 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
         navigatorKey.currentContext!,
         DetailInboxScreen(
           inboxId: data["inbox_id"], 
-          type: data["inbox_type"]
+          type: data["inbox_type"],
+          paymentChannel: "",
+          paymentMethod: "",
         )
       );    
     }

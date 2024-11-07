@@ -33,6 +33,9 @@ class InboxData extends Equatable {
   final String? link;
   final User? user;
   final bool? read;
+  final String? type;
+  final String? paymentChannel;
+  final String? paymentMethod;
   final double latitude;
   final double longitude;
   final String? createdAt;
@@ -46,6 +49,9 @@ class InboxData extends Equatable {
     this.link,
     this.user,
     this.read,
+    this.type,
+    this.paymentChannel,
+    this.paymentMethod,
     required this.latitude,
     required this.longitude,
     this.createdAt,
@@ -53,47 +59,36 @@ class InboxData extends Equatable {
   });
 
   factory InboxData.fromJson(Map<String, dynamic> json) => InboxData(
-        id: json["id"],
-        title: json["title"],
-        subject: json["subject"],
-        description: json["description"],
-        link: json["link"],
-        user: User.fromJson(json["user"]),
-        read: json["read"],
-        latitude: double.parse((json["latitude"] ?? 0).toString()),
-        longitude: double.parse((json["longitude"] ?? 0).toString()),
-        createdAt: json["created_at"],
-        updatedAt: json["updated_at"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "title": title,
-        "subject": subject,
-        "description": description,
-        "link": link,
-        "user": user?.toJson(),
-        "read": read,
-        "latitude": latitude,
-        "longitude": longitude,
-        "created_at": createdAt,
-        "updated_at": updatedAt,
-      };
+    id: json["id"],
+    title: json["title"],
+    subject: json["subject"],
+    description: json["description"],
+    link: json["link"],
+    user: User.fromJson(json["user"]),
+    read: json["read"],
+    type: json["type"],
+    paymentChannel: json["payment_channel"],
+    paymentMethod: json["payment_method"],
+    latitude: double.parse((json["latitude"] ?? 0).toString()),
+    longitude: double.parse((json["longitude"] ?? 0).toString()),
+    createdAt: json["created_at"],
+    updatedAt: json["updated_at"],
+  );
 
   @override
   List<Object?> get props => [
-        id,
-        title,
-        subject,
-        description,
-        link,
-        user,
-        read,
-        createdAt,
-        updatedAt,
-        latitude,
-        longitude,
-      ];
+    id,
+    title,
+    subject,
+    description,
+    link,
+    user,
+    read,
+    createdAt,
+    updatedAt,
+    latitude,
+    longitude,
+  ];
 }
 
 class User extends Equatable {
