@@ -448,8 +448,11 @@ class EcommerceProvider extends ChangeNotifier {
   List<ListOrderData> _orders = [];
   List<ListOrderData> get orders => [..._orders];
 
-  List<DetailOrderData> _detailOrders = [];
-  List<DetailOrderData> get detailOrders => [..._detailOrders];
+  List<DetailOrderItem> _detailOrders = [];
+  List<DetailOrderItem> get detailOrders => [..._detailOrders];
+
+  DetailOrderData _detailOrderData = DetailOrderData();
+  DetailOrderData get detailOrderData => _detailOrderData;
 
   ShippingAddressDetailData _shippingAddressDetailData = ShippingAddressDetailData();
   ShippingAddressDetailData get shippingAddressDetailData => _shippingAddressDetailData;
@@ -988,8 +991,10 @@ class EcommerceProvider extends ChangeNotifier {
 
       DetailOrderModel detailOrderModel = await er.getOrderDetail(transactionId: transactionId);
       
+      _detailOrderData = detailOrderModel.data;
+
       _detailOrders = [];
-      _detailOrders.addAll(detailOrderModel.data);
+      _detailOrders.addAll(detailOrderModel.data.items!);
 
       setStateDetailOrderStatus(DetailOrderStatus.loaded);
     } catch(e) {

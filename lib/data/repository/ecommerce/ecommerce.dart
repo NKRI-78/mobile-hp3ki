@@ -356,7 +356,7 @@ class EcommerceRepo {
   Future<DetailOrderModel> getOrderDetail({required String transactionId}) async {
     try {
       Dio dio = DioManager.shared.getClient();
-      Response response = await dio.post("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/order/detail",
+      Response response = await dio.post("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/order/detail/temp",
         data: {
           "transaction_id": transactionId, 
           "app": "hp3ki"

@@ -159,75 +159,75 @@ class DetailOrderState extends State<DetailOrder> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
 
-                    Row(
+                    const Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
 
-                        Text(notifier.detailOrders[i].invoice,
-                          style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
-                            color: ColorResources.black
-                          ),
-                        ),
+                        // Text(notifier.detailOrders[i].invoice,
+                        //   style: robotoRegular.copyWith(
+                        //     fontSize: Dimensions.fontSizeDefault,
+                        //     color: ColorResources.black
+                        //   ),
+                        // ),
 
-                        notifier.detailOrders[i].expire == null 
-                        ? const SizedBox() 
-                        : notifier.orders[i].orderStatus == "WAITING_PAYMENT" 
-                        ? Container(
-                            padding: const EdgeInsets.all(5.0),
-                            decoration: BoxDecoration(
-                              color: ColorResources.countdown,
-                              borderRadius: BorderRadius.circular(10.0)
-                            ),
-                            child: CountDownText(
-                              due: DateTime.parse(notifier.detailOrders[i].expire),
-                              finishedText: "Kedaluwarsa",
-                              showLabel: false,
-                              longDateName: true,
-                              daysTextLong: " Hari ",
-                              hoursTextLong: " Jam ",
-                              minutesTextLong: " Menit ",
-                              secondsTextLong: " Detik ",
-                              style: robotoRegular.copyWith(
-                                color: ColorResources.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: Dimensions.fontSizeSmall
-                              ),
-                            ),
-                          )
-                        : const SizedBox() 
+                        // notifier.detailOrders[i].expire == null 
+                        // ? const SizedBox() 
+                        // : notifier.orders[i].orderStatus == "WAITING_PAYMENT" 
+                        // ? Container(
+                        //     padding: const EdgeInsets.all(5.0),
+                        //     decoration: BoxDecoration(
+                        //       color: ColorResources.countdown,
+                        //       borderRadius: BorderRadius.circular(10.0)
+                        //     ),
+                        //     child: CountDownText(
+                        //       due: DateTime.parse(notifier.detailOrders[i].expire),
+                        //       finishedText: "Kedaluwarsa",
+                        //       showLabel: false,
+                        //       longDateName: true,
+                        //       daysTextLong: " Hari ",
+                        //       hoursTextLong: " Jam ",
+                        //       minutesTextLong: " Menit ",
+                        //       secondsTextLong: " Detik ",
+                        //       style: robotoRegular.copyWith(
+                        //         color: ColorResources.white,
+                        //         fontWeight: FontWeight.bold,
+                        //         fontSize: Dimensions.fontSizeSmall
+                        //       ),
+                        //     ),
+                        //   )
+                        // : const SizedBox() 
 
                       ],
                     ),
 
                     const SizedBox(height: 12.0),
 
-                    Row(
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
 
-                        Text(Helper.formatDate(notifier.detailOrders[i].createdAt),
-                          style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
-                            fontWeight: FontWeight.bold
-                          ),
-                        ),
+                        // Text(Helper.formatDate(notifier.detailOrders[i].createdAt),
+                        //   style: robotoRegular.copyWith(
+                        //     fontSize: Dimensions.fontSizeDefault,
+                        //     fontWeight: FontWeight.bold
+                        //   ),
+                        // ),
 
-                        Container(
-                          padding: const EdgeInsets.all(6.0),
-                          decoration: BoxDecoration(
-                            color: ColorResources.purple,
-                            borderRadius: BorderRadius.circular(8.0)
-                          ),
-                          child: Text(orderStatus(notifier.detailOrders[i].orderStatus),
-                            style: robotoRegular.copyWith(
-                              fontWeight: FontWeight.bold,
-                              fontSize: Dimensions.fontSizeSmall,
-                              color: ColorResources.white,
-                            ),
-                          )
-                        ),
+                        // Container(
+                        //   padding: const EdgeInsets.all(6.0),
+                        //   decoration: BoxDecoration(
+                        //     color: ColorResources.purple,
+                        //     borderRadius: BorderRadius.circular(8.0)
+                        //   ),
+                        //   child: Text(orderStatus(notifier.detailOrders[i].orderStatus),
+                        //     style: robotoRegular.copyWith(
+                        //       fontWeight: FontWeight.bold,
+                        //       fontSize: Dimensions.fontSizeSmall,
+                        //       color: ColorResources.white,
+                        //     ),
+                        //   )
+                        // ),
 
                       ],
                     ),
@@ -298,7 +298,7 @@ class DetailOrderState extends State<DetailOrder> {
                       shrinkWrap: true,
                       padding: EdgeInsets.zero,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: notifier.detailOrders[i].items.length,
+                      itemCount: notifier.detailOrders[i].products.length,
                       itemBuilder: (BuildContext context, int z) {
                         return Container(
                           margin: const EdgeInsets.only(
@@ -321,9 +321,9 @@ class DetailOrderState extends State<DetailOrder> {
                                     children: [
                           
                                       CachedNetworkImage(
-                                        imageUrl: notifier.detailOrders[i].items[z].product.medias.isEmpty 
+                                        imageUrl: notifier.detailOrders[i].products[z].product.medias.isEmpty 
                                         ? "https://dummyimage.com/300x300/000/fff" 
-                                        : notifier.detailOrders[i].items[z].product.medias.first.path,
+                                        : notifier.detailOrders[i].products[z].product.medias.first.path,
                                         imageBuilder: (context, imageProvider) {
                                           return Container(
                                             width: 45.0,
@@ -370,7 +370,7 @@ class DetailOrderState extends State<DetailOrder> {
                           
                                           SizedBox(
                                             width: 200.0,
-                                            child: Text(notifier.detailOrders[i].items[z].product.title,
+                                            child: Text(notifier.detailOrders[i].products[z].product.title,
                                               maxLines: 2,
                                               overflow: TextOverflow.ellipsis,
                                               style: robotoRegular.copyWith(
@@ -381,7 +381,7 @@ class DetailOrderState extends State<DetailOrder> {
                           
                                           const SizedBox(height: 5.0),
                           
-                                          Text("${Helper.formatCurrency(notifier.detailOrders[i].items[z].product.price)} x ${notifier.detailOrders[i].items[z].qty}",
+                                          Text("${Helper.formatCurrency(notifier.detailOrders[i].products[z].product.price)} x ${notifier.detailOrders[i].products[z].qty}",
                                             style: robotoRegular.copyWith(
                                               fontSize: Dimensions.fontSizeSmall,
                                               fontWeight: FontWeight.bold
@@ -394,13 +394,13 @@ class DetailOrderState extends State<DetailOrder> {
                                     ],
                                   ),
                           
-                                  notifier.detailOrders[i].items[z].product.note.isEmpty 
+                                  notifier.detailOrders[i].products[z].product.note.isEmpty 
                                   ? const SizedBox()
                                   : const SizedBox(height: 10.0),
                           
-                                   notifier.detailOrders[i].items[z].product.note.isEmpty 
+                                   notifier.detailOrders[i].products[z].product.note.isEmpty 
                                   ? const SizedBox()
-                                  : Text("Catatan : ${notifier.detailOrders[i].items[z].product.note}",
+                                  : Text("Catatan : ${notifier.detailOrders[i].products[z].product.note}",
                                     style: robotoRegular.copyWith(
                                       fontSize: Dimensions.fontSizeSmall
                                     ),
@@ -432,36 +432,36 @@ class DetailOrderState extends State<DetailOrder> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                         
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
+                            // Row(
+                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //   mainAxisSize: MainAxisSize.max,
+                            //   children: [
                             
-                                Text("Kurir",
-                                  style: robotoRegular.copyWith(
-                                    fontSize: Dimensions.fontSizeDefault,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                            //     Text("Kurir",
+                            //       style: robotoRegular.copyWith(
+                            //         fontSize: Dimensions.fontSizeDefault,
+                            //         fontWeight: FontWeight.bold,
+                            //       ),
+                            //     ),
                         
-                                btnUnduhResi 
-                                ? notifier.detailOrders[i].waybill == "-" 
-                                ? const SizedBox() 
-                                : InkWell(
-                                    onTap: () async {
-                                      await takeScreenshot();
-                                    },
-                                    child: Text("Unduh resi",
-                                      style: robotoRegular.copyWith(
-                                        color: ColorResources.blue,
-                                        fontSize: Dimensions.fontSizeSmall
-                                      ),
-                                    )
-                                  ) 
-                                : const SizedBox()
+                            //     btnUnduhResi 
+                            //     ? notifier.detailOrders[i].waybill == "-" 
+                            //     ? const SizedBox() 
+                            //     : InkWell(
+                            //         onTap: () async {
+                            //           await takeScreenshot();
+                            //         },
+                            //         child: Text("Unduh resi",
+                            //           style: robotoRegular.copyWith(
+                            //             color: ColorResources.blue,
+                            //             fontSize: Dimensions.fontSizeSmall
+                            //           ),
+                            //         )
+                            //       ) 
+                            //     : const SizedBox()
                         
-                              ],
-                            ),
+                            //   ],
+                            // ),
                                         
                             const SizedBox(height: 5.0),
                                         
@@ -553,74 +553,74 @@ class DetailOrderState extends State<DetailOrder> {
                             
                             const SizedBox(height: 15.0),
                             
-                            notifier.detailOrders[i].waybill == "-"  
-                            ? const SizedBox() 
-                            : BarcodeWidget(
-                                height: 50.0,
-                                barcode: Barcode.code128(),
-                                margin: EdgeInsets.zero,
-                                padding: EdgeInsets.zero,
-                                drawText: false,
-                                data: notifier.detailOrders[i].waybill,
-                              ),
+                            // notifier.detailOrders[i].waybill == "-"  
+                            // ? const SizedBox() 
+                            // : BarcodeWidget(
+                            //     height: 50.0,
+                            //     barcode: Barcode.code128(),
+                            //     margin: EdgeInsets.zero,
+                            //     padding: EdgeInsets.zero,
+                            //     drawText: false,
+                            //     data: notifier.detailOrders[i].waybill,
+                            //   ),
                             
-                            notifier.detailOrders[i].waybill == "-"   
-                            ? const SizedBox() 
-                            : const SizedBox(height: 15.0),
+                            // notifier.detailOrders[i].waybill == "-"   
+                            // ? const SizedBox() 
+                            // : const SizedBox(height: 15.0),
                             
-                            notifier.detailOrders[i].waybill == "-"  
-                            ? const SizedBox() 
-                            : Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
+                            // notifier.detailOrders[i].waybill == "-"  
+                            // ? const SizedBox() 
+                            // : Row(
+                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //   mainAxisSize: MainAxisSize.max,
+                            //   children: [
                             
-                                Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
+                            //     Row(
+                            //       mainAxisSize: MainAxisSize.max,
+                            //       children: [
                             
-                                    Text("No Resi",
-                                      style: robotoRegular.copyWith(
-                                        fontSize: Dimensions.fontSizeSmall,
-                                        color: ColorResources.black
-                                      ),
-                                    ),
+                            //         Text("No Resi",
+                            //           style: robotoRegular.copyWith(
+                            //             fontSize: Dimensions.fontSizeSmall,
+                            //             color: ColorResources.black
+                            //           ),
+                            //         ),
                             
-                                    icCopyResi 
-                                    ? InkWell(
-                                        onTap: () {
-                                          Clipboard.setData(ClipboardData(text: notifier.detailOrders[i].waybill));
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            SnackBar(content: Text(notifier.detailOrders[i].waybill,
-                                              style: robotoRegular.copyWith(
-                                                fontSize: Dimensions.fontSizeDefault
-                                              ),
-                                            )),
-                                          );
-                                        },
-                                        child: const Padding(
-                                          padding: EdgeInsets.all(5.0),
-                                          child: Icon(
-                                            Icons.copy,
-                                            size: 12.0,
-                                          ),
-                                        ),
-                                      ) 
-                                    : const SizedBox()
+                            //         icCopyResi 
+                            //         ? InkWell(
+                            //             onTap: () {
+                            //               Clipboard.setData(ClipboardData(text: notifier.detailOrders[i].waybill));
+                            //               ScaffoldMessenger.of(context).showSnackBar(
+                            //                 SnackBar(content: Text(notifier.detailOrders[i].waybill,
+                            //                   style: robotoRegular.copyWith(
+                            //                     fontSize: Dimensions.fontSizeDefault
+                            //                   ),
+                            //                 )),
+                            //               );
+                            //             },
+                            //             child: const Padding(
+                            //               padding: EdgeInsets.all(5.0),
+                            //               child: Icon(
+                            //                 Icons.copy,
+                            //                 size: 12.0,
+                            //               ),
+                            //             ),
+                            //           ) 
+                            //         : const SizedBox()
                             
-                                  ],
-                                ),
+                            //       ],
+                            //     ),
                             
-                                Text(notifier.detailOrders[i].waybill,
-                                  style: robotoRegular.copyWith(
-                                    color: ColorResources.purple,
-                                    fontSize: Dimensions.fontSizeSmall,
-                                    fontWeight: FontWeight.bold
-                                  ),
-                                ),
+                            //     Text(notifier.detailOrders[i].waybill,
+                            //       style: robotoRegular.copyWith(
+                            //         color: ColorResources.purple,
+                            //         fontSize: Dimensions.fontSizeSmall,
+                            //         fontWeight: FontWeight.bold
+                            //       ),
+                            //     ),
                             
-                              ],
-                            ),
+                            //   ],
+                            // ),
                             
                             const SizedBox(height: 8.0),
                             
@@ -735,9 +735,9 @@ class DetailOrderState extends State<DetailOrder> {
                       ),
                     ),
 
-                    notifier.detailOrders[i].waybill == "-" 
-                    ? const SizedBox()
-                    : const SizedBox(height: 6.0),
+                    // notifier.detailOrders[i].waybill == "-" 
+                    // ? const SizedBox()
+                    // : const SizedBox(height: 6.0),
 
                     const Divider(
                       color: ColorResources.hintColor,
@@ -766,86 +766,86 @@ class DetailOrderState extends State<DetailOrder> {
                           ),
                         ),
 
-                        Text(notifier.detailOrders[i].paymentCode.toUpperCase(),
-                          style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeSmall,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        // Text(notifier.detailOrders[i].paymentCode.toUpperCase(),
+                        //   style: robotoRegular.copyWith(
+                        //     fontSize: Dimensions.fontSizeSmall,
+                        //     fontWeight: FontWeight.bold,
+                        //   ),
+                        // ),
 
                       ],
                     ),
 
                     const SizedBox(height: 10.0),
 
-                    notifier.detailOrders[i].paymentCode == "gopay" || notifier.detailOrders[i].paymentCode == "shopee" || notifier.detailOrders[i].paymentCode == "dana" ||  notifier.detailOrders[i].paymentCode == "ovo"
-                    ? notifier.detailOrders[i].orderStatus == "DELIVERED" || notifier.detailOrders[i].orderStatus == "REFUND"
-                    ? const SizedBox() 
-                    : Center(
-                        child: CachedNetworkImage(
-                          width: 350.0,
-                          height: 350.0,
-                          imageUrl: notifier.detailOrders[i].paymentAccess,
-                          errorWidget: (context, url, error) {
-                            return Center(
-                              child: Image.network('https://dummyimage.com/300x300/000/fff')
-                            );
-                          },
-                          placeholder: (context, url) {
-                            return const Center(
-                              child: CircularProgressIndicator()
-                            );
-                          },
-                        )
-                      )
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
+                    // notifier.detailOrders[i].paymentCode == "gopay" || notifier.detailOrders[i].paymentCode == "shopee" || notifier.detailOrders[i].paymentCode == "dana" ||  notifier.detailOrders[i].paymentCode == "ovo"
+                    // ? notifier.detailOrders[i].orderStatus == "DELIVERED" || notifier.detailOrders[i].orderStatus == "REFUND"
+                    // ? const SizedBox() 
+                    // : Center(
+                    //     child: CachedNetworkImage(
+                    //       width: 350.0,
+                    //       height: 350.0,
+                    //       imageUrl: notifier.detailOrders[i].paymentAccess,
+                    //       errorWidget: (context, url, error) {
+                    //         return Center(
+                    //           child: Image.network('https://dummyimage.com/300x300/000/fff')
+                    //         );
+                    //       },
+                    //       placeholder: (context, url) {
+                    //         return const Center(
+                    //           child: CircularProgressIndicator()
+                    //         );
+                    //       },
+                    //     )
+                    //   )
+                    // : Row(
+                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //     mainAxisSize: MainAxisSize.max,
+                    //     children: [
                         
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
+                    //       Row(
+                    //         mainAxisSize: MainAxisSize.max,
+                    //         children: [
 
-                              Text("No VA",
-                                style: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeSmall,
-                                  color: ColorResources.black
-                                ),
-                              ),
+                    //           Text("No VA",
+                    //             style: robotoRegular.copyWith(
+                    //               fontSize: Dimensions.fontSizeSmall,
+                    //               color: ColorResources.black
+                    //             ),
+                    //           ),
 
-                              InkWell(
-                                onTap: () {
-                                  Clipboard.setData(ClipboardData(text: notifier.detailOrders[i].paymentAccess));
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(notifier.detailOrders[i].paymentAccess,
-                                      style: robotoRegular.copyWith(
-                                        fontSize: Dimensions.fontSizeDefault
-                                      ),
-                                    )),
-                                  );
-                                },
-                                child: const Padding(
-                                  padding: EdgeInsets.all(5.0),
-                                  child: Icon(
-                                    Icons.copy,
-                                    size: 12.0,
-                                  ),
-                                ),
-                              ) 
+                    //           InkWell(
+                    //             onTap: () {
+                    //               Clipboard.setData(ClipboardData(text: notifier.detailOrders[i].paymentAccess));
+                    //               ScaffoldMessenger.of(context).showSnackBar(
+                    //                 SnackBar(content: Text(notifier.detailOrders[i].paymentAccess,
+                    //                   style: robotoRegular.copyWith(
+                    //                     fontSize: Dimensions.fontSizeDefault
+                    //                   ),
+                    //                 )),
+                    //               );
+                    //             },
+                    //             child: const Padding(
+                    //               padding: EdgeInsets.all(5.0),
+                    //               child: Icon(
+                    //                 Icons.copy,
+                    //                 size: 12.0,
+                    //               ),
+                    //             ),
+                    //           ) 
 
-                            ],
-                          ),
+                    //         ],
+                    //       ),
 
-                          Text(notifier.detailOrders[i].paymentAccess,
-                            style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeSmall,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                    //       Text(notifier.detailOrders[i].paymentAccess,
+                    //         style: robotoRegular.copyWith(
+                    //           fontSize: Dimensions.fontSizeSmall,
+                    //           fontWeight: FontWeight.bold,
+                    //         ),
+                    //       ),
 
-                      ],
-                    ),
+                    //   ],
+                    // ),
 
                     const SizedBox(height: 8.0),
 
@@ -868,13 +868,13 @@ class DetailOrderState extends State<DetailOrder> {
                           ),
                         ),
 
-                        Text(CurrencyHelper.formatCurrency(notifier.detailOrders[i].totalPrice),
-                          style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeSmall,
-                            fontWeight: FontWeight.bold,
-                            color: ColorResources.black
-                          ),
-                        ),
+                        // Text(CurrencyHelper.formatCurrency(notifier.detailOrders[i].totalPrice),
+                        //   style: robotoRegular.copyWith(
+                        //     fontSize: Dimensions.fontSizeSmall,
+                        //     fontWeight: FontWeight.bold,
+                        //     color: ColorResources.black
+                        //   ),
+                        // ),
 
                       ],
                     ),
@@ -894,13 +894,13 @@ class DetailOrderState extends State<DetailOrder> {
                           ),
                         ),
 
-                        Text(CurrencyHelper.formatCurrency(notifier.detailOrders[i].totalCost),
-                          style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeSmall,
-                            fontWeight: FontWeight.bold,
-                            color: ColorResources.black
-                          ),
-                        ),
+                        // Text(CurrencyHelper.formatCurrency(notifier.detailOrders[i].totalCost),
+                        //   style: robotoRegular.copyWith(
+                        //     fontSize: Dimensions.fontSizeSmall,
+                        //     fontWeight: FontWeight.bold,
+                        //     color: ColorResources.black
+                        //   ),
+                        // ),
 
                       ],
                     ),
@@ -920,15 +920,15 @@ class DetailOrderState extends State<DetailOrder> {
                           ),
                         ),
 
-                        Text(notifier.detailOrders[i].paymentCode == "gopay" || notifier.detailOrders[i].paymentCode == "shopee" || notifier.detailOrders[i].paymentCode == "dana" ||  notifier.detailOrders[i].paymentCode == "ovo"
-                        ? CurrencyHelper.formatCurrency(1500)
-                        : CurrencyHelper.formatCurrency(6500),
-                          style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeSmall,
-                            fontWeight: FontWeight.bold,
-                            color: ColorResources.black
-                          ),
-                        ),
+                        // Text(notifier.detailOrders[i].paymentCode == "gopay" || notifier.detailOrders[i].paymentCode == "shopee" || notifier.detailOrders[i].paymentCode == "dana" ||  notifier.detailOrders[i].paymentCode == "ovo"
+                        // ? CurrencyHelper.formatCurrency(1500)
+                        // : CurrencyHelper.formatCurrency(6500),
+                        //   style: robotoRegular.copyWith(
+                        //     fontSize: Dimensions.fontSizeSmall,
+                        //     fontWeight: FontWeight.bold,
+                        //     color: ColorResources.black
+                        //   ),
+                        // ),
 
                       ],
                     ),
@@ -949,424 +949,424 @@ class DetailOrderState extends State<DetailOrder> {
                           ),
                         ),
 
-                        Text(CurrencyHelper.formatCurrency(notifier.detailOrders[i].totalPrice + notifier.detailOrders[i].totalCost + (notifier.detailOrders[i].paymentCode == "gopay" || notifier.detailOrders[i].paymentCode == "shopee" || notifier.detailOrders[i].paymentCode == "dana" ||  notifier.detailOrders[i].paymentCode == "ovo"  ? 1500 : 6500)),
-                          style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeDefault,
-                            fontWeight: FontWeight.bold,
-                            color: ColorResources.purple
-                          ),
-                        ),
+                        // Text(CurrencyHelper.formatCurrency(notifier.detailOrders[i].totalPrice + notifier.detailOrders[i].totalCost + (notifier.detailOrders[i].paymentCode == "gopay" || notifier.detailOrders[i].paymentCode == "shopee" || notifier.detailOrders[i].paymentCode == "dana" ||  notifier.detailOrders[i].paymentCode == "ovo"  ? 1500 : 6500)),
+                        //   style: robotoRegular.copyWith(
+                        //     fontSize: Dimensions.fontSizeDefault,
+                        //     fontWeight: FontWeight.bold,
+                        //     color: ColorResources.purple
+                        //   ),
+                        // ),
 
                       ],
                     ),
 
                     const SizedBox(height: 45.0),
 
-                    notifier.detailOrders[i].waybill == "-" 
-                    ? const SizedBox()
-                    : CustomButton(
-                        onTap: () {
-                          NS.push(context, TrackingScreen(waybill: notifier.detailOrders[i].waybill));
-                        },
-                        isBorderRadius: true,
-                        isBoxShadow: false,
-                        btnColor: ColorResources.purple,
-                        btnTextColor: ColorResources.white,
-                        btnTxt: "Tracking",
-                      ),
+                    // notifier.detailOrders[i].waybill == "-" 
+                    // ? const SizedBox()
+                    // : CustomButton(
+                    //     onTap: () {
+                    //       NS.push(context, TrackingScreen(waybill: notifier.detailOrders[i].waybill));
+                    //     },
+                    //     isBorderRadius: true,
+                    //     isBoxShadow: false,
+                    //     btnColor: ColorResources.purple,
+                    //     btnTextColor: ColorResources.white,
+                    //     btnTxt: "Tracking",
+                    //   ),
 
                     const SizedBox(height: 18.0),
 
-                    notifier.detailOrders[i].orderStatus == "DELIVERED" 
-                    ? CustomButton(
-                        onTap: notifier.detailOrders[i].isReviewed 
-                        ? () {} 
-                        : () {
-                          showGeneralDialog(
-                            context: context,
-                            barrierLabel: "Barrier",
-                            barrierDismissible: true,
-                            barrierColor: Colors.black.withOpacity(0.5),
-                            transitionDuration: const Duration(milliseconds: 700),
-                            pageBuilder: (BuildContext context, Animation<double> double, _) {
-                              return Center(
-                                child: Material(
-                                  color: ColorResources.transparent,
-                                  child: Container(
-                                    margin: const EdgeInsets.all(20.0),
-                                    height: 250.0,
-                                    decoration: BoxDecoration(
-                                      color: ColorResources.white, 
-                                      borderRadius: BorderRadius.circular(20.0)
-                                    ),
-                                    child: Stack(
-                                      clipBehavior: Clip.none,
-                                      children: [
+                    // notifier.detailOrders[i].orderStatus == "DELIVERED" 
+                    // ? CustomButton(
+                    //     onTap: notifier.detailOrders[i].isReviewed 
+                    //     ? () {} 
+                    //     : () {
+                    //       showGeneralDialog(
+                    //         context: context,
+                    //         barrierLabel: "Barrier",
+                    //         barrierDismissible: true,
+                    //         barrierColor: Colors.black.withOpacity(0.5),
+                    //         transitionDuration: const Duration(milliseconds: 700),
+                    //         pageBuilder: (BuildContext context, Animation<double> double, _) {
+                    //           return Center(
+                    //             child: Material(
+                    //               color: ColorResources.transparent,
+                    //               child: Container(
+                    //                 margin: const EdgeInsets.all(20.0),
+                    //                 height: 250.0,
+                    //                 decoration: BoxDecoration(
+                    //                   color: ColorResources.white, 
+                    //                   borderRadius: BorderRadius.circular(20.0)
+                    //                 ),
+                    //                 child: Stack(
+                    //                   clipBehavior: Clip.none,
+                    //                   children: [
                                                                         
-                                        Align(
-                                          alignment: Alignment.center,
-                                          child: Text("Pesanan sudah selesai ?",
-                                            style: robotoRegular.copyWith(
-                                              fontSize: Dimensions.fontSizeLarge,
-                                              fontWeight: FontWeight.bold,
-                                              color: ColorResources.black
-                                            ),
-                                          )
-                                        ),
+                    //                     Align(
+                    //                       alignment: Alignment.center,
+                    //                       child: Text("Pesanan sudah selesai ?",
+                    //                         style: robotoRegular.copyWith(
+                    //                           fontSize: Dimensions.fontSizeLarge,
+                    //                           fontWeight: FontWeight.bold,
+                    //                           color: ColorResources.black
+                    //                         ),
+                    //                       )
+                    //                     ),
                                                                         
-                                        Align(
-                                          alignment: Alignment.bottomCenter,
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment: MainAxisAlignment.end,
-                                            children: [
-                                              Container(
-                                                margin: const EdgeInsets.only(
-                                                  top: 20.0,
-                                                  bottom: 20.0
-                                                ),
-                                                child: Row(
-                                                  mainAxisSize: MainAxisSize.max,
-                                                  children: [
-                                                    const Expanded(child: SizedBox()),
-                                                    Expanded(
-                                                      flex: 5,
-                                                      child: CustomButton(
-                                                        isBorderRadius: true,
-                                                        isBoxShadow: false,
-                                                        isBorder: true,
-                                                        btnBorderColor: ColorResources.black,
-                                                        fontSize: Dimensions.fontSizeSmall,
-                                                        btnColor: ColorResources.white,
-                                                        btnTextColor: ColorResources.black,
-                                                        onTap: () {
-                                                          NS.pop();
-                                                        }, 
-                                                        btnTxt: "Batal"
-                                                      ),
-                                                    ),
-                                                    const Expanded(child: SizedBox()),
-                                                    Expanded(
-                                                      flex: 5,
-                                                      child: Consumer<EcommerceProvider>(
-                                                        builder: (_, notifier, __) {
-                                                          return CustomButton(
-                                                            isBorderRadius: true,
-                                                            isBoxShadow: false,
-                                                            fontSize: Dimensions.fontSizeSmall,
-                                                            btnColor: ColorResources.success,
-                                                            btnTextColor: ColorResources.white,
-                                                            onTap: () async {
-                                                              NS.push(context, ProductReviewScreen(transactionId: notifier.detailOrders[i].transactionId))
-                                                              .then((_) async {
-                                                                NS.pop();
-                                                                Future.delayed(const Duration(seconds: 1), () async {
-                                                                  await ep.detailOrder(transactionId: widget.transactionId);
-                                                                });
-                                                              });
-                                                            }, 
-                                                            btnTxt: "Ulas"
-                                                          );
-                                                        },
-                                                      )
-                                                    ),
-                                                    const Expanded(child: SizedBox()),
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          ) 
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              );
-                            },
-                            transitionBuilder: (_, anim, __, child) {
-                              Tween<Offset> tween;
-                              if (anim.status == AnimationStatus.reverse) {
-                                tween = Tween(begin: const Offset(-1, 0), end: Offset.zero);
-                              } else {
-                                tween = Tween(begin: const Offset(1, 0), end: Offset.zero);
-                              }
-                              return SlideTransition(
-                                position: tween.animate(anim),
-                                child: FadeTransition(
-                                  opacity: anim,
-                                  child: child,
-                                ),
-                              );
-                            },
-                          );
-                        },
-                        isBorderRadius: true,
-                        isBoxShadow: false,
-                        btnColor: notifier.detailOrders[i].isReviewed 
-                        ? ColorResources.hintColor 
-                        : ColorResources.green,
-                        btnTextColor: ColorResources.white,
-                        btnTxt: "Selesai",
-                      )
-                    : const SizedBox(),
+                    //                     Align(
+                    //                       alignment: Alignment.bottomCenter,
+                    //                       child: Column(
+                    //                         mainAxisSize: MainAxisSize.min,
+                    //                         mainAxisAlignment: MainAxisAlignment.end,
+                    //                         children: [
+                    //                           Container(
+                    //                             margin: const EdgeInsets.only(
+                    //                               top: 20.0,
+                    //                               bottom: 20.0
+                    //                             ),
+                    //                             child: Row(
+                    //                               mainAxisSize: MainAxisSize.max,
+                    //                               children: [
+                    //                                 const Expanded(child: SizedBox()),
+                    //                                 Expanded(
+                    //                                   flex: 5,
+                    //                                   child: CustomButton(
+                    //                                     isBorderRadius: true,
+                    //                                     isBoxShadow: false,
+                    //                                     isBorder: true,
+                    //                                     btnBorderColor: ColorResources.black,
+                    //                                     fontSize: Dimensions.fontSizeSmall,
+                    //                                     btnColor: ColorResources.white,
+                    //                                     btnTextColor: ColorResources.black,
+                    //                                     onTap: () {
+                    //                                       NS.pop();
+                    //                                     }, 
+                    //                                     btnTxt: "Batal"
+                    //                                   ),
+                    //                                 ),
+                    //                                 const Expanded(child: SizedBox()),
+                    //                                 Expanded(
+                    //                                   flex: 5,
+                    //                                   child: Consumer<EcommerceProvider>(
+                    //                                     builder: (_, notifier, __) {
+                    //                                       return CustomButton(
+                    //                                         isBorderRadius: true,
+                    //                                         isBoxShadow: false,
+                    //                                         fontSize: Dimensions.fontSizeSmall,
+                    //                                         btnColor: ColorResources.success,
+                    //                                         btnTextColor: ColorResources.white,
+                    //                                         onTap: () async {
+                    //                                           NS.push(context, ProductReviewScreen(transactionId: notifier.detailOrders[i].transactionId))
+                    //                                           .then((_) async {
+                    //                                             NS.pop();
+                    //                                             Future.delayed(const Duration(seconds: 1), () async {
+                    //                                               await ep.detailOrder(transactionId: widget.transactionId);
+                    //                                             });
+                    //                                           });
+                    //                                         }, 
+                    //                                         btnTxt: "Ulas"
+                    //                                       );
+                    //                                     },
+                    //                                   )
+                    //                                 ),
+                    //                                 const Expanded(child: SizedBox()),
+                    //                               ],
+                    //                             ),
+                    //                           )
+                    //                         ],
+                    //                       ) 
+                    //                     )
+                    //                   ],
+                    //                 ),
+                    //               ),
+                    //             )
+                    //           );
+                    //         },
+                    //         transitionBuilder: (_, anim, __, child) {
+                    //           Tween<Offset> tween;
+                    //           if (anim.status == AnimationStatus.reverse) {
+                    //             tween = Tween(begin: const Offset(-1, 0), end: Offset.zero);
+                    //           } else {
+                    //             tween = Tween(begin: const Offset(1, 0), end: Offset.zero);
+                    //           }
+                    //           return SlideTransition(
+                    //             position: tween.animate(anim),
+                    //             child: FadeTransition(
+                    //               opacity: anim,
+                    //               child: child,
+                    //             ),
+                    //           );
+                    //         },
+                    //       );
+                    //     },
+                    //     isBorderRadius: true,
+                    //     isBoxShadow: false,
+                    //     btnColor: notifier.detailOrders[i].isReviewed 
+                    //     ? ColorResources.hintColor 
+                    //     : ColorResources.green,
+                    //     btnTextColor: ColorResources.white,
+                    //     btnTxt: "Selesai",
+                    //   )
+                    // : const SizedBox(),
 
                     const SizedBox(height: 10.0),
 
-                    notifier.detailOrders[i].orderStatus == "DELIVERED" 
-                    ? CustomButton(
-                        isBorder: false,
-                        isBorderRadius: true,
-                        isBoxShadow: false,
-                        btnColor: notifier.detailOrders[i].isReviewed 
-                        ? ColorResources.hintColor
-                        : ColorResources.redOnboarding,
-                        btnTxt: "Komplain",
-                        onTap: notifier.detailOrders[i].isReviewed  
-                        ? () {} 
-                        : () async {
-                          showGeneralDialog(
-                            context: context,
-                            barrierLabel: "Barrier",
-                            barrierDismissible: true,
-                            barrierColor: Colors.black.withOpacity(0.5),
-                            transitionDuration: const Duration(milliseconds: 700),
-                            pageBuilder: (BuildContext context, Animation<double> double, _) {
-                              return Center(
-                                child: Material(
-                                  color: ColorResources.transparent,
-                                  child: Container(
-                                    margin: const EdgeInsets.all(20.0),
-                                    height: 250.0,
-                                    decoration: BoxDecoration(
-                                      color: ColorResources.white, 
-                                      borderRadius: BorderRadius.circular(20.0)
-                                    ),
-                                    child: Stack(
-                                      clipBehavior: Clip.none,
-                                      children: [
+                    // notifier.detailOrders[i].orderStatus == "DELIVERED" 
+                    // ? CustomButton(
+                    //     isBorder: false,
+                    //     isBorderRadius: true,
+                    //     isBoxShadow: false,
+                    //     btnColor: notifier.detailOrders[i].isReviewed 
+                    //     ? ColorResources.hintColor
+                    //     : ColorResources.redOnboarding,
+                    //     btnTxt: "Komplain",
+                    //     onTap: notifier.detailOrders[i].isReviewed  
+                    //     ? () {} 
+                    //     : () async {
+                    //       showGeneralDialog(
+                    //         context: context,
+                    //         barrierLabel: "Barrier",
+                    //         barrierDismissible: true,
+                    //         barrierColor: Colors.black.withOpacity(0.5),
+                    //         transitionDuration: const Duration(milliseconds: 700),
+                    //         pageBuilder: (BuildContext context, Animation<double> double, _) {
+                    //           return Center(
+                    //             child: Material(
+                    //               color: ColorResources.transparent,
+                    //               child: Container(
+                    //                 margin: const EdgeInsets.all(20.0),
+                    //                 height: 250.0,
+                    //                 decoration: BoxDecoration(
+                    //                   color: ColorResources.white, 
+                    //                   borderRadius: BorderRadius.circular(20.0)
+                    //                 ),
+                    //                 child: Stack(
+                    //                   clipBehavior: Clip.none,
+                    //                   children: [
                                                                         
-                                        Align(
-                                          alignment: Alignment.center,
-                                          child: Text("Apa kamu yakin ingin komplain ?",
-                                            style: robotoRegular.copyWith(
-                                              fontSize: Dimensions.fontSizeLarge,
-                                              fontWeight: FontWeight.bold,
-                                              color: ColorResources.black
-                                            ),
-                                          )
-                                        ),
+                    //                     Align(
+                    //                       alignment: Alignment.center,
+                    //                       child: Text("Apa kamu yakin ingin komplain ?",
+                    //                         style: robotoRegular.copyWith(
+                    //                           fontSize: Dimensions.fontSizeLarge,
+                    //                           fontWeight: FontWeight.bold,
+                    //                           color: ColorResources.black
+                    //                         ),
+                    //                       )
+                    //                     ),
                                                                         
-                                        Align(
-                                          alignment: Alignment.bottomCenter,
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment: MainAxisAlignment.end,
-                                            children: [
-                                              Container(
-                                                margin: const EdgeInsets.only(
-                                                  top: 20.0,
-                                                  bottom: 20.0
-                                                ),
-                                                child: Row(
-                                                  mainAxisSize: MainAxisSize.max,
-                                                  children: [
-                                                    const Expanded(child: SizedBox()),
-                                                    Expanded(
-                                                      flex: 5,
-                                                      child: CustomButton(
-                                                        isBorderRadius: true,
-                                                        isBoxShadow: false,
-                                                        fontSize: Dimensions.fontSizeSmall,
-                                                        isBorder: true,
-                                                        btnBorderColor: Colors.black,
-                                                        btnColor: ColorResources.white,
-                                                        btnTextColor: ColorResources.black,
-                                                        onTap: () {
-                                                          NS.pop();
-                                                        }, 
-                                                        btnTxt: "Batal"
-                                                      ),
-                                                    ),
-                                                    const Expanded(child: SizedBox()),
-                                                    Expanded(
-                                                      flex: 5,
-                                                      child: Consumer<EcommerceProvider>(
-                                                        builder: (_, notifier, __) {
-                                                          return CustomButton(
-                                                            isBorderRadius: true,
-                                                            isBoxShadow: false,
-                                                            isLoading: notifier.cancelOrderStatus == CancelOrderStatus.loading 
-                                                            ? true 
-                                                            : false,
-                                                            fontSize: Dimensions.fontSizeSmall,
-                                                            btnColor: ColorResources.success,
-                                                            btnTextColor: ColorResources.white,
-                                                            onTap: () async {
-                                                              NS.push(context, const ComplaintScreen());
-                                                            }, 
-                                                            btnTxt: "Ya"
-                                                          );
-                                                        },
-                                                      )
-                                                    ),
-                                                    const Expanded(child: SizedBox()),
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          ) 
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              );
-                            },
-                            transitionBuilder: (_, anim, __, child) {
-                              Tween<Offset> tween;
-                              if (anim.status == AnimationStatus.reverse) {
-                                tween = Tween(begin: const Offset(-1, 0), end: Offset.zero);
-                              } else {
-                                tween = Tween(begin: const Offset(1, 0), end: Offset.zero);
-                              }
-                              return SlideTransition(
-                                position: tween.animate(anim),
-                                child: FadeTransition(
-                                  opacity: anim,
-                                  child: child,
-                                ),
-                              );
-                            },
-                          );
-                        },
-                      ) 
-                    : const SizedBox(), 
+                    //                     Align(
+                    //                       alignment: Alignment.bottomCenter,
+                    //                       child: Column(
+                    //                         mainAxisSize: MainAxisSize.min,
+                    //                         mainAxisAlignment: MainAxisAlignment.end,
+                    //                         children: [
+                    //                           Container(
+                    //                             margin: const EdgeInsets.only(
+                    //                               top: 20.0,
+                    //                               bottom: 20.0
+                    //                             ),
+                    //                             child: Row(
+                    //                               mainAxisSize: MainAxisSize.max,
+                    //                               children: [
+                    //                                 const Expanded(child: SizedBox()),
+                    //                                 Expanded(
+                    //                                   flex: 5,
+                    //                                   child: CustomButton(
+                    //                                     isBorderRadius: true,
+                    //                                     isBoxShadow: false,
+                    //                                     fontSize: Dimensions.fontSizeSmall,
+                    //                                     isBorder: true,
+                    //                                     btnBorderColor: Colors.black,
+                    //                                     btnColor: ColorResources.white,
+                    //                                     btnTextColor: ColorResources.black,
+                    //                                     onTap: () {
+                    //                                       NS.pop();
+                    //                                     }, 
+                    //                                     btnTxt: "Batal"
+                    //                                   ),
+                    //                                 ),
+                    //                                 const Expanded(child: SizedBox()),
+                    //                                 Expanded(
+                    //                                   flex: 5,
+                    //                                   child: Consumer<EcommerceProvider>(
+                    //                                     builder: (_, notifier, __) {
+                    //                                       return CustomButton(
+                    //                                         isBorderRadius: true,
+                    //                                         isBoxShadow: false,
+                    //                                         isLoading: notifier.cancelOrderStatus == CancelOrderStatus.loading 
+                    //                                         ? true 
+                    //                                         : false,
+                    //                                         fontSize: Dimensions.fontSizeSmall,
+                    //                                         btnColor: ColorResources.success,
+                    //                                         btnTextColor: ColorResources.white,
+                    //                                         onTap: () async {
+                    //                                           NS.push(context, const ComplaintScreen());
+                    //                                         }, 
+                    //                                         btnTxt: "Ya"
+                    //                                       );
+                    //                                     },
+                    //                                   )
+                    //                                 ),
+                    //                                 const Expanded(child: SizedBox()),
+                    //                               ],
+                    //                             ),
+                    //                           )
+                    //                         ],
+                    //                       ) 
+                    //                     )
+                    //                   ],
+                    //                 ),
+                    //               ),
+                    //             )
+                    //           );
+                    //         },
+                    //         transitionBuilder: (_, anim, __, child) {
+                    //           Tween<Offset> tween;
+                    //           if (anim.status == AnimationStatus.reverse) {
+                    //             tween = Tween(begin: const Offset(-1, 0), end: Offset.zero);
+                    //           } else {
+                    //             tween = Tween(begin: const Offset(1, 0), end: Offset.zero);
+                    //           }
+                    //           return SlideTransition(
+                    //             position: tween.animate(anim),
+                    //             child: FadeTransition(
+                    //               opacity: anim,
+                    //               child: child,
+                    //             ),
+                    //           );
+                    //         },
+                    //       );
+                    //     },
+                    //   ) 
+                    // : const SizedBox(), 
                    
-                    notifier.detailOrders[i].orderStatus == "PAID"
-                    ? CustomButton(
-                        onTap: () async {
-                          showGeneralDialog(
-                            context: context,
-                            barrierLabel: "Barrier",
-                            barrierDismissible: true,
-                            barrierColor: Colors.black.withOpacity(0.5),
-                            transitionDuration: const Duration(milliseconds: 700),
-                            pageBuilder: (BuildContext context, Animation<double> double, _) {
-                              return Center(
-                                child: Material(
-                                  color: ColorResources.transparent,
-                                  child: Container(
-                                    margin: const EdgeInsets.all(20.0),
-                                    height: 250.0,
-                                    decoration: BoxDecoration(
-                                      color: ColorResources.white, 
-                                      borderRadius: BorderRadius.circular(20.0)
-                                    ),
-                                    child: Stack(
-                                      clipBehavior: Clip.none,
-                                      children: [
+                    // notifier.detailOrders[i].orderStatus == "PAID"
+                    // ? CustomButton(
+                    //     onTap: () async {
+                    //       showGeneralDialog(
+                    //         context: context,
+                    //         barrierLabel: "Barrier",
+                    //         barrierDismissible: true,
+                    //         barrierColor: Colors.black.withOpacity(0.5),
+                    //         transitionDuration: const Duration(milliseconds: 700),
+                    //         pageBuilder: (BuildContext context, Animation<double> double, _) {
+                    //           return Center(
+                    //             child: Material(
+                    //               color: ColorResources.transparent,
+                    //               child: Container(
+                    //                 margin: const EdgeInsets.all(20.0),
+                    //                 height: 250.0,
+                    //                 decoration: BoxDecoration(
+                    //                   color: ColorResources.white, 
+                    //                   borderRadius: BorderRadius.circular(20.0)
+                    //                 ),
+                    //                 child: Stack(
+                    //                   clipBehavior: Clip.none,
+                    //                   children: [
                                                                         
-                                        Align(
-                                          alignment: Alignment.center,
-                                          child: Text("Batalkan pesanan ?",
-                                            style: robotoRegular.copyWith(
-                                              fontSize: Dimensions.fontSizeLarge,
-                                              fontWeight: FontWeight.bold,
-                                              color: ColorResources.black
-                                            ),
-                                          )
-                                        ),
+                    //                     Align(
+                    //                       alignment: Alignment.center,
+                    //                       child: Text("Batalkan pesanan ?",
+                    //                         style: robotoRegular.copyWith(
+                    //                           fontSize: Dimensions.fontSizeLarge,
+                    //                           fontWeight: FontWeight.bold,
+                    //                           color: ColorResources.black
+                    //                         ),
+                    //                       )
+                    //                     ),
                                                                         
-                                        Align(
-                                          alignment: Alignment.bottomCenter,
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment: MainAxisAlignment.end,
-                                            children: [
-                                              Container(
-                                                margin: const EdgeInsets.only(
-                                                  top: 20.0,
-                                                  bottom: 20.0
-                                                ),
-                                                child: Row(
-                                                  mainAxisSize: MainAxisSize.max,
-                                                  children: [
-                                                    const Expanded(child: SizedBox()),
-                                                    Expanded(
-                                                      flex: 5,
-                                                      child: CustomButton(
-                                                        isBorderRadius: true,
-                                                        isBoxShadow: false,
-                                                        fontSize: Dimensions.fontSizeSmall,
-                                                        isBorder: true,
-                                                        btnBorderColor: Colors.black,
-                                                        btnColor: ColorResources.white,
-                                                        btnTextColor: ColorResources.black,
-                                                        onTap: () {
-                                                          NS.pop();
-                                                        }, 
-                                                        btnTxt: "Batal"
-                                                      ),
-                                                    ),
-                                                    const Expanded(child: SizedBox()),
-                                                    Expanded(
-                                                      flex: 5,
-                                                      child: Consumer<EcommerceProvider>(
-                                                        builder: (_, notifier, __) {
-                                                          return CustomButton(
-                                                            isBorderRadius: true,
-                                                            isBoxShadow: false,
-                                                            isLoading: notifier.cancelOrderStatus == CancelOrderStatus.loading 
-                                                            ? true 
-                                                            : false,
-                                                            fontSize: Dimensions.fontSizeSmall,
-                                                            btnColor: ColorResources.success,
-                                                            btnTextColor: ColorResources.white,
-                                                            onTap: () async {
-                                                              await ep.cancelOrder(transactionId: notifier.detailOrders[i].transactionId);
-                                                            }, 
-                                                            btnTxt: "Ya"
-                                                          );
-                                                        },
-                                                      )
-                                                    ),
-                                                    const Expanded(child: SizedBox()),
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          ) 
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              );
-                            },
-                            transitionBuilder: (_, anim, __, child) {
-                              Tween<Offset> tween;
-                              if (anim.status == AnimationStatus.reverse) {
-                                tween = Tween(begin: const Offset(-1, 0), end: Offset.zero);
-                              } else {
-                                tween = Tween(begin: const Offset(1, 0), end: Offset.zero);
-                              }
-                              return SlideTransition(
-                                position: tween.animate(anim),
-                                child: FadeTransition(
-                                  opacity: anim,
-                                  child: child,
-                                ),
-                              );
-                            },
-                          );
-                        },
-                        isBorder: false,
-                        isBoxShadow: false,
-                        isBorderRadius: true,
-                        btnColor: ColorResources.error,
-                        btnTxt: "Batalkan pesanan",
-                      )
-                    : const SizedBox()
+                    //                     Align(
+                    //                       alignment: Alignment.bottomCenter,
+                    //                       child: Column(
+                    //                         mainAxisSize: MainAxisSize.min,
+                    //                         mainAxisAlignment: MainAxisAlignment.end,
+                    //                         children: [
+                    //                           Container(
+                    //                             margin: const EdgeInsets.only(
+                    //                               top: 20.0,
+                    //                               bottom: 20.0
+                    //                             ),
+                    //                             child: Row(
+                    //                               mainAxisSize: MainAxisSize.max,
+                    //                               children: [
+                    //                                 const Expanded(child: SizedBox()),
+                    //                                 Expanded(
+                    //                                   flex: 5,
+                    //                                   child: CustomButton(
+                    //                                     isBorderRadius: true,
+                    //                                     isBoxShadow: false,
+                    //                                     fontSize: Dimensions.fontSizeSmall,
+                    //                                     isBorder: true,
+                    //                                     btnBorderColor: Colors.black,
+                    //                                     btnColor: ColorResources.white,
+                    //                                     btnTextColor: ColorResources.black,
+                    //                                     onTap: () {
+                    //                                       NS.pop();
+                    //                                     }, 
+                    //                                     btnTxt: "Batal"
+                    //                                   ),
+                    //                                 ),
+                    //                                 const Expanded(child: SizedBox()),
+                    //                                 Expanded(
+                    //                                   flex: 5,
+                    //                                   child: Consumer<EcommerceProvider>(
+                    //                                     builder: (_, notifier, __) {
+                    //                                       return CustomButton(
+                    //                                         isBorderRadius: true,
+                    //                                         isBoxShadow: false,
+                    //                                         isLoading: notifier.cancelOrderStatus == CancelOrderStatus.loading 
+                    //                                         ? true 
+                    //                                         : false,
+                    //                                         fontSize: Dimensions.fontSizeSmall,
+                    //                                         btnColor: ColorResources.success,
+                    //                                         btnTextColor: ColorResources.white,
+                    //                                         onTap: () async {
+                    //                                           await ep.cancelOrder(transactionId: notifier.detailOrders[i].transactionId);
+                    //                                         }, 
+                    //                                         btnTxt: "Ya"
+                    //                                       );
+                    //                                     },
+                    //                                   )
+                    //                                 ),
+                    //                                 const Expanded(child: SizedBox()),
+                    //                               ],
+                    //                             ),
+                    //                           )
+                    //                         ],
+                    //                       ) 
+                    //                     )
+                    //                   ],
+                    //                 ),
+                    //               ),
+                    //             )
+                    //           );
+                    //         },
+                    //         transitionBuilder: (_, anim, __, child) {
+                    //           Tween<Offset> tween;
+                    //           if (anim.status == AnimationStatus.reverse) {
+                    //             tween = Tween(begin: const Offset(-1, 0), end: Offset.zero);
+                    //           } else {
+                    //             tween = Tween(begin: const Offset(1, 0), end: Offset.zero);
+                    //           }
+                    //           return SlideTransition(
+                    //             position: tween.animate(anim),
+                    //             child: FadeTransition(
+                    //               opacity: anim,
+                    //               child: child,
+                    //             ),
+                    //           );
+                    //         },
+                    //       );
+                    //     },
+                    //     isBorder: false,
+                    //     isBoxShadow: false,
+                    //     isBorderRadius: true,
+                    //     btnColor: ColorResources.error,
+                    //     btnTxt: "Batalkan pesanan",
+                    //   )
+                    // : const SizedBox()
 
                   ],
                 );
