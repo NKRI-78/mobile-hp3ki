@@ -45,29 +45,36 @@ class TrackingScreen extends StatelessWidget {
           ),
         ),
 
-        FutureBuilder<TrackingModel>(
-          future: context.read<EcommerceProvider>().trackingOrder(waybill: waybill), 
-          builder: (BuildContext context, AsyncSnapshot<TrackingModel> snapshot) {
-
-          if(snapshot.connectionState == ConnectionState.waiting) {
-            return const SliverFillRemaining(
-              hasScrollBody: true,
-              child: Center(
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: FutureBuilder<TrackingModel>(
+            future: context.read<EcommerceProvider>().trackingOrder(waybill: waybill), 
+            builder: (BuildContext context, AsyncSnapshot<TrackingModel> snapshot) {
+          
+            if(snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
                 child: SizedBox(
                   width: 32.0,
                   height: 32.0,
                   child: CircularProgressIndicator.adaptive()
                 ),
-              ),
-            );
-          }
-        
-          TrackingModel trackingModel = snapshot.data!;
+              );
+            }
 
-          return SliverFillRemaining(
-            hasScrollBody: false,
-            child: Center(
-              child: Container(
+            if(snapshot.hasError) {
+              return Center(
+                child:  Text("Data belum tersedia",
+                  style: robotoRegular.copyWith(
+                    fontSize: Dimensions.fontSizeDefault
+                  ),
+                )
+              );
+            }
+          
+            TrackingModel trackingModel = snapshot.data!;
+          
+            return Center(
+                child: Container(
                 margin: const EdgeInsets.only(
                   top: 12.0,
                   bottom: 12.0,
@@ -98,7 +105,7 @@ class TrackingScreen extends StatelessWidget {
                               ),
                               
                               const SizedBox(height: 10.0),
-
+                      
                               Text(trackingModel.data.histories![index].date,
                                 style: robotoRegular.copyWith(
                                   fontSize: Dimensions.fontSizeSmall
@@ -112,11 +119,11 @@ class TrackingScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                ),
-              );
-              
-            },
-          )
+                );
+                
+              },
+            ),
+        )
         ],
       )
     );

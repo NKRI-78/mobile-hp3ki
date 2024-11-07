@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hp3ki/views/screens/ecommerce/order/tracking.dart';
 import 'package:provider/provider.dart';
 import 'package:date_count_down/date_count_down.dart';
+import 'package:barcode_widget/barcode_widget.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -547,74 +549,74 @@ class DetailOrderState extends State<DetailOrder> {
                                   
                                   const SizedBox(height: 15.0),
                                   
-                                    // notifier.detailOrders[i].waybill == "-"  
-                                  // ? const SizedBox() 
-                                  // : BarcodeWidget(
-                                  //     height: 50.0,
-                                  //     barcode: Barcode.code128(),
-                                  //     margin: EdgeInsets.zero,
-                                  //     padding: EdgeInsets.zero,
-                                  //     drawText: false,
-                                  //     data: notifier.detailOrders[i].waybill,
-                                  //   ),
+                                  notifier.detailOrders[i].waybill == "-"  
+                                  ? const SizedBox() 
+                                  : BarcodeWidget(
+                                      height: 50.0,
+                                      barcode: Barcode.code128(),
+                                      margin: EdgeInsets.zero,
+                                      padding: EdgeInsets.zero,
+                                      drawText: false,
+                                      data: notifier.detailOrders[i].waybill,
+                                    ),
                                   
-                                  // notifier.detailOrders[i].waybill == "-"   
-                                  // ? const SizedBox() 
-                                  // : const SizedBox(height: 15.0),
+                                  notifier.detailOrders[i].waybill == "-"   
+                                  ? const SizedBox() 
+                                  : const SizedBox(height: 15.0),
                                   
-                                  // notifier.detailOrders[i].waybill == "-"  
-                                  // ? const SizedBox() 
-                                  // : Row(
-                                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  //   mainAxisSize: MainAxisSize.max,
-                                  //   children: [
+                                  notifier.detailOrders[i].waybill == "-"  
+                                  ? const SizedBox() 
+                                  : Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
                                   
-                                  //     Row(
-                                  //       mainAxisSize: MainAxisSize.max,
-                                  //       children: [
+                                      Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
                                   
-                                  //         Text("No Resi",
-                                  //           style: robotoRegular.copyWith(
-                                  //             fontSize: Dimensions.fontSizeSmall,
-                                  //             color: ColorResources.black
-                                  //           ),
-                                  //         ),
+                                          Text("No Resi",
+                                            style: robotoRegular.copyWith(
+                                              fontSize: Dimensions.fontSizeSmall,
+                                              color: ColorResources.black
+                                            ),
+                                          ),
                                   
-                                  //         icCopyResi 
-                                  //         ? InkWell(
-                                  //             onTap: () {
-                                  //               Clipboard.setData(ClipboardData(text: notifier.detailOrders[i].waybill));
-                                  //               ScaffoldMessenger.of(context).showSnackBar(
-                                  //                 SnackBar(content: Text(notifier.detailOrders[i].waybill,
-                                  //                   style: robotoRegular.copyWith(
-                                  //                     fontSize: Dimensions.fontSizeDefault
-                                  //                   ),
-                                  //                 )),
-                                  //               );
-                                  //             },
-                                  //             child: const Padding(
-                                  //               padding: EdgeInsets.all(5.0),
-                                  //               child: Icon(
-                                  //                 Icons.copy,
-                                  //                 size: 12.0,
-                                  //               ),
-                                  //             ),
-                                  //           ) 
-                                  //         : const SizedBox()
+                                          icCopyResi 
+                                          ? InkWell(
+                                              onTap: () {
+                                                Clipboard.setData(ClipboardData(text: notifier.detailOrders[i].waybill));
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  SnackBar(content: Text(notifier.detailOrders[i].waybill,
+                                                    style: robotoRegular.copyWith(
+                                                      fontSize: Dimensions.fontSizeDefault
+                                                    ),
+                                                  )),
+                                                );
+                                              },
+                                              child: const Padding(
+                                                padding: EdgeInsets.all(5.0),
+                                                child: Icon(
+                                                  Icons.copy,
+                                                  size: 12.0,
+                                                ),
+                                              ),
+                                            ) 
+                                          : const SizedBox()
                                   
-                                  //       ],
-                                  //     ),
+                                        ],
+                                      ),
                                   
-                                  //     Text(notifier.detailOrders[i].waybill,
-                                  //       style: robotoRegular.copyWith(
-                                  //         color: ColorResources.purple,
-                                  //         fontSize: Dimensions.fontSizeSmall,
-                                  //         fontWeight: FontWeight.bold
-                                  //       ),
-                                  //     ),
+                                      Text(notifier.detailOrders[i].waybill,
+                                        style: robotoRegular.copyWith(
+                                          color: ColorResources.purple,
+                                          fontSize: Dimensions.fontSizeSmall,
+                                          fontWeight: FontWeight.bold
+                                        ),
+                                      ),
                                   
-                                  //   ],
-                                  // ),
+                                    ],
+                                  ),
                                   
                                   const SizedBox(height: 8.0),
                                   
@@ -729,28 +731,28 @@ class DetailOrderState extends State<DetailOrder> {
                             ),
                           ),
                   
-                          // notifier.detailOrders[i].waybill == "-" 
-                          // ? const SizedBox()
-                          // : const SizedBox(height: 6.0),
+                          notifier.detailOrders[i].waybill == "-" 
+                          ? const SizedBox()
+                          : const SizedBox(height: 6.0),
                   
-                          // const Divider(
-                          //   color: ColorResources.hintColor,
-                          // ),
+                          const Divider(
+                            color: ColorResources.hintColor,
+                          ),
                            
-                          // const SizedBox(height: 10.0),
+                          const SizedBox(height: 10.0),
                                 
-                          // notifier.detailOrders[i].waybill == "-" 
-                          // ? const SizedBox()
-                          // : CustomButton(
-                          //     onTap: () {
-                          //       NS.push(context, TrackingScreen(waybill: notifier.detailOrders[i].waybill));
-                          //     },
-                          //     isBorderRadius: true,
-                          //     isBoxShadow: false,
-                          //     btnColor: ColorResources.purple,
-                          //     btnTextColor: ColorResources.white,
-                          //     btnTxt: "Tracking",
-                          //   ),
+                          notifier.detailOrders[i].waybill == "-" 
+                          ? const SizedBox()
+                          : CustomButton(
+                              onTap: () {
+                                NS.push(context, TrackingScreen(waybill: notifier.detailOrders[i].waybill));
+                              },
+                              isBorderRadius: true,
+                              isBoxShadow: false,
+                              btnColor: ColorResources.purple,
+                              btnTextColor: ColorResources.white,
+                              btnTxt: "Tracking",
+                            ),
                 
                         ],
                       );
