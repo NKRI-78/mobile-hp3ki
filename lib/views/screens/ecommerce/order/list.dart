@@ -7,8 +7,6 @@ import 'package:provider/provider.dart';
 
 import 'package:date_count_down/date_count_down.dart';
 
-import 'package:cached_network_image/cached_network_image.dart';
-
 import 'package:hp3ki/providers/ecommerce/ecommerce.dart';
 
 import 'package:hp3ki/services/navigation.dart';
