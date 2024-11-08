@@ -688,7 +688,9 @@ class EcommerceProvider extends ChangeNotifier {
 
     Future.delayed(const Duration(seconds: 1), () async {
       await fetchAllProduct(search: "");
-      await fetchAllProductSeller(search: "", storeId: storeId);
+      if(storeId != "") {
+        await fetchAllProductSeller(search: "", storeId: storeId);
+      }
     });
 
     notifyListeners();

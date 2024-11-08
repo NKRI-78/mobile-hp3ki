@@ -124,6 +124,72 @@ class ProductsScreenState extends State<ProductsScreen> {
                         NS.pop();
                       },
                     ),
+                    actions: [
+                       notifier.getProductCategoryStatus == GetProductCategoryStatus.loading 
+                      ? const SizedBox() 
+                      : notifier.getProductCategoryStatus == GetProductCategoryStatus.empty 
+                      ? const SizedBox() 
+                      : notifier.getProductCategoryStatus == GetProductCategoryStatus.error 
+                      ? const SizedBox() 
+                      : IconButton(
+                          onPressed: () {
+                            showModalBottomSheet(
+                              context: context,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                              ),
+                              builder: (BuildContext context) {
+                                return Container(
+                                  padding: const EdgeInsets.all(16),
+                                   height: MediaQuery.of(context).size.height * 0.5,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                    Text("Pilih Kategori",
+                                      style: robotoRegular.copyWith(
+                                        fontSize: Dimensions.fontSizeDefault, 
+                                        fontWeight: FontWeight.bold
+                                      ),
+                                    ),
+                                    const Divider(),
+                                    Expanded(
+                                      child: ListView.builder(
+                                        shrinkWrap: true,
+                                        itemCount: notifier.productCategories.length,
+                                        itemBuilder: (BuildContext context, int i) {
+                                          ProductCategoryData category = notifier.productCategories[i];
+                                          return ListTile(
+                                            title: Text(category.name,
+                                              style: robotoRegular.copyWith(
+                                                fontSize: Dimensions.fontSizeDefault,
+                                                fontWeight: notifier.cat == category.name 
+                                                ? FontWeight.bold 
+                                                : FontWeight.normal
+                                              ),
+                                            ),
+                                            onTap: () {
+                                              notifier.selectCat(
+                                                param: category.name, 
+                                                storeId: ""
+                                              );
+                                              Navigator.pop(context);
+                                            },
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        }, 
+                        splashRadius: 15.0,
+                        icon: const Icon(
+                          Icons.filter_alt_sharp,
+                        )
+                      )
+                    ],
                   ),
               
                   SliverToBoxAdapter(
@@ -232,76 +298,6 @@ class ProductsScreenState extends State<ProductsScreen> {
                     )
                   ),
 
-                  SliverToBoxAdapter(
-                    child: Container(
-                      padding: const EdgeInsets.only(
-                        top: 8.0,
-                        left: 16.0,
-                        right: 16.0
-                      ),
-                      child: Consumer<EcommerceProvider>(
-                        builder: (__, notifier, _) {
-                          return notifier.getProductCategoryStatus == GetProductCategoryStatus.loading 
-                          ? const SizedBox() 
-                          : notifier.getProductCategoryStatus == GetProductCategoryStatus.empty 
-                          ? const SizedBox() 
-                          : notifier.getProductCategoryStatus == GetProductCategoryStatus.error 
-                          ? const SizedBox() 
-                          : SizedBox(
-                              height: 50.0,
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                padding: EdgeInsets.zero,
-                                itemCount: notifier.productCategories.length,
-                                itemBuilder: (BuildContext context, int i) {
-                                
-                                ProductCategoryData category = notifier.productCategories[i];
-
-                                return Container(
-                                  margin: const EdgeInsets.only(
-                                    top: 10.0,
-                                    bottom: 10.0,
-                                    left: 8.0,
-                                    right: 8.0
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: notifier.cat == category.name 
-                                    ? ColorResources.purpleDark 
-                                    : ColorResources.purple,
-                                    borderRadius: BorderRadius.circular(8.0)
-                                  ),
-                                  child: Material(
-                                    color: ColorResources.transparent,
-                                    child: InkWell(
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      onTap: () {
-                                        notifier.selectCat(
-                                          param: category.name,
-                                          storeId: ""
-                                        );
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(category.name,
-                                          style: robotoRegular.copyWith(
-                                            fontSize: Dimensions.fontSizeSmall,
-                                            fontWeight: FontWeight.bold,
-                                            color: ColorResources.white
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                );
-                              },
-                            ),
-                          );
-                        },
-                      )
-                    )
-                  ),
-
                   if(notifier.listProductStatus == ListProductStatus.loading)
                     const SliverFillRemaining(
                       hasScrollBody: false,
@@ -341,6 +337,7 @@ class ProductsScreenState extends State<ProductsScreen> {
                   if(notifier.listProductStatus == ListProductStatus.loaded)
                     SliverPadding(
                       padding: const EdgeInsets.only(
+                        top: 16.0,
                         left: 16.0,
                         right: 16.0,
                         bottom: 16.0
