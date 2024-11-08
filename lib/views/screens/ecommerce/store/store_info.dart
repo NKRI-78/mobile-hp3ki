@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hp3ki/views/screens/ecommerce/order/list.dart';
+import 'package:hp3ki/views/screens/ecommerce/store/add_product.dart';
+import 'package:hp3ki/views/screens/ecommerce/store/bulk_delete_product.dart';
 import 'package:provider/provider.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -7,8 +10,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
-
-import 'package:hp3ki/views/basewidgets/button/custom.dart';
 
 import 'package:hp3ki/providers/ecommerce/ecommerce.dart';
 import 'package:hp3ki/services/navigation.dart';
@@ -34,9 +35,6 @@ class StoreInfoScreenState extends State<StoreInfoScreen> {
   Future<void> getData() async {
     if(!mounted) return;
       await ecommerceProvider.getStore();
-
-    if(!mounted) return;
-      await ecommerceProvider.fetchAllProductSeller(search: "", storeId: widget.storeId);
   }
 
   @override
@@ -94,7 +92,7 @@ class StoreInfoScreenState extends State<StoreInfoScreen> {
                   
                 if(notifier.getStoreStatus == GetStoreStatus.loaded)
                   SliverAppBar(
-                    title: Text("Info Toko",
+                    title: Text("Toko Saya",
                       style: robotoRegular.copyWith(
                         fontSize: Dimensions.fontSizeLarge,
                         fontWeight: FontWeight.bold,
@@ -109,20 +107,6 @@ class StoreInfoScreenState extends State<StoreInfoScreen> {
                         NS.pop();
                       },
                     ),
-                    actions: [
-                      Container(
-                        margin: const EdgeInsets.only(
-                          right: 12.0
-                        ),
-                        child: IconButton(
-                          splashRadius: 20.0,
-                          onPressed: () {
-                            NS.push(context, const CreateStoreOrUpdateScreen());
-                          },
-                          icon: const Icon(Icons.edit)
-                        )
-                      )
-                    ],
                     bottom: PreferredSize(
                      preferredSize: const Size.fromHeight(80.0),
                       child: Container(
@@ -229,11 +213,50 @@ class StoreInfoScreenState extends State<StoreInfoScreen> {
                   sliver: SliverList(
                     delegate: SliverChildListDelegate([
 
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+
+                          IconButton(
+                            splashRadius: 20.0,
+                            onPressed: () {
+                              NS.push(context, const CreateStoreOrUpdateScreen());
+                            },
+                            icon: const Icon(Icons.edit,
+                              color: ColorResources.blue,
+                            )
+                          ),
+
+                          IconButton(
+                            splashRadius: 20.0,
+                            onPressed: () {
+                              NS.push(context, BulkDeleteProductScreen(storeId: widget.storeId));
+                            },
+                            icon: const Icon(Icons.delete,
+                              color: ColorResources.error,
+                            )
+                          ),
+
+                          IconButton(
+                            splashRadius: 20.0,
+                            onPressed: () {
+                              NS.push(context, AddProductScreen(storeId: widget.storeId));
+                            },
+                            icon: const Icon(Icons.add,
+                              color: ColorResources.success,
+                            )
+                          ),
+
+                        ],
+                      ),
+
+                      const SizedBox(height: 14.0),
+                          
                       const Divider(
                         height: 1.0,
                         color: ColorResources.black,
                       ),
-                              
+
                       ListTile(
                         dense: true,
                         title: Text("Daftar Produk",
@@ -254,181 +277,24 @@ class StoreInfoScreenState extends State<StoreInfoScreen> {
                         color: ColorResources.black,
                       ),
 
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          
-                          Expanded(
-                            flex: 14,
-                            child: Container(
-                              margin: const EdgeInsets.only(
-                                left: 8.0,
-                                right: 8.0
-                              ),
-                              child: CheckboxListTile(
-                                value: notifier.selectedAllProduct,
-                                onChanged: (bool? val) {
-                                  notifier.onSelectedAllProduct(val!);
-                                },
-                                controlAffinity: ListTileControlAffinity.leading,
-                                title: Text("Pilih semua",
-                                  style: robotoRegular.copyWith(
-                                    fontSize: Dimensions.fontSizeDefault,
-                                    color: ColorResources.black
-                                  ),
-                                ),
-                              ),
-                            ),
+                      ListTile(
+                        dense: true,
+                        title: Text("Daftar Transaksi",
+                          style: robotoRegular.copyWith(
+                            fontSize: Dimensions.fontSizeLarge,
+                            fontWeight: FontWeight.bold,
+                            color: ColorResources.black
                           ),
+                        ),
+                        leading: const Icon(Icons.list),
+                        onTap: () {
+                          NS.push(context, const ListOrderScreen());
+                        },
+                      ),
 
-                          notifier.productSellers.isEmpty 
-                          ? const Flexible(
-                              flex: 2,
-                              child: SizedBox()
-                            ) 
-                          : Flexible(
-                              flex: 2,
-                              child: SizedBox(
-                              width: 28.0,
-                              height: 28.0,
-                              child: Container(
-                                width: 32.0,
-                                height: 32.0,
-                                decoration: BoxDecoration(
-                                  color: notifier.selectedAllProduct 
-                                  ? ColorResources.error 
-                                  : ColorResources.grey,
-                                  borderRadius: const BorderRadius.all(
-                                    Radius.circular(6.0)
-                                  )
-                                ),
-                                child: GestureDetector(
-                                  onTap: notifier.selectedAllProduct 
-                                  ? () async {
-                                      showGeneralDialog(
-                                        context: context,
-                                        barrierLabel: "Barrier",
-                                        barrierDismissible: true,
-                                        barrierColor: Colors.black.withOpacity(0.5),
-                                        transitionDuration: const Duration(milliseconds: 700),
-                                        pageBuilder: (BuildContext context, Animation<double> double, _) {
-                                          return Center(
-                                            child: Material(
-                                              color: ColorResources.transparent,
-                                              child: Container(
-                                                margin: const EdgeInsets.all(20.0),
-                                                height: 250.0,
-                                                decoration: BoxDecoration(
-                                                  color: ColorResources.purple, 
-                                                  borderRadius: BorderRadius.circular(20.0)
-                                                ),
-                                                child: Stack(
-                                                  clipBehavior: Clip.none,
-                                                  children: [
-                                                                                    
-                                                    Align(
-                                                      alignment: Alignment.center,
-                                                      child: Text("Apakah kamu yakin ingin hapus Produk ?",
-                                                        style: robotoRegular.copyWith(
-                                                          fontSize: Dimensions.fontSizeDefault,
-                                                          fontWeight: FontWeight.bold,
-                                                          color: ColorResources.white
-                                                        ),
-                                                      )
-                                                    ),
-                                                                                    
-                                                    Align(
-                                                      alignment: Alignment.bottomCenter,
-                                                      child: Column(
-                                                        mainAxisSize: MainAxisSize.min,
-                                                        mainAxisAlignment: MainAxisAlignment.end,
-                                                        children: [
-                                                          Container(
-                                                            margin: const EdgeInsets.only(
-                                                              top: 20.0,
-                                                              bottom: 20.0
-                                                            ),
-                                                            child: Row(
-                                                              mainAxisSize: MainAxisSize.max,
-                                                              children: [
-                                                                const Expanded(child: SizedBox()),
-                                                                Expanded(
-                                                                  flex: 5,
-                                                                  child: CustomButton(
-                                                                    isBorderRadius: true,
-                                                                    isBoxShadow: false,
-                                                                    btnColor: ColorResources.white,
-                                                                    btnTextColor: ColorResources.black,
-                                                                    onTap: () {
-                                                                      NS.pop();
-                                                                    }, 
-                                                                    btnTxt: "Batal"
-                                                                  ),
-                                                                ),
-                                                                const Expanded(child: SizedBox()),
-                                                                Expanded(
-                                                                  flex: 5,
-                                                                  child: Consumer<EcommerceProvider>(
-                                                                    builder: (_, notifier, __) {
-                                                                      return CustomButton(
-                                                                        isBorderRadius: true,
-                                                                        isBoxShadow: false,
-                                                                        isLoading: notifier.deleteProductStatus == DeleteProductStatus.loading 
-                                                                        ? true 
-                                                                        : false,
-                                                                        btnColor: ColorResources.error,
-                                                                        btnTextColor: ColorResources.white,
-                                                                        onTap: () async {
-                                                                          await notifier.deleteProductSelect();
-                                                                          NS.pop();
-                                                                        }, 
-                                                                        btnTxt: "OK"
-                                                                      );
-                                                                    },
-                                                                  )
-                                                                ),
-                                                                const Expanded(child: SizedBox()),
-                                                              ],
-                                                            ),
-                                                          )
-                                                        ],
-                                                      ) 
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            )
-                                          );
-                                        },
-                                        transitionBuilder: (_, anim, __, child) {
-                                          Tween<Offset> tween;
-                                          if (anim.status == AnimationStatus.reverse) {
-                                            tween = Tween(begin: const Offset(-1, 0), end: Offset.zero);
-                                          } else {
-                                            tween = Tween(begin: const Offset(1, 0), end: Offset.zero);
-                                          }
-                                          return SlideTransition(
-                                            position: tween.animate(anim),
-                                            child: FadeTransition(
-                                              opacity: anim,
-                                              child: child,
-                                            ),
-                                          );
-                                        },
-                                      );
-                                    } 
-                                  : () {},
-                                  child: const Icon(
-                                    Icons.delete,
-                                    size: 15.0,
-                                    color: ColorResources.white,
-                                  ),
-                                )
-                              )
-                            ),
-                          )
-
-                        ],
+                      const Divider(
+                        height: 1.0,
+                        color: ColorResources.black,
                       ),
 
                       if(notifier.listProductStatus == ListProductStatus.loading)
@@ -468,99 +334,7 @@ class StoreInfoScreenState extends State<StoreInfoScreen> {
                             )
                           )
                         ),
-
-                      if(notifier.listProductStatus == ListProductStatus.loaded)
-                        ListView.builder(
-                          shrinkWrap: true,
-                          padding: const EdgeInsets.only(
-                            bottom: 20.0,                           
-                            left: 8.0,
-                            right: 8.0
-                          ),
-                          itemCount: notifier.productSellers.length,
-                          itemBuilder: (BuildContext context, int i) {
-                            return CheckboxListTile(
-                              value: notifier.productSellers[i].selected,
-                              onChanged: (bool? val) {
-                                notifier.onSelectedProduct(
-                                  id: notifier.productSellers[i].id, 
-                                  val: val!
-                                );
-                              },
-                              controlAffinity: ListTileControlAffinity.leading,
-                              title: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                              
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                              
-                                      CachedNetworkImage(
-                                        imageUrl: notifier.productSellers[i].medias.isNotEmpty 
-                                        ? notifier.productSellers[i].medias.first.path 
-                                        : '-',
-                                        imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
-                                          return Container(
-                                            width: 50.0,
-                                            height: 50.0,
-                                            decoration: BoxDecoration(
-                                              borderRadius: const BorderRadius.all(
-                                                Radius.circular(6.0)
-                                              ),
-                                              image: DecorationImage(image: imageProvider)
-                                            ),
-                                          );
-                                        },
-                                        placeholder: (BuildContext context, String url) {
-                                          return Container(
-                                            width: 50.0,
-                                            height: 50.0,
-                                            decoration: const BoxDecoration(
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(6.0)
-                                              ),
-                                              image: DecorationImage(image: AssetImage('assets/images/default_image.png'))
-                                            ),
-                                          );
-                                        },
-                                        errorWidget: (BuildContext context, String url, dynamic error) {
-                                          return Container(
-                                            width: 50.0,
-                                            height: 50.0,
-                                            decoration: const BoxDecoration(
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(6.0)
-                                              ),
-                                              image: DecorationImage(image: AssetImage('assets/images/default_image.png'))
-                                            ),
-                                          );
-                                        },
-                                      ),
-                              
-                                      const SizedBox(width: 10.0),
-                              
-                                      Text(notifier.productSellers[i].title,
-                                        style: robotoRegular.copyWith(
-                                          fontSize: Dimensions.fontSizeDefault,
-                                          fontWeight: FontWeight.bold
-                                        ),
-                                      ),
-                              
-                                    ],
-                                  ),
-                              
-                              
-                              
-                                ],
-                              ),
-                            );                   
-                          },
-                        )
-                              
+                                                    
                     ])
                   ),
                 )

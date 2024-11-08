@@ -14,7 +14,6 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:gallery_saver_plus/gallery_saver.dart';
 
-
 import 'package:hp3ki/localization/language_constraints.dart';
 
 import 'package:hp3ki/services/navigation.dart';
@@ -938,7 +937,7 @@ class ProfileScreenState extends State<ProfileScreen> {
               label: notifier.ownerModel.data == null 
               ? 'Buat Toko' 
               : notifier.ownerModel.data!.haveStore 
-              ? 'Info Toko' 
+              ? 'Toko Saya' 
               : 'Buat Toko',
               onTap: () {
                 if(notifier.ownerModel.data!.haveStore) {
