@@ -678,7 +678,7 @@ class EcommerceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void selectCat({required String param}) {
+  void selectCat({required String param, required String storeId}) {
     page = 1;
     cat = param;
 
@@ -688,6 +688,7 @@ class EcommerceProvider extends ChangeNotifier {
 
     Future.delayed(const Duration(seconds: 1), () async {
       await fetchAllProduct(search: "");
+      await fetchAllProductSeller(search: "", storeId: storeId);
     });
 
     notifyListeners();

@@ -276,7 +276,10 @@ class ProductsScreenState extends State<ProductsScreen> {
                                     child: InkWell(
                                       borderRadius: BorderRadius.circular(8.0),
                                       onTap: () {
-                                        notifier.selectCat(param: category.name);
+                                        notifier.selectCat(
+                                          param: category.name,
+                                          storeId: ""
+                                        );
                                       },
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),

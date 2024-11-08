@@ -13,7 +13,6 @@ import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 
 import 'package:hp3ki/views/screens/ecommerce/product/widget/product_item.dart';
-import 'package:hp3ki/views/screens/ecommerce/store/add_product.dart';
 
 import 'package:hp3ki/providers/ecommerce/ecommerce.dart';
 
@@ -126,16 +125,72 @@ class ProductsSellerScreenState extends State<ProductsSellerScreen> {
                       },
                     ),
                     actions: [
-                      IconButton(
-                        onPressed: () {
-                          NS.push(context, AddProductScreen(storeId: widget.storeId));
+
+                      notifier.getProductCategoryStatus == GetProductCategoryStatus.loading 
+                      ? const SizedBox() 
+                      : notifier.getProductCategoryStatus == GetProductCategoryStatus.empty 
+                      ? const SizedBox() 
+                      : notifier.getProductCategoryStatus == GetProductCategoryStatus.error 
+                      ? const SizedBox() 
+                      : IconButton(
+                          onPressed: () {
+                            showModalBottomSheet(
+                              context: context,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                              ),
+                              builder: (BuildContext context) {
+                                return Container(
+                                  padding: const EdgeInsets.all(16),
+                                   height: MediaQuery.of(context).size.height * 0.5,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                    Text("Pilih Kategori",
+                                      style: robotoRegular.copyWith(
+                                        fontSize: Dimensions.fontSizeDefault, 
+                                        fontWeight: FontWeight.bold
+                                      ),
+                                    ),
+                                    const Divider(),
+                                    Expanded(
+                                      child: ListView.builder(
+                                        shrinkWrap: true,
+                                        itemCount: notifier.productCategories.length,
+                                        itemBuilder: (BuildContext context, int i) {
+                                          ProductCategoryData category = notifier.productCategories[i];
+                                          return ListTile(
+                                            title: Text(category.name,
+                                              style: robotoRegular.copyWith(
+                                                fontSize: Dimensions.fontSizeDefault,
+                                                fontWeight: notifier.cat == category.name 
+                                                ? FontWeight.bold 
+                                                : FontWeight.normal
+                                              ),
+                                            ),
+                                            onTap: () {
+                                              notifier.selectCat(
+                                                param: category.name, 
+                                                storeId: widget.storeId
+                                              );
+                                              Navigator.pop(context);
+                                            },
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
                         }, 
                         splashRadius: 15.0,
                         icon: const Icon(
-                          Icons.add_circle,
+                          Icons.filter_alt_sharp,
                         )
                       )
-                    ],
+                    ]
                   ),
               
                   SliverToBoxAdapter(
@@ -182,72 +237,72 @@ class ProductsSellerScreenState extends State<ProductsSellerScreen> {
                     )
                   ),
 
-                  SliverToBoxAdapter(
-                    child: Container(
-                      padding: const EdgeInsets.only(
-                        top: 8.0,
-                        left: 16.0,
-                        right: 16.0
-                      ),
-                      child: Consumer<EcommerceProvider>(
-                        builder: (__, notifier, _) {
-                          return notifier.getProductCategoryStatus == GetProductCategoryStatus.loading 
-                          ? const SizedBox() 
-                          : notifier.getProductCategoryStatus == GetProductCategoryStatus.empty 
-                          ? const SizedBox() 
-                          : notifier.getProductCategoryStatus == GetProductCategoryStatus.error 
-                          ? const SizedBox() 
-                          : SizedBox(
-                              height: 50.0,
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                padding: EdgeInsets.zero,
-                                itemCount: notifier.productCategories.length,
-                                itemBuilder: (BuildContext context, int i) {
+                  // SliverToBoxAdapter(
+                  //   child: Container(
+                  //     padding: const EdgeInsets.only(
+                  //       top: 8.0,
+                  //       left: 16.0,
+                  //       right: 16.0
+                  //     ),
+                  //     child: Consumer<EcommerceProvider>(
+                  //       builder: (__, notifier, _) {
+                  //         return notifier.getProductCategoryStatus == GetProductCategoryStatus.loading 
+                  //         ? const SizedBox() 
+                  //         : notifier.getProductCategoryStatus == GetProductCategoryStatus.empty 
+                  //         ? const SizedBox() 
+                  //         : notifier.getProductCategoryStatus == GetProductCategoryStatus.error 
+                  //         ? const SizedBox() 
+                  //         : SizedBox(
+                  //             height: 50.0,
+                  //             child: ListView.builder(
+                  //               shrinkWrap: true,
+                  //               scrollDirection: Axis.horizontal,
+                  //               padding: EdgeInsets.zero,
+                  //               itemCount: notifier.productCategories.length,
+                  //               itemBuilder: (BuildContext context, int i) {
                                 
-                                ProductCategoryData category = notifier.productCategories[i];
+                  //               ProductCategoryData category = notifier.productCategories[i];
 
-                                return Container(
-                                  margin: const EdgeInsets.only(
-                                    top: 10.0,
-                                    bottom: 10.0,
-                                    left: 8.0,
-                                    right: 8.0
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: notifier.cat == category.name 
-                                    ? ColorResources.purpleDark 
-                                    : ColorResources.purple,
-                                    borderRadius: BorderRadius.circular(8.0)
-                                  ),
-                                  child: Material(
-                                    color: ColorResources.transparent,
-                                    child: InkWell(
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      onTap: () {
-                                        notifier.selectCat(param: category.name);
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(category.name,
-                                          style: robotoRegular.copyWith(
-                                            fontSize: Dimensions.fontSizeSmall,
-                                            fontWeight: FontWeight.bold,
-                                            color: ColorResources.white
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                );
-                              },
-                            ),
-                          );
-                        },
-                      )
-                    )
-                  ),
+                  //               return Container(
+                  //                 margin: const EdgeInsets.only(
+                  //                   top: 10.0,
+                  //                   bottom: 10.0,
+                  //                   left: 8.0,
+                  //                   right: 8.0
+                  //                 ),
+                  //                 decoration: BoxDecoration(
+                  //                   color: notifier.cat == category.name 
+                  //                   ? ColorResources.purpleDark 
+                  //                   : ColorResources.purple,
+                  //                   borderRadius: BorderRadius.circular(8.0)
+                  //                 ),
+                  //                 child: Material(
+                  //                   color: ColorResources.transparent,
+                  //                   child: InkWell(
+                  //                     borderRadius: BorderRadius.circular(8.0),
+                  //                     onTap: () {
+                  //                       notifier.selectCat(param: category.name);
+                  //                     },
+                  //                     child: Padding(
+                  //                       padding: const EdgeInsets.all(8.0),
+                  //                       child: Text(category.name,
+                  //                         style: robotoRegular.copyWith(
+                  //                           fontSize: Dimensions.fontSizeSmall,
+                  //                           fontWeight: FontWeight.bold,
+                  //                           color: ColorResources.white
+                  //                         ),
+                  //                       ),
+                  //                     ),
+                  //                   ),
+                  //                 )
+                  //               );
+                  //             },
+                  //           ),
+                  //         );
+                  //       },
+                  //     )
+                  //   )
+                  // ),
 
                   if(notifier.listProductStatus == ListProductStatus.loading)
                     const SliverFillRemaining(
@@ -288,6 +343,7 @@ class ProductsSellerScreenState extends State<ProductsSellerScreen> {
                   if(notifier.listProductStatus == ListProductStatus.loaded)
                     SliverPadding(
                       padding: const EdgeInsets.only(
+                        top: 16.0,
                         left: 16.0,
                         right: 16.0,
                         bottom: 16.0
