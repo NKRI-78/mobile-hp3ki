@@ -284,62 +284,9 @@ class ListOrderScreenState extends State<ListOrderScreen> with SingleTickerProvi
 
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                                            
-                              Row(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  CachedNetworkImage(
-                                    imageUrl: notifier.orders[i].store.logo,
-                                    imageBuilder: (context, imageProvider) {
-                                      return Container(
-                                        width: 20.0,
-                                        height: 20.0,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(5.0),
-                                          image: DecorationImage(
-                                            image: imageProvider,
-                                            fit: BoxFit.cover
-                                          )
-                                        ),
-                                      );
-                                    },
-                                    placeholder: (context, url) {
-                                      return const Center(
-                                        child: SizedBox(
-                                          width: 32.0,
-                                          height: 32.0,
-                                          child: CircularProgressIndicator.adaptive()
-                                          )
-                                      );
-                                    },
-                                    errorWidget: (context, url, error) {
-                                      return Container(
-                                        width: 20.0,
-                                        height: 20.0,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(5.0),
-                                          image: const DecorationImage(
-                                            image: NetworkImage('https://dummyimage.com/300x300/000/fff'),
-                                            fit: BoxFit.cover
-                                          )
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                            
-                                  const SizedBox(width: 8.0),
-
-                                  Text(notifier.orders[i].store.name,
-                                    style: robotoRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeSmall
-                                    ),
-                                  ),
-                                            
-                                ],
-                              ),
-
+                             
                               Text(CurrencyHelper.formatCurrency(notifier.orders[i].totalPrice),
                                 style: robotoRegular.copyWith(
                                   fontSize: Dimensions.fontSizeDefault,
