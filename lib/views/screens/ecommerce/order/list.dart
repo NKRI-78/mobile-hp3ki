@@ -34,6 +34,18 @@ class ListOrderScreenState extends State<ListOrderScreen> with SingleTickerProvi
   Future<void> getData() async {
     if(!mounted) return;  
       await ep.listOrder(orderStatus: "WAITING_PAYMENT");
+
+    if(!mounted) return;
+      await ep.getBadgeOrderDetail(orderStatus: "WAITING_PAYMENT");
+
+    if(!mounted) return;
+      await ep.getBadgeOrderDetail(orderStatus: "PAID");
+
+    if(!mounted) return;
+      await ep.getBadgeOrderDetail(orderStatus: "PACKING");
+      
+    if(!mounted) return;
+      await ep.getBadgeOrderDetail(orderStatus: "ON PROCESS");
   }
   
   @override 
@@ -115,13 +127,41 @@ class ListOrderScreenState extends State<ListOrderScreen> with SingleTickerProvi
             fontSize: Dimensions.fontSizeExtraSmall,
             color: ColorResources.black
           ),
-          tabs: const [
-            Tab(text: 'Belum bayar'),
-            Tab(text: 'Dibayar'),
-            Tab(text: 'Dikemas'),
-            Tab(text: 'Dikirim'),
-            Tab(text: 'Selesai'),
-            Tab(text: 'Batal'),
+          tabs: [
+            context.watch<EcommerceProvider>().badgeOrderDetailStatus == BadgeOrderDetailStatus.loading 
+            ? const Tab(text: 'Belum bayar')
+            : ep.badgeWaitingPayment == 0
+            ? const Tab(text: 'Belum bayar') 
+            : Badge(
+              label: Text(ep.badgeWaitingPayment.toString()),
+              child: const Tab(text: 'Belum bayar')
+            ),
+            context.watch<EcommerceProvider>().badgeOrderDetailStatus == BadgeOrderDetailStatus.loading 
+            ? const Tab(text: 'Dibayar')
+            : ep.badgePaid == 0
+            ? const Tab(text: 'Dibayar') 
+            : Badge(
+              label: Text(ep.badgePaid.toString()),
+              child: const Tab(text: 'Dibayar')
+            ),
+            context.watch<EcommerceProvider>().badgeOrderDetailStatus == BadgeOrderDetailStatus.loading 
+            ? const Tab(text: 'Dikemas')
+            : ep.badgePacking == 0
+            ? const Tab(text: 'Dikemas') 
+            : Badge(
+              label: Text(ep.badgePacking.toString()),
+              child: const Tab(text: 'Dikemas')
+            ),
+            context.watch<EcommerceProvider>().badgeOrderDetailStatus == BadgeOrderDetailStatus.loading 
+            ? const Tab(text: 'Dikirim')
+            : ep.badgeDelivery == 0
+            ? const Tab(text: 'Dikirim') 
+            : Badge(
+              label: Text(ep.badgeDelivery.toString()),
+              child: const Tab(text: 'Dikirim')
+            ),
+            const Tab(text: 'Selesai'),
+            const Tab(text: 'Batal'),
           ],
         ),
       ),
@@ -173,6 +213,7 @@ class ListOrderScreenState extends State<ListOrderScreen> with SingleTickerProvi
           onRefresh: () {
             return Future.sync(() {
               ep.listOrder(orderStatus: orderStatusParam);
+              ep.getBadgeOrderDetail(orderStatus: orderStatusParam);
             });
           },
           child: ListView.builder(

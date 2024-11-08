@@ -1,14 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'package:timelines/timelines.dart';
+
 import 'package:hp3ki/services/navigation.dart';
+
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 
-import 'package:timelines/timelines.dart';
 
 import 'package:hp3ki/data/models/ecommerce/order/tracking.dart';
+
 import 'package:hp3ki/providers/ecommerce/ecommerce.dart';
 
 class TrackingScreen extends StatelessWidget {
@@ -63,7 +67,7 @@ class TrackingScreen extends StatelessWidget {
 
             if(snapshot.hasError) {
               return Center(
-                child:  Text("Data belum tersedia",
+                child: Text("Data belum tersedia",
                   style: robotoRegular.copyWith(
                     fontSize: Dimensions.fontSizeDefault
                   ),

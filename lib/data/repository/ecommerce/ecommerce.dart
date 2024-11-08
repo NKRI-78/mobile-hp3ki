@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:dio/dio.dart';
+import 'package:hp3ki/data/models/ecommerce/badge/badge.dart';
 import 'package:hp3ki/data/models/ecommerce/balance/balance.dart';
 
 import 'package:hp3ki/data/models/ecommerce/checkout/list.dart';
@@ -577,6 +578,41 @@ class EcommerceRepo {
     }
   }
 
+  Future<int> getBadgeOrderAll() async {
+    try {
+      Dio dio = DioManager.shared.getClient();
+      Response res = await dio.post("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/badges/order/all",
+        data: {
+          "user_id": SharedPrefs.getUserId()
+        }
+      );
+      Map<String, dynamic> data = res.data;
+      BadgeOrderModel badgeOrderModel = BadgeOrderModel.fromJson(data);
+      return badgeOrderModel.data.count;
+    } catch(e) {
+      debugPrint(e.toString());
+      throw Exception('Failed get badge order all');
+    }
+  }
+
+  Future<int> getBadgeOrderStatus({required String orderStatus}) async {
+    try {
+      Dio dio = DioManager.shared.getClient();
+      Response res = await dio.post("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/badges/order",
+        data: {
+          "user_id": SharedPrefs.getUserId(),
+          "order_status": orderStatus
+        }
+      );
+      Map<String, dynamic> data = res.data;
+      BadgeOrderModel badgeOrderModel = BadgeOrderModel.fromJson(data);
+      return badgeOrderModel.data.count;
+    } catch(e) {
+      debugPrint(e.toString());
+      throw Exception('Failed get badge order');
+    }
+  }
+
   Future<CheckoutListModel> getCheckoutList({required String from}) async {
     try {
       Dio dio = DioManager.shared.getClient();
@@ -587,6 +623,9 @@ class EcommerceRepo {
         }
       );
       Map<String, dynamic> data = response.data;
+
+      debugPrint( SharedPrefs.getUserId().toString());
+
       CheckoutListModel checkoutListModel = CheckoutListModel.fromJson(data);
       return checkoutListModel;
     } on DioError catch(e) {

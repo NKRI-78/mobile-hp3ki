@@ -45,6 +45,9 @@ class ProductsScreenState extends State<ProductsScreen> {
       await ep.fetchAllProductCategory(isFromCreateProduct: false);
 
     if(!mounted) return;
+      await ep.getBadgeOrderAll();
+
+    if(!mounted) return;
       await ep.getCart();
   }
 
@@ -209,7 +212,22 @@ class ProductsScreenState extends State<ProductsScreen> {
                               onTap: () {
                                 NS.push(context, const ListOrderScreen());
                               },
-                              child: const Icon(Icons.list)
+                              child: notifier.badgeOrderAllStatus == BadgeOrderAllStatus.loading 
+                              ? const Icon(Icons.list)
+                              : notifier.badgeOrderAllStatus == BadgeOrderAllStatus.empty 
+                              ? const Icon(Icons.list)
+                              : notifier.badgeOrderAllStatus == BadgeOrderAllStatus.error 
+                              ? const Icon(Icons.list)
+                              : Badge(
+                                  offset: const Offset(-35, 0),
+                                  label: Text(notifier.badge.toString(),
+                                    style: robotoRegular.copyWith(
+                                      fontSize: Dimensions.fontSizeSmall,
+                                      fontWeight: FontWeight.bold
+                                    ),
+                                  ),
+                                  child: const Icon(Icons.list)
+                                )
                             )
                           ),
             

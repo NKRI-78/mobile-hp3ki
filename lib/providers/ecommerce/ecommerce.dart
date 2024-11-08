@@ -57,6 +57,9 @@ enum CreateStoreStatus { idle, loading, loaded, empty, error }
 enum GetStoreStatus { idle, loading, loaded, empty, error }
 enum CheckStoreOwnerStatus { idle, loading, loaded, empty, error }
 
+enum BadgeOrderAllStatus { idle, loading, loaded, empty, error }
+enum BadgeOrderDetailStatus { idle, loading, loaded, empty, error }
+
 enum ListProductStatus { idle, loading, loaded, empty, error }
 enum CreateProductStatus { idle, loading, loaded, empty, error }
 enum UpdateProductStatus { idle, loading, loaded, empty, error }
@@ -279,6 +282,13 @@ class EcommerceProvider extends ChangeNotifier {
   bool hasMore = false;
   bool selectedAll = false;
   bool selectedAllProduct = false;
+
+  int badge = 0;
+
+  int badgeWaitingPayment = 0;
+  int badgePaid = 0;
+  int badgePacking = 0;
+  int badgeDelivery = 0;
   
   int page = 1;
 
@@ -306,6 +316,12 @@ class EcommerceProvider extends ChangeNotifier {
 
   BalanceStatus _balanceStatus = BalanceStatus.idle;
   BalanceStatus get balanceStatus => _balanceStatus;
+
+  BadgeOrderAllStatus _badgeOrderAllStatus = BadgeOrderAllStatus.idle;
+  BadgeOrderAllStatus get badgeOrderAllStatus => _badgeOrderAllStatus;
+
+  BadgeOrderDetailStatus _badgeOrderDetailStatus = BadgeOrderDetailStatus.idle;
+  BadgeOrderDetailStatus get badgeOrderDetailStatus => _badgeOrderDetailStatus;
 
   HowToPaymentStatus _howToPaymentStatus = HowToPaymentStatus.idle;
   HowToPaymentStatus get howToPaymentStatus => _howToPaymentStatus;
@@ -468,6 +484,18 @@ class EcommerceProvider extends ChangeNotifier {
 
   void setStateCancelOrderStatus(param) {
     _cancelOrderStatus = param;
+
+    notifyListeners();
+  }
+
+  void setStateBadgeOrderAll(BadgeOrderAllStatus param) {
+    _badgeOrderAllStatus = param;
+
+    notifyListeners();
+  }
+
+  void setStateBadgeOrderDetail(BadgeOrderDetailStatus param) {
+    _badgeOrderDetailStatus = param;
 
     notifyListeners();
   }
@@ -1936,6 +1964,54 @@ class EcommerceProvider extends ChangeNotifier {
 
     } catch(e) {
       throw [];
+    }
+  }
+
+  Future<void> getBadgeOrderAll() async {
+    setStateBadgeOrderAll(BadgeOrderAllStatus.loading);
+    try {
+
+      int badgeData = await er.getBadgeOrderAll();
+
+      badge = badgeData;
+
+      setStateBadgeOrderAll(BadgeOrderAllStatus.loaded);
+
+      if(badge == 0) {
+        setStateBadgeOrderAll(BadgeOrderAllStatus.empty);
+      }
+
+    } catch(e) {
+      setStateBadgeOrderAll(BadgeOrderAllStatus.error);
+    }
+  } 
+
+  Future<void> getBadgeOrderDetail({required String orderStatus}) async {
+    setStateBadgeOrderDetail(BadgeOrderDetailStatus.loading);
+    try {
+
+      int badgeData = await er.getBadgeOrderStatus(orderStatus: orderStatus);
+
+      if(orderStatus == "WAITING_PAYMENT") {
+        badgeWaitingPayment = badgeData;
+      }
+
+      if(orderStatus == "PAID") {
+        badgePaid = badgeData;
+      }
+
+      if(orderStatus == "PACKING") {
+        badgePacking = badgeData;
+      }
+
+      if(orderStatus == "ON PROCESS") {
+        badgeDelivery = badgeData;
+      }
+
+      setStateBadgeOrderDetail(BadgeOrderDetailStatus.loaded);
+
+    } catch(e) {
+      setStateBadgeOrderDetail(BadgeOrderDetailStatus.error);
     }
   }
 
