@@ -6,10 +6,10 @@ import 'package:intl/date_symbol_data_local.dart';
 class Helper {
   
   static String formatCurrency(int number, {bool useSymbol = true}) {
-    final NumberFormat _fmt = NumberFormat.currency(locale: 'id', symbol: useSymbol ? 'Rp ' : '');
-    String s = _fmt.format(number);
-    String _format = s.toString().replaceAll(RegExp(r"([,]*00)(?!.*\d)"), "");
-    return _format;
+    final NumberFormat fmt = NumberFormat.currency(locale: 'id', symbol: useSymbol ? 'Rp ' : '');
+    String s = fmt.format(number);
+    String format = s.toString().replaceAll(RegExp(r"([,]*00)(?!.*\d)"), "");
+    return format;
   }
 
   static String gramsToKilograms(double grams) {
