@@ -40,7 +40,7 @@ class ProductsSellerScreenState extends State<ProductsSellerScreen> {
   Future<void> getData() async {
     if(!mounted) return; 
       await ep.fetchAllProductSeller(search: "", storeId: widget.storeId);
-
+      
     if(!mounted) return;
       await ep.fetchAllProductCategory(isFromCreateProduct: false);
   }
