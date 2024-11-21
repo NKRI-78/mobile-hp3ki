@@ -18,7 +18,7 @@ import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/views/basewidgets/button/bounce.dart';
 
 import 'package:hp3ki/views/screens/ecommerce/cart/cart.dart';
-import 'package:hp3ki/views/screens/ecommerce/order/list.dart';
+import 'package:hp3ki/views/screens/ecommerce/order/buyer/list.dart';
 import 'package:hp3ki/views/screens/ecommerce/product/widget/product_item.dart';
 
 class ProductsScreen extends StatefulWidget {
@@ -210,7 +210,7 @@ class ProductsScreenState extends State<ProductsScreen> {
                           Expanded(
                             child: GestureDetector(
                               onTap: () {
-                                NS.push(context, const ListOrderScreen());
+                                NS.push(context, const ListOrderBuyerScreen());
                               },
                               child: notifier.badgeOrderAllStatus == BadgeOrderAllStatus.loading 
                               ? const Icon(Icons.list)

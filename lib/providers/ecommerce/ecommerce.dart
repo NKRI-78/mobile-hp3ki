@@ -72,6 +72,7 @@ enum DeleteProductImageStatus { idle, loading, loaded, empty, error }
 
 enum BalanceStatus { idle, loading, loaded, empty, error }
 
+enum ConfirmOrderStatus { idle, loading, loaded, empty, error }
 enum CancelOrderStatus { idle, loading, loaded, empty, error }
 
 enum GetProductCategoryStatus { idle, loading, loaded, empty, error }
@@ -348,6 +349,9 @@ class EcommerceProvider extends ChangeNotifier {
   CheckStoreOwnerStatus _checkStoreOwnerStatus = CheckStoreOwnerStatus.idle;
   CheckStoreOwnerStatus get checkStoreOwnerStatus => _checkStoreOwnerStatus;
 
+  ConfirmOrderStatus _confirmOrderStatus = ConfirmOrderStatus.idle;
+  ConfirmOrderStatus get confirmOrderStatus => _confirmOrderStatus;
+
   CancelOrderStatus _cancelOrderStatus = CancelOrderStatus.idle;
   CancelOrderStatus get cancelOrderStatus => _cancelOrderStatus;
 
@@ -497,6 +501,12 @@ class EcommerceProvider extends ChangeNotifier {
 
   final TrackingData _trackingData = TrackingData();
   TrackingData get trackingData => _trackingData;
+
+  void setStateConfirmOrderStatus(param) {
+    _confirmOrderStatus = param;
+
+    notifyListeners();
+  }
 
   void setStateCancelOrderStatus(param) {
     _cancelOrderStatus = param;
@@ -1097,6 +1107,22 @@ class EcommerceProvider extends ChangeNotifier {
     } catch(_) {
       setStateDetailOrderSellerStatus(DetailOrderSellerStatus.error);
     }
+  }
+
+  Future<void> confirmOrder({
+    required String storeId,
+    required String transactionId
+  }) async {
+    setStateConfirmOrderStatus(ConfirmOrderStatus.loading);
+    try {
+      await er.confirmOrder(
+        storeId: storeId, 
+        transactionId: transactionId
+      );
+      setStateConfirmOrderStatus(ConfirmOrderStatus.loaded);
+    } catch(_) {
+      setStateConfirmOrderStatus(ConfirmOrderStatus.error);
+    } 
   }
 
   Future<void> cancelOrder({required String transactionId}) async {

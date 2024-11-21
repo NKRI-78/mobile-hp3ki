@@ -20,7 +20,6 @@ import 'package:hp3ki/views/basewidgets/button/custom.dart';
 
 import 'package:hp3ki/views/screens/ecommerce/order/tracking.dart';
 import 'package:hp3ki/views/screens/ecommerce/order/complaint.dart';
-import 'package:hp3ki/views/screens/ecommerce/product/product_review.dart';
 
 class DetailOrderSellerScreen extends StatefulWidget {
   final String transactionId;
@@ -994,141 +993,6 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
                 ),
 
                 const SizedBox(height: 15.0),
-
-                notifier.detailOrderSellerData.orderStatus == "DELIVERED" 
-                ? CustomButton(
-                    onTap: notifier.detailOrderSellerData.isReviewed! 
-                    ? () {} 
-                    : () {
-                      showGeneralDialog(
-                        context: context,
-                        barrierLabel: "Barrier",
-                        barrierDismissible: true,
-                        barrierColor: Colors.black.withOpacity(0.5),
-                        transitionDuration: const Duration(milliseconds: 700),
-                        pageBuilder: (BuildContext context, Animation<double> double, _) {
-                          return Center(
-                            child: Material(
-                              color: ColorResources.transparent,
-                              child: Container(
-                                margin: const EdgeInsets.all(20.0),
-                                height: 250.0,
-                                decoration: BoxDecoration(
-                                  color: ColorResources.white, 
-                                  borderRadius: BorderRadius.circular(20.0)
-                                ),
-                                child: Stack(
-                                  clipBehavior: Clip.none,
-                                  children: [
-                                                                    
-                                    Align(
-                                      alignment: Alignment.center,
-                                      child: Text("Pesanan sudah selesai ?",
-                                        style: robotoRegular.copyWith(
-                                          fontSize: Dimensions.fontSizeLarge,
-                                          fontWeight: FontWeight.bold,
-                                          color: ColorResources.black
-                                        ),
-                                      )
-                                    ),
-                                                                    
-                                    Align(
-                                      alignment: Alignment.bottomCenter,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        children: [
-                                          Container(
-                                            margin: const EdgeInsets.only(
-                                              top: 20.0,
-                                              bottom: 20.0
-                                            ),
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: [
-                                                const Expanded(child: SizedBox()),
-                                                Expanded(
-                                                  flex: 5,
-                                                  child: CustomButton(
-                                                    isBorderRadius: true,
-                                                    isBoxShadow: false,
-                                                    isBorder: true,
-                                                    btnBorderColor: ColorResources.black,
-                                                    fontSize: Dimensions.fontSizeSmall,
-                                                    btnColor: ColorResources.white,
-                                                    btnTextColor: ColorResources.black,
-                                                    onTap: () {
-                                                      NS.pop();
-                                                    }, 
-                                                    btnTxt: "Batal"
-                                                  ),
-                                                ),
-                                                const Expanded(child: SizedBox()),
-                                                Expanded(
-                                                  flex: 5,
-                                                  child: Consumer<EcommerceProvider>(
-                                                    builder: (_, notifier, __) {
-                                                      return CustomButton(
-                                                        isBorderRadius: true,
-                                                        isBoxShadow: false,
-                                                        fontSize: Dimensions.fontSizeSmall,
-                                                        btnColor: ColorResources.success,
-                                                        btnTextColor: ColorResources.white,
-                                                        onTap: () async {
-                                                          NS.push(context, ProductReviewScreen(transactionId: notifier.detailOrderSellerData.transactionId!))
-                                                          .then((_) async {
-                                                            NS.pop();
-                                                            Future.delayed(const Duration(seconds: 1), () async {
-                                                              await ep.detailOrder(transactionId: widget.transactionId);
-                                                            });
-                                                          });
-                                                        }, 
-                                                        btnTxt: "Ulas"
-                                                      );
-                                                    },
-                                                  )
-                                                ),
-                                                const Expanded(child: SizedBox()),
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ) 
-                                    )
-                                  ],
-                                ),
-                              ),
-                            )
-                          );
-                        },
-                        transitionBuilder: (_, anim, __, child) {
-                          Tween<Offset> tween;
-                          if (anim.status == AnimationStatus.reverse) {
-                            tween = Tween(begin: const Offset(-1, 0), end: Offset.zero);
-                          } else {
-                            tween = Tween(begin: const Offset(1, 0), end: Offset.zero);
-                          }
-                          return SlideTransition(
-                            position: tween.animate(anim),
-                            child: FadeTransition(
-                              opacity: anim,
-                              child: child,
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    isBorderRadius: true,
-                    isBoxShadow: false,
-                    btnColor: notifier.detailOrderSellerData.isReviewed! 
-                    ? ColorResources.hintColor 
-                    : ColorResources.green,
-                    btnTextColor: ColorResources.white,
-                    btnTxt: "Selesai",
-                  )
-                : const SizedBox(),
-              
-                const SizedBox(height: 15.0),
               
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -1263,7 +1127,7 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
                                                                     
                                     Align(
                                       alignment: Alignment.center,
-                                      child: Text("Batalkan pesanan ?",
+                                      child: Text("Apakah ka ?",
                                         style: robotoRegular.copyWith(
                                           fontSize: Dimensions.fontSizeLarge,
                                           fontWeight: FontWeight.bold,
@@ -1311,15 +1175,16 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
                                                       return CustomButton(
                                                         isBorderRadius: true,
                                                         isBoxShadow: false,
-                                                        isLoading: notifier.cancelOrderStatus == CancelOrderStatus.loading 
+                                                        isLoading: notifier.confirmOrderStatus == ConfirmOrderStatus.loading 
                                                         ? true 
                                                         : false,
                                                         fontSize: Dimensions.fontSizeSmall,
                                                         btnColor: ColorResources.success,
                                                         btnTextColor: ColorResources.white,
                                                         onTap: () async {
-                                                          await ep.cancelOrder(
-                                                            transactionId: notifier.detailOrderSellerData.transactionId!
+                                                          await ep.confirmOrder(
+                                                            transactionId: notifier.detailOrderSellerData.transactionId!,
+                                                            storeId: notifier.detailOrderSellerData.item!.store.id
                                                           );
                                                         }, 
                                                         btnTxt: "Ya"
@@ -1360,8 +1225,8 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
                     isBorder: false,
                     isBoxShadow: false,
                     isBorderRadius: true,
-                    btnColor: ColorResources.error,
-                    btnTxt: "Batalkan pesanan",
+                    btnColor: ColorResources.success,
+                    btnTxt: "Konfirmasi pesanan",
                   )
                 : const SizedBox()
               
@@ -1378,12 +1243,6 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
     String orderStatus = "";
 
     switch (val) {
-      case "REFUND":
-        orderStatus = "Batal"; 
-      break;
-      case "WAITING_PAYMENT":
-        orderStatus = "Belum bayar"; 
-      break;
       case "PAID":
         orderStatus = "Dibayar"; 
       break;

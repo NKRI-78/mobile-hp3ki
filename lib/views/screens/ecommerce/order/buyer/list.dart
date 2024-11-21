@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hp3ki/views/screens/ecommerce/order/buyer/detail.dart';
 import 'package:provider/provider.dart';
 
 import 'package:date_count_down/date_count_down.dart';
@@ -17,16 +18,15 @@ import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/utils/helper.dart';
 
-import 'package:hp3ki/views/screens/ecommerce/order/detail.dart';
 
-class ListOrderScreen extends StatefulWidget {
-  const ListOrderScreen({super.key});
+class ListOrderBuyerScreen extends StatefulWidget {
+  const ListOrderBuyerScreen({super.key});
 
   @override
-  State<ListOrderScreen> createState() => ListOrderScreenState();
+  State<ListOrderBuyerScreen> createState() => ListOrderBuyerScreenState();
 }
 
-class ListOrderScreenState extends State<ListOrderScreen> with SingleTickerProviderStateMixin {
+class ListOrderBuyerScreenState extends State<ListOrderBuyerScreen> with SingleTickerProviderStateMixin {
 
   late TabController tabC;
   late EcommerceProvider ep;
@@ -237,7 +237,7 @@ class ListOrderScreenState extends State<ListOrderScreen> with SingleTickerProvi
                   child: InkWell(
                     borderRadius: BorderRadius.circular(8.0),
                     onTap: () {
-                      NS.push(context, DetailOrder(transactionId: notifier.orders[i].transactionId));
+                      NS.push(context, DetailOrderBuyerScreen(transactionId: notifier.orders[i].transactionId));
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),

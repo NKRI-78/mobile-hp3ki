@@ -21,19 +21,19 @@ import 'package:hp3ki/views/basewidgets/button/custom.dart';
 import 'package:hp3ki/views/screens/ecommerce/order/complaint.dart';
 import 'package:hp3ki/views/screens/ecommerce/product/product_review.dart';
 
-class DetailOrder extends StatefulWidget {
+class DetailOrderBuyerScreen extends StatefulWidget {
   final String transactionId;
 
-  const DetailOrder({
+  const DetailOrderBuyerScreen({
     required this.transactionId,
     super.key
   });
 
   @override
-  State<DetailOrder> createState() => DetailOrderState();
+  State<DetailOrderBuyerScreen> createState() => DetailOrderBuyerScreenState();
 }
 
-class DetailOrderState extends State<DetailOrder> {
+class DetailOrderBuyerScreenState extends State<DetailOrderBuyerScreen> {
   // GlobalKey globalKey = GlobalKey();
 
   bool btnUnduhResi = true;

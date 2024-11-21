@@ -319,6 +319,29 @@ class EcommerceRepo {
     }
   }
 
+  Future<void> confirmOrder({
+    required String storeId,
+    required String transactionId
+  }) async {
+    try {
+      Dio dio = DioManager.shared.getClient();
+      await dio.post("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/order/confirm",
+        data: {
+          "transaction_id": transactionId,
+          "store_id": storeId,
+          "user_id": SharedPrefs.getUserId(),
+          "app": "hp3ki"
+        }
+      );
+    } on DioError catch(e) {
+      debugPrint(e.response!.data.toString());
+      throw Exception("Failed confirm order");
+    } catch(e) {
+      debugPrint(e.toString());
+      throw Exception("Failed confirm order");
+    }
+  }
+
   Future<void> cancelOrder({required String transactionId}) async {
     try {
       Dio dio = DioManager.shared.getClient();
