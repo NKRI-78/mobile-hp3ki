@@ -217,15 +217,18 @@ class ProductStore {
 }
 
 class Store {
+  String id;
   String logo;
   String name;
 
   Store({
+    required this.id,
     required this.logo,
     required this.name,
   });
 
   factory Store.fromJson(Map<String, dynamic> json) => Store(
+    id: json["id"],
     logo: json["logo"],
     name: json["name"],
   );

@@ -22,19 +22,21 @@ import 'package:hp3ki/views/screens/ecommerce/order/tracking.dart';
 import 'package:hp3ki/views/screens/ecommerce/order/complaint.dart';
 import 'package:hp3ki/views/screens/ecommerce/product/product_review.dart';
 
-class DetailSellerOrder extends StatefulWidget {
+class DetailOrderSellerScreen extends StatefulWidget {
   final String transactionId;
+  final String storeId;
 
-  const DetailSellerOrder({
+  const DetailOrderSellerScreen({
     required this.transactionId,
+    required this.storeId,
     super.key
   });
 
   @override
-  State<DetailSellerOrder> createState() => DetailSellerOrderState();
+  State<DetailOrderSellerScreen> createState() => DetailOrderSellerScreenState();
 }
 
-class DetailSellerOrderState extends State<DetailSellerOrder> {
+class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
   bool btnUnduhResi = true;
   bool icCopyResi = true;
 
@@ -42,7 +44,10 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
 
   Future<void> getData() async {
     if(!mounted) return;
-      await ep.detailOrder(transactionId: widget.transactionId);
+      await ep.detailOrderSeller(
+        transactionId: widget.transactionId,
+        storeId: widget.storeId
+      );
   }
 
   Future<void> takeScreenshot() async {
@@ -114,7 +119,7 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
       ),
       body: Consumer<EcommerceProvider>(
         builder: (_, notifier, __) {
-          if(notifier.detailOrderStatus == DetailOrderStatus.loading) {
+          if(notifier.detailOrderSellerStatus == DetailOrderSellerStatus.loading) {
             return const Center(
               child: SizedBox(
                 width: 32.0,
@@ -123,7 +128,7 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
               )
             );
           }
-          if(notifier.detailOrderStatus == DetailOrderStatus.error) {
+          if(notifier.detailOrderSellerStatus == DetailOrderSellerStatus.error) {
             return Center(
               child: Text("Hmm... Mohon tunggu yaa",
                 style: robotoRegular.copyWith(
@@ -150,16 +155,16 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                     
-                      Text(notifier.detailOrderData.invoice.toString(),
+                      Text(notifier.detailOrderSellerData.invoice.toString(),
                         style: robotoRegular.copyWith(
                           fontSize: Dimensions.fontSizeDefault,
                           color: ColorResources.black
                         ),
                       ),
                     
-                      notifier.detailOrderData.expire == null 
+                      notifier.detailOrderSellerData.expire == null 
                       ? const SizedBox() 
-                      : notifier.detailOrderData.orderStatus == "WAITING_PAYMENT" 
+                      : notifier.detailOrderSellerData.orderStatus == "WAITING_PAYMENT" 
                       ? Container(
                           padding: const EdgeInsets.all(5.0),
                           decoration: BoxDecoration(
@@ -167,7 +172,7 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                             borderRadius: BorderRadius.circular(10.0)
                           ),
                           child: CountDownText(
-                            due: notifier.detailOrderData.expire,
+                            due: notifier.detailOrderSellerData.expire,
                             finishedText: "Kedaluwarsa",
                             showLabel: false,
                             longDateName: true,
@@ -193,7 +198,7 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                     
-                      Text(Helper.formatDate(notifier.detailOrderData.createdAt!),
+                      Text(Helper.formatDate(notifier.detailOrderSellerData.createdAt!),
                         style: robotoRegular.copyWith(
                           fontSize: Dimensions.fontSizeDefault,
                           fontWeight: FontWeight.bold
@@ -206,7 +211,7 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                           color: ColorResources.purple,
                           borderRadius: BorderRadius.circular(8.0)
                         ),
-                        child: Text(orderStatus(notifier.detailOrderData.orderStatus.toString()),
+                        child: Text(orderStatus(notifier.detailOrderSellerData.orderStatus.toString()),
                           style: robotoRegular.copyWith(
                             fontWeight: FontWeight.bold,
                             fontSize: Dimensions.fontSizeSmall,
@@ -219,204 +224,198 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                   ),
               
                   const SizedBox(height: 10.0),
+
+                  const Divider(
+                    color: ColorResources.hintColor,
+                  ),
+          
+                  const SizedBox(height: 15.0),
+          
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+          
+                      CachedNetworkImage(
+                        imageUrl: notifier.detailOrderSellerData.item?.store.logo ?? "-",
+                        imageBuilder: (context, imageProvider) {
+                          return Container(
+                            width: 20.0,
+                            height: 20.0,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5.0),
+                              image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.cover
+                              )
+                            ),
+                          );
+                        },
+                        placeholder: (BuildContext context, String url) {
+                          return const Center(
+                            child: SizedBox(
+                              width: 32.0,
+                              height: 32.0,
+                              child: CircularProgressIndicator.adaptive()
+                            )
+                          );
+                        },
+                        errorWidget: (BuildContext context, String url, dynamic error) {
+                          return Container(
+                            width: 45.0,
+                            height: 45.0,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5.0),
+                              image: const DecorationImage(
+                                image: NetworkImage('https://dummyimage.com/300x300/000/fff'),
+                                fit: BoxFit.cover
+                              )
+                            ),
+                          );
+                        },
+                      ),
+          
+                      const SizedBox(width: 8.0),
+          
+                      Text(notifier.detailOrderSellerData.item?.store.name ?? "-",
+                        style: robotoRegular.copyWith(
+                          fontSize: Dimensions.fontSizeDefault
+                        ),
+                      ),
+          
+                    ],
+                  ),
+          
+                  const SizedBox(height: 20.0),
               
                   ListView.builder(
                     padding: EdgeInsets.zero,
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: notifier.detailOrders.length,
+                    itemCount: notifier.detailOrderSellerData.item!.products.length,
                     itemBuilder: (BuildContext context, int i) {
+                      
+                      final item = notifier.detailOrderSellerData.item!.products[i];
+
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
                   
-                          const Divider(
-                            color: ColorResources.hintColor,
-                          ),
-                  
-                          const SizedBox(height: 15.0),
-                  
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                  
-                              CachedNetworkImage(
-                                imageUrl: notifier.detailOrders[i].store.logo,
-                                imageBuilder: (context, imageProvider) {
-                                  return Container(
-                                    width: 20.0,
-                                    height: 20.0,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5.0),
-                                      image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.cover
-                                      )
-                                    ),
-                                  );
-                                },
-                                placeholder: (BuildContext context, String url) {
-                                  return const Center(
-                                    child: SizedBox(
-                                      width: 32.0,
-                                      height: 32.0,
-                                      child: CircularProgressIndicator.adaptive()
-                                    )
-                                  );
-                                },
-                                errorWidget: (BuildContext context, String url, dynamic error) {
-                                  return Container(
-                                    width: 45.0,
-                                    height: 45.0,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5.0),
-                                      image: const DecorationImage(
-                                        image: NetworkImage('https://dummyimage.com/300x300/000/fff'),
-                                        fit: BoxFit.cover
-                                      )
-                                    ),
-                                  );
-                                },
-                              ),
-                  
-                              const SizedBox(width: 8.0),
-                  
-                              Text(notifier.detailOrders[i].store.name,
-                                style: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeDefault
-                                ),
-                              ),
-                  
-                            ],
-                          ),
-                  
-                          const SizedBox(height: 20.0),
-                  
-                          ListView.builder(
-                            shrinkWrap: true,
-                            padding: EdgeInsets.zero,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: notifier.detailOrders[i].products.length,
-                            itemBuilder: (BuildContext context, int z) {
-                              return Container(
-                                margin: const EdgeInsets.only(
-                                  top: 10.0,
-                                  bottom: 10.0
-                                ),
-                                child: Card(
-                                  elevation: 0.30,
-                                  margin: EdgeInsets.zero,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
+                          Container(
+                            margin: const EdgeInsets.only(
+                              top: 10.0,
+                              bottom: 10.0
+                            ),
+                            child: Card(
+                              elevation: 0.30,
+                              margin: EdgeInsets.zero,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                            
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.max,
                                       children: [
-                                
-                                        Row(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          mainAxisSize: MainAxisSize.max,
+                            
+                                        CachedNetworkImage(
+                                          imageUrl: item.product.medias.isEmpty 
+                                          ? "https://dummyimage.com/300x300/000/fff" 
+                                          : item.product.medias.first.path,
+                                          imageBuilder: (context, imageProvider) {
+                                            return Container(
+                                              width: 45.0,
+                                              height: 45.0,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(5.0),
+                                                image: DecorationImage(
+                                                  image: imageProvider,
+                                                  fit: BoxFit.cover
+                                                )
+                                              ),
+                                            );
+                                          },
+                                          placeholder: (BuildContext context, String url) {
+                                            return const Center(
+                                              child: SizedBox(
+                                                width: 32.0,
+                                                height: 32.0,
+                                                child: CircularProgressIndicator.adaptive()
+                                              )
+                                            );
+                                          },
+                                          errorWidget: (BuildContext context, String url, dynamic error) {
+                                            return Container(
+                                              width: 45.0,
+                                              height: 45.0,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(5.0),
+                                                image: const DecorationImage(
+                                                  image: NetworkImage('https://dummyimage.com/300x300/000/fff'),
+                                                  fit: BoxFit.cover
+                                                )
+                                              ),
+                                            );
+                                          },
+                                        ),
+                            
+                                        const SizedBox(width: 12.0),
+                            
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
                                           children: [
-                                
-                                            CachedNetworkImage(
-                                              imageUrl: notifier.detailOrders[i].products[z].product.medias.isEmpty 
-                                              ? "https://dummyimage.com/300x300/000/fff" 
-                                              : notifier.detailOrders[i].products[z].product.medias.first.path,
-                                              imageBuilder: (context, imageProvider) {
-                                                return Container(
-                                                  width: 45.0,
-                                                  height: 45.0,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(5.0),
-                                                    image: DecorationImage(
-                                                      image: imageProvider,
-                                                      fit: BoxFit.cover
-                                                    )
-                                                  ),
-                                                );
-                                              },
-                                              placeholder: (BuildContext context, String url) {
-                                                return const Center(
-                                                  child: SizedBox(
-                                                    width: 32.0,
-                                                    height: 32.0,
-                                                    child: CircularProgressIndicator.adaptive()
-                                                  )
-                                                );
-                                              },
-                                              errorWidget: (BuildContext context, String url, dynamic error) {
-                                                return Container(
-                                                  width: 45.0,
-                                                  height: 45.0,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(5.0),
-                                                    image: const DecorationImage(
-                                                      image: NetworkImage('https://dummyimage.com/300x300/000/fff'),
-                                                      fit: BoxFit.cover
-                                                    )
-                                                  ),
-                                                );
-                                              },
+                            
+                                            SizedBox(
+                                              width: 200.0,
+                                              child: Text(item.product.title,
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: robotoRegular.copyWith(
+                                                  fontSize: Dimensions.fontSizeDefault
+                                                ),
+                                              ),
                                             ),
-                                
-                                            const SizedBox(width: 12.0),
-                                
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                
-                                                SizedBox(
-                                                  width: 200.0,
-                                                  child: Text(notifier.detailOrders[i].products[z].product.title,
-                                                    maxLines: 2,
-                                                    overflow: TextOverflow.ellipsis,
-                                                    style: robotoRegular.copyWith(
-                                                      fontSize: Dimensions.fontSizeDefault
-                                                    ),
-                                                  ),
-                                                ),
-                                
-                                                const SizedBox(height: 5.0),
-                                
-                                                Text("${Helper.formatCurrency(notifier.detailOrders[i].products[z].product.price)} x ${notifier.detailOrders[i].products[z].qty}",
-                                                  style: robotoRegular.copyWith(
-                                                    fontSize: Dimensions.fontSizeSmall,
-                                                    fontWeight: FontWeight.bold
-                                                  ),
-                                                ),
-                                
-                                              ],
-                                            )
-                                
+                            
+                                            const SizedBox(height: 5.0),
+                            
+                                            Text("${Helper.formatCurrency(item.product.price)} x ${item.qty}",
+                                              style: robotoRegular.copyWith(
+                                                fontSize: Dimensions.fontSizeSmall,
+                                                fontWeight: FontWeight.bold
+                                              ),
+                                            ),
+                            
                                           ],
-                                        ),
-                                
-                                        notifier.detailOrders[i].products[z].product.note.isEmpty 
-                                        ? const SizedBox()
-                                        : const SizedBox(height: 10.0),
-                                
-                                        notifier.detailOrders[i].products[z].product.note.isEmpty 
-                                        ? const SizedBox()
-                                        : Text("Catatan : ${notifier.detailOrders[i].products[z].product.note}",
-                                          style: robotoRegular.copyWith(
-                                            fontSize: Dimensions.fontSizeSmall
-                                          ),
-                                        ),
-                                
+                                        )
+                            
                                       ],
-                                    )
-                                  )
-                                ),
-                              );
-                            },
-                          ),
+                                    ),
+                            
+                                    item.product.note.isEmpty 
+                                    ? const SizedBox()
+                                    : const SizedBox(height: 10.0),
+                            
+                                    item.product.note.isEmpty 
+                                    ? const SizedBox()
+                                    : Text("Catatan : ${item.product.note}",
+                                      style: robotoRegular.copyWith(
+                                        fontSize: Dimensions.fontSizeSmall
+                                      ),
+                                    ),
+                            
+                                  ],
+                                )
+                              )
+                            ),
+                         ),
                   
                           const SizedBox(height: 20.0),
                   
                           RepaintBoundary(
-                            // key: globalKey,
                             child: Container(
                               padding: const EdgeInsets.all(12.0),
                               decoration: const BoxDecoration(
@@ -439,21 +438,21 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                                         ),
                                       ),
                               
-                                      btnUnduhResi 
-                                      ? notifier.detailOrders[i].waybill == "-" 
-                                      ? const SizedBox() 
-                                      : InkWell(
-                                          onTap: () async {
-                                            await takeScreenshot();
-                                          },
-                                          child: Text("Unduh resi",
-                                            style: robotoRegular.copyWith(
-                                              color: ColorResources.blue,
-                                              fontSize: Dimensions.fontSizeSmall
-                                            ),
-                                          )
-                                        ) 
-                                      : const SizedBox()
+                                      // btnUnduhResi 
+                                      // ? item.waybill == "-" 
+                                      // ? const SizedBox() 
+                                      // : InkWell(
+                                      //     onTap: () async {
+                                      //       await takeScreenshot();
+                                      //     },
+                                      //     child: Text("Unduh resi",
+                                      //       style: robotoRegular.copyWith(
+                                      //         color: ColorResources.blue,
+                                      //         fontSize: Dimensions.fontSizeSmall
+                                      //       ),
+                                      //     )
+                                      //   ) 
+                                      // : const SizedBox()
                               
                                     ],
                                   ),
@@ -471,7 +470,7 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                                         ),
                                       ),
                                               
-                                      Text(notifier.detailOrders[i].courierId.toUpperCase(),
+                                      Text(item.courierId.toUpperCase(),
                                         style: robotoRegular.copyWith(
                                           fontSize: Dimensions.fontSizeSmall
                                         ),
@@ -493,7 +492,7 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                                         ),
                                       ),
                                               
-                                      Text(notifier.detailOrders[i].courierService,
+                                      Text(item.courierService,
                                         style: robotoRegular.copyWith(
                                           fontSize: Dimensions.fontSizeSmall
                                         ),
@@ -515,7 +514,7 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                                         ),
                                       ),
                                               
-                                      Text(Helper.formatCurrency(notifier.detailOrders[i].courierPrice),
+                                      Text(Helper.formatCurrency(item.courierPrice),
                                         style: robotoRegular.copyWith(
                                           fontSize: Dimensions.fontSizeSmall
                                         ),
@@ -537,7 +536,7 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                                         ),
                                       ),
                                                   
-                                      Text(Helper.gramsToKilograms(double.parse(notifier.detailOrders[i].courierWeight.toString())),
+                                      Text(Helper.gramsToKilograms(double.parse(item.courierWeight.toString())),
                                         style: robotoRegular.copyWith(
                                           fontSize: Dimensions.fontSizeSmall
                                         ),
@@ -548,7 +547,7 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                                   
                                   const SizedBox(height: 15.0),
                                   
-                                  notifier.detailOrders[i].waybill == "-"  
+                                  item.waybill == "-"  
                                   ? const SizedBox() 
                                   : BarcodeWidget(
                                       height: 50.0,
@@ -556,14 +555,14 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                                       margin: EdgeInsets.zero,
                                       padding: EdgeInsets.zero,
                                       drawText: false,
-                                      data: notifier.detailOrders[i].waybill,
+                                      data: item.waybill,
                                     ),
                                   
-                                  notifier.detailOrders[i].waybill == "-"   
+                                  item.waybill == "-"   
                                   ? const SizedBox() 
                                   : const SizedBox(height: 15.0),
                                   
-                                  notifier.detailOrders[i].waybill == "-"  
+                                  item.waybill == "-"  
                                   ? const SizedBox() 
                                   : Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -584,9 +583,9 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                                           icCopyResi 
                                           ? InkWell(
                                               onTap: () {
-                                                Clipboard.setData(ClipboardData(text: notifier.detailOrders[i].waybill));
+                                                Clipboard.setData(ClipboardData(text: item.waybill));
                                                 ScaffoldMessenger.of(context).showSnackBar(
-                                                  SnackBar(content: Text(notifier.detailOrders[i].waybill,
+                                                  SnackBar(content: Text(item.waybill,
                                                     style: robotoRegular.copyWith(
                                                       fontSize: Dimensions.fontSizeDefault
                                                     ),
@@ -606,7 +605,7 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                                         ],
                                       ),
                                   
-                                      Text(notifier.detailOrders[i].waybill,
+                                      Text(item.waybill,
                                         style: robotoRegular.copyWith(
                                           color: ColorResources.purple,
                                           fontSize: Dimensions.fontSizeSmall,
@@ -639,7 +638,7 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                         
-                                            Text(notifier.detailOrders[i].seller.fullname,
+                                            Text(item.seller.fullname,
                                               style: robotoRegular.copyWith(
                                                 fontSize: Dimensions.fontSizeSmall,
                                                 color: ColorResources.black
@@ -648,7 +647,7 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                                   
                                             const SizedBox(height: 5.0),
                                         
-                                            Text(notifier.detailOrders[i].seller.phone,
+                                            Text(item.seller.phone,
                                               style: robotoRegular.copyWith(
                                                 fontSize: Dimensions.fontSizeSmall,
                                                 color: ColorResources.black
@@ -657,7 +656,7 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                                   
                                             const SizedBox(height: 5.0),
                                         
-                                            Text(notifier.detailOrders[i].seller.address,
+                                            Text(item.seller.address,
                                               style: robotoRegular.copyWith(
                                                 fontSize: Dimensions.fontSizeExtraSmall,
                                                 color: ColorResources.black
@@ -693,7 +692,7 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                         
-                                            Text(notifier.detailOrders[i].buyer.fullname,
+                                            Text(item.buyer.fullname,
                                               style: robotoRegular.copyWith(
                                                 fontSize: Dimensions.fontSizeSmall,
                                                 color: ColorResources.black
@@ -702,7 +701,7 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                                             
                                             const SizedBox(height: 5.0),
                                         
-                                            Text(notifier.detailOrders[i].buyer.phone,
+                                            Text(item.buyer.phone,
                                               style: robotoRegular.copyWith(
                                                 fontSize: Dimensions.fontSizeSmall,
                                                 color: ColorResources.black
@@ -711,7 +710,7 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                                   
                                             const SizedBox(height: 5.0),
                                   
-                                            Text(notifier.detailOrders[i].buyer.address,
+                                            Text(item.buyer.address,
                                               style: robotoRegular.copyWith(
                                                 fontSize: Dimensions.fontSizeExtraSmall,
                                                 color: ColorResources.black
@@ -730,7 +729,7 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                             ),
                           ),
                   
-                          notifier.detailOrders[i].waybill == "-" 
+                          item.waybill == "-" 
                           ? const SizedBox()
                           : const SizedBox(height: 6.0),
                   
@@ -740,11 +739,11 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                            
                           const SizedBox(height: 10.0),
                                 
-                          notifier.detailOrders[i].waybill == "-" 
+                          item.waybill == "-" 
                           ? const SizedBox()
                           : CustomButton(
                               onTap: () {
-                                NS.push(context, TrackingScreen(waybill: notifier.detailOrders[i].waybill));
+                                NS.push(context, TrackingScreen(waybill: item.waybill));
                               },
                               isBorderRadius: true,
                               isBoxShadow: false,
@@ -781,7 +780,7 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                       ),
                     ),
                     
-                    Text(notifier.detailOrderData.paymentCode!.toUpperCase(),
+                    Text(notifier.detailOrderSellerData.paymentCode!.toUpperCase(),
                       style: robotoRegular.copyWith(
                         fontSize: Dimensions.fontSizeSmall,
                         fontWeight: FontWeight.bold,
@@ -793,16 +792,16 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
               
                 const SizedBox(height: 15.0),
               
-                notifier.detailOrderData.orderStatus == "DELIVERED" 
+                notifier.detailOrderSellerData.orderStatus == "DELIVERED" 
                 ? CustomButton(
                     isBorder: false,
                     isBorderRadius: true,
                     isBoxShadow: false,
-                    btnColor: notifier.detailOrderData.isReviewed!
+                    btnColor: notifier.detailOrderSellerData.isReviewed!
                     ? ColorResources.hintColor
                     : ColorResources.redOnboarding,
                     btnTxt: "Komplain",
-                    onTap: notifier.detailOrderData.isReviewed!  
+                    onTap: notifier.detailOrderSellerData.isReviewed!  
                     ? () {} 
                     : () async {
                       showGeneralDialog(
@@ -925,14 +924,14 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
               
                 const SizedBox(height: 15.0),
               
-                notifier.detailOrderData.paymentCode == "gopay" || notifier.detailOrderData.paymentCode == "shopee" ||notifier.detailOrderData.paymentCode == "dana" ||  notifier.detailOrderData.paymentCode == "ovo"
-                ? notifier.detailOrderData.orderStatus == "DELIVERED" || notifier.detailOrderData.orderStatus == "REFUND"
+                notifier.detailOrderSellerData.paymentCode == "gopay" || notifier.detailOrderSellerData.paymentCode == "shopee" ||notifier.detailOrderSellerData.paymentCode == "dana" ||  notifier.detailOrderSellerData.paymentCode == "ovo"
+                ? notifier.detailOrderSellerData.orderStatus == "DELIVERED" || notifier.detailOrderSellerData.orderStatus == "REFUND"
                 ? const SizedBox() 
                 : Center(
                     child: CachedNetworkImage(
                       width: 350.0,
                       height: 350.0,
-                      imageUrl: notifier.detailOrderData.paymentAccess.toString(),
+                      imageUrl: notifier.detailOrderSellerData.paymentAccess.toString(),
                       errorWidget: (context, url, error) {
                         return Center(
                           child: Image.network('https://dummyimage.com/300x300/000/fff')
@@ -963,9 +962,9 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                     
                           InkWell(
                             onTap: () {
-                              Clipboard.setData(ClipboardData(text: notifier.detailOrderData.paymentAccess.toString()));
+                              Clipboard.setData(ClipboardData(text: notifier.detailOrderSellerData.paymentAccess.toString()));
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(notifier.detailOrderData.paymentAccess.toString(),
+                                SnackBar(content: Text(notifier.detailOrderSellerData.paymentAccess.toString(),
                                   style: robotoRegular.copyWith(
                                     fontSize: Dimensions.fontSizeDefault
                                   ),
@@ -984,7 +983,7 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                         ],
                       ),
                     
-                      Text(notifier.detailOrderData.paymentAccess.toString(),
+                      Text(notifier.detailOrderSellerData.paymentAccess.toString(),
                         style: robotoRegular.copyWith(
                           fontSize: Dimensions.fontSizeSmall,
                           fontWeight: FontWeight.bold,
@@ -996,9 +995,9 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
 
                 const SizedBox(height: 15.0),
 
-                notifier.detailOrderData.orderStatus == "DELIVERED" 
+                notifier.detailOrderSellerData.orderStatus == "DELIVERED" 
                 ? CustomButton(
-                    onTap: notifier.detailOrderData.isReviewed! 
+                    onTap: notifier.detailOrderSellerData.isReviewed! 
                     ? () {} 
                     : () {
                       showGeneralDialog(
@@ -1076,7 +1075,7 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                                                         btnColor: ColorResources.success,
                                                         btnTextColor: ColorResources.white,
                                                         onTap: () async {
-                                                          NS.push(context, ProductReviewScreen(transactionId: notifier.detailOrderData.transactionId!))
+                                                          NS.push(context, ProductReviewScreen(transactionId: notifier.detailOrderSellerData.transactionId!))
                                                           .then((_) async {
                                                             NS.pop();
                                                             Future.delayed(const Duration(seconds: 1), () async {
@@ -1121,7 +1120,7 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                     },
                     isBorderRadius: true,
                     isBoxShadow: false,
-                    btnColor: notifier.detailOrderData.isReviewed! 
+                    btnColor: notifier.detailOrderSellerData.isReviewed! 
                     ? ColorResources.hintColor 
                     : ColorResources.green,
                     btnTextColor: ColorResources.white,
@@ -1144,7 +1143,7 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                       ),
                     ),
                     
-                    Text(CurrencyHelper.formatCurrency(notifier.detailOrderData.totalCost!),
+                    Text(CurrencyHelper.formatCurrency(notifier.detailOrderSellerData.totalCost!),
                       style: robotoRegular.copyWith(
                         fontSize: Dimensions.fontSizeSmall,
                         fontWeight: FontWeight.bold,
@@ -1170,7 +1169,7 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                       ),
                     ),
                     
-                    Text(notifier.detailOrderData.paymentCode == "gopay" || notifier.detailOrderData.paymentCode == "shopee" || notifier.detailOrderData.paymentCode == "dana" ||  notifier.detailOrderData.paymentCode == "ovo"
+                    Text(notifier.detailOrderSellerData.paymentCode == "gopay" || notifier.detailOrderSellerData.paymentCode == "shopee" || notifier.detailOrderSellerData.paymentCode == "dana" ||  notifier.detailOrderSellerData.paymentCode == "ovo"
                     ? CurrencyHelper.formatCurrency(1500)
                     : CurrencyHelper.formatCurrency(6500),
                       style: robotoRegular.copyWith(
@@ -1198,7 +1197,7 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                       ),
                     ),
                     
-                    Text(CurrencyHelper.formatCurrency(notifier.detailOrderData.totalPrice!),
+                    Text(CurrencyHelper.formatCurrency(notifier.detailOrderSellerData.totalPrice!),
                       style: robotoRegular.copyWith(
                         fontSize: Dimensions.fontSizeSmall,
                         fontWeight: FontWeight.bold,
@@ -1225,7 +1224,7 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                       ),
                     ),
                     
-                    Text(CurrencyHelper.formatCurrency(notifier.detailOrderData.totalPrice! + notifier.detailOrderData.totalCost! + (notifier.detailOrderData.paymentCode == "gopay" || notifier.detailOrderData.paymentCode == "shopee" || notifier.detailOrderData.paymentCode == "dana" ||  notifier.detailOrderData.paymentCode == "ovo"  ? 1500 : 6500)),
+                    Text(CurrencyHelper.formatCurrency(notifier.detailOrderSellerData.totalPrice! + notifier.detailOrderSellerData.totalCost! + (notifier.detailOrderSellerData.paymentCode == "gopay" || notifier.detailOrderSellerData.paymentCode == "shopee" || notifier.detailOrderSellerData.paymentCode == "dana" ||  notifier.detailOrderSellerData.paymentCode == "ovo"  ? 1500 : 6500)),
                       style: robotoRegular.copyWith(
                         fontSize: Dimensions.fontSizeDefault,
                         fontWeight: FontWeight.bold,
@@ -1238,7 +1237,7 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
               
                 const SizedBox(height: 15.0),
               
-                notifier.detailOrderData.orderStatus == "PAID"
+                notifier.detailOrderSellerData.orderStatus == "PAID"
                 ? CustomButton(
                     onTap: () async {
                       showGeneralDialog(
@@ -1320,7 +1319,7 @@ class DetailSellerOrderState extends State<DetailSellerOrder> {
                                                         btnTextColor: ColorResources.white,
                                                         onTap: () async {
                                                           await ep.cancelOrder(
-                                                            transactionId: notifier.detailOrderData.transactionId!
+                                                            transactionId: notifier.detailOrderSellerData.transactionId!
                                                           );
                                                         }, 
                                                         btnTxt: "Ya"

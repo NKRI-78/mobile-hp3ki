@@ -20,32 +20,32 @@ class DetailOrderSellerModel {
 }
 
 class DetailOrderSellerData {
-  String transactionId;
-  String orderStatus;
-  String paymentStatus;
-  DateTime expire;
-  int totalCost;
-  int totalPrice;
-  String invoice;
-  DateTime createdAt;
-  bool isReviewed;
-  String paymentAccess;
-  String paymentCode;
-  DetailOrderSellerDataItem item;
+  String? transactionId;
+  String? orderStatus;
+  String? paymentStatus;
+  dynamic expire;
+  int? totalCost;
+  int? totalPrice;
+  String? invoice;
+  DateTime? createdAt;
+  bool? isReviewed;
+  String? paymentAccess;
+  String? paymentCode;
+  DetailOrderSellerDataItem? item;
 
   DetailOrderSellerData({
-    required this.transactionId,
-    required this.orderStatus,
-    required this.paymentStatus,
-    required this.expire,
-    required this.totalCost,
-    required this.totalPrice,
-    required this.invoice,
-    required this.createdAt,
-    required this.isReviewed,
-    required this.paymentAccess,
-    required this.paymentCode,
-    required this.item,
+    this.transactionId,
+    this.orderStatus,
+    this.paymentStatus,
+    this.expire,
+    this.totalCost,
+    this.totalPrice,
+    this.invoice,
+    this.createdAt,
+    this.isReviewed,
+    this.paymentAccess,
+    this.paymentCode,
+    this.item,
   });
 
   factory DetailOrderSellerData.fromJson(Map<String, dynamic> json) => DetailOrderSellerData(
@@ -66,37 +66,16 @@ class DetailOrderSellerData {
 
 class DetailOrderSellerDataItem {
   Store store;
-  List<ProductElement> products;
-  String waybill;
-  String courierId;
-  int courierPrice;
-  String courierService;
-  int courierWeight;
-  Seller seller;
-  Buyer buyer;
-
+  List<DetailOrderSellerProduct> products;
+  
   DetailOrderSellerDataItem({
     required this.store,
     required this.products,
-    required this.waybill,
-    required this.courierId,
-    required this.courierPrice,
-    required this.courierService,
-    required this.courierWeight,
-    required this.seller,
-    required this.buyer,
   });
 
   factory DetailOrderSellerDataItem.fromJson(Map<String, dynamic> json) => DetailOrderSellerDataItem(
     store: Store.fromJson(json["store"]),
-    products: List<ProductElement>.from(json["products"].map((x) => ProductElement.fromJson(x))),
-    waybill: json["waybill"],
-    courierId: json["courier_id"],
-    courierPrice: json["courier_price"],
-    courierService: json["courier_service"],
-    courierWeight: json["courier_weight"],
-    seller: Seller.fromJson(json["seller"]),
-    buyer: Buyer.fromJson(json["buyer"]),
+    products: List<DetailOrderSellerProduct>.from(json["products"].map((x) => DetailOrderSellerProduct.fromJson(x))),
   );
 }
 
@@ -154,22 +133,43 @@ class Buyer {
   );
 }
 
-class ProductElement {
-  ProductProduct product;
+class DetailOrderSellerProduct {
+  ProductSeller product;
+  Seller seller;
+  Buyer buyer;
+  String waybill;
+  String courierId;
+  int courierPrice;
+  String courierService;
+  int courierWeight;
   int qty;
 
-  ProductElement({
+  DetailOrderSellerProduct({
     required this.product,
+    required this.seller,
+    required this.buyer,
+    required this.waybill,
+    required this.courierId,
+    required this.courierPrice,
+    required this.courierService,
+    required this.courierWeight,
     required this.qty,
   });
 
-  factory ProductElement.fromJson(Map<String, dynamic> json) => ProductElement(
-    product: ProductProduct.fromJson(json["product"]),
+  factory DetailOrderSellerProduct.fromJson(Map<String, dynamic> json) => DetailOrderSellerProduct(
+    product: ProductSeller.fromJson(json["product"]),
+    seller: Seller.fromJson(json["seller"]),
+    buyer: Buyer.fromJson(json["buyer"]),
+    waybill: json["waybill"],
+    courierId: json["courier_id"],
+    courierPrice: json["courier_price"],
+    courierService: json["courier_service"],
+    courierWeight: json["courier_weight"],
     qty: json["qty"],
   );
 }
 
-class ProductProduct {
+class ProductSeller {
   String id;
   String title;
   List<Media> medias;
@@ -178,7 +178,7 @@ class ProductProduct {
   String caption;
   String note;
 
-  ProductProduct({
+  ProductSeller({
     required this.id,
     required this.title,
     required this.medias,
@@ -188,7 +188,7 @@ class ProductProduct {
     required this.note,
   });
 
-  factory ProductProduct.fromJson(Map<String, dynamic> json) => ProductProduct(
+  factory ProductSeller.fromJson(Map<String, dynamic> json) => ProductSeller(
     id: json["id"],
     title: json["title"],
     medias: List<Media>.from(json["medias"].map((x) => Media.fromJson(x))),

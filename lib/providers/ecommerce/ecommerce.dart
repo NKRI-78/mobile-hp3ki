@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:hp3ki/data/models/ecommerce/order/seller/detail.dart';
 import 'package:hp3ki/data/models/ecommerce/order/seller/list.dart';
 import 'package:hp3ki/data/models/ecommerce/store/owner.dart';
 import 'package:multi_image_picker_plus/multi_image_picker_plus.dart';
@@ -78,6 +79,7 @@ enum GetProductCategoryStatus { idle, loading, loaded, empty, error }
 enum ListOrderStatus { idle, loading, loaded, empty, error }
 enum ListOrderSellerStatus { idle, loading, loaded, empty, error }
 enum DetailOrderStatus { idle, loading, loaded, empty, error }
+enum DetailOrderSellerStatus { idle, loading, loaded, empty, error }
 
 enum TrackingStatus { idle, loading, loaded, empty, error }
 
@@ -370,6 +372,9 @@ class EcommerceProvider extends ChangeNotifier {
   DetailOrderStatus _detailOrderStatus = DetailOrderStatus.loading;
   DetailOrderStatus get detailOrderStatus => _detailOrderStatus;
 
+  DetailOrderSellerStatus _detailOrderSellerStatus = DetailOrderSellerStatus.loading;
+  DetailOrderSellerStatus get detailOrderSellerStatus => _detailOrderSellerStatus;
+
   PayStatus _payStatus = PayStatus.idle;
   PayStatus get payStatus => _payStatus;
 
@@ -478,6 +483,9 @@ class EcommerceProvider extends ChangeNotifier {
   DetailOrderData _detailOrderData = DetailOrderData();
   DetailOrderData get detailOrderData => _detailOrderData;
 
+  DetailOrderSellerData _detailOrderSellerData = DetailOrderSellerData();
+  DetailOrderSellerData get detailOrderSellerData => _detailOrderSellerData;
+
   ShippingAddressDetailData _shippingAddressDetailData = ShippingAddressDetailData();
   ShippingAddressDetailData get shippingAddressDetailData => _shippingAddressDetailData;
 
@@ -580,14 +588,20 @@ class EcommerceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setStateListProductTransactionStatus(ListProductTransactionStatus param) {
-    _listProductTransactionStatus = param;
+  void setStateDetailOrderStatus(DetailOrderStatus param) {
+    _detailOrderStatus = param;
 
     notifyListeners();
   }
 
-  void setStateDetailOrderStatus(DetailOrderStatus param) {
-    _detailOrderStatus = param;
+  void setStateDetailOrderSellerStatus(DetailOrderSellerStatus param) {
+    _detailOrderSellerStatus = param;
+
+    notifyListeners();
+  }
+
+  void setStateListProductTransactionStatus(ListProductTransactionStatus param) {
+    _listProductTransactionStatus = param;
 
     notifyListeners();
   }
@@ -1006,7 +1020,7 @@ class EcommerceProvider extends ChangeNotifier {
       balance = balanceModel.data.balance;
 
       setStateBalanceStatus(BalanceStatus.loaded);
-    } catch(e) {
+    } catch(_) {
       setStateBalanceStatus(BalanceStatus.error);
     }
   }
@@ -1025,7 +1039,7 @@ class EcommerceProvider extends ChangeNotifier {
         setStateListOrderStatus(ListOrderStatus.empty);
       }
 
-    } catch(e) {
+    } catch(_) {
       setStateListOrderStatus(ListOrderStatus.error);
     }
   }
@@ -1043,7 +1057,7 @@ class EcommerceProvider extends ChangeNotifier {
       if(orderSellers.isEmpty) {
         setStateListOrderSellerStatus(ListOrderSellerStatus.empty);
       }
-    } catch(e) {
+    } catch(_) {
       setStateListOrderSellerStatus(ListOrderSellerStatus.error);
     }
   }
@@ -1060,8 +1074,28 @@ class EcommerceProvider extends ChangeNotifier {
       _detailOrders.addAll(detailOrderModel.data.items!);
 
       setStateDetailOrderStatus(DetailOrderStatus.loaded);
-    } catch(e) {
+    } catch(_) {
       setStateDetailOrderStatus(DetailOrderStatus.error);
+    }
+  }
+
+  Future<void> detailOrderSeller({
+    required String storeId,
+    required String transactionId
+  }) async {
+    setStateDetailOrderSellerStatus(DetailOrderSellerStatus.loading);
+    try {
+
+      DetailOrderSellerModel detailOrderSeller = await er.getOrderSellerDetail(
+        storeId: storeId,
+        transactionId: transactionId
+      );
+
+      _detailOrderSellerData = detailOrderSeller.data;
+
+      setStateDetailOrderSellerStatus(DetailOrderSellerStatus.loaded);
+    } catch(_) {
+      setStateDetailOrderSellerStatus(DetailOrderSellerStatus.error);
     }
   }
 
@@ -1077,7 +1111,7 @@ class EcommerceProvider extends ChangeNotifier {
 
         listOrder(orderStatus: "WAITING_PAYMENT");
       });
-    } catch(e) {
+    } catch(_) {
       setStateCancelOrderStatus(CancelOrderStatus.error);
     }
   }
@@ -1111,7 +1145,7 @@ class EcommerceProvider extends ChangeNotifier {
         setStateListProductStatus(ListProductStatus.empty);
       }
 
-    } catch (e) {
+    } catch (_) {
       setStateListProductStatus(ListProductStatus.error);
     } 
   }
@@ -1145,7 +1179,7 @@ class EcommerceProvider extends ChangeNotifier {
         setStateListProductStatus(ListProductStatus.empty);
       }
 
-    } catch (e) {
+    } catch (_) {
       setStateListProductStatus(ListProductStatus.error);
     } 
   }
@@ -1172,7 +1206,7 @@ class EcommerceProvider extends ChangeNotifier {
         setStateGetProductCategoryStatus(GetProductCategoryStatus.empty);
       }
 
-    } catch(e) {
+    } catch(_) {
       setStateGetProductCategoryStatus(GetProductCategoryStatus.error);
     }
   }
@@ -1193,7 +1227,7 @@ class EcommerceProvider extends ChangeNotifier {
         setStateListProductTransactionStatus(ListProductTransactionStatus.empty);
       }
 
-    } catch(e) {
+    } catch(_) {
       setStateListProductTransactionStatus(ListProductTransactionStatus.error);
     } 
   }
@@ -1232,7 +1266,7 @@ class EcommerceProvider extends ChangeNotifier {
       fetchAllProduct(search: "");
     
       setStateDeleteProductStatus(DeleteProductStatus.loaded);
-    } catch(e) {
+    } catch(_) {
       setStateDeleteProductStatus(DeleteProductStatus.error);  
     }
   }
@@ -1248,7 +1282,7 @@ class EcommerceProvider extends ChangeNotifier {
       }
 
       setStateDeleteProductStatus(DeleteProductStatus.loaded);  
-    } catch(e) {
+    } catch(_) {
       setStateDeleteProductStatus(DeleteProductStatus.error);  
     }
   }
@@ -1262,7 +1296,7 @@ class EcommerceProvider extends ChangeNotifier {
       await er.deleteProductImage(id: id);
 
       setStateDeleteProductImageStatus(DeleteProductImageStatus.loaded);
-    } catch(e) {
+    } catch(_) {
       setStateDeleteProductImageStatus(DeleteProductImageStatus.error);
     }
   }
@@ -1313,7 +1347,7 @@ class EcommerceProvider extends ChangeNotifier {
       fetchAllProduct(search: "");
 
       setStateCreateProductStatus(CreateProductStatus.loaded);
-    } catch(e) {
+    } catch(_) {
       setStateCreateProductStatus(CreateProductStatus.error);
     }
   }
@@ -1361,7 +1395,7 @@ class EcommerceProvider extends ChangeNotifier {
       fetchProduct(productId: id);
 
       setStateUpdateProductStatus(UpdateProductStatus.loaded);
-    } catch(e) {
+    } catch(_) {
       setStateUpdateProductStatus(UpdateProductStatus.error);
     }
   }
@@ -1373,7 +1407,7 @@ class EcommerceProvider extends ChangeNotifier {
       _productDetailData = productDetailModel.data;
       
       setStateDetailProductStatus(DetailProductStatus.loaded);
-    } catch(e) {  
+    } catch(_) {  
       setStateDetailProductStatus(DetailProductStatus.error);
     }
   }
@@ -1422,7 +1456,7 @@ class EcommerceProvider extends ChangeNotifier {
         setStateGetShippingAddressList(GetShippingAddressListStatus.empty);
       }
 
-    } catch(e) {
+    } catch(_) {
       setStateGetShippingAddressList(GetShippingAddressListStatus.error);
     }
   }
@@ -1435,7 +1469,7 @@ class EcommerceProvider extends ChangeNotifier {
       _shippingAddressDetailData = shippingAddressModelDetail.data;
 
       setStateGetShippingAddressSingle(GetShippingAddressSingleStatus.loaded);
-    } catch(e) {
+    } catch(_) {
       setStateGetShippingAddressSingle(GetShippingAddressSingleStatus.error);
     }
   }
@@ -1454,7 +1488,7 @@ class EcommerceProvider extends ChangeNotifier {
         setStateGetShippingAddressDefault(GetShippingAddressDefaultStatus.empty);
       }
 
-    } catch(e) {
+    } catch(_) {
       setStateGetShippingAddressDefault(GetShippingAddressDefaultStatus.error);
     }
   }
@@ -1489,7 +1523,7 @@ class EcommerceProvider extends ChangeNotifier {
       NS.pop();
 
       setStateCreateShippingAddress(CreateShippingAddressStatus.loaded);
-    } catch(e) {
+    } catch(_) {
       setStateCreateShippingAddress(CreateShippingAddressStatus.error);
     }
   }
@@ -1508,7 +1542,7 @@ class EcommerceProvider extends ChangeNotifier {
       });
 
       setStateDeleteShippingAddress(DeleteShippingAddressStatus.loaded);
-    } catch(e) {
+    } catch(_) {
       setStateDeleteShippingAddress(DeleteShippingAddressStatus.error);
     }
   }
@@ -1545,7 +1579,7 @@ class EcommerceProvider extends ChangeNotifier {
       NS.pop();
 
       setStateUpdateShippingAddress(UpdateShippingAddressStatus.loaded);
-    } catch(e) {
+    } catch(_) {
       setStateUpdateShippingAddress(UpdateShippingAddressStatus.error);
     }
   }
@@ -1566,7 +1600,7 @@ class EcommerceProvider extends ChangeNotifier {
       });
 
       setStateSelectPrimaryAddressStatus(SelectPrimaryShippingAddressStatus.loaded);
-    } catch(e) {
+    } catch(_) {
       setStateSelectPrimaryAddressStatus(SelectPrimaryShippingAddressStatus.error);
     }
   }
@@ -1582,7 +1616,7 @@ class EcommerceProvider extends ChangeNotifier {
         setStateGetCartStatus(GetCartStatus.empty);
       }
        
-    } catch(e) {
+    } catch(_) {
       setStateGetCartStatus(GetCartStatus.error);
     } 
   }
@@ -1605,7 +1639,7 @@ class EcommerceProvider extends ChangeNotifier {
         controller.stop();
         notifyListeners();
       });
-    } catch(e) {
+    } catch(_) {
       setStateAddCartStatus(AddCartStatus.error);
     }
   }
@@ -1627,7 +1661,7 @@ class EcommerceProvider extends ChangeNotifier {
         controller.stop();
         notifyListeners();
       });
-    } catch(e) {
+    } catch(_) {
       setStateAddCartLiveStatus(AddCartLiveStatus.error);
     }
   }
@@ -1641,7 +1675,7 @@ class EcommerceProvider extends ChangeNotifier {
       Future.delayed(const Duration(seconds: 1),() {
         getCart();
       });
-    } catch(e) {
+    } catch(_) {
       setStateDeleteCartStatus(DeleteCartStatus.error);
     }
   }
@@ -1798,7 +1832,7 @@ class EcommerceProvider extends ChangeNotifier {
 
       setStateGetCourierStatus(GetCourierStatus.loaded);
 
-    } catch(e) {
+    } catch(_) {
       setStateGetCourierStatus(GetCourierStatus.error);
     }
   }
@@ -1911,8 +1945,8 @@ class EcommerceProvider extends ChangeNotifier {
 
       notifyListeners();
 
-    } catch(e) {
-      debugPrint(e.toString());
+    } catch(_) {
+
     }
   }
 
@@ -1927,7 +1961,7 @@ class EcommerceProvider extends ChangeNotifier {
 
       return provinceModel.data;
 
-    } catch(e) {
+    } catch(_) {
       throw [];    
     }
   }
@@ -1950,7 +1984,7 @@ class EcommerceProvider extends ChangeNotifier {
 
       return cityModel.data;
 
-    } catch(e) {
+    } catch(_) {
       throw [];
     }
   }
@@ -1972,7 +2006,7 @@ class EcommerceProvider extends ChangeNotifier {
 
       return districtModel.data;
 
-    } catch(e) {  
+    } catch(_) {  
       throw [];
     } 
   }
@@ -1994,7 +2028,7 @@ class EcommerceProvider extends ChangeNotifier {
       
       return subdistrictModel.data;
 
-    } catch(e) {
+    } catch(_) {
       throw [];
     }
   }
@@ -2013,7 +2047,7 @@ class EcommerceProvider extends ChangeNotifier {
         setStateBadgeOrderAll(BadgeOrderAllStatus.empty);
       }
 
-    } catch(e) {
+    } catch(_) {
       setStateBadgeOrderAll(BadgeOrderAllStatus.error);
     }
   } 
@@ -2042,7 +2076,7 @@ class EcommerceProvider extends ChangeNotifier {
 
       setStateBadgeOrderDetail(BadgeOrderDetailStatus.loaded);
 
-    } catch(e) {
+    } catch(_) {
       setStateBadgeOrderDetail(BadgeOrderDetailStatus.error);
     }
   }
@@ -2265,10 +2299,8 @@ class EcommerceProvider extends ChangeNotifier {
         }
       );
 
-    } catch(e) {
-      
+    } catch(_) {
       setStateGetPaymentChannelStatus(GetPaymentChannelStatus.error);
-
     }
   }
 
@@ -2327,7 +2359,7 @@ class EcommerceProvider extends ChangeNotifier {
       channelId = -1;
 
       setStatePayStatus(PayStatus.loaded);
-    } catch(e) {
+    } catch(_) {
       setStatePayStatus(PayStatus.error);
     }
   }
@@ -2347,7 +2379,7 @@ class EcommerceProvider extends ChangeNotifier {
       _emoney.addAll(howToPayment.data.emoney);
 
       setStateHowToPayment(HowToPaymentStatus.loaded);
-    } catch(e) {
+    } catch(_) {
       setStateHowToPayment(HowToPaymentStatus.error);
     }
   }
@@ -2401,7 +2433,7 @@ class EcommerceProvider extends ChangeNotifier {
       channelId = -1;
 
       setStatePayStatus(PayStatus.loaded);
-    } catch(e) {
+    } catch(_) {
       setStatePayStatus(PayStatus.error);
     }
   } 

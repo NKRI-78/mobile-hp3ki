@@ -8,6 +8,7 @@ import 'package:hp3ki/data/models/ecommerce/checkout/list.dart';
 import 'package:hp3ki/data/models/ecommerce/courier/courier.dart';
 import 'package:hp3ki/data/models/ecommerce/order/detail.dart';
 import 'package:hp3ki/data/models/ecommerce/order/list.dart';
+import 'package:hp3ki/data/models/ecommerce/order/seller/detail.dart';
 import 'package:hp3ki/data/models/ecommerce/order/seller/list.dart';
 import 'package:hp3ki/data/models/ecommerce/order/tracking.dart';
 import 'package:hp3ki/data/models/ecommerce/payment/how_to.dart';
@@ -377,7 +378,7 @@ class EcommerceRepo {
   Future<DetailOrderModel> getOrderDetail({required String transactionId}) async {
     try {
       Dio dio = DioManager.shared.getClient();
-      Response response = await dio.post("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/order/detail/temp",
+      Response response = await dio.post("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/order/detail",
         data: {
           "transaction_id": transactionId, 
           "app": "hp3ki"
@@ -393,6 +394,32 @@ class EcommerceRepo {
       debugPrint(stacktrace.toString());
       debugPrint(e.toString());
       throw Exception("Failed order detail");
+    }
+  }
+
+  Future<DetailOrderSellerModel> getOrderSellerDetail({
+    required String transactionId,
+    required String storeId
+  }) async {
+    try {
+      Dio dio = DioManager.shared.getClient();
+      Response response = await dio.post("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/order/seller/detail",
+        data: {
+          "transaction_id": transactionId, 
+          "store_id": storeId,
+          "app": "hp3ki"
+        }
+      );
+      Map<String, dynamic> data = response.data;
+      DetailOrderSellerModel detailOrderSellerModel = DetailOrderSellerModel.fromJson(data);
+      return detailOrderSellerModel;
+    } on DioError catch(e) {
+      debugPrint(e.response!.data.toString());
+      throw Exception("Failed order seller detail");
+    } catch(e, stacktrace) {
+      debugPrint(stacktrace.toString());
+      debugPrint(e.toString());
+      throw Exception("Failed order seller detail");
     }
   }
 

@@ -17,7 +17,7 @@ import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/utils/helper.dart';
 
-import 'package:hp3ki/views/screens/ecommerce/order/detail.dart';
+import 'package:hp3ki/views/screens/ecommerce/order/seller/detail.dart';
 
 class ListOrderSellerScreen extends StatefulWidget {
   const ListOrderSellerScreen({super.key});
@@ -49,7 +49,7 @@ class ListOrderSellerScreenState extends State<ListOrderSellerScreen> with Singl
   void initState() {
     super.initState();
 
-    tabC = TabController(length: 5, vsync: this);
+    tabC = TabController(length: 4, vsync: this);
 
     tabC.addListener(() {
       if(tabC.indexIsChanging) {
@@ -146,12 +146,10 @@ class ListOrderSellerScreenState extends State<ListOrderSellerScreen> with Singl
       body: TabBarView(
         controller: tabC,
         children: [
-          paymentContent('WAITING_PAYMENT'),
           paymentContent('PAID'),
           paymentContent('PACKING'),
           paymentContent('ON PROCESS'),
           paymentContent('DELIVERED'),
-          paymentContent('REFUND'),
         ],
       ),
     );
@@ -215,7 +213,10 @@ class ListOrderSellerScreenState extends State<ListOrderSellerScreen> with Singl
                   child: InkWell(
                     borderRadius: BorderRadius.circular(8.0),
                     onTap: () {
-                      NS.push(context, DetailOrder(transactionId: notifier.orderSellers[i].transactionId));
+                      NS.push(context, DetailOrderSellerScreen(
+                        storeId: notifier.orderSellers[i].store.id,
+                        transactionId: notifier.orderSellers[i].transactionId
+                      ));
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -364,9 +365,6 @@ class ListOrderSellerScreenState extends State<ListOrderSellerScreen> with Singl
     switch (val) {
       case "REFUND":
         orderStatus = "Batal"; 
-      break;
-      case "WAITING_PAYMENT":
-        orderStatus = "Belum bayar"; 
       break;
       case "PAID":
         orderStatus = "Dibayar"; 
