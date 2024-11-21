@@ -1,21 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hp3ki/views/screens/ecommerce/order/list.dart';
-import 'package:hp3ki/views/screens/ecommerce/store/add_product.dart';
-import 'package:hp3ki/views/screens/ecommerce/store/bulk_delete_product.dart';
+
 import 'package:provider/provider.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
+
+import 'package:hp3ki/views/screens/ecommerce/order/seller/list.dart';
+import 'package:hp3ki/views/screens/ecommerce/store/add_product.dart';
+import 'package:hp3ki/views/screens/ecommerce/store/bulk_delete_product.dart';
+import 'package:hp3ki/views/screens/ecommerce/store/create_update_store.dart';
+import 'package:hp3ki/views/screens/ecommerce/store/seller/products.dart';
+
+import 'package:hp3ki/services/navigation.dart';
 
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 
 import 'package:hp3ki/providers/ecommerce/ecommerce.dart';
-import 'package:hp3ki/services/navigation.dart';
 
-import 'package:hp3ki/views/screens/ecommerce/store/create_update_store.dart';
-import 'package:hp3ki/views/screens/ecommerce/store/seller/products.dart';
 
 class StoreInfoScreen extends StatefulWidget {
   final String storeId;
@@ -288,7 +291,7 @@ class StoreInfoScreenState extends State<StoreInfoScreen> {
                         ),
                         leading: const Icon(Icons.list),
                         onTap: () {
-                          NS.push(context, const ListOrderScreen());
+                          NS.push(context, const ListOrderSellerScreen());
                         },
                       ),
 

@@ -8,6 +8,7 @@ import 'package:hp3ki/data/models/ecommerce/checkout/list.dart';
 import 'package:hp3ki/data/models/ecommerce/courier/courier.dart';
 import 'package:hp3ki/data/models/ecommerce/order/detail.dart';
 import 'package:hp3ki/data/models/ecommerce/order/list.dart';
+import 'package:hp3ki/data/models/ecommerce/order/seller/list.dart';
 import 'package:hp3ki/data/models/ecommerce/order/tracking.dart';
 import 'package:hp3ki/data/models/ecommerce/payment/how_to.dart';
 import 'package:hp3ki/data/models/ecommerce/payment/payment.dart';
@@ -348,6 +349,25 @@ class EcommerceRepo {
       Map<String, dynamic> data = response.data;
       ListOrderModel listOrderModel = ListOrderModel.fromJson(data);
       return listOrderModel;
+    } catch(e, stacktrace) {
+      debugPrint(stacktrace.toString());
+      throw Exception("Failed order list");
+    }
+  }
+
+  Future<ListOrderSellerModel> getOrderSellerList({required String orderStatus}) async {
+    try { 
+      Dio dio = DioManager.shared.getClient();
+      Response response = await dio.post("https://api-ecommerce-general.inovatiftujuh8.com/ecommerces/v1/order/seller/list",
+        data: {
+          "app": "hp3ki",
+          "order_status": orderStatus,
+          "user_id": SharedPrefs.getUserId()
+        }
+      );
+      Map<String, dynamic> data = response.data;
+      ListOrderSellerModel listOrderSellerModel = ListOrderSellerModel.fromJson(data);
+      return listOrderSellerModel;
     } catch(e, stacktrace) {
       debugPrint(stacktrace.toString());
       throw Exception("Failed order list");

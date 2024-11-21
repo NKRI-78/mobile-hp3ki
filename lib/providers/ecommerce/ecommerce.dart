@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:hp3ki/data/models/ecommerce/order/seller/list.dart';
 import 'package:hp3ki/data/models/ecommerce/store/owner.dart';
 import 'package:multi_image_picker_plus/multi_image_picker_plus.dart';
 
@@ -75,6 +76,7 @@ enum CancelOrderStatus { idle, loading, loaded, empty, error }
 enum GetProductCategoryStatus { idle, loading, loaded, empty, error }
 
 enum ListOrderStatus { idle, loading, loaded, empty, error }
+enum ListOrderSellerStatus { idle, loading, loaded, empty, error }
 enum DetailOrderStatus { idle, loading, loaded, empty, error }
 
 enum TrackingStatus { idle, loading, loaded, empty, error }
@@ -362,6 +364,9 @@ class EcommerceProvider extends ChangeNotifier {
   ListOrderStatus _listOrderStatus = ListOrderStatus.loading;
   ListOrderStatus get listOrderStatus => _listOrderStatus;
 
+  ListOrderSellerStatus _listOrderSellerStatus = ListOrderSellerStatus.idle;
+  ListOrderSellerStatus get listOrderSellerStatus => _listOrderSellerStatus;
+
   DetailOrderStatus _detailOrderStatus = DetailOrderStatus.loading;
   DetailOrderStatus get detailOrderStatus => _detailOrderStatus;
 
@@ -464,6 +469,9 @@ class EcommerceProvider extends ChangeNotifier {
   List<ListOrderData> _orders = [];
   List<ListOrderData> get orders => [..._orders];
 
+  List<ListOrderDataSeller> _orderSellers = [];
+  List<ListOrderDataSeller> get orderSellers => [..._orderSellers];
+
   List<DetailOrderItem> _detailOrders = [];
   List<DetailOrderItem> get detailOrders => [..._detailOrders];
 
@@ -563,6 +571,12 @@ class EcommerceProvider extends ChangeNotifier {
   void setStateListOrderStatus(ListOrderStatus param) {
     _listOrderStatus = param;
 
+    notifyListeners();
+  }
+
+  void setStateListOrderSellerStatus(ListOrderSellerStatus param) {
+    _listOrderSellerStatus = param;
+    
     notifyListeners();
   }
 
@@ -1013,6 +1027,24 @@ class EcommerceProvider extends ChangeNotifier {
 
     } catch(e) {
       setStateListOrderStatus(ListOrderStatus.error);
+    }
+  }
+
+  Future<void> listOrderSeller({required String orderStatus}) async {
+    setStateListOrderSellerStatus(ListOrderSellerStatus.loading);
+    try {
+
+      ListOrderSellerModel listOrderSellerModel = await er.getOrderSellerList(orderStatus: orderStatus);
+      
+      _orderSellers = [];
+      _orderSellers.addAll(listOrderSellerModel.data);
+      setStateListOrderSellerStatus(ListOrderSellerStatus.loaded);
+
+      if(orderSellers.isEmpty) {
+        setStateListOrderSellerStatus(ListOrderSellerStatus.empty);
+      }
+    } catch(e) {
+      setStateListOrderSellerStatus(ListOrderSellerStatus.error);
     }
   }
 

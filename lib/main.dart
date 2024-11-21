@@ -26,7 +26,6 @@ import 'package:timeago/timeago.dart' as timeago;
 
 import 'package:hp3ki/container.dart' as core;
 
-
 import 'package:hp3ki/providers.dart';
 import 'package:hp3ki/providers/localization/localization.dart';
 
