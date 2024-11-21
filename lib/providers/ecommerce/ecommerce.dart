@@ -24,8 +24,8 @@ import 'package:hp3ki/data/models/ecommerce/cart/cart.dart';
 import 'package:hp3ki/data/models/ecommerce/checkout/list.dart';
 import 'package:hp3ki/data/models/ecommerce/courier/courier.dart';
 import 'package:hp3ki/data/models/ecommerce/googlemaps/googlemaps.dart';
-import 'package:hp3ki/data/models/ecommerce/order/detail.dart';
-import 'package:hp3ki/data/models/ecommerce/order/list.dart';
+import 'package:hp3ki/data/models/ecommerce/order/buyer/detail.dart';
+import 'package:hp3ki/data/models/ecommerce/order/buyer/list.dart';
 import 'package:hp3ki/data/models/ecommerce/order/tracking.dart';
 import 'package:hp3ki/data/models/ecommerce/payment/how_to.dart';
 import 'package:hp3ki/data/models/ecommerce/payment/payment.dart';
@@ -480,9 +480,6 @@ class EcommerceProvider extends ChangeNotifier {
 
   List<ListOrderDataSeller> _orderSellers = [];
   List<ListOrderDataSeller> get orderSellers => [..._orderSellers];
-
-  List<DetailOrderItem> _detailOrders = [];
-  List<DetailOrderItem> get detailOrders => [..._detailOrders];
 
   DetailOrderData _detailOrderData = DetailOrderData();
   DetailOrderData get detailOrderData => _detailOrderData;
@@ -1079,9 +1076,6 @@ class EcommerceProvider extends ChangeNotifier {
       DetailOrderModel detailOrderModel = await er.getOrderDetail(transactionId: transactionId);
       
       _detailOrderData = detailOrderModel.data;
-
-      _detailOrders = [];
-      _detailOrders.addAll(detailOrderModel.data.items!);
 
       setStateDetailOrderStatus(DetailOrderStatus.loaded);
     } catch(_) {

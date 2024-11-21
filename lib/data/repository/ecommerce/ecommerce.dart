@@ -6,8 +6,8 @@ import 'package:hp3ki/data/models/ecommerce/balance/balance.dart';
 
 import 'package:hp3ki/data/models/ecommerce/checkout/list.dart';
 import 'package:hp3ki/data/models/ecommerce/courier/courier.dart';
-import 'package:hp3ki/data/models/ecommerce/order/detail.dart';
-import 'package:hp3ki/data/models/ecommerce/order/list.dart';
+import 'package:hp3ki/data/models/ecommerce/order/buyer/detail.dart';
+import 'package:hp3ki/data/models/ecommerce/order/buyer/list.dart';
 import 'package:hp3ki/data/models/ecommerce/order/seller/detail.dart';
 import 'package:hp3ki/data/models/ecommerce/order/seller/list.dart';
 import 'package:hp3ki/data/models/ecommerce/order/tracking.dart';

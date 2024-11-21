@@ -267,9 +267,9 @@ class ListOrderBuyerScreenState extends State<ListOrderBuyerScreen> with SingleT
 
                                     InkWell(
                                       onTap: () {
-                                        Clipboard.setData(ClipboardData(text: notifier.detailOrders[i].waybill));
+                                        Clipboard.setData(ClipboardData(text: notifier.orders[i].waybill));
                                         ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(content: Text(notifier.detailOrders[i].waybill,
+                                          SnackBar(content: Text(notifier.orders[i].waybill,
                                             style: robotoRegular.copyWith(
                                               fontSize: Dimensions.fontSizeDefault
                                             ),
