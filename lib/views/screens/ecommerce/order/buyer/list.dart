@@ -52,7 +52,7 @@ class ListOrderBuyerScreenState extends State<ListOrderBuyerScreen> with SingleT
   void initState() {
     super.initState();
 
-    tabC = TabController(length: 6, vsync: this);
+    tabC = TabController(length: 5, vsync: this);
 
     tabC.addListener(() {
       if(tabC.indexIsChanging) {
@@ -79,11 +79,6 @@ class ListOrderBuyerScreenState extends State<ListOrderBuyerScreen> with SingleT
         if(tabC.index == 4) {
           Future.delayed(const Duration(milliseconds: 500), () async {
             await ep.listOrder(orderStatus: "DELIVERED");
-          });
-        }
-        if(tabC.index == 5) {
-          Future.delayed(const Duration(milliseconds: 500), () async {
-            await ep.listOrder(orderStatus: "REFUND");
           });
         }
       }
@@ -161,7 +156,6 @@ class ListOrderBuyerScreenState extends State<ListOrderBuyerScreen> with SingleT
               child: const Tab(text: 'Dikirim')
             ),
             const Tab(text: 'Selesai'),
-            const Tab(text: 'Batal'),
           ],
         ),
       ),
@@ -173,7 +167,6 @@ class ListOrderBuyerScreenState extends State<ListOrderBuyerScreen> with SingleT
           paymentContent('PACKING'),
           paymentContent('ON PROCESS'),
           paymentContent('DELIVERED'),
-          paymentContent('REFUND'),
         ],
       ),
     );
