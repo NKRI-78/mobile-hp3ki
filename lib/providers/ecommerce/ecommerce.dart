@@ -1113,6 +1113,12 @@ class EcommerceProvider extends ChangeNotifier {
         storeId: storeId, 
         transactionId: transactionId
       );
+      Future.delayed(const Duration(seconds: 1), () {
+        NS.pop();
+        NS.pop();
+
+        listOrder(orderStatus: "PAID");
+      });
       setStateConfirmOrderStatus(ConfirmOrderStatus.loaded);
     } catch(_) {
       setStateConfirmOrderStatus(ConfirmOrderStatus.error);

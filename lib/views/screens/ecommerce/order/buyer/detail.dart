@@ -1,14 +1,22 @@
+import 'dart:io';
+import 'dart:ui' as ui;
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:hp3ki/views/screens/ecommerce/order/tracking.dart';
 import 'package:provider/provider.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:date_count_down/date_count_down.dart';
+import 'package:gallery_saver_plus/gallery_saver.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:hp3ki/providers/ecommerce/ecommerce.dart';
+
+import 'package:hp3ki/views/basewidgets/button/custom.dart';
+
 import 'package:hp3ki/services/navigation.dart';
 
 import 'package:hp3ki/utils/color_resources.dart';
@@ -17,7 +25,7 @@ import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 import 'package:hp3ki/utils/helper.dart';
 
-import 'package:hp3ki/views/basewidgets/button/custom.dart';
+import 'package:hp3ki/views/screens/ecommerce/order/tracking.dart';
 import 'package:hp3ki/views/screens/ecommerce/order/complaint.dart';
 import 'package:hp3ki/views/screens/ecommerce/product/product_review.dart';
 
@@ -34,7 +42,7 @@ class DetailOrderBuyerScreen extends StatefulWidget {
 }
 
 class DetailOrderBuyerScreenState extends State<DetailOrderBuyerScreen> {
-  // GlobalKey globalKey = GlobalKey();
+  GlobalKey globalKey = GlobalKey();
 
   bool btnUnduhResi = true;
   bool icCopyResi = true;
@@ -55,17 +63,17 @@ class DetailOrderBuyerScreenState extends State<DetailOrderBuyerScreen> {
     try {
 
       Future.delayed(const Duration(seconds: 1), () async {
-        // RenderRepaintBoundary boundary = globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
-        // ui.Image image = await boundary.toImage(pixelRatio: 3.0);
-        // ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-        // Uint8List pngBytes = byteData!.buffer.asUint8List();
+        RenderRepaintBoundary boundary = globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+        ui.Image image = await boundary.toImage(pixelRatio: 3.0);
+        ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+        Uint8List pngBytes = byteData!.buffer.asUint8List();
 
-        // final directory = (await getApplicationDocumentsDirectory()).path;
-        // String fileName = 'screenshot.png';
-        // File imgFile = File('$directory/$fileName');
-        // imgFile.writeAsBytes(pngBytes);
+        final directory = (await getApplicationDocumentsDirectory()).path;
+        String fileName = 'screenshot.png';
+        File imgFile = File('$directory/$fileName');
+        imgFile.writeAsBytes(pngBytes);
 
-        // await GallerySaver.saveImage(imgFile.path);
+        await GallerySaver.saveImage(imgFile.path);
       });
 
       Future.delayed(const Duration(seconds: 2), () {

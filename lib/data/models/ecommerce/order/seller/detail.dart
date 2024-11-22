@@ -21,7 +21,6 @@ class DetailOrderSellerModel {
 
 class DetailOrderSellerData {
   String? transactionId;
-  String? orderStatus;
   String? paymentStatus;
   dynamic expire;
   int? totalCost;
@@ -35,7 +34,6 @@ class DetailOrderSellerData {
 
   DetailOrderSellerData({
     this.transactionId,
-    this.orderStatus,
     this.paymentStatus,
     this.expire,
     this.totalCost,
@@ -50,7 +48,6 @@ class DetailOrderSellerData {
 
   factory DetailOrderSellerData.fromJson(Map<String, dynamic> json) => DetailOrderSellerData(
     transactionId: json["transaction_id"],
-    orderStatus: json["order_status"],
     paymentStatus: json["payment_status"],
     expire: DateTime.parse(json["expire"]),
     totalCost: json["total_cost"],
@@ -65,15 +62,21 @@ class DetailOrderSellerData {
 }
 
 class DetailOrderSellerDataItem {
+  String waybill;
+  String orderStatus;
   Store store;
   List<DetailOrderSellerProduct> products;
   
   DetailOrderSellerDataItem({
+    required this.waybill,
+    required this.orderStatus,
     required this.store,
     required this.products,
   });
 
   factory DetailOrderSellerDataItem.fromJson(Map<String, dynamic> json) => DetailOrderSellerDataItem(
+    waybill: json["waybill"],
+    orderStatus: json["order_status"],
     store: Store.fromJson(json["store"]),
     products: List<DetailOrderSellerProduct>.from(json["products"].map((x) => DetailOrderSellerProduct.fromJson(x))),
   );
@@ -137,7 +140,7 @@ class DetailOrderSellerProduct {
   ProductSeller product;
   Seller seller;
   Buyer buyer;
-  String waybill;
+  String orderStatus;
   String courierId;
   int courierPrice;
   String courierService;
@@ -148,7 +151,7 @@ class DetailOrderSellerProduct {
     required this.product,
     required this.seller,
     required this.buyer,
-    required this.waybill,
+    required this.orderStatus,
     required this.courierId,
     required this.courierPrice,
     required this.courierService,
@@ -160,7 +163,7 @@ class DetailOrderSellerProduct {
     product: ProductSeller.fromJson(json["product"]),
     seller: Seller.fromJson(json["seller"]),
     buyer: Buyer.fromJson(json["buyer"]),
-    waybill: json["waybill"],
+    orderStatus: json["order_status"],
     courierId: json["courier_id"],
     courierPrice: json["courier_price"],
     courierService: json["courier_service"],

@@ -8,6 +8,7 @@ import 'package:barcode_widget/barcode_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:hp3ki/providers/ecommerce/ecommerce.dart';
+
 import 'package:hp3ki/services/navigation.dart';
 
 import 'package:hp3ki/utils/color_resources.dart';
@@ -163,7 +164,7 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
                     
                       notifier.detailOrderSellerData.expire == null 
                       ? const SizedBox() 
-                      : notifier.detailOrderSellerData.orderStatus == "WAITING_PAYMENT" 
+                      : notifier.detailOrderSellerData.item!.orderStatus == "WAITING_PAYMENT" 
                       ? Container(
                           padding: const EdgeInsets.all(5.0),
                           decoration: BoxDecoration(
@@ -210,7 +211,7 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
                           color: ColorResources.purple,
                           borderRadius: BorderRadius.circular(8.0)
                         ),
-                        child: Text(orderStatus(notifier.detailOrderSellerData.orderStatus.toString()),
+                        child: Text(orderStatus(notifier.detailOrderSellerData.item!.orderStatus.toString()),
                           style: robotoRegular.copyWith(
                             fontWeight: FontWeight.bold,
                             fontSize: Dimensions.fontSizeSmall,
@@ -546,7 +547,7 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
                                   
                                   const SizedBox(height: 15.0),
                                   
-                                  item.waybill == "-"  
+                                  notifier.detailOrderSellerData.item!.waybill == "-"  
                                   ? const SizedBox() 
                                   : BarcodeWidget(
                                       height: 50.0,
@@ -554,14 +555,14 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
                                       margin: EdgeInsets.zero,
                                       padding: EdgeInsets.zero,
                                       drawText: false,
-                                      data: item.waybill,
+                                      data: notifier.detailOrderSellerData.item!.waybill,
                                     ),
                                   
-                                  item.waybill == "-"   
+                                  notifier.detailOrderSellerData.item!.waybill == "-"   
                                   ? const SizedBox() 
                                   : const SizedBox(height: 15.0),
                                   
-                                  item.waybill == "-"  
+                                  notifier.detailOrderSellerData.item!.waybill == "-"  
                                   ? const SizedBox() 
                                   : Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -582,9 +583,9 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
                                           icCopyResi 
                                           ? InkWell(
                                               onTap: () {
-                                                Clipboard.setData(ClipboardData(text: item.waybill));
+                                                Clipboard.setData(ClipboardData(text: notifier.detailOrderSellerData.item!.waybill));
                                                 ScaffoldMessenger.of(context).showSnackBar(
-                                                  SnackBar(content: Text(item.waybill,
+                                                  SnackBar(content: Text(notifier.detailOrderSellerData.item!.waybill,
                                                     style: robotoRegular.copyWith(
                                                       fontSize: Dimensions.fontSizeDefault
                                                     ),
@@ -604,7 +605,7 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
                                         ],
                                       ),
                                   
-                                      Text(item.waybill,
+                                      Text(notifier.detailOrderSellerData.item!.waybill,
                                         style: robotoRegular.copyWith(
                                           color: ColorResources.purple,
                                           fontSize: Dimensions.fontSizeSmall,
@@ -728,7 +729,7 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
                             ),
                           ),
                   
-                          item.waybill == "-" 
+                          notifier.detailOrderSellerData.item!.waybill == "-" 
                           ? const SizedBox()
                           : const SizedBox(height: 6.0),
                   
@@ -738,11 +739,11 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
                            
                           const SizedBox(height: 10.0),
                                 
-                          item.waybill == "-" 
+                          notifier.detailOrderSellerData.item!.waybill == "-" 
                           ? const SizedBox()
                           : CustomButton(
                               onTap: () {
-                                NS.push(context, TrackingScreen(waybill: item.waybill));
+                                NS.push(context, TrackingScreen(waybill: notifier.detailOrderSellerData.item!.waybill));
                               },
                               isBorderRadius: true,
                               isBoxShadow: false,
@@ -791,7 +792,7 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
               
                 const SizedBox(height: 15.0),
               
-                notifier.detailOrderSellerData.orderStatus == "DELIVERED" 
+                notifier.detailOrderSellerData.item!.orderStatus == "DELIVERED" 
                 ? CustomButton(
                     isBorder: false,
                     isBorderRadius: true,
@@ -924,7 +925,7 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
                 const SizedBox(height: 15.0),
               
                 notifier.detailOrderSellerData.paymentCode == "gopay" || notifier.detailOrderSellerData.paymentCode == "shopee" ||notifier.detailOrderSellerData.paymentCode == "dana" ||  notifier.detailOrderSellerData.paymentCode == "ovo"
-                ? notifier.detailOrderSellerData.orderStatus == "DELIVERED" || notifier.detailOrderSellerData.orderStatus == "REFUND"
+                ? notifier.detailOrderSellerData.item!.orderStatus == "DELIVERED" || notifier.detailOrderSellerData.item!.orderStatus == "REFUND"
                 ? const SizedBox() 
                 : Center(
                     child: CachedNetworkImage(
@@ -1101,7 +1102,7 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
               
                 const SizedBox(height: 15.0),
               
-                notifier.detailOrderSellerData.orderStatus == "PAID"
+                notifier.detailOrderSellerData.item!.orderStatus == "PAID"
                 ? CustomButton(
                     onTap: () async {
                       showGeneralDialog(
@@ -1127,7 +1128,7 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
                                                                     
                                     Align(
                                       alignment: Alignment.center,
-                                      child: Text("Apakah ka ?",
+                                      child: Text("Apakah kamu yakin ingin konfirmasi pesanan ?",
                                         style: robotoRegular.copyWith(
                                           fontSize: Dimensions.fontSizeLarge,
                                           fontWeight: FontWeight.bold,
