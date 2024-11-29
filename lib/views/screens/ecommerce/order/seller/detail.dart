@@ -1,6 +1,12 @@
+import 'dart:io';
+import 'dart:ui' as ui;
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:gallery_saver_plus/gallery_saver.dart';
 import 'package:provider/provider.dart';
 import 'package:date_count_down/date_count_down.dart';
 import 'package:barcode_widget/barcode_widget.dart';
@@ -20,7 +26,6 @@ import 'package:hp3ki/utils/helper.dart';
 import 'package:hp3ki/views/basewidgets/button/custom.dart';
 
 import 'package:hp3ki/views/screens/ecommerce/order/tracking.dart';
-import 'package:hp3ki/views/screens/ecommerce/order/complaint.dart';
 
 class DetailOrderSellerScreen extends StatefulWidget {
   final String transactionId;
@@ -37,6 +42,8 @@ class DetailOrderSellerScreen extends StatefulWidget {
 }
 
 class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
+  GlobalKey globalKey = GlobalKey();
+
   bool btnUnduhResi = true;
   bool icCopyResi = true;
 
@@ -58,19 +65,19 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
 
     try {
 
-      // Future.delayed(const Duration(seconds: 1), () async {
-        // RenderRepaintBoundary boundary = globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
-        // ui.Image image = await boundary.toImage(pixelRatio: 3.0);
-        // ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-        // Uint8List pngBytes = byteData!.buffer.asUint8List();
+      Future.delayed(const Duration(seconds: 1), () async {
+        RenderRepaintBoundary boundary = globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+        ui.Image image = await boundary.toImage(pixelRatio: 3.0);
+        ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+        Uint8List pngBytes = byteData!.buffer.asUint8List();
 
-        // final directory = (await getApplicationDocumentsDirectory()).path;
-        // String fileName = 'screenshot.png';
-        // File imgFile = File('$directory/$fileName');
-        // imgFile.writeAsBytes(pngBytes);
+        final directory = (await getApplicationDocumentsDirectory()).path;
+        String fileName = 'screenshot.png';
+        File imgFile = File('$directory/$fileName');
+        imgFile.writeAsBytes(pngBytes);
 
-        // await GallerySaver.saveImage(imgFile.path);
-      // });
+        await GallerySaver.saveImage(imgFile.path);
+      });
 
       Future.delayed(const Duration(seconds: 2), () {
         setState(() {
@@ -118,7 +125,7 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
         ),
       ),
       body: Consumer<EcommerceProvider>(
-        builder: (_, notifier, __) {
+        builder: (BuildContext context, EcommerceProvider notifier, Widget? child) {
           if(notifier.detailOrderSellerStatus == DetailOrderSellerStatus.loading) {
             return const Center(
               child: SizedBox(
@@ -416,6 +423,7 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
                           const SizedBox(height: 20.0),
                   
                           RepaintBoundary(
+                            key: globalKey,
                             child: Container(
                               padding: const EdgeInsets.all(12.0),
                               decoration: const BoxDecoration(
@@ -438,21 +446,21 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
                                         ),
                                       ),
                               
-                                      // btnUnduhResi 
-                                      // ? item.waybill == "-" 
-                                      // ? const SizedBox() 
-                                      // : InkWell(
-                                      //     onTap: () async {
-                                      //       await takeScreenshot();
-                                      //     },
-                                      //     child: Text("Unduh resi",
-                                      //       style: robotoRegular.copyWith(
-                                      //         color: ColorResources.blue,
-                                      //         fontSize: Dimensions.fontSizeSmall
-                                      //       ),
-                                      //     )
-                                      //   ) 
-                                      // : const SizedBox()
+                                      btnUnduhResi 
+                                      ? notifier.detailOrderSellerData.item!.waybill == "-" 
+                                      ? const SizedBox() 
+                                      : InkWell(
+                                          onTap: () async {
+                                            await takeScreenshot();
+                                          },
+                                          child: Text("Unduh resi",
+                                            style: robotoRegular.copyWith(
+                                              color: ColorResources.blue,
+                                              fontSize: Dimensions.fontSizeSmall
+                                            ),
+                                          )
+                                        ) 
+                                      : const SizedBox()
                               
                                     ],
                                   ),
@@ -638,7 +646,7 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                         
-                                            Text(item.seller.fullname,
+                                            Text(notifier.detailOrderSellerData.item?.store.name ?? "-",
                                               style: robotoRegular.copyWith(
                                                 fontSize: Dimensions.fontSizeSmall,
                                                 color: ColorResources.black
@@ -792,135 +800,135 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
               
                 const SizedBox(height: 15.0),
               
-                notifier.detailOrderSellerData.item!.orderStatus == "DELIVERED" 
-                ? CustomButton(
-                    isBorder: false,
-                    isBorderRadius: true,
-                    isBoxShadow: false,
-                    btnColor: notifier.detailOrderSellerData.isReviewed!
-                    ? ColorResources.hintColor
-                    : ColorResources.redOnboarding,
-                    btnTxt: "Komplain",
-                    onTap: notifier.detailOrderSellerData.isReviewed!  
-                    ? () {} 
-                    : () async {
-                      showGeneralDialog(
-                        context: context,
-                        barrierLabel: "Barrier",
-                        barrierDismissible: true,
-                        barrierColor: Colors.black.withOpacity(0.5),
-                        transitionDuration: const Duration(milliseconds: 700),
-                        pageBuilder: (BuildContext context, Animation<double> double, _) {
-                          return Center(
-                            child: Material(
-                              color: ColorResources.transparent,
-                              child: Container(
-                                margin: const EdgeInsets.all(20.0),
-                                height: 250.0,
-                                decoration: BoxDecoration(
-                                  color: ColorResources.white, 
-                                  borderRadius: BorderRadius.circular(20.0)
-                                ),
-                                child: Stack(
-                                  clipBehavior: Clip.none,
-                                  children: [
+                // notifier.detailOrderSellerData.item!.orderStatus == "DELIVERED" 
+                // ? CustomButton(
+                //     isBorder: false,
+                //     isBorderRadius: true,
+                //     isBoxShadow: false,
+                //     btnColor: notifier.detailOrderSellerData.isReviewed!
+                //     ? ColorResources.hintColor
+                //     : ColorResources.redOnboarding,
+                //     btnTxt: "Komplain",
+                //     onTap: notifier.detailOrderSellerData.isReviewed!  
+                //     ? () {} 
+                //     : () async {
+                //       showGeneralDialog(
+                //         context: context,
+                //         barrierLabel: "Barrier",
+                //         barrierDismissible: true,
+                //         barrierColor: Colors.black.withOpacity(0.5),
+                //         transitionDuration: const Duration(milliseconds: 700),
+                //         pageBuilder: (BuildContext context, Animation<double> double, _) {
+                //           return Center(
+                //             child: Material(
+                //               color: ColorResources.transparent,
+                //               child: Container(
+                //                 margin: const EdgeInsets.all(20.0),
+                //                 height: 250.0,
+                //                 decoration: BoxDecoration(
+                //                   color: ColorResources.white, 
+                //                   borderRadius: BorderRadius.circular(20.0)
+                //                 ),
+                //                 child: Stack(
+                //                   clipBehavior: Clip.none,
+                //                   children: [
                                                                     
-                                    Align(
-                                      alignment: Alignment.center,
-                                      child: Text("Apa kamu yakin ingin komplain ?",
-                                        style: robotoRegular.copyWith(
-                                          fontSize: Dimensions.fontSizeLarge,
-                                          fontWeight: FontWeight.bold,
-                                          color: ColorResources.black
-                                        ),
-                                      )
-                                    ),
+                //                     Align(
+                //                       alignment: Alignment.center,
+                //                       child: Text("Apa kamu yakin ingin komplain ?",
+                //                         style: robotoRegular.copyWith(
+                //                           fontSize: Dimensions.fontSizeLarge,
+                //                           fontWeight: FontWeight.bold,
+                //                           color: ColorResources.black
+                //                         ),
+                //                       )
+                //                     ),
                                                                     
-                                    Align(
-                                      alignment: Alignment.bottomCenter,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        children: [
-                                          Container(
-                                            margin: const EdgeInsets.only(
-                                              top: 20.0,
-                                              bottom: 20.0
-                                            ),
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: [
-                                                const Expanded(child: SizedBox()),
-                                                Expanded(
-                                                  flex: 5,
-                                                  child: CustomButton(
-                                                    isBorderRadius: true,
-                                                    isBoxShadow: false,
-                                                    fontSize: Dimensions.fontSizeSmall,
-                                                    isBorder: true,
-                                                    btnBorderColor: Colors.black,
-                                                    btnColor: ColorResources.white,
-                                                    btnTextColor: ColorResources.black,
-                                                    onTap: () {
-                                                      NS.pop();
-                                                    }, 
-                                                    btnTxt: "Batal"
-                                                  ),
-                                                ),
-                                                const Expanded(child: SizedBox()),
-                                                Expanded(
-                                                  flex: 5,
-                                                  child: Consumer<EcommerceProvider>(
-                                                    builder: (_, notifier, __) {
-                                                      return CustomButton(
-                                                        isBorderRadius: true,
-                                                        isBoxShadow: false,
-                                                        isLoading: notifier.cancelOrderStatus == CancelOrderStatus.loading 
-                                                        ? true 
-                                                        : false,
-                                                        fontSize: Dimensions.fontSizeSmall,
-                                                        btnColor: ColorResources.success,
-                                                        btnTextColor: ColorResources.white,
-                                                        onTap: () async {
-                                                          NS.push(context, const ComplaintScreen());
-                                                        }, 
-                                                        btnTxt: "Ya"
-                                                      );
-                                                    },
-                                                  )
-                                                ),
-                                                const Expanded(child: SizedBox()),
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ) 
-                                    )
-                                  ],
-                                ),
-                              ),
-                            )
-                          );
-                        },
-                        transitionBuilder: (_, anim, __, child) {
-                          Tween<Offset> tween;
-                          if (anim.status == AnimationStatus.reverse) {
-                            tween = Tween(begin: const Offset(-1, 0), end: Offset.zero);
-                          } else {
-                            tween = Tween(begin: const Offset(1, 0), end: Offset.zero);
-                          }
-                          return SlideTransition(
-                            position: tween.animate(anim),
-                            child: FadeTransition(
-                              opacity: anim,
-                              child: child,
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ) 
-                : const SizedBox(), 
+                //                     Align(
+                //                       alignment: Alignment.bottomCenter,
+                //                       child: Column(
+                //                         mainAxisSize: MainAxisSize.min,
+                //                         mainAxisAlignment: MainAxisAlignment.end,
+                //                         children: [
+                //                           Container(
+                //                             margin: const EdgeInsets.only(
+                //                               top: 20.0,
+                //                               bottom: 20.0
+                //                             ),
+                //                             child: Row(
+                //                               mainAxisSize: MainAxisSize.max,
+                //                               children: [
+                //                                 const Expanded(child: SizedBox()),
+                //                                 Expanded(
+                //                                   flex: 5,
+                //                                   child: CustomButton(
+                //                                     isBorderRadius: true,
+                //                                     isBoxShadow: false,
+                //                                     fontSize: Dimensions.fontSizeSmall,
+                //                                     isBorder: true,
+                //                                     btnBorderColor: Colors.black,
+                //                                     btnColor: ColorResources.white,
+                //                                     btnTextColor: ColorResources.black,
+                //                                     onTap: () {
+                //                                       NS.pop();
+                //                                     }, 
+                //                                     btnTxt: "Batal"
+                //                                   ),
+                //                                 ),
+                //                                 const Expanded(child: SizedBox()),
+                //                                 Expanded(
+                //                                   flex: 5,
+                //                                   child: Consumer<EcommerceProvider>(
+                //                                     builder: (_, notifier, __) {
+                //                                       return CustomButton(
+                //                                         isBorderRadius: true,
+                //                                         isBoxShadow: false,
+                //                                         isLoading: notifier.cancelOrderStatus == CancelOrderStatus.loading 
+                //                                         ? true 
+                //                                         : false,
+                //                                         fontSize: Dimensions.fontSizeSmall,
+                //                                         btnColor: ColorResources.success,
+                //                                         btnTextColor: ColorResources.white,
+                //                                         onTap: () async {
+                //                                           NS.push(context, const ComplaintScreen());
+                //                                         }, 
+                //                                         btnTxt: "Ya"
+                //                                       );
+                //                                     },
+                //                                   )
+                //                                 ),
+                //                                 const Expanded(child: SizedBox()),
+                //                               ],
+                //                             ),
+                //                           )
+                //                         ],
+                //                       ) 
+                //                     )
+                //                   ],
+                //                 ),
+                //               ),
+                //             )
+                //           );
+                //         },
+                //         transitionBuilder: (_, anim, __, child) {
+                //           Tween<Offset> tween;
+                //           if (anim.status == AnimationStatus.reverse) {
+                //             tween = Tween(begin: const Offset(-1, 0), end: Offset.zero);
+                //           } else {
+                //             tween = Tween(begin: const Offset(1, 0), end: Offset.zero);
+                //           }
+                //           return SlideTransition(
+                //             position: tween.animate(anim),
+                //             child: FadeTransition(
+                //               opacity: anim,
+                //               child: child,
+                //             ),
+                //           );
+                //         },
+                //       );
+                //     },
+                //   ) 
+                // : const SizedBox(), 
               
                 const SizedBox(height: 15.0),
               

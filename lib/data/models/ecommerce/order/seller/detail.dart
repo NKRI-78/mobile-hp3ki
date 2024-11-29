@@ -140,7 +140,6 @@ class DetailOrderSellerProduct {
   ProductSeller product;
   Seller seller;
   Buyer buyer;
-  String orderStatus;
   String courierId;
   int courierPrice;
   String courierService;
@@ -151,7 +150,6 @@ class DetailOrderSellerProduct {
     required this.product,
     required this.seller,
     required this.buyer,
-    required this.orderStatus,
     required this.courierId,
     required this.courierPrice,
     required this.courierService,
@@ -163,7 +161,6 @@ class DetailOrderSellerProduct {
     product: ProductSeller.fromJson(json["product"]),
     seller: Seller.fromJson(json["seller"]),
     buyer: Buyer.fromJson(json["buyer"]),
-    orderStatus: json["order_status"],
     courierId: json["courier_id"],
     courierPrice: json["courier_price"],
     courierService: json["courier_service"],
