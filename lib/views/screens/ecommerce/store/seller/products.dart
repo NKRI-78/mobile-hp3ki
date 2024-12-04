@@ -211,12 +211,14 @@ class ProductsSellerScreenState extends State<ProductsSellerScreen> {
                               controller: searchC,
                               focusNode: searchFn,
                               style: robotoRegular.copyWith(
-                                fontSize: Dimensions.fontSizeDefault
+                                fontSize: Dimensions.fontSizeLarge,
+                                color: ColorResources.black
                               ),
                               decoration: InputDecoration(
                                 labelText: "Cari Produk",
                                 labelStyle: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeDefault
+                                  fontSize: Dimensions.fontSizeLarge,
+                                  color: ColorResources.black
                                 ),
                                 floatingLabelBehavior: FloatingLabelBehavior.auto,
                                 contentPadding: const EdgeInsets.only(
