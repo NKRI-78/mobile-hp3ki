@@ -116,7 +116,7 @@ class ProductItem extends StatelessWidget {
                         fontSize: Dimensions.fontSizeSmall,
                       ),
                     ),
-                    const SizedBox(height: 4.0),
+                    const SizedBox(height: 6.0),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.max,
@@ -127,7 +127,7 @@ class ProductItem extends StatelessWidget {
                           maxLines: 1,
                           style: robotoRegular.copyWith(
                             color: ColorResources.black,
-                            fontSize: Dimensions.fontSizeExtraSmall,
+                            fontSize: Dimensions.fontSizeSmall,
                             fontWeight: FontWeight.bold
                           ),
                         ),
@@ -205,7 +205,8 @@ class ProductItem extends StatelessWidget {
                     Text("Stok ${product.stock}",
                       overflow: TextOverflow.ellipsis,
                       style: robotoRegular.copyWith(
-                        fontSize: Dimensions.fontSizeExtraSmall
+                        fontSize: Dimensions.fontSizeSmall,
+                        color: ColorResources.black
                       ),
                     ),
 
@@ -248,7 +249,7 @@ class ProductItem extends StatelessWidget {
                   
                       const Icon(
                         Icons.store,
-                        size: 12.0,
+                        size: 10.0,
                       ),
                   
                       const SizedBox(width: 4.0),
@@ -258,7 +259,8 @@ class ProductItem extends StatelessWidget {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeSmall
+                            fontSize: Dimensions.fontSizeSmall,
+                            color: ColorResources.black
                           ),
                         ),
                       )

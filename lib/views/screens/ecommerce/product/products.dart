@@ -236,13 +236,15 @@ class ProductsScreenState extends State<ProductsScreen> {
                             child: TextField(
                               controller: searchC,
                               focusNode: searchFn,
+                              cursorColor: ColorResources.black,
                               style: robotoRegular.copyWith(
-                                fontSize: Dimensions.fontSizeDefault
+                                fontSize: Dimensions.fontSizeLarge,
+                                color: ColorResources.black
                               ),
                               decoration: InputDecoration(
                                 labelText: "Cari Produk",
                                 labelStyle: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeDefault
+                                  fontSize: Dimensions.fontSizeLarge
                                 ),
                                 floatingLabelBehavior: FloatingLabelBehavior.auto,
                                 contentPadding: const EdgeInsets.only(
@@ -365,7 +367,7 @@ class ProductsScreenState extends State<ProductsScreen> {
                           crossAxisCount: 2,
                           childAspectRatio: MediaQuery.of(context).size.width > 400 
                           ? 2.0 / 2.4 
-                          : 2.0 / 3.3,
+                          : 2.0 / 3.0,
                           mainAxisSpacing: 10.0,
                         ),
                         delegate: SliverChildBuilderDelegate(
