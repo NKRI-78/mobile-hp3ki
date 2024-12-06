@@ -127,7 +127,7 @@ class PaymentReceiptEmoneyState extends State<PaymentReceiptEmoney> {
                     },
                     isBorderRadius: true,
                     isBoxShadow: false,
-                    btnColor: ColorResources.purple,
+                    btnColor: ColorResources.primary,
                     btnTxt: "Halaman utama",
                   )
                 ),

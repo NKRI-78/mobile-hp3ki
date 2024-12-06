@@ -142,7 +142,7 @@ class CartScreenState extends State<CartScreen> {
                       isLoading: false,
                       btnColor: notifier.cartData.totalPrice == 0 
                       ? ColorResources.grey 
-                      : ColorResources.purple,
+                      : ColorResources.primary,
                       btnTxt: "Selanjutnya",
                     ),
                   ),
@@ -168,13 +168,13 @@ class CartScreenState extends State<CartScreen> {
                 
                 SliverAppBar(
                   backgroundColor: ColorResources.backgroundColor,
-                  centerTitle: false,
+                  centerTitle: true,
                   leadingWidth: 33.0,
                   title: Text("Keranjang",
                     style: robotoRegular.copyWith(
                       color: ColorResources.black,
                       fontWeight: FontWeight.bold,
-                      fontSize: Dimensions.fontSizeDefault
+                      fontSize: Dimensions.fontSizeLarge
                     ),
                   ),
                   leading: CupertinoNavigationBarBackButton(
@@ -235,7 +235,7 @@ class CartScreenState extends State<CartScreen> {
                           CheckboxListTile( 
                             title: Text('Pilih semua',
                               style: robotoRegular.copyWith(
-                                fontSize: Dimensions.fontSizeDefault,
+                                fontSize: Dimensions.fontSizeLarge,
                                 color: ColorResources.black
                               ),
                             ),
@@ -271,9 +271,12 @@ class CartScreenState extends State<CartScreen> {
                                       
                                     Text(notifier.cartData.stores![i].store.name,
                                       style: robotoRegular.copyWith(
-                                        fontSize: Dimensions.fontSizeDefault
+                                        fontSize: Dimensions.fontSizeLarge
                                       ),
                                     ),
+
+                                    const SizedBox(height: 8.0),
+
                                     Text(notifier.cartData.stores![i].store.address,
                                       style: robotoRegular.copyWith(
                                         fontSize: Dimensions.fontSizeSmall,

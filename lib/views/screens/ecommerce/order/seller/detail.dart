@@ -215,7 +215,7 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
                       Container(
                         padding: const EdgeInsets.all(6.0),
                         decoration: BoxDecoration(
-                          color: ColorResources.purple,
+                          color: ColorResources.primary,
                           borderRadius: BorderRadius.circular(8.0)
                         ),
                         child: Text(orderStatus(notifier.detailOrderSellerData.item!.orderStatus.toString()),
@@ -615,7 +615,7 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
                                   
                                       Text(notifier.detailOrderSellerData.item!.waybill,
                                         style: robotoRegular.copyWith(
-                                          color: ColorResources.purple,
+                                          color: ColorResources.primary,
                                           fontSize: Dimensions.fontSizeSmall,
                                           fontWeight: FontWeight.bold
                                         ),
@@ -755,7 +755,7 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
                               },
                               isBorderRadius: true,
                               isBoxShadow: false,
-                              btnColor: ColorResources.purple,
+                              btnColor: ColorResources.primary,
                               btnTextColor: ColorResources.white,
                               btnTxt: "Tracking",
                             ),
@@ -1101,7 +1101,7 @@ class DetailOrderSellerScreenState extends State<DetailOrderSellerScreen> {
                       style: robotoRegular.copyWith(
                         fontSize: Dimensions.fontSizeDefault,
                         fontWeight: FontWeight.bold,
-                        color: ColorResources.purple
+                        color: ColorResources.primary
                       ),
                     ),
                     

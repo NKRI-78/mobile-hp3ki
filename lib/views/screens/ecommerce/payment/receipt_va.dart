@@ -95,7 +95,7 @@ class PaymentReceiptVaScreenState extends State<PaymentReceiptVaScreen> {
                 },
                 isBorderRadius: true,
                 isBoxShadow: false,
-                btnColor: ColorResources.purple,
+                btnColor: ColorResources.primary,
                 btnTxt: "Halaman utama",
               )
             ],

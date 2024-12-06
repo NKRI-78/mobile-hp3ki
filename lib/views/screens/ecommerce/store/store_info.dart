@@ -114,7 +114,7 @@ class StoreInfoScreenState extends State<StoreInfoScreen> {
                      preferredSize: const Size.fromHeight(80.0),
                       child: Container(
                         decoration: const BoxDecoration(
-                          color: ColorResources.purple,
+                          color: ColorResources.primary,
                         ),
                         padding: const EdgeInsets.all(15.0),
                         child: Row(
@@ -308,7 +308,7 @@ class StoreInfoScreenState extends State<StoreInfoScreen> {
                               width: 16.0,
                               height: 16.0,
                               child: CircularProgressIndicator(
-                                color: ColorResources.purple,
+                                color: ColorResources.primary,
                               )
                             )
                           ),

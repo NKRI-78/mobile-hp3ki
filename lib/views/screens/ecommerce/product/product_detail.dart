@@ -759,12 +759,12 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                                   moreStyle: robotoRegular.copyWith(
                                     fontSize: Dimensions.fontSizeDefault,
                                     fontWeight: FontWeight.bold,
-                                    color: ColorResources.purple
+                                    color: ColorResources.primary
                                   ),
                                   lessStyle: robotoRegular.copyWith(
                                     fontSize: Dimensions.fontSizeDefault,
                                     fontWeight: FontWeight.bold,
-                                    color: ColorResources.purple
+                                    color: ColorResources.primary
                                   ),
                                   delimiterStyle: robotoRegular.copyWith(
                                     fontSize: Dimensions.fontSizeDefault,
@@ -825,7 +825,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                                           right: -5.0,
                                           child: Container(
                                             decoration: BoxDecoration(
-                                              color: ColorResources.purple,
+                                              color: ColorResources.primary,
                                               borderRadius: BorderRadius.circular(50.0)
                                             ),
                                             child: const Padding(
@@ -937,7 +937,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                                           margin: const EdgeInsets.all(20.0),
                                           height: 250.0,
                                           decoration: BoxDecoration(
-                                            color: ColorResources.purple, 
+                                            color: ColorResources.primary, 
                                             borderRadius: BorderRadius.circular(20.0)
                                           ),
                                           child: Stack(
@@ -1052,7 +1052,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                               color: notifier.productDetailData.product!.stock > 0 
                               ? notifier.ownerModel.data?.storeId == notifier.productDetailData.product?.store.id 
                               ? ColorResources.error
-                              : ColorResources.purple 
+                              : ColorResources.primary 
                               : ColorResources.hintColor,
                               borderRadius: BorderRadius.circular(10.0)
                             ),
@@ -1137,7 +1137,7 @@ class ProductDetailScreenState extends State<ProductDetailScreen> with SingleTic
                               height: 40.0,
                               decoration: BoxDecoration(
                                 color: notifier.productDetailData.product!.stock > 0 
-                                ? ColorResources.purple 
+                                ? ColorResources.primary 
                                 : ColorResources.hintColor,
                                 borderRadius: BorderRadius.circular(10.0)
                               ),

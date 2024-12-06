@@ -113,26 +113,18 @@ class ProductItem extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       style: robotoRegular.copyWith(
-                        fontSize: Dimensions.fontSizeSmall,
+                        fontSize: Dimensions.fontSizeDefault,
                       ),
                     ),
-                    const SizedBox(height: 6.0),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-      
-                        Text(CurrencyHelper.formatCurrency(product.price),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          style: robotoRegular.copyWith(
-                            color: ColorResources.black,
-                            fontSize: Dimensions.fontSizeSmall,
-                            fontWeight: FontWeight.bold
-                          ),
-                        ),
-      
-                      ],
+                    const SizedBox(height: 8.0),
+                    Text(CurrencyHelper.formatCurrency(product.price),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: robotoRegular.copyWith(
+                        color: ColorResources.black,
+                        fontSize: Dimensions.fontSizeSmall,
+                        fontWeight: FontWeight.bold
+                      ),
                     ),
                   ],
                 ),
@@ -141,7 +133,7 @@ class ProductItem extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 8.0,
-                  vertical: 4.0
+                  vertical: 10.0
                 ),
                 child: Text(product.store.province,
                   style: robotoRegular.copyWith(

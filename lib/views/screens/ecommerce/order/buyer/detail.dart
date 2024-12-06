@@ -212,7 +212,7 @@ class DetailOrderBuyerScreenState extends State<DetailOrderBuyerScreen> {
                       Container(
                         padding: const EdgeInsets.all(6.0),
                         decoration: BoxDecoration(
-                          color: ColorResources.purple,
+                          color: ColorResources.primary,
                           borderRadius: BorderRadius.circular(8.0)
                         ),
                         child: Text(orderStatus(notifier.detailOrderData.orderStatus.toString()),
@@ -612,7 +612,7 @@ class DetailOrderBuyerScreenState extends State<DetailOrderBuyerScreen> {
                                   
                                       Text(item.waybill,
                                         style: robotoRegular.copyWith(
-                                          color: ColorResources.purple,
+                                          color: ColorResources.primary,
                                           fontSize: Dimensions.fontSizeSmall,
                                           fontWeight: FontWeight.bold
                                         ),
@@ -752,7 +752,7 @@ class DetailOrderBuyerScreenState extends State<DetailOrderBuyerScreen> {
                               },
                               isBorderRadius: true,
                               isBoxShadow: false,
-                              btnColor: ColorResources.purple,
+                              btnColor: ColorResources.primary,
                               btnTextColor: ColorResources.white,
                               btnTxt: "Tracking",
                             ),
@@ -1233,7 +1233,7 @@ class DetailOrderBuyerScreenState extends State<DetailOrderBuyerScreen> {
                       style: robotoRegular.copyWith(
                         fontSize: Dimensions.fontSizeDefault,
                         fontWeight: FontWeight.bold,
-                        color: ColorResources.purple
+                        color: ColorResources.primary
                       ),
                     ),
                     

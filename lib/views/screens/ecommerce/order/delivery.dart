@@ -93,7 +93,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
             });
           },
           child: Consumer<EcommerceProvider>(
-            builder: (_, notifier, __) {
+            builder: (BuildContext context, EcommerceProvider notifier, Widget? child) {
               return CustomScrollView(
                 physics: const BouncingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics()
@@ -103,11 +103,12 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                   SliverAppBar(
                     title: Text("Pengiriman",
                       style: robotoRegular.copyWith(
-                        fontSize: Dimensions.fontSizeDefault,
+                        fontSize: Dimensions.fontSizeLarge,
                         fontWeight: FontWeight.bold,
                         color: ColorResources.black
                       ),
                     ),
+                    centerTitle: true,
                     leading: CupertinoNavigationBarBackButton(
                       color: ColorResources.black,
                       onPressed: () async {
@@ -191,7 +192,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                     padding: const EdgeInsets.all(5.0),
                                     child: Text("Pilih alamat lain",
                                       style: robotoRegular.copyWith(
-                                        color: ColorResources.purple,
+                                        color: ColorResources.primary,
                                         fontSize: Dimensions.fontSizeDefault,
                                         fontWeight: FontWeight.bold
                                       ),
@@ -263,7 +264,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                               bottom: 3.0  
                                             ),
                                             decoration: const BoxDecoration(
-                                              color: ColorResources.purple,
+                                              color: ColorResources.primary,
                                               borderRadius: BorderRadius.all(Radius.circular(3.0))
                                             ),
                                             child: Text("Utama",
@@ -618,7 +619,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                   flex: 4,
                                                   child: Icon(
                                                     Icons.delivery_dining,
-                                                    color: ColorResources.purple,
+                                                    color: ColorResources.primary,
                                                   )
                                                 ),
                                             
@@ -630,7 +631,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                     style: robotoRegular.copyWith(
                                                       fontSize: Dimensions.fontSizeDefault,
                                                       fontWeight: FontWeight.bold,
-                                                      color: ColorResources.purple
+                                                      color: ColorResources.primary
                                                     ),
                                                   )
                                                 ),
@@ -639,7 +640,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                   flex: 2,
                                                   child: Icon(
                                                     Icons.keyboard_arrow_right,
-                                                    color: ColorResources.purple
+                                                    color: ColorResources.primary
                                                   )
                                                 )
                                             
@@ -1038,7 +1039,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                                                             style: robotoRegular.copyWith(
                                                                               fontSize: Dimensions.fontSizeLarge,
                                                                               fontWeight: FontWeight.bold,
-                                                                              color: ColorResources.purple
+                                                                              color: ColorResources.primary
                                                                             ),
                                                                           ),
                                                                         ],
@@ -1061,7 +1062,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                           },
                                           child: const Icon(
                                             Icons.info, 
-                                            color: ColorResources.purple,
+                                            color: ColorResources.primary,
                                             size: 18.0
                                           ),
                                         )
@@ -1082,7 +1083,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                         ),
                                         Text(Helper.formatCurrency(ep.checkoutListData.totalPriceWithCost! + ep.paymentFee),
                                           style: robotoRegular.copyWith(
-                                            color: ColorResources.purple,
+                                            color: ColorResources.primary,
                                             fontSize: Dimensions.fontSizeLarge,
                                             fontWeight: FontWeight.bold
                                           ),
@@ -1132,7 +1133,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                               flex: 4,
                                               child: Icon(
                                                 Icons.payment,
-                                                color: ColorResources.purple,
+                                                color: ColorResources.primary,
                                                 size: 30.0,
                                               ),
                                             ) 
@@ -1245,7 +1246,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                             flex: 4,
                                             child: Icon(
                                               Icons.payment,
-                                              color: ColorResources.purple,
+                                              color: ColorResources.primary,
                                             )
                                           ),
                                       
@@ -1257,7 +1258,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                               style: robotoRegular.copyWith(
                                                 fontSize: Dimensions.fontSizeDefault,
                                                 fontWeight: FontWeight.bold,
-                                                color: ColorResources.purple
+                                                color: ColorResources.primary
                                               ),
                                             ),
                                           ),
@@ -1266,7 +1267,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                             flex: 2,
                                             child: Icon(
                                               Icons.keyboard_arrow_right,
-                                              color: ColorResources.purple
+                                              color: ColorResources.primary
                                             )
                                           )
                                       
@@ -1330,7 +1331,7 @@ class DeliveryScreenState extends State<DeliveryScreen> {
                                         isLoading: notifier.payStatus == PayStatus.loading 
                                         ? true 
                                         : false,
-                                        btnColor: ColorResources.purple,
+                                        btnColor: ColorResources.primary,
                                         btnTxt: "Bayar",
                                       );
                                     },

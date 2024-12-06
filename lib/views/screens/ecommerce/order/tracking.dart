@@ -90,7 +90,7 @@ class TrackingScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: FixedTimeline.tileBuilder(
                       theme: TimelineThemeData(
-                        color: ColorResources.purple
+                        color: ColorResources.primary
                       ),
                       builder: TimelineTileBuilder.connectedFromStyle(
                         contentsAlign: ContentsAlign.alternating,

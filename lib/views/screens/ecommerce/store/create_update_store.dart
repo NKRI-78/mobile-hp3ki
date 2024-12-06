@@ -312,7 +312,7 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
     return Scaffold(
       backgroundColor: ColorResources.backgroundColor,
       appBar: AppBar(
-        backgroundColor: ColorResources.purple,
+        backgroundColor: ColorResources.primary,
         centerTitle: true,
         elevation: 0.0,
         leading: CupertinoNavigationBarBackButton(
@@ -389,7 +389,7 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
                           child: Icon(
                             Icons.store,
                             size: 80.0,
-                            color: ColorResources.purple,
+                            color: ColorResources.primary,
                           ),
                         )  
                       : CircleAvatar(
@@ -474,7 +474,7 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
                   width: double.infinity,
                   child: TextButton(
                     style: TextButton.styleFrom(
-                      backgroundColor: ColorResources.purple,
+                      backgroundColor: ColorResources.primary,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       )

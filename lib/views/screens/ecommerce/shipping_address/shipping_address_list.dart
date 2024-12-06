@@ -274,7 +274,7 @@ class ShippingAddressListScreenState extends State<ShippingAddressListScreen> {
                                                         margin: const EdgeInsets.all(20.0),
                                                         height: 250.0,
                                                         decoration: BoxDecoration(
-                                                          color: ColorResources.purple, 
+                                                          color: ColorResources.primary, 
                                                           borderRadius: BorderRadius.circular(20.0)
                                                         ),
                                                         child: Stack(
@@ -429,7 +429,7 @@ class ShippingAddressListScreenState extends State<ShippingAddressListScreen> {
                 btnTxt: "Tambah Alamat Baru",
                 isBorder: false,
                 isBorderRadius: true,
-                btnColor: ColorResources.purple,
+                btnColor: ColorResources.primary,
               )
             )     
           )

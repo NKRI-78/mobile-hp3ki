@@ -240,7 +240,7 @@ class CreateShippingAddressScreenState extends State<CreateShippingAddressScreen
                   ? true 
                   : false,
                   isBorderRadius: true,
-                  btnColor: ColorResources.purple,
+                  btnColor: ColorResources.primary,
                   btnTextColor: ColorResources.white,
                   btnTxt: "Simpan",
                 )

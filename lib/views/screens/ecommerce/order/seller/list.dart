@@ -307,7 +307,7 @@ class ListOrderSellerScreenState extends State<ListOrderSellerScreen> with Singl
                                 style: robotoRegular.copyWith(
                                   fontSize: Dimensions.fontSizeDefault,
                                   fontWeight: FontWeight.bold,
-                                  color: ColorResources.purple
+                                  color: ColorResources.primary
                                 ),
                               )
 
@@ -331,7 +331,7 @@ class ListOrderSellerScreenState extends State<ListOrderSellerScreen> with Singl
                               Container(
                                 padding: const EdgeInsets.all(6.0),
                                 decoration: BoxDecoration(
-                                  color: ColorResources.purple,
+                                  color: ColorResources.primary,
                                   borderRadius: BorderRadius.circular(8.0)
                                 ),
                                 child: Text(orderStatus(notifier.orderSellers[i].orderStatus),

@@ -103,7 +103,7 @@ class ListOrderBuyerScreenState extends State<ListOrderBuyerScreen> with SingleT
         centerTitle: true,
         title: Text("Daftar Pesanan",
           style: robotoRegular.copyWith(
-            fontSize: Dimensions.fontSizeDefault,
+            fontSize: Dimensions.fontSizeLarge,
             fontWeight: FontWeight.bold,
             color: ColorResources.black
           ),
@@ -119,7 +119,7 @@ class ListOrderBuyerScreenState extends State<ListOrderBuyerScreen> with SingleT
           tabAlignment: TabAlignment.center,
           controller: tabC,
           labelStyle: robotoRegular.copyWith(
-            fontSize: Dimensions.fontSizeExtraSmall,
+            fontSize: Dimensions.fontSizeSmall,
             color: ColorResources.black
           ),
           tabs: [
@@ -128,9 +128,9 @@ class ListOrderBuyerScreenState extends State<ListOrderBuyerScreen> with SingleT
             : ep.badgeWaitingPayment == 0
             ? const Tab(text: 'Belum bayar') 
             : Badge(
-              label: Text(ep.badgeWaitingPayment.toString()),
-              child: const Tab(text: 'Belum bayar')
-            ),
+                label: Text(ep.badgeWaitingPayment.toString()),
+                child: const Tab(text: 'Belum bayar')
+              ),
             context.watch<EcommerceProvider>().badgeOrderDetailStatus == BadgeOrderDetailStatus.loading 
             ? const Tab(text: 'Dibayar')
             : ep.badgePaid == 0
@@ -323,7 +323,7 @@ class ListOrderBuyerScreenState extends State<ListOrderBuyerScreen> with SingleT
                                 style: robotoRegular.copyWith(
                                   fontSize: Dimensions.fontSizeDefault,
                                   fontWeight: FontWeight.bold,
-                                  color: ColorResources.purple
+                                  color: ColorResources.primary
                                 ),
                               )
 
@@ -347,7 +347,7 @@ class ListOrderBuyerScreenState extends State<ListOrderBuyerScreen> with SingleT
                               Container(
                                 padding: const EdgeInsets.all(6.0),
                                 decoration: BoxDecoration(
-                                  color: ColorResources.purple,
+                                  color: ColorResources.primary,
                                   borderRadius: BorderRadius.circular(8.0)
                                 ),
                                 child: Text(orderStatus(notifier.orders[i].orderStatus),

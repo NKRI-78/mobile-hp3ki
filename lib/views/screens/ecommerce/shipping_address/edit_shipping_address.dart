@@ -265,7 +265,7 @@ class EditShippingAddressScreenState extends State<EditShippingAddressScreen> {
                   ? true 
                   : false,
                   isBorderRadius: true,
-                  btnColor: ColorResources.purple,
+                  btnColor: ColorResources.primary,
                   btnTxt: "Simpan",
                 )
             
