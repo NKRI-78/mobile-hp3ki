@@ -28,6 +28,7 @@ class PostVideo extends StatefulWidget {
 }
 
 class PostVideoState extends State<PostVideo> with AutomaticKeepAliveClientMixin {
+
   @override
   bool get wantKeepAlive => true;
 
@@ -125,7 +126,9 @@ class PostVideoState extends State<PostVideo> with AutomaticKeepAliveClientMixin
             aspectRatio: videoC!.value.aspectRatio,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10.0),
-              child: VideoPlayer(videoC!),
+              child: VideoPlayer(
+                videoC!,
+              ),
             ),
           ),
         ),
@@ -149,7 +152,9 @@ class PostVideoState extends State<PostVideo> with AutomaticKeepAliveClientMixin
                       color: ColorResources.white,
                     )
                 ),
-                onTap: widget.isPlaying ? widget.onPause : widget.onPlay,
+                onTap: widget.isPlaying 
+                ? widget.onPause 
+                : widget.onPlay,
               ),
             )
           )

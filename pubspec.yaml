@@ -35,7 +35,7 @@ dev_dependencies:
   currency_text_input_formatter: ^2.1.8
   carousel_indicator: ^1.0.6
   carousel_slider: 5.0.0 
-  chewie: ^1.5.0
+  chewie: ^1.7.5
   chips_choice: ^3.0.1
 
   # D
@@ -76,6 +76,7 @@ dev_dependencies:
   flutter_file_dialog: ^3.0.2
   file_picker: ^5.3.2
   filesize: ^2.0.1
+  flutter_vlc_player: ^7.4.2
   flutter_typeahead: ^4.3.7
   flutter_local_notifications: ^17.2.3
   flutter_native_contact_picker: ^0.0.4
@@ -159,7 +160,7 @@ dev_dependencies:
 
   # V
   video_compress: ^3.1.3
-  video_player: ^2.6.1
+  video_player: ^2.9.2
   visibility_detector: ^0.4.0+2
 
   # W

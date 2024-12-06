@@ -36,10 +36,9 @@ class _WebViewScreenState extends State<WebViewScreen> {
       await launchUrl(
         url,
         mode: widget.isExternalApp
-            ? LaunchMode.externalApplication
-            : LaunchMode.platformDefault,
-        webViewConfiguration:
-            const WebViewConfiguration(enableJavaScript: true),
+        ? LaunchMode.externalApplication
+        : LaunchMode.platformDefault,
+        webViewConfiguration: const WebViewConfiguration(enableJavaScript: true),
       );
     } else {
       throw 'Could not launch $url';

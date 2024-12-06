@@ -232,7 +232,7 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    
+
     List<Locale> locals = [];
 
     for (LanguageModel language in AppConstants.languages) {

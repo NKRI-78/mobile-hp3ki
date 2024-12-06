@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hp3ki/views/screens/home/home.dart';
+import 'package:hp3ki/views/webview/videowebview.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animated_dialog_updated/flutter_animated_dialog.dart';
 import 'package:gallery_saver_plus/gallery_saver.dart';
@@ -491,7 +492,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                           VisibilityDetector(
                             key: const Key('video-widget'),
                             onVisibilityChanged: onVisibilityChanged,
-                            child: PostVideo(
+                            child:  PostVideo(
                               media: forum.media!.first.path!, 
                               isPlaying: isPlaying,
                               onPlay: () => playVideo(i),
