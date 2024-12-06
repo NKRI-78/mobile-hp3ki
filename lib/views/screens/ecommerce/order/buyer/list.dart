@@ -119,7 +119,7 @@ class ListOrderBuyerScreenState extends State<ListOrderBuyerScreen> with SingleT
           tabAlignment: TabAlignment.center,
           controller: tabC,
           labelStyle: robotoRegular.copyWith(
-            fontSize: Dimensions.fontSizeSmall,
+            fontSize: Dimensions.fontSizeDefault,
             color: ColorResources.black
           ),
           tabs: [

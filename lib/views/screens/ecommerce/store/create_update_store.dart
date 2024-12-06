@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:hp3ki/maps/src/models/pick_result.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:http/http.dart' as http;
@@ -326,7 +327,7 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
         : "Ubah Toko",
           style: robotoRegular.copyWith(
             color: ColorResources.white,
-            fontSize: Dimensions.fontSizeDefault,
+            fontSize: Dimensions.fontSizeLarge,
             fontWeight: FontWeight.bold
           ),
         ),
@@ -966,11 +967,9 @@ class CreateStoreOrUpdateScreenState extends State<CreateStoreOrUpdateScreen> {
                       NS.push(context, PlacePicker(
                         apiKey: AppConstants.apiKeyGmaps,
                         useCurrentLocation: true,
-                        onPlacePicked: (result) async {
+                        onPlacePicked: (PickResult result) async {
                           setState(() {
-                            location = result.formattedAddress!.isNotEmpty
-                            ? result.formattedAddress.toString()
-                            : '-';
+                            location = result.formattedAddress!.isNotEmpty ? result.formattedAddress.toString() : '-';
                             addressC.text = result.formattedAddress.toString();
                             lat = result.geometry?.location.lat.toString() ?? '-';
                             lng = result.geometry?.location.lng.toString() ?? '-';

@@ -95,7 +95,7 @@ class ListOrderSellerScreenState extends State<ListOrderSellerScreen> with Singl
         centerTitle: true,
         title: Text("Daftar Pesanan",
           style: robotoRegular.copyWith(
-            fontSize: Dimensions.fontSizeDefault,
+            fontSize: Dimensions.fontSizeLarge,
             fontWeight: FontWeight.bold,
             color: ColorResources.black
           ),
@@ -111,7 +111,7 @@ class ListOrderSellerScreenState extends State<ListOrderSellerScreen> with Singl
           tabAlignment: TabAlignment.center,
           controller: tabC,
           labelStyle: robotoRegular.copyWith(
-            fontSize: Dimensions.fontSizeExtraSmall,
+            fontSize: Dimensions.fontSizeDefault,
             color: ColorResources.black
           ),
           tabs: [

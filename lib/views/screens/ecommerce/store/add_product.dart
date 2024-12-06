@@ -253,7 +253,7 @@ class AddProductScreenState extends State<AddProductScreen> {
       elevation: 0,
       title: Text( "Tambah Produk",
         style: robotoRegular.copyWith(
-          fontSize: Dimensions.fontSizeDefault,
+          fontSize: Dimensions.fontSizeLarge,
           fontWeight: FontWeight.bold,
           color: ColorResources.black
         ),
