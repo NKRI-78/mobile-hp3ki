@@ -13,7 +13,7 @@ import 'package:hp3ki/utils/currency.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 
-import 'package:hp3ki/views/basewidgets/bounce/gesture.dart';
+import 'package:hp3ki/views/basewidgets/button/bounce.dart';
 
 import 'package:hp3ki/views/screens/ecommerce/product/product_detail.dart';
 
@@ -31,7 +31,7 @@ class ProductItem extends StatelessWidget {
     
     return SizedBox(
       width: width,
-      child: GestureBounce(
+      child: Bouncing(
         onPress: () {
           NS.push(context, ProductDetailScreen(productId: product.id));
         },  

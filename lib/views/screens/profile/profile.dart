@@ -1000,10 +1000,11 @@ class ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Container buildOptionContainer(
-      {required String label,
-      required Color color,
-      required void Function() onTap}) {
+  Container buildOptionContainer({
+    required String label,
+    required Color color,
+    required void Function() onTap
+  }) {
     return Container(
       margin: const EdgeInsets.only(
         left: Dimensions.marginSizeExtraLarge,
@@ -1011,9 +1012,10 @@ class ProfileScreenState extends State<ProfileScreen> {
         bottom: Dimensions.marginSizeExtraLarge,
       ),
       decoration: BoxDecoration(
-          color: const Color.fromARGB(141, 68, 99, 158).withOpacity(0.7),
-          borderRadius: BorderRadius.circular(30.0),
-          boxShadow: kElevationToShadow[2]),
+        color: const Color.fromARGB(141, 68, 99, 158).withOpacity(0.7),
+        borderRadius: BorderRadius.circular(30.0),
+        boxShadow: kElevationToShadow[2]
+      ),
       child: Material(
         color: ColorResources.transparent,
         child: InkWell(

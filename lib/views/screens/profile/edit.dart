@@ -18,12 +18,11 @@ class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({ Key? key}) : super(key: key);
 
   @override
-  State<EditProfileScreen> createState() => _EditProfileScreenState();
+  State<EditProfileScreen> createState() => EditProfileScreenState();
 }
 
-class _EditProfileScreenState extends State<EditProfileScreen> {
+class EditProfileScreenState extends State<EditProfileScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
 
   late TextEditingController namaC;
   late FocusNode namaFn;
@@ -38,8 +37,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     String alamat = alamatC.text.trim();
 
     if (formKey.currentState!.validate()) {
-        context.read<ProfileProvider>().updateProfileNameOrAddress(context, name: nama, address: alamat);
-      }
+      context.read<ProfileProvider>().updateProfileNameOrAddress(context, name: nama, address: alamat);
+    }
   }
 
   @override
