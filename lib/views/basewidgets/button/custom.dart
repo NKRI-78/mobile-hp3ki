@@ -28,9 +28,9 @@ class CustomButton extends StatelessWidget {
   final bool isPrefixIcon;
 
   const CustomButton({
-    Key? key, 
-    required this.onTap, 
-    this.btnTxt, 
+    Key? key,
+    required this.onTap,
+    this.btnTxt,
     this.customText = false,
     this.text,
     this.width = double.infinity,
@@ -54,66 +54,53 @@ class CustomButton extends StatelessWidget {
     return Bouncing(
       onPress: isLoading ? null : onTap,
       child: Container(
-        width: width,
-        height: height,
-        decoration: BoxDecoration(
-          image: isBackgroundImage
-            ? const DecorationImage(
-                fit: BoxFit.cover,
-                image: AssetImage(
-                  'assets/images/background/bg.png',
-                )
-              )
-            : null,
-          boxShadow: isBoxShadow 
-          ? boxShadow 
-          : [],
-          color: btnColor,
-          border: Border.all(
-            color: isBorder 
-            ? btnBorderColor 
-            : Colors.transparent,
-          ),
-          borderRadius: isBorderRadius 
-          ? BorderRadius.circular(sizeBorderRadius)
-          : null
-        ),
-        child: isLoading 
-        ? Center(
-            child: SpinKitFadingCircle(
-              color: loadingColor,
-              size: 25.0
-            ),
-          )
-        : Row(
-            mainAxisAlignment: isPrefixIcon ? MainAxisAlignment.start : MainAxisAlignment.center,
-            children: [
-            isPrefixIcon 
-            ? const SizedBox(width: 15) 
-            : const SizedBox(),
-            isPrefixIcon
-              ? Image.asset('assets/images/logo/logo.png',
-                height: 48.0,
-                width: 48.0,
-              )
-              : const SizedBox(),
-            isPrefixIcon 
-            ? const SizedBox(width: 15) 
-            : const SizedBox(),
-            customText
-              ? text! 
-              : Center(
-                child: Text(btnTxt!,
-                  style: poppinsRegular.copyWith(
-                    color: btnTextColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: fontSize
-                  ) 
-                ),
+          width: width,
+          height: height,
+          decoration: BoxDecoration(
+              image: isBackgroundImage
+                  ? const DecorationImage(
+                      fit: BoxFit.cover,
+                      image: AssetImage(
+                        'assets/images/background/bg.png',
+                      ))
+                  : null,
+              boxShadow: isBoxShadow ? boxShadow : [],
+              color: btnColor,
+              border: Border.all(
+                color: isBorder ? btnBorderColor : Colors.transparent,
               ),
-          ],
-        )
-      ),
+              borderRadius: isBorderRadius
+                  ? BorderRadius.circular(sizeBorderRadius)
+                  : null),
+          child: isLoading
+              ? Center(
+                  child: SpinKitFadingCircle(color: loadingColor, size: 25.0),
+                )
+              : Row(
+                  mainAxisAlignment: isPrefixIcon
+                      ? MainAxisAlignment.start
+                      : MainAxisAlignment.center,
+                  children: [
+                    isPrefixIcon ? const SizedBox(width: 15) : const SizedBox(),
+                    isPrefixIcon
+                        ? Image.asset(
+                            'assets/images/logo/logo-aspro.png',
+                            height: 48.0,
+                            width: 48.0,
+                          )
+                        : const SizedBox(),
+                    isPrefixIcon ? const SizedBox(width: 15) : const SizedBox(),
+                    customText
+                        ? text!
+                        : Center(
+                            child: Text(btnTxt!,
+                                style: poppinsRegular.copyWith(
+                                    color: btnTextColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: fontSize)),
+                          ),
+                  ],
+                )),
     );
   }
 }

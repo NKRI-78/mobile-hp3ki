@@ -36,7 +36,8 @@ class SignInScreen extends StatefulWidget {
   State<SignInScreen> createState() => SignInScreenState();
 }
 
-class SignInScreenState extends State<SignInScreen> with SingleTickerProviderStateMixin {
+class SignInScreenState extends State<SignInScreen>
+    with SingleTickerProviderStateMixin {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   late ScrollController scrollC;
@@ -54,8 +55,8 @@ class SignInScreenState extends State<SignInScreen> with SingleTickerProviderSta
     if (currentBackPressTime == null ||
         now.difference(currentBackPressTime) > const Duration(seconds: 2)) {
       currentBackPressTime = now;
-      ShowSnackbar.snackbar(getTranslated("PRESS_TWICE_BACK", context),
-          "", ColorResources.black);
+      ShowSnackbar.snackbar(
+          getTranslated("PRESS_TWICE_BACK", context), "", ColorResources.black);
       return Future.value(false);
     }
     SystemNavigator.pop();
@@ -113,19 +114,21 @@ class SignInScreenState extends State<SignInScreen> with SingleTickerProviderSta
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<InternetProvider>(builder: (BuildContext context, InternetProvider internetProvider, Widget? child) {
+    return Consumer<InternetProvider>(builder: (BuildContext context,
+        InternetProvider internetProvider, Widget? child) {
       // ignore: deprecated_member_use
       return WillPopScope(
         onWillPop: willPopScope,
         child: Scaffold(
           backgroundColor: ColorResources.transparent,
           body: internetProvider.internetStatus == InternetStatus.disconnected
-          ? const NoConnectionScreen()
-          : buildConnectionAvailableContent(context),
+              ? const NoConnectionScreen()
+              : buildConnectionAvailableContent(context),
         ),
       );
     });
   }
+
   GestureDetector buildConnectionAvailableContent(BuildContext context) {
     return GestureDetector(
       onTap: (() {
@@ -147,14 +150,12 @@ class SignInScreenState extends State<SignInScreen> with SingleTickerProviderSta
     return const BoxDecoration(
       backgroundBlendMode: BlendMode.darken,
       gradient: LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [ColorResources.black, Color(0xff0B1741)]
-      ),
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [ColorResources.black, Color(0xff0B1741)]),
       image: DecorationImage(
-        fit: BoxFit.cover,
-        image: AssetImage('assets/images/background/bg.png')
-      ),
+          fit: BoxFit.cover,
+          image: AssetImage('assets/images/background/bg.png')),
     );
   }
 
@@ -167,7 +168,7 @@ class SignInScreenState extends State<SignInScreen> with SingleTickerProviderSta
           child: Align(
             alignment: Alignment.topRight,
             child: Image.asset(
-              'assets/images/logo/logo.png',
+              'assets/images/logo/logo-aspro.png',
               height: 180,
               width: 180,
               fit: BoxFit.cover,
@@ -175,13 +176,13 @@ class SignInScreenState extends State<SignInScreen> with SingleTickerProviderSta
           ),
         ),
         Positioned(
-          top: 150,
-          child: Image.asset('assets/images/auth/rectangle.png',
-            fit: BoxFit.cover,
-            height: MediaQuery.of(context).size.height * .70,
-            width: MediaQuery.sizeOf(context).width,
-          )
-        ),
+            top: 150,
+            child: Image.asset(
+              'assets/images/auth/rectangle.png',
+              fit: BoxFit.cover,
+              height: MediaQuery.of(context).size.height * .70,
+              width: MediaQuery.sizeOf(context).width,
+            )),
         Positioned(
           top: 300.0,
           left: 30.0,
@@ -212,8 +213,7 @@ class SignInScreenState extends State<SignInScreen> with SingleTickerProviderSta
             right: 130.0,
           ),
           child: Align(
-            alignment: Alignment.bottomCenter, child: buildLoginButton()
-          ),
+              alignment: Alignment.bottomCenter, child: buildLoginButton()),
         ),
       ],
     );
@@ -233,7 +233,7 @@ class SignInScreenState extends State<SignInScreen> with SingleTickerProviderSta
         Row(
           children: [
             Text(
-              'HP3KI',
+              'ASPRO',
               style: poppinsRegular.copyWith(
                 fontSize: Dimensions.fontSizeOverLarge,
                 fontWeight: FontWeight.bold,

@@ -1,4 +1,3 @@
-
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -24,17 +23,16 @@ import 'package:hp3ki/utils/dimensions.dart';
 class NewsDetailScreen extends StatefulWidget {
   final String newsId;
 
-  const NewsDetailScreen({ 
+  const NewsDetailScreen({
     required this.newsId,
     Key? key,
   }) : super(key: key);
-  
+
   @override
   NewsDetailScreenState createState() => NewsDetailScreenState();
 }
 
 class NewsDetailScreenState extends State<NewsDetailScreen> {
-
   bool loading = false;
 
   String imageUrl = "";
@@ -60,31 +58,36 @@ class NewsDetailScreenState extends State<NewsDetailScreen> {
   }
 
   Future<void> getData() async {
-
     setState(() {
       loading = true;
     });
 
-    if(!mounted) return;
-      await context.read<NewsProvider>().getNewsDetail(
-        context, 
-        newsId: widget.newsId.toString()
-      );
+    if (!mounted) return;
+    await context
+        .read<NewsProvider>()
+        .getNewsDetail(context, newsId: widget.newsId.toString());
 
-      setState(() {
-        loading = false;
-      });
+    setState(() {
+      loading = false;
+    });
 
-      imageUrl = loading ? "..." : context.read<NewsProvider>().newsDetail!.image.toString();
-      title = loading ? "..." : context.read<NewsProvider>().newsDetail!.title.toString();
-      content = loading ? "..." : context.read<NewsProvider>().newsDetail!.desc.toString();
-      date = loading ? "..." : context.read<NewsProvider>().newsDetail!.createdAt!;
+    imageUrl = loading
+        ? "..."
+        : context.read<NewsProvider>().newsDetail!.image.toString();
+    title = loading
+        ? "..."
+        : context.read<NewsProvider>().newsDetail!.title.toString();
+    content = loading
+        ? "..."
+        : context.read<NewsProvider>().newsDetail!.desc.toString();
+    date =
+        loading ? "..." : context.read<NewsProvider>().newsDetail!.createdAt!;
 
-      if (title.length > 24) {
-        titleMore = title.substring(0, 24);
-      } else {
-        titleMore = title;
-      }
+    if (title.length > 24) {
+      titleMore = title.substring(0, 24);
+    } else {
+      titleMore = title;
+    }
   }
 
   @override
@@ -106,29 +109,27 @@ class NewsDetailScreenState extends State<NewsDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorResources.white,
-      body: Consumer<NewsProvider>(
-        builder: (context, newsProvider, child) {
-          if(newsProvider.newsDetailStatus == NewsDetailStatus.loading) {
-            return const Center(child: CircularProgressIndicator(color: ColorResources.primary,));
+        backgroundColor: ColorResources.white,
+        body: Consumer<NewsProvider>(builder: (context, newsProvider, child) {
+          if (newsProvider.newsDetailStatus == NewsDetailStatus.loading) {
+            return const Center(
+                child: CircularProgressIndicator(
+              color: ColorResources.primary,
+            ));
           }
-          if(newsProvider.newsDetailStatus == NewsDetailStatus.empty) {
+          if (newsProvider.newsDetailStatus == NewsDetailStatus.empty) {
             return const Center(child: Text('Tidak ada detail berita.'));
           }
-          if(newsProvider.newsDetailStatus == NewsDetailStatus.loading) {
+          if (newsProvider.newsDetailStatus == NewsDetailStatus.loading) {
             return const Center(child: Text('Ada yang salah.'));
           }
           return CustomScrollView(
-            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+            physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics()),
             controller: scrollC,
-            slivers: [
-              buildAppBar(context),
-              buildBodyContent()
-            ],
+            slivers: [buildAppBar(context), buildBodyContent()],
           );
-        }
-      )
-    );
+        }));
   }
 
   SliverAppBar buildAppBar(BuildContext context) {
@@ -138,80 +139,78 @@ class NewsDetailScreenState extends State<NewsDetailScreen> {
       pinned: true,
       expandedHeight: 250.0,
       leading: Container(
-        margin: const EdgeInsets.all(8.0),
-        height: 40.0,
-        width: 40.0,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(50.0),
-          color:  Colors.black54
-        ),
-        child: IconButton(
-          color: ColorResources.white,
-          onPressed: () {
-            NS.pop();
-          },
-          icon: const Icon(Icons.arrow_back,
-            size: Dimensions.iconSizeDefault,
-          ),
-        )
-      ),
+          margin: const EdgeInsets.all(8.0),
+          height: 40.0,
+          width: 40.0,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(50.0), color: Colors.black54),
+          child: IconButton(
+            color: ColorResources.white,
+            onPressed: () {
+              NS.pop();
+            },
+            icon: const Icon(
+              Icons.arrow_back,
+              size: Dimensions.iconSizeDefault,
+            ),
+          )),
       actions: [
         Container(
           margin: const EdgeInsets.all(8.0),
           height: 40.0,
           width: 40.0,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(50.0),
-            color: Colors.black54
-          ),
+              borderRadius: BorderRadius.circular(50.0), color: Colors.black54),
           child: Builder(
             builder: (BuildContext context) {
               return PopupMenuButton(
-                onSelected: (int i) async {
-                  switch (i) {
-                    case 1:
-                      ProgressDialog pr = ProgressDialog(context: context);
-                      try {
-                        PermissionStatus statusStorage = await Permission.storage.status;
-                        if(!statusStorage.isGranted) {
-                          await Permission.storage.request();
-                        } 
-                        pr.show(
-                          max: 1,
-                          msg: '${getTranslated("DOWNLOADING", context)}...'
-                        );
-                        await GallerySaver.saveImage(imageUrl);
-                        pr.close();
-                        ShowSnackbar.snackbar(getTranslated("SAVE_TO_GALLERY", context), "", ColorResources.success);
-                      } catch(e, stacktrace) {
-                        pr.close();
-                        ShowSnackbar.snackbar(getTranslated("THERE_WAS_PROBLEM", context), "", ColorResources.error);
-                        debugPrint(stacktrace.toString());
-                      }
-                    break;
-                    default:
-                  }
-                },
-                icon: const Icon(Icons.more_horiz),
-                itemBuilder: (BuildContext context) => [
-                  PopupMenuItem(
-                    padding: const EdgeInsets.only(
-                      left: Dimensions.paddingSizeSmall,
-                      right: Dimensions.paddingSizeSmall
-                    ),
-                    textStyle: poppinsRegular.copyWith(
-                      fontSize: Dimensions.fontSizeDefault
-                    ),
-                    child: Text(getTranslated("DOWNLOAD", context),
-                      style: poppinsRegular.copyWith(
-                        fontSize: Dimensions.fontSizeDefault,
-                        color: ColorResources.black
-                      )
-                    ),
-                    value: 1,
-                  ),
-                ]
-              );                 
+                  onSelected: (int i) async {
+                    switch (i) {
+                      case 1:
+                        ProgressDialog pr = ProgressDialog(context: context);
+                        try {
+                          PermissionStatus statusStorage =
+                              await Permission.storage.status;
+                          if (!statusStorage.isGranted) {
+                            await Permission.storage.request();
+                          }
+                          pr.show(
+                              max: 1,
+                              msg:
+                                  '${getTranslated("DOWNLOADING", context)}...');
+                          await GallerySaver.saveImage(imageUrl);
+                          pr.close();
+                          ShowSnackbar.snackbar(
+                              getTranslated("SAVE_TO_GALLERY", context),
+                              "",
+                              ColorResources.success);
+                        } catch (e, stacktrace) {
+                          pr.close();
+                          ShowSnackbar.snackbar(
+                              getTranslated("THERE_WAS_PROBLEM", context),
+                              "",
+                              ColorResources.error);
+                          debugPrint(stacktrace.toString());
+                        }
+                        break;
+                      default:
+                    }
+                  },
+                  icon: const Icon(Icons.more_horiz),
+                  itemBuilder: (BuildContext context) => [
+                        PopupMenuItem(
+                          padding: const EdgeInsets.only(
+                              left: Dimensions.paddingSizeSmall,
+                              right: Dimensions.paddingSizeSmall),
+                          textStyle: poppinsRegular.copyWith(
+                              fontSize: Dimensions.fontSizeDefault),
+                          child: Text(getTranslated("DOWNLOAD", context),
+                              style: poppinsRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeDefault,
+                                  color: ColorResources.black)),
+                          value: 1,
+                        ),
+                      ]);
             },
           ),
         )
@@ -221,27 +220,26 @@ class NewsDetailScreenState extends State<NewsDetailScreen> {
           width: double.infinity,
           height: double.infinity,
           child: CachedNetworkImage(
-            imageUrl: imageUrl,
-            fit: BoxFit.fitHeight,
-            placeholder: (BuildContext context, String url)  {
-              return Center(
-                child: Image.asset('assets/images/logo/logo.png',
+              imageUrl: imageUrl,
+              fit: BoxFit.fitHeight,
+              placeholder: (BuildContext context, String url) {
+                return Center(
+                    child: Image.asset(
+                  'assets/images/logo/logo-aspro.png',
                   width: double.infinity,
                   height: double.infinity,
                   fit: BoxFit.fitHeight,
-                )
-              );
-            },
-            errorWidget: (BuildContext context, String url, dynamic error) {
-              return Center(
-                child: Image.asset('assets/images/logo/logo.png',
+                ));
+              },
+              errorWidget: (BuildContext context, String url, dynamic error) {
+                return Center(
+                    child: Image.asset(
+                  'assets/images/logo/logo-aspro.png',
                   width: double.infinity,
                   height: double.infinity,
                   fit: BoxFit.fitHeight,
-                )
-              );
-            }
-          ),
+                ));
+              }),
         ),
         title: AnimatedOpacity(
           opacity: isShrink ? 1.0 : 0.0,
@@ -252,7 +250,7 @@ class NewsDetailScreenState extends State<NewsDetailScreen> {
             style: poppinsRegular.copyWith(
               fontSize: Dimensions.fontSizeDefault,
               fontWeight: FontWeight.bold,
-              color: ColorResources.black, 
+              color: ColorResources.black,
             ),
           ),
         ),
@@ -262,47 +260,44 @@ class NewsDetailScreenState extends State<NewsDetailScreen> {
 
   SliverList buildBodyContent() {
     return SliverList(
-      delegate: SliverChildListDelegate([
-        Container(
-          margin: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
-          width: double.infinity,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: double.infinity,
-                margin: const EdgeInsets.only(bottom: 5.0),
-                child: AnimatedOpacity(
-                  opacity: isShrink ? 0.0 : 1.0,
-                  duration: const Duration(milliseconds: 250),
-                  child: Text(title,
-                  textAlign: TextAlign.start,
+        delegate: SliverChildListDelegate([
+      Container(
+        margin: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
+        width: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: double.infinity,
+              margin: const EdgeInsets.only(bottom: 5.0),
+              child: AnimatedOpacity(
+                opacity: isShrink ? 0.0 : 1.0,
+                duration: const Duration(milliseconds: 250),
+                child: Text(title,
+                    textAlign: TextAlign.start,
                     style: poppinsRegular.copyWith(
                       fontSize: Dimensions.fontSizeLarge,
                       color: ColorResources.black,
                       fontWeight: FontWeight.bold,
-                    )
-                  ),
-                ),
+                    )),
               ),
-              Container(
+            ),
+            Container(
                 margin: const EdgeInsets.only(bottom: 10.0),
                 child: Text(
                   date,
                   style: poppinsRegular.copyWith(
-                    color: ColorResources.grey, 
-                    fontSize: Dimensions.fontSizeDefault
-                  ),
-                )
-              ),
-              const Divider(
-                height: 4.0,
-                thickness: 1.0,
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 5.0, bottom: 10.0),
-                child: HtmlWidget(
+                      color: ColorResources.grey,
+                      fontSize: Dimensions.fontSizeDefault),
+                )),
+            const Divider(
+              height: 4.0,
+              thickness: 1.0,
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: 5.0, bottom: 10.0),
+              child: HtmlWidget(
                 content.toString(),
                 onTapUrl: (String? val) {
                   debugPrint(val.toString());
@@ -310,20 +305,14 @@ class NewsDetailScreenState extends State<NewsDetailScreen> {
                 },
                 customStylesBuilder: (element) {
                   if (element.localName == 'body') {
-                    return {
-                      'margin': '0', 
-                      'padding': '0'
-                    };
+                    return {'margin': '0', 'padding': '0'};
                   }
                   return null;
                 },
                 customWidgetBuilder: (element) {
                   if (element.localName == 'a') {
                     final url = element.attributes['href'];
-                    NS.push(context, WebViewScreen(
-                      url: url!,
-                      title: title
-                    ));
+                    NS.push(context, WebViewScreen(url: url!, title: title));
 
                     return null;
                   }
@@ -332,10 +321,7 @@ class NewsDetailScreenState extends State<NewsDetailScreen> {
                     final text = element.text.trim();
                     if (text.contains('https://')) {
                       final url = text.substring(text.indexOf('https://'));
-                      NS.push(context, WebViewScreen(
-                        url: url,
-                        title: title
-                      ));
+                      NS.push(context, WebViewScreen(url: url, title: title));
 
                       return null;
                     }
@@ -344,30 +330,28 @@ class NewsDetailScreenState extends State<NewsDetailScreen> {
                   return null;
                 },
               ),
-                
-                //  Html(
-                //   onLinkTap: (String? url, Map<String, String> attributes, element) async {
-                //     NS.push(context, WebViewScreen(
-                //       url: url!,
-                //       title: title
-                //     ));
-                //   },
-                //   style: {
-                //     'a': Style(
-                //       color: ColorResources.blueDrawerPrimary,
-                //     ),
-                //     'body': Style(
-                //       fontSize: FontSize.larger
-                //     ),
-                //   },
-                //   data: content
-                // ),
 
-              ),
-            ],
-          ),
-        )
-      ])
-    );
+              //  Html(
+              //   onLinkTap: (String? url, Map<String, String> attributes, element) async {
+              //     NS.push(context, WebViewScreen(
+              //       url: url!,
+              //       title: title
+              //     ));
+              //   },
+              //   style: {
+              //     'a': Style(
+              //       color: ColorResources.blueDrawerPrimary,
+              //     ),
+              //     'body': Style(
+              //       fontSize: FontSize.larger
+              //     ),
+              //   },
+              //   data: content
+              // ),
+            ),
+          ],
+        ),
+      )
+    ]));
   }
 }

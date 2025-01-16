@@ -8,7 +8,6 @@ import 'package:hp3ki/views/basewidgets/button/custom.dart';
 import 'package:hp3ki/views/screens/about/about.dart';
 
 class AboutMenuScreen extends StatefulWidget {
-
   const AboutMenuScreen({
     Key? key,
   }) : super(key: key);
@@ -34,7 +33,9 @@ class _AboutMenuScreenState extends State<AboutMenuScreen> {
   }
 
   AppBar buildAppBar() {
-    return const CustomAppBar(title: 'Tentang HP3KI',).buildAppBar(context);
+    return const CustomAppBar(
+      title: 'Tentang ASPRO',
+    ).buildAppBar(context);
   }
 
   Widget buildBodyContent() {
@@ -53,38 +54,51 @@ class _AboutMenuScreenState extends State<AboutMenuScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         buildButton(
-          buttonText: 'Seputar HP3KI',
-          onTap: () => NS.push(context, const AboutScreen(screenIndex: 1,)),
+          buttonText: 'Seputar ASPRO',
+          onTap: () => NS.push(
+              context,
+              const AboutScreen(
+                screenIndex: 1,
+              )),
         ),
-        const SizedBox(height: 15,),
+        const SizedBox(
+          height: 15,
+        ),
         buildButton(
-          buttonText: 'Visi dan Misi HP3KI',
-          onTap: () => NS.push(context, const AboutScreen(screenIndex: 2,)),
+          buttonText: 'Visi dan Misi ASPRO',
+          onTap: () => NS.push(
+              context,
+              const AboutScreen(
+                screenIndex: 2,
+              )),
         ),
-        const SizedBox(height: 15,),
+        const SizedBox(
+          height: 15,
+        ),
       ],
     );
   }
 
-  Widget buildButton({required String buttonText, required dynamic Function() onTap}) {
+  Widget buildButton(
+      {required String buttonText, required dynamic Function() onTap}) {
     return CustomButton(
-          onTap: onTap,
-          btnColor: ColorResources.white,
-          customText: true,
-          text: Text(
-            buttonText,
-            style: poppinsRegular.copyWith(
-              color: ColorResources.white,
-              fontSize: Dimensions.fontSizeDefault,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.0,
-            ),
-          ),
-          isBorderRadius: true,
-          isBoxShadow: true,
-          height: 70,
-          isBackgroundImage: true,
-          isPrefixIcon: true,
-        );
+      onTap: onTap,
+      btnColor: ColorResources.white,
+      customText: true,
+      text: Text(
+        buttonText,
+        style: poppinsRegular.copyWith(
+          color: ColorResources.white,
+          fontSize: Dimensions.fontSizeDefault,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 1.0,
+        ),
+      ),
+      isBorderRadius: true,
+      isBoxShadow: true,
+      height: 70,
+      isBackgroundImage: true,
+      isPrefixIcon: true,
+    );
   }
 }

@@ -62,7 +62,8 @@ class DashboardScreen extends StatefulWidget {
   DashboardScreenState createState() => DashboardScreenState();
 }
 
-class DashboardScreenState extends State<DashboardScreen> with SingleTickerProviderStateMixin {
+class DashboardScreenState extends State<DashboardScreen>
+    with SingleTickerProviderStateMixin {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   late PanelController panelC;
@@ -76,7 +77,7 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
   void onItemTapped(int index) {
     final String membershipStatus = SharedPrefs.getUserMemberType().trim();
 
-    if(index == 2) {
+    if (index == 2) {
       if (membershipStatus != "PLATINUM" || membershipStatus == "-") {
         context.read<ProfileProvider>().showNonPlatinumLimit(context);
         return;
@@ -92,9 +93,10 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
   Future<bool> willPopScope() {
     DateTime now = DateTime.now();
     if (currentBackPressTime == null ||
-      now.difference(currentBackPressTime) > const Duration(seconds: 2)) {
+        now.difference(currentBackPressTime) > const Duration(seconds: 2)) {
       currentBackPressTime = now;
-      ShowSnackbar.snackbar(getTranslated("PRESS_TWICE_BACK", context), "", ColorResources.primary);
+      ShowSnackbar.snackbar(getTranslated("PRESS_TWICE_BACK", context), "",
+          ColorResources.primary);
       return Future.value(false);
     }
     SystemNavigator.pop();
@@ -129,9 +131,9 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
 
   Future<void> getData() async {
     if (!mounted) return;
-      await context.read<ProfileProvider>().remote();
+    await context.read<ProfileProvider>().remote();
     if (!mounted) return;
-      await context.read<EcommerceProvider>().fetchAllProduct(search: "");
+    await context.read<EcommerceProvider>().fetchAllProduct(search: "");
   }
 
   @override
@@ -140,9 +142,7 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
 
     panelC = PanelController();
 
-    selectedIndex = widget.index == null 
-    ? 0 
-    : widget.index!;
+    selectedIndex = widget.index == null ? 0 : widget.index!;
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (context.read<ProfileProvider>().isActive == 1) {
@@ -164,24 +164,22 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
         endDrawerEnableOpenDragGesture: false,
         extendBody: true,
         body: !SharedPrefs.isLoggedIn()
-      ? widgetOptions.elementAt(selectedIndex)
-      : SlidingUpPanel(
-          controller: panelC,
-          maxHeight: MediaQuery.of(context).size.height,
-          color: Colors.transparent,
-          panelSnapping: true,
-          panel: buildMenuPanel(),
-          body: widgetOptions.isEmpty
-          ? const SizedBox()
-          : widgetOptions.elementAt(selectedIndex),
-        ),
+            ? widgetOptions.elementAt(selectedIndex)
+            : SlidingUpPanel(
+                controller: panelC,
+                maxHeight: MediaQuery.of(context).size.height,
+                color: Colors.transparent,
+                panelSnapping: true,
+                panel: buildMenuPanel(),
+                body: widgetOptions.isEmpty
+                    ? const SizedBox()
+                    : widgetOptions.elementAt(selectedIndex),
+              ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: !SharedPrefs.isLoggedIn() 
-        ? const SizedBox() 
-        : buildMenuBar(),
-        bottomNavigationBar: !SharedPrefs.isLoggedIn() 
-        ? const SizedBox() 
-        : buildNavbar(),
+        floatingActionButton:
+            !SharedPrefs.isLoggedIn() ? const SizedBox() : buildMenuBar(),
+        bottomNavigationBar:
+            !SharedPrefs.isLoggedIn() ? const SizedBox() : buildNavbar(),
       ),
     );
   }
@@ -189,7 +187,7 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
   Widget buildMenuPanel() {
     List menu = [
       {
-        "name": "HP3KI",
+        "name": "ASPRO",
         "icon": "logo/logo.png",
         "screen": const AboutMenuScreen(),
       },
@@ -252,8 +250,7 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
           alignment: const Alignment(0, 0.3),
           child: AlignedGridView.count(
             physics: const BouncingScrollPhysics(
-              parent: AlwaysScrollableScrollPhysics()
-            ),
+                parent: AlwaysScrollableScrollPhysics()),
             crossAxisCount: 3,
             mainAxisSpacing: 16.0,
             crossAxisSpacing: 2.0,
@@ -261,7 +258,6 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
             itemCount: menu.length,
             padding: const EdgeInsets.symmetric(horizontal: 75.0),
             itemBuilder: (context, index) {
-           
               // return menu[index]["name"] == "Mart" ||
               //         menu[index]["name"] == "SOS" ||
               //         menu[index]["name"] == "Calender"
@@ -324,15 +320,21 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
                 children: [
                   Bouncing(
                     onPress: () {
-                      final String membershipStatus = SharedPrefs.getUserMemberType().trim();
+                      final String membershipStatus =
+                          SharedPrefs.getUserMemberType().trim();
 
                       final selectedMenu = menu[index];
                       final String selectedMenuName = selectedMenu["name"];
                       final selectedMenuScreen = selectedMenu["screen"];
 
-                      if (membershipStatus != "PLATINUM" || membershipStatus == "-") {
-                        if (selectedMenuName.contains("Member") || selectedMenuName.contains('Check') || selectedMenuName.contains('SOS')) {
-                          context.read<ProfileProvider>().showNonPlatinumLimit(context);
+                      if (membershipStatus != "PLATINUM" ||
+                          membershipStatus == "-") {
+                        if (selectedMenuName.contains("Member") ||
+                            selectedMenuName.contains('Check') ||
+                            selectedMenuName.contains('SOS')) {
+                          context
+                              .read<ProfileProvider>()
+                              .showNonPlatinumLimit(context);
                         } else {
                           NS.push(context, selectedMenuScreen);
                         }
@@ -492,15 +494,20 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
   }
 
   Consumer<InboxProvider> buildNotificationItem() {
-    return Consumer<InboxProvider>(builder: (BuildContext context, InboxProvider inboxProvider, Widget? child) {
+    return Consumer<InboxProvider>(builder:
+        (BuildContext context, InboxProvider inboxProvider, Widget? child) {
       if (inboxProvider.inboxCountStatus == InboxCountStatus.loading) {
-        return buildNavbarItem(index: 3, image: "navbar-notif", label: "NOTIFICATION");
+        return buildNavbarItem(
+            index: 3, image: "navbar-notif", label: "NOTIFICATION");
       } else if (inboxProvider.inboxCountStatus == InboxCountStatus.empty) {
-        return buildNavbarItem(index: 3, image: "navbar-notif", label: "NOTIFICATION");
+        return buildNavbarItem(
+            index: 3, image: "navbar-notif", label: "NOTIFICATION");
       } else if (inboxProvider.inboxCountStatus == InboxCountStatus.error) {
-        return buildNavbarItem(index: 3, image: "navbar-notif", label: "NOTIFICATION");
+        return buildNavbarItem(
+            index: 3, image: "navbar-notif", label: "NOTIFICATION");
       } else {
-        return buildNavbarItem(index: 3, image: "navbar-notif", label: "NOTIFICATION");
+        return buildNavbarItem(
+            index: 3, image: "navbar-notif", label: "NOTIFICATION");
         // b.Badge(
         //  position: const b.BadgePosition(
         //    end: 15.0,
@@ -519,9 +526,8 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
     });
   }
 
-  Widget buildNavbarItem({
-    required int index, 
-    required String image, required String label}) {
+  Widget buildNavbarItem(
+      {required int index, required String image, required String label}) {
     return GestureDetector(
       onTap: () => onItemTapped(index),
       child: Column(
@@ -529,15 +535,16 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
           IconButton(
             onPressed: () => onItemTapped(index),
             icon: image == "navbar-news"
-            ? const Icon(Icons.newspaper)
-            : Image.asset('assets/images/home/$image.png',
-              width: 30.0,
-              height: 30.0,
-              fit: BoxFit.fill,
-              color: selectedIndex == index
-              ? ColorResources.white
-              : ColorResources.white.withOpacity(0.7),
-            ),
+                ? const Icon(Icons.newspaper)
+                : Image.asset(
+                    'assets/images/home/$image.png',
+                    width: 30.0,
+                    height: 30.0,
+                    fit: BoxFit.fill,
+                    color: selectedIndex == index
+                        ? ColorResources.white
+                        : ColorResources.white.withOpacity(0.7),
+                  ),
             color: ColorResources.white,
           ),
           GlowText(
@@ -546,12 +553,12 @@ class DashboardScreenState extends State<DashboardScreen> with SingleTickerProvi
               fontSize: Dimensions.fontSizeDefault,
               fontWeight: FontWeight.w500,
               color: selectedIndex == index
-              ? ColorResources.white
-              : ColorResources.white.withOpacity(0.7),
+                  ? ColorResources.white
+                  : ColorResources.white.withOpacity(0.7),
             ),
             glowColor: selectedIndex == index
-            ? Colors.amberAccent
-            : ColorResources.transparent,
+                ? Colors.amberAccent
+                : ColorResources.transparent,
             blurRadius: 10.0,
           ),
         ],
@@ -568,7 +575,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
-
   int currentIndex = 0;
 
   Future<void> getData() async {
@@ -624,7 +630,6 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-
     Future.wait([
       getData(),
       // initShop(),
@@ -735,179 +740,192 @@ class HomeScreenState extends State<HomeScreen> {
     } else {
       return SliverToBoxAdapter(
         child: !SharedPrefs.isLoggedIn()
-          ? Container(
-          margin: const EdgeInsets.only(
-            top: 80.0,
-            left: Dimensions.marginSizeLarge,
-            right: Dimensions.marginSizeLarge,
-          ),
-          child: Material(
-              color: ColorResources.transparent,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(15.0),
-                onTap: () {
-                  NS.pushDown(context, const SignInScreen());
-                },
-                child: Hero(
-                  tag: 'userBox',
-                  child: Card(
-                    margin: EdgeInsets.zero,
-                    elevation: 10.0,
-                    color: const Color.fromARGB(141, 68, 99, 158)
-                        .withOpacity(0.7),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0)),
-                    child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: Dimensions.marginSizeExtraSmall,
-                            vertical: Dimensions.marginSizeSmall),
-                        child: Center(
-                            child: Text(
-                          "Login",
-                          style: poppinsRegular.copyWith(
-                              fontSize: Dimensions.fontSizeLarge,
-                              color: ColorResources.white),
-                        ))),
-                  ),
+            ? Container(
+                margin: const EdgeInsets.only(
+                  top: 80.0,
+                  left: Dimensions.marginSizeLarge,
+                  right: Dimensions.marginSizeLarge,
                 ),
-              )),
-        )
-      : Container(
-          margin: const EdgeInsets.only(
-            top: 80.0,
-            left: Dimensions.marginSizeLarge,
-            right: Dimensions.marginSizeLarge,
-          ),
-          child: Material(
-            color: ColorResources.transparent,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(15.0),
-              onTap: () {
-                NS.pushDown(context, const ProfileScreen());
-              },
-              child: Hero(
-                tag: 'userBox',
-                child: Card(
-                  margin: EdgeInsets.zero,
-                  elevation: 10.0,
-                  color: const Color.fromARGB(141, 68, 99, 158)
-                      .withOpacity(0.7),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0)),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: Dimensions.marginSizeExtraSmall,
-                        vertical: Dimensions.marginSizeSmall),
-                    child: ListTile(
-                      horizontalTitleGap: 0.0,
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.transparent,
-                        radius: 40.0,
-                        child: Consumer<ProfileProvider>(
-                          builder: (BuildContext context, ProfileProvider profileProvider, Widget? child) {
-
-                            if (profileProvider.profileStatus == ProfileStatus.loading) {
-                              return const CircleAvatar(
-                                backgroundColor:ColorResources.backgroundDisabled,
-                                maxRadius: 40.0,
-                              );
-                            }
-
-                            if (profileProvider.profileStatus == ProfileStatus.error) {
-                              return const CircleAvatar(
-                                backgroundColor:ColorResources.backgroundDisabled,
-                                maxRadius: 40.0,
-                              );
-                            }
-                            
-                            UserData? user = profileProvider.user;
-
-                            return CachedNetworkImage(
-                              imageUrl: user?.avatar.toString() ?? "",
-                              imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
-                                return CircleAvatar(
-                                  backgroundColor: Colors.transparent,
-                                  maxRadius: 40.0,
-                                  backgroundImage: imageProvider,
-                                );
-                              },
-                              errorWidget: (BuildContext context, String url, dynamic error) {
-                                return Image.asset("assets/images/icons/ic-person.png");
-                              },
-                            );
-                          },
-
+                child: Material(
+                    color: ColorResources.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(15.0),
+                      onTap: () {
+                        NS.pushDown(context, const SignInScreen());
+                      },
+                      child: Hero(
+                        tag: 'userBox',
+                        child: Card(
+                          margin: EdgeInsets.zero,
+                          elevation: 10.0,
+                          color: const Color.fromARGB(141, 68, 99, 158)
+                              .withOpacity(0.7),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0)),
+                          child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: Dimensions.marginSizeExtraSmall,
+                                  vertical: Dimensions.marginSizeSmall),
+                              child: Center(
+                                  child: Text(
+                                "Login",
+                                style: poppinsRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeLarge,
+                                    color: ColorResources.white),
+                              ))),
                         ),
                       ),
-                      title: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(getTranslated("WELCOME", context),
-                            style: poppinsRegular.copyWith(
-                              color: ColorResources.white,
-                              fontSize: Dimensions.fontSizeLarge,
+                    )),
+              )
+            : Container(
+                margin: const EdgeInsets.only(
+                  top: 80.0,
+                  left: Dimensions.marginSizeLarge,
+                  right: Dimensions.marginSizeLarge,
+                ),
+                child: Material(
+                  color: ColorResources.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(15.0),
+                    onTap: () {
+                      NS.pushDown(context, const ProfileScreen());
+                    },
+                    child: Hero(
+                      tag: 'userBox',
+                      child: Card(
+                        margin: EdgeInsets.zero,
+                        elevation: 10.0,
+                        color: const Color.fromARGB(141, 68, 99, 158)
+                            .withOpacity(0.7),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0)),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: Dimensions.marginSizeExtraSmall,
+                              vertical: Dimensions.marginSizeSmall),
+                          child: ListTile(
+                            horizontalTitleGap: 0.0,
+                            leading: CircleAvatar(
+                              backgroundColor: Colors.transparent,
+                              radius: 40.0,
+                              child: Consumer<ProfileProvider>(
+                                builder: (BuildContext context,
+                                    ProfileProvider profileProvider,
+                                    Widget? child) {
+                                  if (profileProvider.profileStatus ==
+                                      ProfileStatus.loading) {
+                                    return const CircleAvatar(
+                                      backgroundColor:
+                                          ColorResources.backgroundDisabled,
+                                      maxRadius: 40.0,
+                                    );
+                                  }
+
+                                  if (profileProvider.profileStatus ==
+                                      ProfileStatus.error) {
+                                    return const CircleAvatar(
+                                      backgroundColor:
+                                          ColorResources.backgroundDisabled,
+                                      maxRadius: 40.0,
+                                    );
+                                  }
+
+                                  UserData? user = profileProvider.user;
+
+                                  return CachedNetworkImage(
+                                    imageUrl: user?.avatar.toString() ?? "",
+                                    imageBuilder: (BuildContext context,
+                                        ImageProvider<Object> imageProvider) {
+                                      return CircleAvatar(
+                                        backgroundColor: Colors.transparent,
+                                        maxRadius: 40.0,
+                                        backgroundImage: imageProvider,
+                                      );
+                                    },
+                                    errorWidget: (BuildContext context,
+                                        String url, dynamic error) {
+                                      return Image.asset(
+                                          "assets/images/icons/ic-person.png");
+                                    },
+                                  );
+                                },
+                              ),
                             ),
-                          ),
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              const Icon(
-                                Icons.shopping_bag,
-                                size: Dimensions.iconSizeSmall,
-                                color: ColorResources.white,
-                              ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              Text(getTranslated('MY_BALANCE', context),
-                                style: poppinsRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeDefault,
-                                  color: ColorResources.white
+                            title: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  getTranslated("WELCOME", context),
+                                  style: poppinsRegular.copyWith(
+                                    color: ColorResources.white,
+                                    fontSize: Dimensions.fontSizeLarge,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      subtitle: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading
-                              ? "..."
-                              : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error
-                              ? "-"
-                              : 'Hi, ${context.read<ProfileProvider>().user?.fullname?.smallSentence() ?? "..."}',
-                              maxLines: 1,
-                              style: poppinsRegular.copyWith(
-                                fontWeight: FontWeight.bold,
-                                fontSize: Dimensions.fontSizeExtraLarge,
-                                color: ColorResources.white
-                              ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    const Icon(
+                                      Icons.shopping_bag,
+                                      size: Dimensions.iconSizeSmall,
+                                      color: ColorResources.white,
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      getTranslated('MY_BALANCE', context),
+                                      style: poppinsRegular.copyWith(
+                                          fontSize: Dimensions.fontSizeDefault,
+                                          color: ColorResources.white),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            subtitle: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    context
+                                                .watch<ProfileProvider>()
+                                                .profileStatus ==
+                                            ProfileStatus.loading
+                                        ? "..."
+                                        : context
+                                                    .watch<ProfileProvider>()
+                                                    .profileStatus ==
+                                                ProfileStatus.error
+                                            ? "-"
+                                            : 'Hi, ${context.read<ProfileProvider>().user?.fullname?.smallSentence() ?? "..."}',
+                                    maxLines: 1,
+                                    style: poppinsRegular.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: Dimensions.fontSizeExtraLarge,
+                                        color: ColorResources.white),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    Helper.formatCurrency(0),
+                                    textAlign: TextAlign.right,
+                                    style: poppinsRegular.copyWith(
+                                      color: ColorResources.white,
+                                      fontSize: Dimensions.fontSizeDefault,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          Expanded(
-                            child: Text(
-                              Helper.formatCurrency(0),
-                              textAlign: TextAlign.right,
-                              style: poppinsRegular.copyWith(
-                                color: ColorResources.white,
-                                fontSize: Dimensions.fontSizeDefault,
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ),
-        ),
       );
     }
   }
@@ -972,39 +990,36 @@ class HomeScreenState extends State<HomeScreen> {
               margin: const EdgeInsets.only(
                 top: Dimensions.marginSizeExtraLarge,
               ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15.0)
-              ),
+              decoration:
+                  BoxDecoration(borderRadius: BorderRadius.circular(15.0)),
               child: CarouselSlider.builder(
                 options: CarouselOptions(
-                  autoPlay: true,
-                  enlargeCenterPage: true,
-                  viewportFraction: 0.9,
-                  enlargeStrategy: CenterPageEnlargeStrategy.scale,
-                  initialPage: currentIndex,
-                  onPageChanged: (int i, CarouselPageChangedReason reason) {
-                    currentIndex = i;
-                    setState(() {});
-                  }),
-                  itemCount: bannerProvider.banners!.length,
-                  itemBuilder: (BuildContext context, int i, int z) {
+                    autoPlay: true,
+                    enlargeCenterPage: true,
+                    viewportFraction: 0.9,
+                    enlargeStrategy: CenterPageEnlargeStrategy.scale,
+                    initialPage: currentIndex,
+                    onPageChanged: (int i, CarouselPageChangedReason reason) {
+                      currentIndex = i;
+                      setState(() {});
+                    }),
+                itemCount: bannerProvider.banners!.length,
+                itemBuilder: (BuildContext context, int i, int z) {
                   return CachedNetworkImage(
                     imageUrl: bannerProvider.banners![i].path!,
-                    imageBuilder: (BuildContext context, ImageProvider imageProvider) {
+                    imageBuilder:
+                        (BuildContext context, ImageProvider imageProvider) {
                       return Card(
                         margin: EdgeInsets.zero,
                         color: ColorResources.transparent,
                         elevation: 10.0,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0)
-                        ),
+                            borderRadius: BorderRadius.circular(15.0)),
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15.0),
                             image: DecorationImage(
-                              fit: BoxFit.fill, 
-                              image: imageProvider
-                            ),
+                                fit: BoxFit.fill, image: imageProvider),
                           ),
                         ),
                       );
@@ -1018,38 +1033,36 @@ class HomeScreenState extends State<HomeScreen> {
                           color: ColorResources.white,
                           elevation: 0.0,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0)
-                          ),
+                              borderRadius: BorderRadius.circular(15.0)),
                           child: Container(
                             decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15.0),
-                            image: const DecorationImage(
-                              fit: BoxFit.scaleDown, 
-                              image: AssetImage('assets/images/logo/app-icon.png')
+                              borderRadius: BorderRadius.circular(15.0),
+                              image: const DecorationImage(
+                                  fit: BoxFit.scaleDown,
+                                  image: AssetImage(
+                                      'assets/images/logo/app-icon.png')),
                             ),
                           ),
-                        ),
                         ),
                       );
                     },
                     errorWidget: (context, url, error) {
-                        return Card(
+                      return Card(
                         margin: EdgeInsets.zero,
                         color: ColorResources.transparent,
                         elevation: 0.0,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0)
-                        ),
+                            borderRadius: BorderRadius.circular(15.0)),
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15.0),
                             image: const DecorationImage(
-                              fit: BoxFit.scaleDown, 
-                              image: AssetImage('assets/images/logo/app-icon.png')
-                            ),
+                                fit: BoxFit.scaleDown,
+                                image: AssetImage(
+                                    'assets/images/logo/app-icon.png')),
                           ),
                         ),
-                      );  
+                      );
                     },
                   );
                 },
@@ -1163,9 +1176,11 @@ class HomeScreenState extends State<HomeScreen> {
                   padding: const EdgeInsets.only(right: 15.0),
                   child: GestureDetector(
                     onTap: () {
-                      NS.push(context, NewsDetailScreen(
-                        newsId: newsProvider.news[i].id!,
-                      ));
+                      NS.push(
+                          context,
+                          NewsDetailScreen(
+                            newsId: newsProvider.news[i].id!,
+                          ));
                     },
                     child: Stack(
                       children: [
@@ -1180,9 +1195,11 @@ class HomeScreenState extends State<HomeScreen> {
                             child: InkWell(
                               borderRadius: BorderRadius.circular(30.0),
                               onTap: () {
-                                NS.push(context, NewsDetailScreen(
-                                  newsId: newsProvider.news[i].id!,
-                                ));
+                                NS.push(
+                                    context,
+                                    NewsDetailScreen(
+                                      newsId: newsProvider.news[i].id!,
+                                    ));
                               },
                               child: Container(
                                 height: 200.0,
@@ -1238,8 +1255,7 @@ class HomeScreenState extends State<HomeScreen> {
                                                 Helper.formatDate(
                                                     DateTime.parse(
                                                         Helper.getFormatedDate(
-                                                            newsProvider
-                                                                .news[i]
+                                                            newsProvider.news[i]
                                                                 .createdAt))),
                                                 style: robotoRegular.copyWith(
                                                   color:
@@ -1276,42 +1292,42 @@ class HomeScreenState extends State<HomeScreen> {
                             borderRadius: BorderRadius.circular(30.0),
                             child: CachedNetworkImage(
                               imageUrl: newsProvider.news[i].image!,
-                              imageBuilder: (BuildContext context, ImageProvider imageProvider) {
+                              imageBuilder: (BuildContext context,
+                                  ImageProvider imageProvider) {
                                 return Container(
                                   width: 250.0,
                                   height: 140.0,
                                   decoration: BoxDecoration(
-                                    color: ColorResources.white,
-                                    image: DecorationImage(
-                                      image: imageProvider,
-                                      fit: BoxFit.cover,
-                                    )
-                                  ),
+                                      color: ColorResources.white,
+                                      image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.cover,
+                                      )),
                                 );
                               },
-                              placeholder: (BuildContext context, String value) {
+                              placeholder:
+                                  (BuildContext context, String value) {
                                 return Container(
                                   width: 250.0,
                                   height: 140.0,
                                   decoration: const BoxDecoration(
-                                    image: DecorationImage(
-                                      fit: BoxFit.fitWidth,
-                                      image: AssetImage("assets/images/logo/logo.png")
-                                    )
-                                  ),
-                                ); 
+                                      image: DecorationImage(
+                                          fit: BoxFit.fitWidth,
+                                          image: AssetImage(
+                                              "assets/images/logo/logo-aspro.png"))),
+                                );
                               },
-                              errorWidget: (BuildContext context, String value, dynamic _) {
+                              errorWidget: (BuildContext context, String value,
+                                  dynamic _) {
                                 return Container(
                                   width: 250.0,
                                   height: 140.0,
                                   decoration: const BoxDecoration(
-                                    image: DecorationImage(
-                                      fit: BoxFit.fitWidth,
-                                      image: AssetImage("assets/images/logo/logo.png")
-                                    )
-                                  ),
-                                );  
+                                      image: DecorationImage(
+                                          fit: BoxFit.fitWidth,
+                                          image: AssetImage(
+                                              "assets/images/logo/logo-aspro.png"))),
+                                );
                               },
                             ),
                           ),
@@ -1356,105 +1372,93 @@ class HomeScreenState extends State<HomeScreen> {
             );
           } else {
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: Dimensions.marginSizeExtraLarge,
-                    right: Dimensions.marginSizeExtraLarge,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-
-                      Text('Mart',
-                        style: robotoRegular.copyWith(
-                          fontSize: Dimensions.fontSizeExtraLarge,
-                          fontWeight: FontWeight.bold,
-                          color: ColorResources.white,
-                          shadows: boxShadow
-                        ),
-                      ),
-
-                      GestureDetector(
-                        onTap: () {
-                          NS.push(context, const ProductsScreen());
-                        },
-                        child: Text('Lihat semua',
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: Dimensions.marginSizeExtraLarge,
+                      right: Dimensions.marginSizeExtraLarge,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Mart',
                           style: robotoRegular.copyWith(
-                            color: ColorResources.yellowSecondaryV5,
-                            shadows: boxShadow
-                          ),
+                              fontSize: Dimensions.fontSizeExtraLarge,
+                              fontWeight: FontWeight.bold,
+                              color: ColorResources.white,
+                              shadows: boxShadow),
                         ),
-                      )
-
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 10),
-
-                Consumer<EcommerceProvider>(
-                  builder: (_, notifier, __) {
-
-                    if(notifier.listProductStatus == ListProductStatus.loading) {
-                      return const SizedBox(
-                        height: 300.0,
-                        child: Center(
-                          child: SizedBox(
-                            width: 16.0,
-                            height: 16.0,
-                            child: CircularProgressIndicator(
-                              color: ColorResources.white,  
-                            ),
-                          )
+                        GestureDetector(
+                          onTap: () {
+                            NS.push(context, const ProductsScreen());
+                          },
+                          child: Text(
+                            'Lihat semua',
+                            style: robotoRegular.copyWith(
+                                color: ColorResources.yellowSecondaryV5,
+                                shadows: boxShadow),
+                          ),
                         )
-                      );
-                    }
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
 
-                    if(notifier.listProductStatus == ListProductStatus.empty) {
+                  Consumer<EcommerceProvider>(
+                    builder: (_, notifier, __) {
+                      if (notifier.listProductStatus ==
+                          ListProductStatus.loading) {
+                        return const SizedBox(
+                            height: 300.0,
+                            child: Center(
+                                child: SizedBox(
+                              width: 16.0,
+                              height: 16.0,
+                              child: CircularProgressIndicator(
+                                color: ColorResources.white,
+                              ),
+                            )));
+                      }
+
+                      if (notifier.listProductStatus ==
+                          ListProductStatus.empty) {
+                        return SizedBox(
+                            height: 300.0,
+                            child: Center(
+                                child: Text(
+                              "Yaa.. Produk tidak ditemukan",
+                              style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeDefault,
+                                  color: ColorResources.white),
+                            )));
+                      }
+
                       return SizedBox(
                         height: 300.0,
-                        child: Center(
-                          child: Text("Yaa.. Produk tidak ditemukan",
-                            style: robotoRegular.copyWith(
-                              fontSize: Dimensions.fontSizeDefault,
-                              color: ColorResources.white
-                            ),
-                          )
-                        )
-                      );
-                    }
-
-                    return SizedBox(
-                      height: 300.0,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.only(
-                          top: 10.0,
-                          left: 16.0,
-                          right: 16.0
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          padding: const EdgeInsets.only(
+                              top: 10.0, left: 16.0, right: 16.0),
+                          itemCount: notifier.products.take(5).length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final product = notifier.products[index];
+                            return ProductItem(product: product);
+                          },
                         ),
-                        itemCount: notifier.products.take(5).length,
-                        itemBuilder: (BuildContext context, int index) {
-                          final product = notifier.products[index];
-                          return ProductItem(product: product);
-                        },
-                      ),
-                    );
+                      );
+                    },
+                  ),
 
-                  },
-                ),
-             
-                //TO AVOID OVERLAPS WITH THE BOTTOM NAVBAR
-                //THE HEIGHT IS BASED ON (NAVBAR'S HEIGHT + 40)
-                const SizedBox(
-                  height: 130,
-                )
-
-              ]
-            );
+                  //TO AVOID OVERLAPS WITH THE BOTTOM NAVBAR
+                  //THE HEIGHT IS BASED ON (NAVBAR'S HEIGHT + 40)
+                  const SizedBox(
+                    height: 130,
+                  )
+                ]);
           }
         },
       ),
