@@ -39,37 +39,37 @@ class _MediaScreenState extends State<MediaScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: double.infinity,
-              margin: const EdgeInsets.only(top: 40.0, left: 40.0, right: 40.0),
-              child: Card(
-                  color: Colors.white,
-                  surfaceTintColor: Colors.white,
-                  child: InkWell(
-                    onTap: () async {
-                      await launchUrl(Uri.parse(
-                          'https://www.facebook.com/profile.php?id=61569660596466'));
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Image.asset(
-                            'assets/images/icons/ic-fb.jpeg',
-                            width: 30.0,
-                          ),
-                          const SizedBox(width: 10),
-                          const Text(
-                            "Facebook",
-                            style: TextStyle(
-                                fontSize: 18.0, fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )),
-            ),
+            // Container(
+            //   width: double.infinity,
+            //   margin: const EdgeInsets.only(top: 40.0, left: 40.0, right: 40.0),
+            //   child: Card(
+            //       color: Colors.white,
+            //       surfaceTintColor: Colors.white,
+            //       child: InkWell(
+            //         onTap: () async {
+            //           await launchUrl(Uri.parse(
+            //               'https://www.facebook.com/profile.php?id=61569660596466'));
+            //         },
+            //         child: Padding(
+            //           padding: const EdgeInsets.all(12.0),
+            //           child: Row(
+            //             mainAxisSize: MainAxisSize.max,
+            //             children: [
+            //               Image.asset(
+            //                 'assets/images/icons/ic-fb.jpeg',
+            //                 width: 30.0,
+            //               ),
+            //               const SizedBox(width: 10),
+            //               const Text(
+            //                 "Facebook",
+            //                 style: TextStyle(
+            //                     fontSize: 18.0, fontWeight: FontWeight.bold),
+            //               ),
+            //             ],
+            //           ),
+            //         ),
+            //       )),
+            // ),
             Container(
               width: double.infinity,
               margin: const EdgeInsets.only(top: 20.0, left: 40.0, right: 40.0),
@@ -86,12 +86,12 @@ class _MediaScreenState extends State<MediaScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Image.asset(
-                            'assets/images/icons/ic-x.jpeg',
+                            'assets/images/icons/ic-web.png',
                             width: 30.0,
                           ),
                           const SizedBox(width: 10),
                           const Text(
-                            "X",
+                            "Web",
                             style: TextStyle(
                                 fontSize: 18.0, fontWeight: FontWeight.bold),
                           ),

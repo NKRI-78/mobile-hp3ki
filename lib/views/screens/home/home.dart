@@ -670,6 +670,10 @@ class HomeScreenState extends State<HomeScreen> {
                 parent: AlwaysScrollableScrollPhysics()),
             slivers: [
               buildUserInfoBox(),
+              const SliverToBoxAdapter(
+                  child: SizedBox(
+                height: 30,
+              )),
               buildBannerCarousel(),
               const SliverToBoxAdapter(
                   child: SizedBox(

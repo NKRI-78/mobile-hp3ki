@@ -72,8 +72,7 @@ Future<void> main() async {
       return MultiProvider(
         providers: providers,
         child: const AnnotatedRegion<SystemUiOverlayStyle>(
-          value: SystemUiOverlayStyle.light, child: MyApp()
-        ),
+            value: SystemUiOverlayStyle.light, child: MyApp()),
       );
     },
   ));
@@ -87,13 +86,12 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> with WidgetsBindingObserver {
-
   Future<void> getData() async {
     if (!mounted) return;
-      await NotificationService.init();
+    await NotificationService.init();
 
     if (!mounted) return;
-      await context.read<FirebaseProvider>().setupInteractedMessage(context);
+    await context.read<FirebaseProvider>().setupInteractedMessage(context);
   }
 
   @override
@@ -118,99 +116,88 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }
   }
 
-  void listenOnClickNotifications() => NotificationService.onNotifications.stream.listen(onClickedNotification);
+  void listenOnClickNotifications() =>
+      NotificationService.onNotifications.stream.listen(onClickedNotification);
 
   void onClickedNotification(NotificationResponse payload) {
     var data = json.decode(payload.payload!);
 
     // NEWS
-    if(data["click_action"] == "news") {
-      NS.push(navigatorKey.currentContext!, 
-        NewsDetailScreen(newsId: data["news_id"])
-      );
+    if (data["click_action"] == "news") {
+      NS.push(navigatorKey.currentContext!,
+          NewsDetailScreen(newsId: data["news_id"]));
     }
 
     // BROADCAST
-    if(data["click_action"] == "broadcast") {
-      NS.push(navigatorKey.currentContext!, 
-        DetailInboxScreen(
-          inboxId: data["inbox_id"],
-          type: "broadcast",
-          paymentChannel: "",
-          paymentMethod: "",
-        )
-      );
+    if (data["click_action"] == "broadcast") {
+      NS.push(
+          navigatorKey.currentContext!,
+          DetailInboxScreen(
+            inboxId: data["inbox_id"],
+            type: "broadcast",
+            paymentChannel: "",
+            paymentMethod: "",
+          ));
     }
 
     // SOS
-    if(data["click_action"] == "sos") {
+    if (data["click_action"] == "sos") {
       NS.push(
-        navigatorKey.currentContext!,
-        DetailInboxScreen(
-          inboxId: data["inbox_id"], 
-          type: data["inbox_type"],
-          paymentChannel: "",
-          paymentMethod: "",
-        )
-      );    
+          navigatorKey.currentContext!,
+          DetailInboxScreen(
+            inboxId: data["inbox_id"],
+            type: data["inbox_type"],
+            paymentChannel: "",
+            paymentMethod: "",
+          ));
     }
 
     // EVENT
-    if(data["click_action"] == "event") {
-      NS.push(navigatorKey.currentContext!,
-        const CalendarScreen()
-      );
+    if (data["click_action"] == "event") {
+      NS.push(navigatorKey.currentContext!, const CalendarScreen());
     }
 
     // FORUM
-    if(data["click_action"] == "create") {
-      NS.push(navigatorKey.currentContext!,
-        const DashboardScreen(index: 2)
-      );
+    if (data["click_action"] == "create") {
+      NS.push(navigatorKey.currentContext!, const DashboardScreen(index: 2));
     }
 
-    if(data["click_action"] == "like") {
-      NS.push(navigatorKey.currentContext!,
-        const DashboardScreen(index: 2)
-      );
+    if (data["click_action"] == "like") {
+      NS.push(navigatorKey.currentContext!, const DashboardScreen(index: 2));
     }
 
-    if(data["click_action"] == "comment-like") {
-      NS.push(navigatorKey.currentContext!,
-        const DashboardScreen(index: 2)
-      );
+    if (data["click_action"] == "comment-like") {
+      NS.push(navigatorKey.currentContext!, const DashboardScreen(index: 2));
     }
 
-    if(data["click_action"] == "create-comment") {
+    if (data["click_action"] == "create-comment") {
       NS.pushUntil(
-        navigatorKey.currentContext!, 
-        PostDetailScreen(
-          data: {
-            "forum_id": data["forum_id"],
-            "comment_id": data["comment_id"],
-            "reply_id": "-",
-            "from": "notification-comment",
-          }, from: "notification-comment",
-        )
-      );
+          navigatorKey.currentContext!,
+          PostDetailScreen(
+            data: {
+              "forum_id": data["forum_id"],
+              "comment_id": data["comment_id"],
+              "reply_id": "-",
+              "from": "notification-comment",
+            },
+            from: "notification-comment",
+          ));
     }
 
-    if(data["click_action"] == "create-reply") {
+    if (data["click_action"] == "create-reply") {
       NS.pushUntil(
-        navigatorKey.currentContext!, 
-        PostDetailScreen(
-          data: {
-            "forum_id": data["forum_id"],
-            "comment_id": data["comment_id"],
-            "reply_id": data["reply_id"],
-            "from": "notification-reply",
-          },
-          from: "notification-reply",
-        )
-      );
+          navigatorKey.currentContext!,
+          PostDetailScreen(
+            data: {
+              "forum_id": data["forum_id"],
+              "comment_id": data["comment_id"],
+              "reply_id": data["reply_id"],
+              "from": "notification-reply",
+            },
+            from: "notification-reply",
+          ));
     }
   }
-
 
   @override
   void initState() {
@@ -218,7 +205,7 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
     WidgetsBinding.instance.addObserver(this);
 
-    Future.microtask(() => getData()); 
+    Future.microtask(() => getData());
 
     context.read<FirebaseProvider>().listenNotification(context);
 
@@ -232,7 +219,6 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-
     List<Locale> locals = [];
 
     for (LanguageModel language in AppConstants.languages) {
@@ -244,7 +230,7 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
       theme: ThemeData(
         useMaterial3: false,
         elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
+            style: ElevatedButton.styleFrom(
           backgroundColor: ColorResources.primary,
         )),
         appBarTheme: const AppBarTheme(
@@ -262,15 +248,14 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
       locale: context.watch<LocalizationProvider>().locale,
       builder: (BuildContext context, Widget? child) {
         return ResponsiveWrapper.builder(child,
-          maxWidth: 1200.0,
-          minWidth: 480.0,
-          defaultScale: true,
-          breakpoints: [
-            const ResponsiveBreakpoint.resize(480.0, name: MOBILE),
-            const ResponsiveBreakpoint.autoScale(800.0, name: TABLET),
-            const ResponsiveBreakpoint.resize(1920.0, name: DESKTOP),
-          ]
-        );
+            maxWidth: 1200.0,
+            minWidth: 480.0,
+            defaultScale: true,
+            breakpoints: [
+              const ResponsiveBreakpoint.resize(480.0, name: MOBILE),
+              const ResponsiveBreakpoint.autoScale(800.0, name: TABLET),
+              const ResponsiveBreakpoint.resize(1920.0, name: DESKTOP),
+            ]);
       },
       localizationsDelegates: const [
         AppLocalization.delegate,
