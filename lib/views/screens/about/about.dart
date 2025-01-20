@@ -89,7 +89,7 @@ class _AboutScreenState extends State<AboutScreen> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Image.asset(
-          'assets/images/logo/logo-aspro.png',
+          'assets/images/logo/visi-misi.png',
           fit: BoxFit.cover,
           height: 200.0,
           width: 200.0,
@@ -182,7 +182,7 @@ class _AboutScreenState extends State<AboutScreen> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Image.asset(
-          'assets/images/logo/logo-aspro.png',
+          'assets/images/logo/visi-misi.png',
           fit: BoxFit.cover,
           height: 200.0,
           width: 200.0,
