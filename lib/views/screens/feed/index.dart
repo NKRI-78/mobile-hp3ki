@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hp3ki/views/basewidgets/dialog/animated/animated.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_animated_dialog_updated/flutter_animated_dialog.dart';
 import 'package:gallery_saver_plus/gallery_saver.dart';
 import 'package:detectable_text_field/detectable_text_field.dart';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
@@ -455,82 +455,78 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                                                   }
                                                   if (route == "/report-user") {
                                                     showAnimatedDialog(
-                                                      barrierDismissible: true,
-                                                      context: context,
-                                                      builder: (BuildContext
-                                                          context) {
-                                                        return Dialog(
-                                                            child: Container(
-                                                                height: 150.0,
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .all(
-                                                                        10.0),
-                                                                margin: const EdgeInsets
-                                                                    .only(
-                                                                    top: 10.0,
-                                                                    bottom:
-                                                                        10.0,
-                                                                    left: 16.0,
-                                                                    right:
-                                                                        16.0),
-                                                                child: Column(
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      const SizedBox(
-                                                                          height:
-                                                                              10.0),
-                                                                      const Icon(
-                                                                        Icons
-                                                                            .delete,
-                                                                        color: ColorResources
-                                                                            .black,
-                                                                      ),
-                                                                      const SizedBox(
-                                                                          height:
-                                                                              10.0),
-                                                                      Text(
-                                                                        getTranslated(
-                                                                            "ARE_YOU_SURE_REPORT",
-                                                                            context),
-                                                                        style: robotoRegular.copyWith(
-                                                                            fontSize:
-                                                                                Dimensions.fontSizeSmall,
-                                                                            fontWeight: FontWeight.bold),
-                                                                      ),
-                                                                      const SizedBox(
-                                                                          height:
-                                                                              10.0),
-                                                                      Row(
-                                                                        mainAxisAlignment:
-                                                                            MainAxisAlignment.spaceBetween,
-                                                                        mainAxisSize:
-                                                                            MainAxisSize.max,
-                                                                        children: [
-                                                                          ElevatedButton(
-                                                                              onPressed: () => Navigator.of(context).pop(),
-                                                                              child: Text(getTranslated("NO", context), style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall))),
-                                                                          StatefulBuilder(builder:
-                                                                              (BuildContext context, Function s) {
-                                                                            return ElevatedButton(
-                                                                              style: ButtonStyle(
-                                                                                backgroundColor: WidgetStateProperty.all(ColorResources.error),
-                                                                              ),
-                                                                              onPressed: () async {
-                                                                                Navigator.of(context, rootNavigator: true).pop();
-                                                                              },
-                                                                              child: Text(
-                                                                                getTranslated("YES", context),
-                                                                                style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
-                                                                              ),
-                                                                            );
-                                                                          })
-                                                                        ],
-                                                                      )
-                                                                    ])));
-                                                      },
+                                                      context,
+                                                      Dialog(
+                                              child: Container(
+                                                  height: 150.0,
+                                                  padding:
+                                                      const EdgeInsets
+                                                          .all(
+                                                          10.0),
+                                                  margin: const EdgeInsets
+                                                      .only(
+                                                      top: 10.0,
+                                                      bottom:
+                                                          10.0,
+                                                      left: 16.0,
+                                                      right:
+                                                          16.0),
+                                                  child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        const SizedBox(
+                                                            height:
+                                                                10.0),
+                                                        const Icon(
+                                                          Icons
+                                                              .delete,
+                                                          color: ColorResources
+                                                              .black,
+                                                        ),
+                                                        const SizedBox(
+                                                            height:
+                                                                10.0),
+                                                        Text(
+                                                          getTranslated(
+                                                              "ARE_YOU_SURE_REPORT",
+                                                              context),
+                                                          style: robotoRegular.copyWith(
+                                                              fontSize:
+                                                                  Dimensions.fontSizeSmall,
+                                                              fontWeight: FontWeight.bold),
+                                                        ),
+                                                        const SizedBox(
+                                                            height:
+                                                                10.0),
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment.spaceBetween,
+                                                          mainAxisSize:
+                                                              MainAxisSize.max,
+                                                          children: [
+                                                            ElevatedButton(
+                                                                onPressed: () => Navigator.of(context).pop(),
+                                                                child: Text(getTranslated("NO", context), style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall))),
+                                                            StatefulBuilder(builder:
+                                                                (BuildContext context, Function s) {
+                                                              return ElevatedButton(
+                                                                style: ButtonStyle(
+                                                                  backgroundColor: WidgetStateProperty.all(ColorResources.error),
+                                                                ),
+                                                                onPressed: () async {
+                                                                  Navigator.of(context, rootNavigator: true).pop();
+                                                                },
+                                                                child: Text(
+                                                                  getTranslated("YES", context),
+                                                                  style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
+                                                                ),
+                                                              );
+                                                            })
+                                                          ],
+                                                        )
+                                                      ])))
                                                     );
                                                   }
                                                 },
@@ -954,9 +950,8 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
       onSelected: (route) {
         if (route == "/delete-post") {
           showAnimatedDialog(
-            context: context,
-            builder: (context) {
-              return Dialog(
+            context,
+             Dialog(
                   child: Container(
                       height: 150.0,
                       padding: const EdgeInsets.all(10.0),
@@ -1027,11 +1022,12 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                                 })
                               ],
                             )
-                          ])));
-            },
+                          ])))
+            
+          
           );
         }
-      },
+      }
     );
   }
 
@@ -1050,9 +1046,8 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
       onSelected: (route) {
         if (route == "/delete-comment") {
           showAnimatedDialog(
-            context: context,
-            builder: (context) {
-              return Dialog(
+            context, 
+            Dialog(
                   child: Container(
                       height: 150.0,
                       padding: const EdgeInsets.all(10.0),
@@ -1119,8 +1114,7 @@ class FeedIndexState extends State<FeedIndex> with TickerProviderStateMixin {
                                 })
                               ],
                             )
-                          ])));
-            },
+                          ])))
           );
         }
       },

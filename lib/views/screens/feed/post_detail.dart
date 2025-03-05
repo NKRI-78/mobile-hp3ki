@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hp3ki/views/basewidgets/dialog/animated/animated.dart';
 import 'package:provider/provider.dart';
 import 'package:detectable_text_field/detectable_text_field.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_animated_dialog_updated/flutter_animated_dialog.dart';
 
 import 'package:hp3ki/maps/src/utils/uuid.dart';
 
@@ -1181,80 +1181,77 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
       onSelected: (route) {
         if(route == "/delete-post") {
           showAnimatedDialog(
-            context: context,
-            builder: (context) {
-              return Dialog(
-                child: Container(
-                height: 150.0,
-                padding: const EdgeInsets.all(10.0),
-                margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: 10.0),
-                    const Icon(
-                      Icons.delete,
-                      color: ColorResources.white,
+            context, Dialog(
+              child: Container(
+              height: 150.0,
+              padding: const EdgeInsets.all(10.0),
+              margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 10.0),
+                  const Icon(
+                    Icons.delete,
+                    color: ColorResources.white,
+                  ),
+                  const SizedBox(height: 10.0),
+                  Text(getTranslated("DELETE_POST", context),
+                    style: robotoRegular.copyWith(
+                      fontSize: Dimensions.fontSizeSmall,
+                      fontWeight: FontWeight.bold
                     ),
-                    const SizedBox(height: 10.0),
-                    Text(getTranslated("DELETE_POST", context),
-                      style: robotoRegular.copyWith(
-                        fontSize: Dimensions.fontSizeSmall,
-                        fontWeight: FontWeight.bold
-                      ),
-                    ),
-                    const SizedBox(height: 10.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: Text(getTranslated("NO", context),
+                  ),
+                  const SizedBox(height: 10.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Text(getTranslated("NO", context),
+                          style: robotoRegular.copyWith(
+                            color: Colors.black,
+                            fontSize: Dimensions.fontSizeSmall
+                          ),
+                        )
+                      ), 
+                      StatefulBuilder(
+                        builder: (BuildContext context, Function setStatefulBuilder) {
+                        return ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: ColorResources.error,
+                          ),
+                          onPressed: () async { 
+                            setStatefulBuilder(() => deletePostBtn = true);
+                            try {         
+                              await context.read<FeedProviderV2>().deletePost(
+                                context, 
+                                feedDetailProvider.feedDetailData.forum!.id!,
+                                "detail"
+                              );               
+                              setStatefulBuilder(() => deletePostBtn = false);
+                            } catch(e) {
+                              setStatefulBuilder(() => deletePostBtn = false);
+                              debugPrint(e.toString()); 
+                            }
+                          },
+                          child: deletePostBtn 
+                        ? const Loader(
+                            color: ColorResources.white,
+                          )
+                        : Text(getTranslated("YES", context),
                             style: robotoRegular.copyWith(
-                              color: Colors.black,
+                              color: Colors.white,
                               fontSize: Dimensions.fontSizeSmall
                             ),
                           )
-                        ), 
-                        StatefulBuilder(
-                          builder: (BuildContext context, Function setStatefulBuilder) {
-                          return ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: ColorResources.error,
-                            ),
-                            onPressed: () async { 
-                              setStatefulBuilder(() => deletePostBtn = true);
-                              try {         
-                                await context.read<FeedProviderV2>().deletePost(
-                                  context, 
-                                  feedDetailProvider.feedDetailData.forum!.id!,
-                                  "detail"
-                                );               
-                                setStatefulBuilder(() => deletePostBtn = false);
-                              } catch(e) {
-                                setStatefulBuilder(() => deletePostBtn = false);
-                                debugPrint(e.toString()); 
-                              }
-                            },
-                            child: deletePostBtn 
-                          ? const Loader(
-                              color: ColorResources.white,
-                            )
-                          : Text(getTranslated("YES", context),
-                              style: robotoRegular.copyWith(
-                                color: Colors.white,
-                                fontSize: Dimensions.fontSizeSmall
-                              ),
-                            )
-                          );
-                        })
-                      ],
-                    ) 
-                  ])
-                )
-              );
-            },
+                        );
+                      })
+                    ],
+                  ) 
+                ])
+              )
+            )
           );
         }
       },
@@ -1283,82 +1280,79 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
       onSelected: (route) {
         if(route == "/delete-reply") {
           showAnimatedDialog(
-            barrierDismissible: true,
-            context: context,
-            builder: (BuildContext context) {
-              return Dialog(
-                child: Container(
+            context, 
+            Dialog(
+              child: Container(
                 height: 150.0,
                 padding: const EdgeInsets.all(10.0),
                 margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: 10.0),
-                    const Icon(
-                      Icons.delete,
-                      color: ColorResources.white,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 10.0),
+                  const Icon(
+                    Icons.delete,
+                    color: ColorResources.white,
+                  ),
+                  const SizedBox(height: 10.0),
+                  Text(getTranslated("DELETE_REPLY", context),
+                    style: robotoRegular.copyWith(
+                      fontSize: Dimensions.fontSizeSmall,
+                      fontWeight: FontWeight.bold
                     ),
-                    const SizedBox(height: 10.0),
-                    Text(getTranslated("DELETE_REPLY", context),
-                      style: robotoRegular.copyWith(
-                        fontSize: Dimensions.fontSizeSmall,
-                        fontWeight: FontWeight.bold
-                      ),
-                    ),
-                    const SizedBox(height: 10.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: Text(getTranslated("NO", context),
-                            style: robotoRegular.copyWith(
-                              color: Colors.black,
-                              fontSize: Dimensions.fontSizeSmall
-                            ),
-                          )
-                        ), 
-                        StatefulBuilder(
-                          builder: (BuildContext context, Function s) {
-                          return ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: ColorResources.error
-                            ),
-                            onPressed: () async { 
-                              setState(() => deletePostBtn = true);
-                              try {         
-                                await context.read<p.FeedDetailProviderV2>().deleteReply(
-                                  context: context,
-                                  forumId: forumId,
-                                  replyId: replyId,
-                                );               
-                                setState(() => deletePostBtn = false);     
-                              } catch(e, stacktrace) {
-                                setState(() => deletePostBtn = false);
-                                debugPrint(stacktrace.toString()); 
-                              }
-                            },
-                            child: deletePostBtn 
-                            ? const Loader(
-                                color: ColorResources.white,
-                              )
-                            : Text(getTranslated("YES", context),
-                                style: robotoRegular.copyWith(
-                                  color: Colors.white,
-                                  fontSize: Dimensions.fontSizeSmall
-                                ),
-                              )
-                            );
-                          }
+                  ),
+                  const SizedBox(height: 10.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Text(getTranslated("NO", context),
+                          style: robotoRegular.copyWith(
+                            color: Colors.black,
+                            fontSize: Dimensions.fontSizeSmall
+                          ),
                         )
-                      ],
-                    ) 
-                  ])
-                )
-              );
-            },
+                      ), 
+                      StatefulBuilder(
+                        builder: (BuildContext context, Function s) {
+                        return ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: ColorResources.error
+                          ),
+                          onPressed: () async { 
+                            setState(() => deletePostBtn = true);
+                            try {         
+                              await context.read<p.FeedDetailProviderV2>().deleteReply(
+                                context: context,
+                                forumId: forumId,
+                                replyId: replyId,
+                              );               
+                              setState(() => deletePostBtn = false);     
+                            } catch(e, stacktrace) {
+                              setState(() => deletePostBtn = false);
+                              debugPrint(stacktrace.toString()); 
+                            }
+                          },
+                          child: deletePostBtn 
+                          ? const Loader(
+                              color: ColorResources.white,
+                            )
+                          : Text(getTranslated("YES", context),
+                              style: robotoRegular.copyWith(
+                                color: Colors.white,
+                                fontSize: Dimensions.fontSizeSmall
+                              ),
+                            )
+                          );
+                        }
+                      )
+                    ],
+                  ) 
+                ])
+              )
+            )
           );
         }
       },
@@ -1387,81 +1381,78 @@ class PostDetailScreenState extends State<PostDetailScreen> with TickerProviderS
       onSelected: (route) {
         if(route == "/delete-comment") {
           showAnimatedDialog(
-            context: context,
-            builder: (context) {
-              return Dialog(
-                child: Container(
-                height: 150.0,
-                padding: const EdgeInsets.all(10.0),
-                margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: 10.0),
-                    const Icon(
-                      Icons.delete,
-                      color: ColorResources.white,
+            context, Dialog(
+              child: Container(
+              height: 150.0,
+              padding: const EdgeInsets.all(10.0),
+              margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 10.0),
+                  const Icon(
+                    Icons.delete,
+                    color: ColorResources.white,
+                  ),
+                  const SizedBox(height: 10.0),
+                  Text(getTranslated("DELETE_COMMENT", context),
+                    style: robotoRegular.copyWith(
+                      fontSize: Dimensions.fontSizeSmall,
+                      fontWeight: FontWeight.bold
                     ),
-                    const SizedBox(height: 10.0),
-                    Text(getTranslated("DELETE_COMMENT", context),
-                      style: robotoRegular.copyWith(
-                        fontSize: Dimensions.fontSizeSmall,
-                        fontWeight: FontWeight.bold
-                      ),
-                    ),
-                    const SizedBox(height: 10.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: Text(getTranslated("NO", context),
-                            style: robotoRegular.copyWith(
-                              color: ColorResources.black,
-                              fontSize: Dimensions.fontSizeSmall
-                            ),
-                          )
-                        ), 
-                        StatefulBuilder(
-                          builder: (BuildContext context, Function setStateBuilder) {
-                          return ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: ColorResources.error
-                            ),
-                            onPressed: () async { 
-                              setStateBuilder(() => deletePostBtn = true);
-                              try {         
-                                await context.read<p.FeedDetailProviderV2>().deleteComment(
-                                  context: context, 
-                                  forumId: forumId, 
-                                  commentId: commentId
-                                );               
-                                setStateBuilder(() => deletePostBtn = false);
-                              } catch(e) {
-                                setStateBuilder(() => deletePostBtn = false);
-                                debugPrint(e.toString()); 
-                              }
-                            },
-                            child: deletePostBtn 
-                            ? const Loader(
-                                color: ColorResources.white,
-                              )
-                            : Text(getTranslated("YES", context),
-                                style: robotoRegular.copyWith(
-                                  color: ColorResources.white,
-                                  fontSize: Dimensions.fontSizeSmall
-                                ),
-                              )
-                            );
-                          }
+                  ),
+                  const SizedBox(height: 10.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Text(getTranslated("NO", context),
+                          style: robotoRegular.copyWith(
+                            color: ColorResources.black,
+                            fontSize: Dimensions.fontSizeSmall
+                          ),
                         )
-                      ],
-                    ) 
-                  ])
-                )
-              );
-            },
+                      ), 
+                      StatefulBuilder(
+                        builder: (BuildContext context, Function setStateBuilder) {
+                        return ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: ColorResources.error
+                          ),
+                          onPressed: () async { 
+                            setStateBuilder(() => deletePostBtn = true);
+                            try {         
+                              await context.read<p.FeedDetailProviderV2>().deleteComment(
+                                context: context, 
+                                forumId: forumId, 
+                                commentId: commentId
+                              );               
+                              setStateBuilder(() => deletePostBtn = false);
+                            } catch(e) {
+                              setStateBuilder(() => deletePostBtn = false);
+                              debugPrint(e.toString()); 
+                            }
+                          },
+                          child: deletePostBtn 
+                          ? const Loader(
+                              color: ColorResources.white,
+                            )
+                          : Text(getTranslated("YES", context),
+                              style: robotoRegular.copyWith(
+                                color: ColorResources.white,
+                                fontSize: Dimensions.fontSizeSmall
+                              ),
+                            )
+                          );
+                        }
+                      )
+                    ],
+                  ) 
+                ])
+              )
+            )
           );
         }
       },

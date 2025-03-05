@@ -1,10 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:hp3ki/views/basewidgets/dialog/animated/animated.dart';
 import 'package:shimmer/shimmer.dart';
 
 import 'package:gallery_saver_plus/gallery_saver.dart';
-
-import 'package:flutter_animated_dialog_updated/flutter_animated_dialog.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -132,50 +131,43 @@ class PreviewForumImageScreenState extends State<PreviewForumImageScreen> {
                 child: InkWell(
                   onTap: () {
                     showAnimatedDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      builder: (_) {
-                        return Dialog(
-                            child: Container(
-                                height: 50.0,
-                                padding: const EdgeInsets.all(10.0),
-                                margin: const EdgeInsets.only(
-                                    top: 10.0,
-                                    bottom: 10.0,
-                                    left: 16.0,
-                                    right: 16.0),
-                                child: StatefulBuilder(builder:
-                                    (BuildContext context,
-                                        Function setStateBuilder) {
-                                  return ElevatedButton(
-                                      onPressed: () async {
-                                        setStateBuilder(
-                                            () => loadingBtn = true);
-                                        await GallerySaver.saveImage(
-                                            "${widget.medias![current].path}");
-                                        setStateBuilder(
-                                            () => loadingBtn = false);
-                                        Navigator.pop(context);
-                                        ShowSnackbar.snackbar(
-                                            "Gambar telah disimpan pada galeri",
-                                            "",
-                                            ColorResources.success);
-                                      },
-                                      child: loadingBtn
-                                          ? Text("Mohon tunggu...",
-                                              style: robotoRegular.copyWith(
-                                                  fontSize: Dimensions
-                                                      .fontSizeDefault,
-                                                  color: ColorResources.black))
-                                          : Text(
-                                              "Unduh Gambar",
-                                              style: robotoRegular.copyWith(
-                                                  fontSize: Dimensions
-                                                      .fontSizeDefault,
-                                                  color: ColorResources.black),
-                                            ));
-                                })));
-                      },
+                      context,
+                      Dialog(
+                        child: Container(
+                        height: 50.0,
+                        padding: const EdgeInsets.all(10.0),
+                        margin: const EdgeInsets.only(
+                          top: 10.0,
+                          bottom: 10.0,
+                          left: 16.0,
+                          right: 16.0
+                        ),
+                        child: StatefulBuilder(
+                          builder: (BuildContext context, Function setStateBuilder) {
+                          return ElevatedButton(
+                            onPressed: () async {
+                              setStateBuilder(() => loadingBtn = true);
+                              await GallerySaver.saveImage("${widget.medias![current].path}");
+                              setStateBuilder(() => loadingBtn = false);
+                              Navigator.pop(context);
+                              ShowSnackbar.snackbar("Gambar telah disimpan pada galeri", "",ColorResources.success);
+                            },
+                            child: loadingBtn
+                            ? Text("Mohon tunggu...",
+                                style: robotoRegular.copyWith(
+                                    fontSize: Dimensions
+                                        .fontSizeDefault,
+                                    color: ColorResources.black))
+                            : Text(
+                                "Unduh Gambar",
+                                style: robotoRegular.copyWith(
+                                    fontSize: Dimensions
+                                        .fontSizeDefault,
+                                    color: ColorResources.black),
+                              ));
+                            }))
+                      
+                          )     
                     );
                   },
                   child: const Icon(

@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
+import 'package:hp3ki/views/basewidgets/dialog/animated/animated.dart';
 
-import 'package:flutter_animated_dialog_updated/flutter_animated_dialog.dart';
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:gallery_saver_plus/gallery_saver.dart';
@@ -235,10 +235,8 @@ class PostsState extends State<Posts> {
                 }
                 if(route == "/report-user") {
                   showAnimatedDialog(
-                    barrierDismissible: true,
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Dialog(
+                    context, 
+                     Dialog(
                         child: Container(
                         height: 150.0,
                         padding: const EdgeInsets.all(10.0),
@@ -297,8 +295,7 @@ class PostsState extends State<Posts> {
                           ) 
                         ])
                       )
-                    );
-                  },
+                    )
                 );
               }
             },
@@ -628,74 +625,72 @@ class PostsState extends State<Posts> {
       onSelected: (route) {
         if(route == "/delete-comment") {
           showAnimatedDialog(
-            context: context,
-            builder: (context) {
-              return Dialog(
-                child: Container(
-                height: 150.0,
-                padding: const EdgeInsets.all(10.0),
-                margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: 10.0),
-                    const Icon(
-                      Icons.delete,
-                      color: ColorResources.white,
+            context,
+            Dialog(
+              child: Container(
+              height: 150.0,
+              padding: const EdgeInsets.all(10.0),
+              margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 10.0),
+                  const Icon(
+                    Icons.delete,
+                    color: ColorResources.white,
+                  ),
+                  const SizedBox(height: 10.0),
+                  Text(getTranslated("DELETE_COMMENT", context),
+                    style: robotoRegular.copyWith(
+                      fontSize: Dimensions.fontSizeSmall,
+                      fontWeight: FontWeight.bold
                     ),
-                    const SizedBox(height: 10.0),
-                    Text(getTranslated("DELETE_COMMENT", context),
-                      style: robotoRegular.copyWith(
-                        fontSize: Dimensions.fontSizeSmall,
-                        fontWeight: FontWeight.bold
-                      ),
-                    ),
-                    const SizedBox(height: 10.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: Text(getTranslated("NO", context),
-                            style: robotoRegular,
-                          )
-                        ), 
-                        StatefulBuilder(
-                          builder: (BuildContext context, Function setStateBuilder) {
-                          return ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: ColorResources.error
-                          ),
-                          onPressed: () async { 
-                            setStateBuilder(() => deletePostBtn = true);
-                            await context.read<FeedDetailProviderV2>().deleteComment(
-                              context: context, 
-                              forumId: forumId, 
-                              commentId: commentId
-                            );
-                            await context.read<FeedProviderV2>().fetchFeedMostRecent(
-                              context
-                            );  
-                            setStateBuilder(() => deletePostBtn = false);           
-                          },
-                          child: deletePostBtn 
-                          ? const Loader(
-                              color: ColorResources.white,
-                            )
-                          : Text(getTranslated("YES", context),
-                              style: robotoRegular.copyWith(
-                                fontSize: Dimensions.fontSizeSmall
-                              ),
-                            )
+                  ),
+                  const SizedBox(height: 10.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Text(getTranslated("NO", context),
+                          style: robotoRegular,
+                        )
+                      ), 
+                      StatefulBuilder(
+                        builder: (BuildContext context, Function setStateBuilder) {
+                        return ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: ColorResources.error
+                        ),
+                        onPressed: () async { 
+                          setStateBuilder(() => deletePostBtn = true);
+                          await context.read<FeedDetailProviderV2>().deleteComment(
+                            context: context, 
+                            forumId: forumId, 
+                            commentId: commentId
                           );
-                        })
-                      ],
-                    ) 
-                  ])
-                )
-              );
-            },
+                          await context.read<FeedProviderV2>().fetchFeedMostRecent(
+                            context
+                          );  
+                          setStateBuilder(() => deletePostBtn = false);           
+                        },
+                        child: deletePostBtn 
+                        ? const Loader(
+                            color: ColorResources.white,
+                          )
+                        : Text(getTranslated("YES", context),
+                            style: robotoRegular.copyWith(
+                              fontSize: Dimensions.fontSizeSmall
+                            ),
+                          )
+                        );
+                      })
+                    ],
+                  ) 
+                ])
+              )
+            )
           );
         }
       },
@@ -736,75 +731,73 @@ class PostsState extends State<Posts> {
       onSelected: (route) {
         if(route == "/delete-post") {
           showAnimatedDialog(
-            context: context,
-            builder: (context) {
-              return Dialog(
-                child: Container(
-                height: 150.0,
-                padding: const EdgeInsets.all(10.0),
-                margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: 10.0),
-                    const Icon(
-                      Icons.delete,
-                      color: ColorResources.white,
+            context, 
+            Dialog(
+              child: Container(
+              height: 150.0,
+              padding: const EdgeInsets.all(10.0),
+              margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 10.0),
+                  const Icon(
+                    Icons.delete,
+                    color: ColorResources.white,
+                  ),
+                  const SizedBox(height: 10.0),
+                  Text(getTranslated("DELETE_POST", context),
+                    style: robotoRegular.copyWith(
+                      fontSize: Dimensions.fontSizeSmall,
+                      fontWeight: FontWeight.bold
                     ),
-                    const SizedBox(height: 10.0),
-                    Text(getTranslated("DELETE_POST", context),
-                      style: robotoRegular.copyWith(
-                        fontSize: Dimensions.fontSizeSmall,
-                        fontWeight: FontWeight.bold
-                      ),
-                    ),
-                    const SizedBox(height: 10.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: Text(getTranslated("NO", context),
+                  ),
+                  const SizedBox(height: 10.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Text(getTranslated("NO", context),
+                          style: robotoRegular.copyWith(
+                            color: ColorResources.black,
+                            fontSize: Dimensions.fontSizeSmall
+                          ),
+                        )
+                      ), 
+                      StatefulBuilder(
+                        builder: (BuildContext context, Function setStateBuilder) {
+                        return ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: ColorResources.error
+                        ),
+                        onPressed: () async { 
+                          setStateBuilder(() => deletePostBtn = true);
+                          await context.read<FeedProviderV2>().deletePost(
+                            context,
+                            widget.forum.id!,
+                            "index"
+                          );               
+                          setStateBuilder(() => deletePostBtn = false);
+                        },
+                        child: deletePostBtn 
+                        ? const Loader(
+                            color: ColorResources.white,
+                          )
+                        : Text(getTranslated("YES", context),
                             style: robotoRegular.copyWith(
-                              color: ColorResources.black,
-                              fontSize: Dimensions.fontSizeSmall
+                              fontSize: Dimensions.fontSizeSmall,
+                              color: ColorResources.white
                             ),
                           )
-                        ), 
-                        StatefulBuilder(
-                          builder: (BuildContext context, Function setStateBuilder) {
-                          return ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: ColorResources.error
-                          ),
-                          onPressed: () async { 
-                            setStateBuilder(() => deletePostBtn = true);
-                            await context.read<FeedProviderV2>().deletePost(
-                              context,
-                              widget.forum.id!,
-                              "index"
-                            );               
-                            setStateBuilder(() => deletePostBtn = false);
-                          },
-                          child: deletePostBtn 
-                          ? const Loader(
-                              color: ColorResources.white,
-                            )
-                          : Text(getTranslated("YES", context),
-                              style: robotoRegular.copyWith(
-                                fontSize: Dimensions.fontSizeSmall,
-                                color: ColorResources.white
-                              ),
-                            )
-                          );
-                        })
-                      ],
-                    ) 
-                  ])
-                )
-              );
-            },
+                        );
+                      })
+                    ],
+                  ) 
+                ])
+              )
+            )
           );
           // showAnimatedDialog(
           //   barrierDismissible: true,

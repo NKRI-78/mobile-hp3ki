@@ -1,11 +1,11 @@
 
 import 'dart:collection';
 import 'package:hp3ki/services/navigation.dart';
+import 'package:hp3ki/views/basewidgets/dialog/animated/animated.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animated_dialog_updated/flutter_animated_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -385,10 +385,8 @@ class CalendarScreenState extends State<CalendarScreen> {
 
   void buildEventDetailDialog(BuildContext context, List<EventData> events, int i) {
     showAnimatedDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-      return Dialog(
+      context,
+      Dialog(
         child: Container(
           padding: const EdgeInsets.all(8.0),
           child: SingleChildScrollView(
@@ -623,11 +621,7 @@ class CalendarScreenState extends State<CalendarScreen> {
             ),
           )
         ),
-      );
-    },
-      animationType: DialogTransitionType.scale,
-      curve: Curves.fastOutSlowIn,
-      duration: const Duration(seconds: 1),
+      )
     );
   }
 }

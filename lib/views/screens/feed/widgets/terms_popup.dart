@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_animated_dialog_updated/flutter_animated_dialog.dart';
-
 import 'package:hp3ki/localization/language_constraints.dart';
 
 import 'package:hp3ki/utils/color_resources.dart';
 import 'package:hp3ki/utils/custom_themes.dart';
 import 'package:hp3ki/utils/dimensions.dart';
+import 'package:hp3ki/views/basewidgets/dialog/animated/animated.dart';
 
 class TermsPopup extends StatelessWidget {
   const TermsPopup({super.key});
@@ -56,11 +55,9 @@ class TermsPopup extends StatelessWidget {
       },
       onSelected: (route) {
         if(route == "/report-user") {
-          showAnimatedDialog(
-            context: context,
-            builder: (context) {
-              return Dialog(
-                child: Container(
+          showAnimatedDialog(context,
+            Dialog(
+              child: Container(
                 height: 150.0,
                 padding: const EdgeInsets.all(10.0),
                 margin: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 16.0, right: 16.0),
@@ -116,8 +113,7 @@ class TermsPopup extends StatelessWidget {
                   ) 
                 ])
               )
-            );
-          },
+            )
         );
       }
     },
