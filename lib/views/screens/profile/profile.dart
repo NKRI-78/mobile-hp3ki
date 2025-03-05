@@ -65,31 +65,31 @@ class ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> getData() async {
     if (!mounted) return;
-      context.read<ProfileProvider>().getProfile(context);
+    context.read<ProfileProvider>().getProfile(context);
 
-    if(!mounted) return;
-      context.read<EcommerceProvider>().checkStoreOwner();
-    
     if (!mounted) return;
-      file = null;
-    
-    if (!mounted) return;
-      context.read<ProfileProvider>().remote();
-    
-    if (!mounted) return;
-      if (context.read<ProfileProvider>().user!.memberType != "PLATINUM") {
-        isPlatinum = false;
-      } else {
-        isPlatinum = true;
-      }
-      final remainingDays = context.read<ProfileProvider>().user!.remainingDays!;
+    context.read<EcommerceProvider>().checkStoreOwner();
 
-      if (remainingDays > 0 && remainingDays < 11) {
-        hasRemainder = true;
-        remainderCount = context.read<ProfileProvider>().user!.remainingDays ?? 0;
-      } else {
-        hasRemainder = false;
-      }
+    if (!mounted) return;
+    file = null;
+
+    if (!mounted) return;
+    context.read<ProfileProvider>().remote();
+
+    if (!mounted) return;
+    if (context.read<ProfileProvider>().user!.memberType != "PLATINUM") {
+      isPlatinum = false;
+    } else {
+      isPlatinum = true;
+    }
+    final remainingDays = context.read<ProfileProvider>().user!.remainingDays!;
+
+    if (remainingDays > 0 && remainingDays < 11) {
+      hasRemainder = true;
+      remainderCount = context.read<ProfileProvider>().user!.remainingDays ?? 0;
+    } else {
+      hasRemainder = false;
+    }
   }
 
   Future<String?> uploadPicture(BuildContext context, File file) async {
@@ -100,98 +100,88 @@ class ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> editPicture() async {
     pfpPath = await uploadPicture(context, file!);
- 
-    await context.read<ProfileProvider>().updateProfilePicture(context, pfpPath: pfpPath!);
-    
+
+    await context
+        .read<ProfileProvider>()
+        .updateProfilePicture(context, pfpPath: pfpPath!);
+
     setState(() => file = null);
   }
 
   Future<void> chooseFile() async {
     imageSource = await showDialog<ImageSource>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: Text(
-          getTranslated("SOURCE_IMAGE", context),
-          style: robotoRegular.copyWith(
-              fontSize: Dimensions.fontSizeDefault,
-              color: ColorResources.primary),
-        ),
-        actions: [
-          MaterialButton(
-            child: Text(getTranslated("CAMERA", context),
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeDefault,
-                color: ColorResources.primary
-              )
-            ),
-            onPressed: () => Navigator.pop(context, ImageSource.camera),
-          ),
-          MaterialButton(
-            child: Text(
-              getTranslated("GALLERY", context),
-              style: robotoRegular.copyWith(
-                fontSize: Dimensions.fontSizeDefault,
-                color: ColorResources.primary
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text(
+                getTranslated("SOURCE_IMAGE", context),
+                style: robotoRegular.copyWith(
+                    fontSize: Dimensions.fontSizeDefault,
+                    color: ColorResources.primary),
               ),
-            ),
-            onPressed: () => Navigator.pop(context, ImageSource.gallery)
-          )
-        ],
-      )
-    );
+              actions: [
+                MaterialButton(
+                  child: Text(getTranslated("CAMERA", context),
+                      style: robotoRegular.copyWith(
+                          fontSize: Dimensions.fontSizeDefault,
+                          color: ColorResources.primary)),
+                  onPressed: () => Navigator.pop(context, ImageSource.camera),
+                ),
+                MaterialButton(
+                    child: Text(
+                      getTranslated("GALLERY", context),
+                      style: robotoRegular.copyWith(
+                          fontSize: Dimensions.fontSizeDefault,
+                          color: ColorResources.primary),
+                    ),
+                    onPressed: () =>
+                        Navigator.pop(context, ImageSource.gallery))
+              ],
+            ));
     if (imageSource != null) {
-
       if (imageSource == ImageSource.gallery) {
         XFile? pickedFile = await ImagePicker().pickImage(
           source: ImageSource.gallery,
         );
 
         File? cropped = await ImageCropper().cropImage(
-          sourcePath: pickedFile!.path,
-          androidUiSettings: AndroidUiSettings(
-            toolbarTitle: getTranslated("CROP_IT", context),
-            toolbarColor: Colors.blueGrey[900],
-            toolbarWidgetColor: ColorResources.white,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false
-          ),
-          iosUiSettings: const IOSUiSettings(
-            minimumAspectRatio: 1.0,
-          )
-        );
+            sourcePath: pickedFile!.path,
+            androidUiSettings: AndroidUiSettings(
+                toolbarTitle: getTranslated("CROP_IT", context),
+                toolbarColor: Colors.blueGrey[900],
+                toolbarWidgetColor: ColorResources.white,
+                initAspectRatio: CropAspectRatioPreset.original,
+                lockAspectRatio: false),
+            iosUiSettings: const IOSUiSettings(
+              minimumAspectRatio: 1.0,
+            ));
 
         if (cropped != null) {
           setState(() => file = cropped);
         } else {
           setState(() => file = null);
         }
-
       } else {
-       
         XFile? pickedFile = await ImagePicker().pickImage(
           source: ImageSource.camera,
         );
 
         File? cropped = await ImageCropper().cropImage(
-          sourcePath: pickedFile!.path,
-          androidUiSettings: AndroidUiSettings(
-            toolbarTitle: getTranslated("CROP_IT", context),
-            toolbarColor: Colors.blueGrey[900],
-            toolbarWidgetColor: ColorResources.white,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false
-          ),
-          iosUiSettings: const IOSUiSettings(
-            minimumAspectRatio: 1.0,
-          )
-        );
-        
+            sourcePath: pickedFile!.path,
+            androidUiSettings: AndroidUiSettings(
+                toolbarTitle: getTranslated("CROP_IT", context),
+                toolbarColor: Colors.blueGrey[900],
+                toolbarWidgetColor: ColorResources.white,
+                initAspectRatio: CropAspectRatioPreset.original,
+                lockAspectRatio: false),
+            iosUiSettings: const IOSUiSettings(
+              minimumAspectRatio: 1.0,
+            ));
+
         if (cropped != null) {
           setState(() => file = cropped);
         } else {
           setState(() => file = null);
         }
-
       }
     }
   }
@@ -223,15 +213,12 @@ class ProfileScreenState extends State<ProfileScreen> {
             children: [
               CustomScrollView(
                 physics: const BouncingScrollPhysics(
-                  parent: AlwaysScrollableScrollPhysics()
-                ),
+                    parent: AlwaysScrollableScrollPhysics()),
                 slivers: [
                   buildUserKTA(),
-                  isPlatinum  
-                  ? buildCreateStore()
-                  : const SliverToBoxAdapter(
-                      child: SizedBox()
-                    ),
+                  isPlatinum
+                      ? buildCreateStore()
+                      : const SliverToBoxAdapter(child: SizedBox()),
                   buildUserDetails(),
                   buildNoReferral(),
                   buildChangePassword(),
@@ -240,9 +227,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
               Align(
-                alignment: Alignment.bottomCenter, 
-                child: buildUserInfoBox()
-              ),
+                  alignment: Alignment.bottomCenter, child: buildUserInfoBox()),
             ],
           ),
         ),
@@ -252,35 +237,30 @@ class ProfileScreenState extends State<ProfileScreen> {
 
   BoxDecoration buildBackgroundImage() {
     return const BoxDecoration(
-      backgroundBlendMode: BlendMode.darken,
-      gradient: LinearGradient(
-        begin: Alignment.centerLeft,
-        end: Alignment.centerRight,
-        colors: [
-          ColorResources.primary,
-          Color.fromARGB(255, 12, 59, 153),
-        ]
-      ),
-      image: DecorationImage(
-      image: AssetImage('assets/images/background/bg.png'),
-      opacity: 0.7,
-      fit: BoxFit.cover
-    ));
+        backgroundBlendMode: BlendMode.darken,
+        gradient: LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: [
+              ColorResources.primary,
+              Color.fromARGB(255, 12, 59, 153),
+            ]),
+        image: DecorationImage(
+            image: AssetImage('assets/images/background/bg.png'),
+            opacity: 0.7,
+            fit: BoxFit.cover));
   }
 
   SliverPadding buildUserKTA() {
-
     return SliverPadding(
       padding: const EdgeInsets.only(top: 30),
       sliver: SliverToBoxAdapter(
         child: Column(
           children: [
-            
             RepaintBoundary(
               key: ktaImageKey,
               child: Column(
                 children: [
-
                   Stack(
                     children: [
                       Container(
@@ -296,48 +276,65 @@ class ProfileScreenState extends State<ProfileScreen> {
                           image: DecorationImage(
                             fit: BoxFit.fitWidth,
                             image: AssetImage(isPlatinum
-                            ? "assets/images/profile/kta-premium.png"
-                            : "assets/images/profile/kta-free.png"),
+                                ? "assets/images/profile/kta-prem.png"
+                                : "assets/images/profile/kta-member.png"),
                           ),
                         ),
-                        padding:  const EdgeInsets.only(left: 16, top: 27, bottom: 27, right: 16),
-                        child: Row(
+                        padding: const EdgeInsets.only(
+                            left: 16, top: 27, bottom: 27, right: 16),
+                        child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  if (context.read<ProfileProvider>().user?.organizationBahasa?.isNotEmpty ?? false)
-                                    FittedBox(
-                                      child: Text(
-                                        context
-                                        .read<ProfileProvider>()
-                                        .user
-                                        ?.organizationBahasa ?? "...",
-                                        style: poppinsRegular.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12,
-                                          color: ColorResources.black,
-                                        ),
-                                        maxLines: 1,
-                                      ),
-                                    ),
-                                  if (context.read<ProfileProvider>().user?.organizationEnglish?.isNotEmpty ?? false)
-                                    FittedBox(
-                                      child: Text(context.read<ProfileProvider>().user?.organizationEnglish?.trim() ?? "...",
-                                        style: poppinsRegular.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12,
-                                          color: ColorResources.black,
-                                        ),
-                                        maxLines: 1,
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
+                            // Expanded(
+                            //   child: Column(
+                            //     crossAxisAlignment: CrossAxisAlignment.center,
+                            //     children: [
+                            //       if (context
+                            //               .read<ProfileProvider>()
+                            //               .user
+                            //               ?.organizationBahasa
+                            //               ?.isNotEmpty ??
+                            //           false)
+                            //         FittedBox(
+                            //           child: Text(
+                            //             context
+                            //                     .read<ProfileProvider>()
+                            //                     .user
+                            //                     ?.organizationBahasa ??
+                            //                 "...",
+                            //             style: poppinsRegular.copyWith(
+                            //               fontWeight: FontWeight.bold,
+                            //               fontSize: 12,
+                            //               color: ColorResources.black,
+                            //             ),
+                            //             maxLines: 1,
+                            //           ),
+                            //         ),
+                            //       if (context
+                            //               .read<ProfileProvider>()
+                            //               .user
+                            //               ?.organizationEnglish
+                            //               ?.isNotEmpty ??
+                            //           false)
+                            //         FittedBox(
+                            //           child: Text(
+                            //             context
+                            //                     .read<ProfileProvider>()
+                            //                     .user
+                            //                     ?.organizationEnglish
+                            //                     ?.trim() ??
+                            //                 "...",
+                            //             style: poppinsRegular.copyWith(
+                            //               fontWeight: FontWeight.bold,
+                            //               fontSize: 12,
+                            //               color: ColorResources.black,
+                            //             ),
+                            //             maxLines: 1,
+                            //           ),
+                            //         ),
+                            //     ],
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),
@@ -346,96 +343,103 @@ class ProfileScreenState extends State<ProfileScreen> {
                         top: 125.0,
                         left: 52.0,
                         child: file != null
-                        ? InkWell(
-                            onTap: chooseFile,
-                            child: Container(
-                              height: 130.0,
-                              width: 100.0,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15.0),
-                                image: DecorationImage(
-                                  image: FileImage(file!),
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                            ),
-                          )
-                        : InkWell(
-                            onTap: chooseFile,
-                            child: CachedNetworkImage(
-                              fit: BoxFit.fill,
-                              imageUrl: context.read<ProfileProvider>().user?.avatar ??  AppConstants.avatarError,
-                              imageBuilder: (BuildContext context, ImageProvider<Object> imageProvider) {
-                                return Container(
+                            ? InkWell(
+                                onTap: chooseFile,
+                                child: Container(
                                   height: 130.0,
-                                  width: 120.0,
+                                  width: 100.0,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(15.0),
                                     image: DecorationImage(
-                                      image: imageProvider,
+                                      image: FileImage(file!),
                                       fit: BoxFit.fill,
                                     ),
                                   ),
-                                );
-                              },
-                              errorWidget: (BuildContext context,
-                                  String url, dynamic error) {
-                                return Container(
-                                  height: 130.0,
-                                  width: 120.0,
-                                  decoration: BoxDecoration(
-                                    color: ColorResources.greyDarkPrimary,
-                                    borderRadius:
-                                        BorderRadius.circular(15.0),
-                                    image: const DecorationImage(
-                                      image: AssetImage('assets/images/icons/ic-person.png'),
-                                      fit: BoxFit.fill,
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-
-                      isDownload 
-                      ? const SizedBox() 
-                      : Positioned(
-                        bottom: 75,
-                        left: 140,
-                        child: Container(
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50.0),
-                              color: file != null
-                                  ? ColorResources.error
-                                  : ColorResources.primary),
-                          child: InkWell(
-                            onTap: file != null
-                            ? () {
-                                setState(() {
-                                  file = null;
-                                });
-                              }
-                            : chooseFile,
-                            child: Padding(
-                              padding: const EdgeInsets.all(
-                                  Dimensions.paddingSizeExtraSmall),
-                              child: file != null
-                                  ? const Icon(
-                                      Icons.close,
-                                      color: ColorResources.white,
-                                      size: Dimensions.iconSizeDefault,
-                                    )
-                                  : const Icon(
-                                      Icons.camera_alt,
-                                      color: ColorResources.white,
-                                      size: Dimensions.iconSizeDefault,
-                                    ),
-                            ),
-                          ),
-                        ),
+                                ),
+                              )
+                            : InkWell(
+                                onTap: chooseFile,
+                                child: CachedNetworkImage(
+                                  fit: BoxFit.fill,
+                                  imageUrl: context
+                                          .read<ProfileProvider>()
+                                          .user
+                                          ?.avatar ??
+                                      AppConstants.avatarError,
+                                  imageBuilder: (BuildContext context,
+                                      ImageProvider<Object> imageProvider) {
+                                    return Container(
+                                      height: 130.0,
+                                      width: 120.0,
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(15.0),
+                                        image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.fill,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  errorWidget: (BuildContext context,
+                                      String url, dynamic error) {
+                                    return Container(
+                                      height: 130.0,
+                                      width: 120.0,
+                                      decoration: BoxDecoration(
+                                        color: ColorResources.greyDarkPrimary,
+                                        borderRadius:
+                                            BorderRadius.circular(15.0),
+                                        image: const DecorationImage(
+                                          image: AssetImage(
+                                              'assets/images/icons/ic-person.png'),
+                                          fit: BoxFit.fill,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
                       ),
+
+                      isDownload
+                          ? const SizedBox()
+                          : Positioned(
+                              bottom: 75,
+                              left: 140,
+                              child: Container(
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(50.0),
+                                    color: file != null
+                                        ? ColorResources.error
+                                        : ColorResources.primary),
+                                child: InkWell(
+                                  onTap: file != null
+                                      ? () {
+                                          setState(() {
+                                            file = null;
+                                          });
+                                        }
+                                      : chooseFile,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(
+                                        Dimensions.paddingSizeExtraSmall),
+                                    child: file != null
+                                        ? const Icon(
+                                            Icons.close,
+                                            color: ColorResources.white,
+                                            size: Dimensions.iconSizeDefault,
+                                          )
+                                        : const Icon(
+                                            Icons.camera_alt,
+                                            color: ColorResources.white,
+                                            size: Dimensions.iconSizeDefault,
+                                          ),
+                                  ),
+                                ),
+                              ),
+                            ),
                       Positioned(
                         top: 155,
                         left: 190,
@@ -572,39 +576,40 @@ class ProfileScreenState extends State<ProfileScreen> {
                         bottom: 30,
                         right: 40,
                         child: QrImageView(
-                          data:context.read<ProfileProvider>().user?.noMember ?? "-",
+                          data:
+                              context.read<ProfileProvider>().user?.noMember ??
+                                  "-",
                           size: 60.0,
                         ),
                       )
                     ],
                   ),
                   file != null
-                  ? Container(
-                      margin: const EdgeInsets.only(
-                        left: Dimensions.marginSizeExtraLarge,
-                        right: Dimensions.marginSizeExtraLarge,
-                        bottom: Dimensions.marginSizeSmall,
-                      ),
-                      child: CustomButton(
-                        customText: true,
-                        text: Text('Ubah Foto Profil',
-                          style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeLarge,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.5,
-                            color: ColorResources.white
+                      ? Container(
+                          margin: const EdgeInsets.only(
+                            left: Dimensions.marginSizeExtraLarge,
+                            right: Dimensions.marginSizeExtraLarge,
+                            bottom: Dimensions.marginSizeSmall,
                           ),
-                        ),
-                        btnColor: ColorResources.success,
-                        isBorderRadius: true,
-                        sizeBorderRadius: 10.0,
-                        isBoxShadow: true,
-                        onTap: () async {
-                          editPicture();
-                        },
-                      )
-                    )
-                  : const SizedBox(),
+                          child: CustomButton(
+                            customText: true,
+                            text: Text(
+                              'Ubah Foto Profil',
+                              style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.fontSizeLarge,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1.5,
+                                  color: ColorResources.white),
+                            ),
+                            btnColor: ColorResources.success,
+                            isBorderRadius: true,
+                            sizeBorderRadius: 10.0,
+                            isBoxShadow: true,
+                            onTap: () async {
+                              editPicture();
+                            },
+                          ))
+                      : const SizedBox(),
                 ],
               ),
             ),
@@ -614,39 +619,43 @@ class ProfileScreenState extends State<ProfileScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   InkWell(
-                    onTap: isDownload  
-                    ? () {} 
-                    : () async {
-                      setState(() {
-                        isDownload = true;
-                      });
+                    onTap: isDownload
+                        ? () {}
+                        : () async {
+                            setState(() {
+                              isDownload = true;
+                            });
 
-                      Future.delayed(const Duration(seconds: 1), () async {
+                            Future.delayed(const Duration(seconds: 1),
+                                () async {
+                              final RenderRepaintBoundary boundary =
+                                  ktaImageKey.currentContext!.findRenderObject()
+                                      as RenderRepaintBoundary;
+                              final ui.Image image =
+                                  await boundary.toImage(pixelRatio: 10);
+                              ByteData? byteData = await image.toByteData(
+                                  format: ui.ImageByteFormat.png);
+                              var pngBytes = byteData!.buffer.asUint8List();
 
-                        final RenderRepaintBoundary boundary = ktaImageKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
-                        final ui.Image image = await boundary.toImage(pixelRatio: 10);
-                        ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-                        var pngBytes = byteData!.buffer.asUint8List();
+                              String dir = (await getTemporaryDirectory()).path;
+                              File file =
+                                  File("$dir/kta-hp3ki-${DateTime.now()}.jpg");
+                              await file.writeAsBytes(
+                                pngBytes,
+                              );
 
-                        String dir = (await getTemporaryDirectory()).path;
-                        File file = File("$dir/kta-hp3ki-${DateTime.now()}.jpg");
-                        await file.writeAsBytes(
-                          pngBytes,
-                        );
+                              await GallerySaver.saveImage(file.path);
 
-                        await GallerySaver.saveImage(file.path);
+                              // final params = SaveFileDialogParams(sourceFilePath: file.path);
+                              // final finalPath = await FlutterFileDialog.saveFile(params: params);
+                            });
 
-                        // final params = SaveFileDialogParams(sourceFilePath: file.path);
-                        // final finalPath = await FlutterFileDialog.saveFile(params: params);
-                      });
-
-                      Future.delayed(const Duration(seconds: 2), () {
-                        setState(() {
-                          isDownload = false;
-                        });
-                      });
-
-                    },
+                            Future.delayed(const Duration(seconds: 2), () {
+                              setState(() {
+                                isDownload = false;
+                              });
+                            });
+                          },
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -656,11 +665,9 @@ class ProfileScreenState extends State<ProfileScreen> {
                           horizontal: 16, vertical: 8),
                       child: Row(
                         children: [
-
-                          isDownload 
-                          ? Text(getTranslated("LOADING", context)) 
-                          : Text(getTranslated("DOWNLOAD", context)),
-                          
+                          isDownload
+                              ? Text(getTranslated("LOADING", context))
+                              : Text(getTranslated("DOWNLOAD", context)),
                           const SizedBox(
                             width: 8,
                           ),
@@ -717,12 +724,10 @@ class ProfileScreenState extends State<ProfileScreen> {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          
           const SizedBox(
             height: 350,
             width: double.infinity,
           ),
-
           Padding(
             padding: EdgeInsets.only(top: hasRemainder ? 30.0 : 20.0),
             child: GestureDetector(
@@ -735,10 +740,10 @@ class ProfileScreenState extends State<ProfileScreen> {
                   horizontal: Dimensions.marginSizeExtraLarge,
                 ),
                 decoration: BoxDecoration(
-                  color:const Color.fromARGB(141, 68, 99, 158).withOpacity(0.7),
-                  borderRadius: BorderRadius.circular(30.0),
-                  boxShadow: kElevationToShadow[2]
-                ),
+                    color:
+                        const Color.fromARGB(141, 68, 99, 158).withOpacity(0.7),
+                    borderRadius: BorderRadius.circular(30.0),
+                    boxShadow: kElevationToShadow[2]),
                 child: Padding(
                   padding: const EdgeInsets.all(25.0),
                   child: Row(
@@ -748,43 +753,50 @@ class ProfileScreenState extends State<ProfileScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Text('Nama : ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.fullname!}',
+                            Text(
+                              'Nama : ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.fullname!}',
                               style: robotoRegular.copyWith(
                                 fontSize: Dimensions.fontSizeLarge,
                                 color: ColorResources.white,
                               ),
                             ),
-                            Text('Email : ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.email!}',
+                            Text(
+                              'Email : ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.email!}',
                               style: robotoRegular.copyWith(
                                 fontSize: Dimensions.fontSizeLarge,
                                 color: ColorResources.white,
                               ),
                             ),
-                            Text('No. Telepon : ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.phone!}',
+                            Text(
+                              'No. Telepon : ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.phone!}',
                               style: robotoRegular.copyWith(
                                 fontSize: Dimensions.fontSizeLarge,
                                 color: ColorResources.white,
                               ),
                             ),
-                            Text('No. KTP  : ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.noKtp!}',
+                            Text(
+                              'No. KTP  : ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.noKtp!}',
                               style: robotoRegular.copyWith(
                                 fontSize: Dimensions.fontSizeLarge,
                                 color: ColorResources.white,
                               ),
                             ),
-                            Text('Alamat (KTP) : ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.addressKtp!}',
+                            Text(
+                              'Alamat (KTP) : ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.addressKtp!}',
                               style: robotoRegular.copyWith(
                                 fontSize: Dimensions.fontSizeLarge,
                                 color: ColorResources.white,
                               ),
                             ),
-                            Text('Organisasi : ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.organization!}',
+                            Text(
+                              'Organisasi : ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.organization!}',
                               style: robotoRegular.copyWith(
                                 fontSize: Dimensions.fontSizeLarge,
                                 color: ColorResources.white,
                               ),
                             ),
-                            Text('Profesi : ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.job!}',
+                            Text(
+                              'Profesi : ${context.watch<ProfileProvider>().profileStatus == ProfileStatus.loading ? "..." : context.watch<ProfileProvider>().profileStatus == ProfileStatus.error ? "-" : context.read<ProfileProvider>().user!.job!}',
                               style: robotoRegular.copyWith(
                                 fontSize: Dimensions.fontSizeLarge,
                                 color: ColorResources.white,
@@ -796,15 +808,14 @@ class ProfileScreenState extends State<ProfileScreen> {
                       Align(
                         alignment: Alignment.topRight,
                         child: IconButton(
-                          onPressed: () {
-                            NS.push(context, const EditProfileScreen());
-                          },
-                          icon: Icon(
-                            Icons.edit,
-                            color: ColorResources.white.withOpacity(0.5),
-                            size: Dimensions.iconSizeLarge,
-                          )
-                        ),
+                            onPressed: () {
+                              NS.push(context, const EditProfileScreen());
+                            },
+                            icon: Icon(
+                              Icons.edit,
+                              color: ColorResources.white.withOpacity(0.5),
+                              size: Dimensions.iconSizeLarge,
+                            )),
                       ),
                     ],
                   ),
@@ -812,19 +823,19 @@ class ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
           ),
-
           isPlatinum
-          ? hasRemainder
-              ? context.read<ProfileProvider>().isActive == 0
-                ? const SizedBox()
-                : buildExtendPremiumButton(label: 'Perpanjang Membership')
-              : Container()
-          : context.read<ProfileProvider>().isActive == 0
-              ? const SizedBox()
-              : Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 100.0),
-                  child: buildActionPremiumButton(label: 'UPGRADE MEMBERSHIP'),
-                )
+              ? hasRemainder
+                  ? context.read<ProfileProvider>().isActive == 0
+                      ? const SizedBox()
+                      : buildExtendPremiumButton(label: 'Perpanjang Membership')
+                  : Container()
+              : context.read<ProfileProvider>().isActive == 0
+                  ? const SizedBox()
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 100.0),
+                      child:
+                          buildActionPremiumButton(label: 'UPGRADE MEMBERSHIP'),
+                    )
         ],
       ),
     );
@@ -921,38 +932,39 @@ class ProfileScreenState extends State<ProfileScreen> {
   }
 
   SliverToBoxAdapter buildCreateStore() {
-    return SliverToBoxAdapter(
-      child: Consumer<EcommerceProvider>(
-        builder: (BuildContext context, EcommerceProvider notifier, Widget? child) {
-          if(notifier.checkStoreOwnerStatus == CheckStoreOwnerStatus.loading) {
-            return const SizedBox();
-          }
-          if(notifier.checkStoreOwnerStatus == CheckStoreOwnerStatus.error) {
-            return const SizedBox();
-          }
-          return Padding(
-            padding: const EdgeInsets.only(top: 5.0),
-            child: buildOptionContainer(
-              color: Colors.white,
-              label: notifier.ownerModel.data == null 
-              ? 'Buat Toko' 
-              : notifier.ownerModel.data!.haveStore 
-              ? 'Toko Saya' 
-              : 'Buat Toko',
-              onTap: () {
-                if(notifier.ownerModel.data!.haveStore) {
-                  NS.push(context, StoreInfoScreen(
-                    storeId: notifier.ownerModel.data!.storeId,
-                  ));
-                } else {
-                  NS.push(context, const CreateStoreOrUpdateScreen());
-                }
-              },
-            ),
-          );
-        },
-      )
-    );
+    return SliverToBoxAdapter(child: Consumer<EcommerceProvider>(
+      builder:
+          (BuildContext context, EcommerceProvider notifier, Widget? child) {
+        if (notifier.checkStoreOwnerStatus == CheckStoreOwnerStatus.loading) {
+          return const SizedBox();
+        }
+        if (notifier.checkStoreOwnerStatus == CheckStoreOwnerStatus.error) {
+          return const SizedBox();
+        }
+        return Padding(
+          padding: const EdgeInsets.only(top: 5.0),
+          child: buildOptionContainer(
+            color: Colors.white,
+            label: notifier.ownerModel.data == null
+                ? 'Buat Toko'
+                : notifier.ownerModel.data!.haveStore
+                    ? 'Toko Saya'
+                    : 'Buat Toko',
+            onTap: () {
+              if (notifier.ownerModel.data!.haveStore) {
+                NS.push(
+                    context,
+                    StoreInfoScreen(
+                      storeId: notifier.ownerModel.data!.storeId,
+                    ));
+              } else {
+                NS.push(context, const CreateStoreOrUpdateScreen());
+              }
+            },
+          ),
+        );
+      },
+    ));
   }
 
   SliverToBoxAdapter buildChangePassword() {
@@ -1000,11 +1012,10 @@ class ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Container buildOptionContainer({
-    required String label,
-    required Color color,
-    required void Function() onTap
-  }) {
+  Container buildOptionContainer(
+      {required String label,
+      required Color color,
+      required void Function() onTap}) {
     return Container(
       margin: const EdgeInsets.only(
         left: Dimensions.marginSizeExtraLarge,
@@ -1012,10 +1023,9 @@ class ProfileScreenState extends State<ProfileScreen> {
         bottom: Dimensions.marginSizeExtraLarge,
       ),
       decoration: BoxDecoration(
-        color: const Color.fromARGB(141, 68, 99, 158).withOpacity(0.7),
-        borderRadius: BorderRadius.circular(30.0),
-        boxShadow: kElevationToShadow[2]
-      ),
+          color: const Color.fromARGB(141, 68, 99, 158).withOpacity(0.7),
+          borderRadius: BorderRadius.circular(30.0),
+          boxShadow: kElevationToShadow[2]),
       child: Material(
         color: ColorResources.transparent,
         child: InkWell(
@@ -1053,11 +1063,10 @@ class ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Container buildOptionReferral({
-    required String label,
-    required Color color,
-    required void Function() onTap
-  }) {
+  Container buildOptionReferral(
+      {required String label,
+      required Color color,
+      required void Function() onTap}) {
     return Container(
       margin: const EdgeInsets.only(
         left: Dimensions.marginSizeExtraLarge,
@@ -1155,7 +1164,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                         if (profileProvider.profileStatus ==
                             ProfileStatus.error) {
                           return Image.asset(
-                           "assets/images/icons/ic-person.png",
+                            "assets/images/icons/ic-person.png",
                           );
                         }
                         return CachedNetworkImage(
@@ -1167,8 +1176,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                               ImageProvider<Object> imageProvider) {
                             return Container(
                               decoration: BoxDecoration(
-                                image: DecorationImage(image: imageProvider)
-                              ),
+                                  image: DecorationImage(image: imageProvider)),
                             );
                           },
                           errorWidget: (BuildContext context, String url,
