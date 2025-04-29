@@ -2,8 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:hp3ki/providers/ecommerce/ecommerce.dart';
-import 'package:hp3ki/views/screens/ecommerce/product/widget/product_item.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
@@ -13,10 +11,14 @@ import 'package:flutter_glow/flutter_glow.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:hp3ki/localization/language_constraints.dart';
 
+import 'package:hp3ki/providers/ecommerce/ecommerce.dart';
+
 import 'package:hp3ki/views/basewidgets/button/bounce.dart';
+import 'package:hp3ki/views/screens/ecommerce/product/widget/product_item.dart';
 import 'package:hp3ki/views/basewidgets/snackbar/snackbar.dart';
 
 import 'package:hp3ki/utils/shared_preferences.dart';
@@ -227,11 +229,18 @@ class DashboardScreenState extends State<DashboardScreen>
         "screen": const MembernearScreen(),
       },
       {
+        "name": "OYO",
+        "icon": "icons/ic-oyo.png",
+        "screen": const SizedBox()
+      },
+      {
         "name": "Mart",
         "icon": "bottomsheet/icon-mart.png",
         "screen": const ProductsScreen(),
       },
     ];
+
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Stack(
       clipBehavior: Clip.none,
@@ -246,100 +255,44 @@ class DashboardScreenState extends State<DashboardScreen>
             fit: BoxFit.fill,
           ),
         ),
-        Align(
-          alignment: const Alignment(0, 0.3),
+        Positioned(
+          top: screenHeight * 0.3,
+          left: 0.0,
+          right: 0.0,
           child: AlignedGridView.count(
             physics: const BouncingScrollPhysics(
-                parent: AlwaysScrollableScrollPhysics()),
+              parent: AlwaysScrollableScrollPhysics()
+            ),
             crossAxisCount: 3,
             mainAxisSpacing: 16.0,
             crossAxisSpacing: 2.0,
             shrinkWrap: true,
             itemCount: menu.length,
             padding: const EdgeInsets.symmetric(horizontal: 75.0),
-            itemBuilder: (context, index) {
-              // return menu[index]["name"] == "Mart" ||
-              //         menu[index]["name"] == "SOS" ||
-              //         menu[index]["name"] == "Calender"
-              //     ? context.watch<ProfileProvider>().isActive != 1
-              //         ? const SizedBox()
-              //         : Column(
-              //             children: [
-              //               Bouncing(
-              //                 onPress: () {
-              //                   final String membershipStatus =
-              //                       SharedPrefs.getUserMemberType().trim();
-              //                   final selectedMenu = menu[index];
-              //                   final String selectedMenuName =
-              //                       selectedMenu["name"];
-              //                   final selectedMenuScreen =
-              //                       selectedMenu["screen"];
-              //                   if (membershipStatus != "PLATINUM" ||
-              //                       membershipStatus == "-") {
-              //                     if (selectedMenuName.contains("Member") ||
-              //                         selectedMenuName.contains('Check') ||
-              //                         selectedMenuName.contains('SOS')) {
-              //                       context
-              //                           .read<ProfileProvider>()
-              //                           .showNonPlatinumLimit(context);
-              //                     } else {
-              //                       NS.push(context, selectedMenuScreen);
-              //                     }
-              //                   } else {
-              //                     NS.push(context, selectedMenuScreen);
-              //                   }
-              //                 },
-              //                 child: Container(
-              //                   height: 80.0,
-              //                   width: 80.0,
-              //                   padding: const EdgeInsets.all(10.0),
-              //                   decoration: BoxDecoration(
-              //                     borderRadius: BorderRadius.circular(25.0),
-              //                     boxShadow: kElevationToShadow[2],
-              //                     color: const Color(0xffE7E4F5),
-              //                   ),
-              //                   child: Image.asset(
-              //                       'assets/images/${menu[index]["icon"]}'),
-              //                 ),
-              //               ),
-              //               const SizedBox(
-              //                 height: 10,
-              //               ),
-              //               Text(
-              //                 menu[index]["name"],
-              //                 style: poppinsRegular.copyWith(
-              //                   color: const Color(0xff101660),
-              //                   fontWeight: FontWeight.bold,
-              //                 ),
-              //               )
-              //             ],
-              //           )
-              //     :
+            itemBuilder: (BuildContext context, int index) {
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Bouncing(
-                    onPress: () {
-                      final String membershipStatus =
-                          SharedPrefs.getUserMemberType().trim();
+                    onPress: () async {
+                      final String membershipStatus = SharedPrefs.getUserMemberType().trim();
 
                       final selectedMenu = menu[index];
-                      final String selectedMenuName = selectedMenu["name"];
+                      final selectedMenuName = selectedMenu["name"];
                       final selectedMenuScreen = selectedMenu["screen"];
 
-                      if (membershipStatus != "PLATINUM" ||
-                          membershipStatus == "-") {
-                        if (selectedMenuName.contains("Member") ||
-                            selectedMenuName.contains('Check') ||
-                            selectedMenuName.contains('SOS')) {
-                          context
-                              .read<ProfileProvider>()
-                              .showNonPlatinumLimit(context);
+                      if (membershipStatus != "PLATINUM" || membershipStatus == "-") {
+                        if (selectedMenuName.contains("Member") || selectedMenuName.contains('Check') || selectedMenuName.contains('SOS')) {
+                          context.read<ProfileProvider>().showNonPlatinumLimit(context);
                         } else {
                           NS.push(context, selectedMenuScreen);
                         }
                       } else {
-                        NS.push(context, selectedMenuScreen);
+                        if(selectedMenuName == "OYO") {
+                          await launchUrl(Uri.parse("https://www.oyorooms.com/id/"));
+                        } else {
+                          NS.push(context, selectedMenuScreen);
+                        }
                       }
                     },
                     child: Container(
@@ -645,10 +598,6 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return buildUI();
-  }
-
-  Widget buildUI() {
     return Scaffold(
       backgroundColor: ColorResources.transparent,
       body: Container(

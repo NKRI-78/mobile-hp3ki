@@ -191,12 +191,13 @@ class AddProductScreenState extends State<AddProductScreen> {
       return;
     }
 
-    String cleanPrice = priceC.text.replaceAll("Rp ", "").replaceAll(".", "");
-
+    String cleanPrice = priceC.text.replaceAll("Rp", "").replaceAll(".", "");
+    
+    String id = Uuid().generateV4();
     int price = int.parse(cleanPrice);
 
     await ecommerceProvider.createProduct(
-      id: Uuid().generateV4(), 
+      id: id, 
       title: nameC.text, 
       files: files, 
       description: descC.text,
@@ -819,13 +820,12 @@ class AddProductScreenState extends State<AddProductScreen> {
           child: TextFormField(
             controller: priceC,
             cursorColor: ColorResources.black,
-            keyboardType: TextInputType.number,
             style: robotoRegular,
+            keyboardType: TextInputType.number,
             inputFormatters: [
-              CurrencyTextInputFormatter.currency(
+              CurrencyTextInputFormatter.simpleCurrency(
                 locale: 'id',
                 decimalDigits: 0,
-                symbol: 'Rp ',
               ),
             ],
             decoration: InputDecoration(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:detectable_text_field/detectable_text_field.dart';
 import 'package:hp3ki/localization/language_constraints.dart';
+import 'package:hp3ki/utils/date_util.dart';
 import 'package:hp3ki/utils/dimensions.dart';
 
 import 'package:provider/provider.dart';
@@ -161,20 +162,12 @@ class FeedDetailProviderV2 with ChangeNotifier {
       _userMentions = [];
       
       for (UserMention mention in mentions!) {
-
-        // if(!ids.contains(mention.id)) {
-
-          _userMentions.add({
-            "id": mention.id.toString(),
-            "photo": mention.photo.toString(),
-            "display": mention.username.toString(),
-            "fullname": mention.display.toString(),
-          });
-          
-          // ids.add(mention.id);
-
-        // }
-
+        _userMentions.add({
+          "id": mention.id.toString(),
+          "photo": mention.photo.toString(),
+          "display": mention.username.toString(),
+          "fullname": mention.display.toString(),
+        });
       }
 
       showListUserMention = true;
@@ -221,57 +214,55 @@ class FeedDetailProviderV2 with ChangeNotifier {
 
       if(type == "REPLY") {
 
-        debugPrint("=== REPLY ===");
+        String replyIdStore = Uuid().generateV4();
 
-        // String replyIdStore = Uuid().generateV4();
+        int i =  _feedDetailData.forum!.comment!.comments.indexWhere((el) => el.id == commentId);
 
-        // int i = comments.indexWhere((el) => el.id == commentId);
-
-        // _comments[i].reply.replies.add(ReplyElement(
-        //   id: replyIdStore, 
-        //   reply: controller.text, 
-        //   createdAt: DateHelper.formatDateTime("seconds ago", context), 
-        //   user: UserReply(
-        //     id: ar.getUserId().toString(), 
-        //     avatar: context.read<ProfileProvider>().userProfile.profilePic.toString(), 
-        //     username: context.read<ProfileProvider>().userProfile.fullname.toString(),
-        //     mention: ar.getUserfullname().toString().split('@')[0]
-        //   ), 
-        //   like: ReplyLike(
-        //     total: 0, 
-        //     likes: []
-        //   ),
-        //   key: GlobalKey()
-        // ));
+        _feedDetailData.forum!.comment!.comments[i].reply.replies.add(ReplyElement(
+          id: replyIdStore, 
+          reply: controller.text, 
+          createdAt: DateHelper.formatDateTime("seconds ago", context), 
+          user: UserReply(
+            id: ar.getUserId().toString(), 
+            avatar: context.read<ProfileProvider>().user!.avatar.toString(), 
+            username: context.read<ProfileProvider>().user!.fullname.toString(),
+            mention: ar.getUserFullname().toString().split('@')[0]
+          ), 
+          like: ReplyLike(
+            total: 0, 
+            likes: []
+          ),
+          key: GlobalKey()
+        ));
        
-        // await fr.postReply(
-        //   context: context, 
-        //   replyIdStore: replyIdStore,
-        //   replyId: replyId, commentId: commentId, 
-        //   reply: controller.text, userId: ar.getUserId()!,
-        // ).then((_) {
-        //   clearInput();
-        // });
+        await fr.postReply(
+          context: context, 
+          replyIdStore: replyIdStore,
+          replyId: replyId, commentId: commentId, 
+          reply: controller.text, userId: ar.getUserId(),
+        ).then((_) {
+          clearInput();
+        });
 
-        // highlightedReply = comments[i].reply.replies.last.id;
+        highlightedReply = _feedDetailData.forum!.comment!.comments[i].reply.replies.last.id;
 
-        // Future.delayed(const Duration(milliseconds: 1000), () {
-        //   GlobalKey targetContext = comments[i].reply.replies.last.key;
-        //   if(targetContext.currentContext != null) {
-        //     Scrollable.ensureVisible(targetContext.currentContext!,
-        //       duration: const Duration(milliseconds: 100),
-        //       curve: Curves.easeOut,
-        //     );
-        //   }
-        // });
+        Future.delayed(const Duration(milliseconds: 1000), () {
+          GlobalKey targetContext = _feedDetailData.forum!.comment!.comments[i].reply.replies.last.key;
+          if(targetContext.currentContext != null) {
+            Scrollable.ensureVisible(targetContext.currentContext!,
+              duration: const Duration(milliseconds: 100),
+              curve: Curves.easeOut,
+            );
+          }
+        });
 
-        // Future.delayed(const Duration(milliseconds: 1000), () {
-        //   highlightedReply = "";
+        Future.delayed(const Duration(milliseconds: 1000), () {
+          highlightedReply = "";
 
-        //   notifyListeners();
-        // });
+          notifyListeners();
+        });
 
-        // onUpdateType("COMMENT");
+        onUpdateType("COMMENT");
 
       } else {
         
