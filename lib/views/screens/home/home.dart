@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -166,22 +167,20 @@ class DashboardScreenState extends State<DashboardScreen>
         endDrawerEnableOpenDragGesture: false,
         extendBody: true,
         body: !SharedPrefs.isLoggedIn()
-            ? widgetOptions.elementAt(selectedIndex)
-            : SlidingUpPanel(
-                controller: panelC,
-                maxHeight: MediaQuery.of(context).size.height,
-                color: Colors.transparent,
-                panelSnapping: true,
-                panel: buildMenuPanel(),
-                body: widgetOptions.isEmpty
-                    ? const SizedBox()
-                    : widgetOptions.elementAt(selectedIndex),
-              ),
+        ? widgetOptions.elementAt(selectedIndex)
+        : SlidingUpPanel(
+          controller: panelC,
+          maxHeight: MediaQuery.of(context).size.height,
+          color: Colors.transparent,
+          panelSnapping: true,
+          panel: buildMenuPanel(),
+          body: widgetOptions.isEmpty
+          ? const SizedBox()
+          : widgetOptions.elementAt(selectedIndex),
+        ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton:
-            !SharedPrefs.isLoggedIn() ? const SizedBox() : buildMenuBar(),
-        bottomNavigationBar:
-            !SharedPrefs.isLoggedIn() ? const SizedBox() : buildNavbar(),
+        floatingActionButton: !SharedPrefs.isLoggedIn() ? const SizedBox() : buildMenuBar(),
+        bottomNavigationBar: !SharedPrefs.isLoggedIn() ? const SizedBox() : buildNavbar(),
       ),
     );
   }
@@ -249,14 +248,13 @@ class DashboardScreenState extends State<DashboardScreen>
           bottom: 0.0,
           left: 0.0,
           right: 0.0,
-          child: Image.asset(
-            'assets/images/bottomsheet/bottomsheet.png',
+          child: Image.asset('assets/images/bottomsheet/bottomsheet.png',
             width: double.infinity,
             fit: BoxFit.fill,
           ),
         ),
         Positioned(
-          top: screenHeight * 0.3,
+          top: screenHeight * 0.4,
           left: 0.0,
           right: 0.0,
           child: AlignedGridView.count(
@@ -372,7 +370,6 @@ class DashboardScreenState extends State<DashboardScreen>
       height: 90,
       notchMargin: 12,
       child: SizedBox(
-          // height: 120,
           width: double.infinity,
           child: Consumer<ProfileProvider>(
             builder: (__, profile, _) {
@@ -886,8 +883,7 @@ class HomeScreenState extends State<HomeScreen> {
   Widget buildBannerCarousel() {
     return SliverToBoxAdapter(
       child: Consumer<BannerProvider>(
-        builder: (BuildContext context, BannerProvider bannerProvider,
-            Widget? child) {
+        builder: (BuildContext context, BannerProvider bannerProvider, Widget? child) {
           if (bannerProvider.bannerStatus == BannerStatus.loading) {
             return Shimmer.fromColors(
               baseColor: Colors.grey[300]!,
@@ -902,8 +898,7 @@ class HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             );
-          } else if (bannerProvider.bannerStatus == BannerStatus.empty ||
-              bannerProvider.bannerStatus == BannerStatus.error) {
+          } else if (bannerProvider.bannerStatus == BannerStatus.empty || bannerProvider.bannerStatus == BannerStatus.error) {
             return Container(
               height: 180.0,
               margin: const EdgeInsets.only(
@@ -912,17 +907,18 @@ class HomeScreenState extends State<HomeScreen> {
                 right: 25.0,
               ),
               child: Center(
-                  child: Column(
+                child: Column(
                 children: [
                   Container(
                     height: 150,
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15.0),
-                        color: ColorResources.backgroundDisabled,
-                        image: const DecorationImage(
-                          image: AssetImage('assets/images/icons/ic-empty.png'),
-                          fit: BoxFit.contain,
-                        )),
+                      borderRadius: BorderRadius.circular(15.0),
+                      color: ColorResources.backgroundDisabled,
+                      image: const DecorationImage(
+                        image: AssetImage('assets/images/icons/ic-empty.png'),
+                        fit: BoxFit.contain,
+                      )
+                    ),
                   ),
                   const SizedBox(
                     height: 10,
@@ -943,80 +939,94 @@ class HomeScreenState extends State<HomeScreen> {
               margin: const EdgeInsets.only(
                 top: Dimensions.marginSizeExtraLarge,
               ),
-              decoration:
-                  BoxDecoration(borderRadius: BorderRadius.circular(15.0)),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(15.0)),
               child: CarouselSlider.builder(
                 options: CarouselOptions(
-                    autoPlay: true,
-                    enlargeCenterPage: true,
-                    viewportFraction: 0.9,
-                    enlargeStrategy: CenterPageEnlargeStrategy.scale,
-                    initialPage: currentIndex,
-                    onPageChanged: (int i, CarouselPageChangedReason reason) {
-                      currentIndex = i;
-                      setState(() {});
-                    }),
+                  autoPlay: true,
+                  enlargeCenterPage: true,
+                  viewportFraction: 0.9,
+                  enlargeStrategy: CenterPageEnlargeStrategy.scale,
+                  initialPage: currentIndex,
+                  onPageChanged: (int i, CarouselPageChangedReason reason) {
+                    currentIndex = i;
+                    setState(() {});
+                  }
+                ),
                 itemCount: bannerProvider.banners!.length,
                 itemBuilder: (BuildContext context, int i, int z) {
-                  return CachedNetworkImage(
-                    imageUrl: bannerProvider.banners![i].path!,
-                    imageBuilder:
-                        (BuildContext context, ImageProvider imageProvider) {
-                      return Card(
-                        margin: EdgeInsets.zero,
-                        color: ColorResources.transparent,
-                        elevation: 10.0,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0)),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15.0),
-                            image: DecorationImage(
-                                fit: BoxFit.fill, image: imageProvider),
-                          ),
-                        ),
-                      );
+                  return GestureDetector(
+                    onTap: () async {
+                      try {
+                        await launchUrl(Uri.parse(bannerProvider.banners![i].link.toString()));
+                      } catch(e, stacktrace) {  
+                        ShowSnackbar.snackbar("URL tidak valid / tidak ditemukan", e.toString(), ColorResources.error);
+                        log(e.toString());
+                        log(stacktrace.toString());
+                      }
                     },
-                    placeholder: (BuildContext context, String text) {
-                      return Shimmer.fromColors(
-                        baseColor: Colors.grey[300]!,
-                        highlightColor: Colors.grey[200]!,
-                        child: Card(
+                    child: CachedNetworkImage(
+                      imageUrl: bannerProvider.banners![i].path!,
+                      imageBuilder: (BuildContext context, ImageProvider imageProvider) {
+                        return Card(
                           margin: EdgeInsets.zero,
-                          color: ColorResources.white,
-                          elevation: 0.0,
+                          color: ColorResources.transparent,
+                          elevation: 10.0,
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0)),
+                            borderRadius: BorderRadius.circular(15.0)
+                          ),
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15.0),
-                              image: const DecorationImage(
-                                  fit: BoxFit.scaleDown,
-                                  image: AssetImage(
-                                      'assets/images/logo/app-icon.png')),
+                              image: DecorationImage(
+                                fit: BoxFit.fill, image: imageProvider
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
-                    errorWidget: (context, url, error) {
-                      return Card(
-                        margin: EdgeInsets.zero,
-                        color: ColorResources.transparent,
-                        elevation: 0.0,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0)),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15.0),
-                            image: const DecorationImage(
-                                fit: BoxFit.scaleDown,
-                                image: AssetImage(
-                                    'assets/images/logo/app-icon.png')),
+                        );
+                      },
+                      placeholder: (BuildContext context, String text) {
+                        return Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[200]!,
+                          child: Card(
+                            margin: EdgeInsets.zero,
+                            color: ColorResources.white,
+                            elevation: 0.0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0)
+                            ),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15.0),
+                                image: const DecorationImage(
+                                  fit: BoxFit.scaleDown,
+                                  image: AssetImage('assets/images/logo/app-icon.png')
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                      errorWidget: (BuildContext context, String url, Object error) {
+                        return Card(
+                          margin: EdgeInsets.zero,
+                          color: ColorResources.transparent,
+                          elevation: 0.0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0)
+                          ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15.0),
+                              image: const DecorationImage(
+                              fit: BoxFit.scaleDown,
+                                image: AssetImage('assets/images/logo/app-icon.png')
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   );
                 },
               ),

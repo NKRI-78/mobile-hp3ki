@@ -57,7 +57,9 @@ class UpgradeMemberV2IndexScreenState extends State<UpgradeMemberV2IndexScreen> 
   Widget getCart() {
     return Consumer<UpgradeMemberProvider>(builder: (BuildContext context, UpgradeMemberProvider upgradeMemberProvider, Widget? child) {
       if (upgradeMemberProvider.paymentChannelStatus == PaymentChannelStatus.loading) {
-        return Center(child: loadingList());
+        return Center(
+          child: loadingList()
+        );
       } else if (upgradeMemberProvider.paymentChannelStatus == PaymentChannelStatus.empty) {
         return const Center(
           child: Text('Metode Pembayaran Kosong.'),
