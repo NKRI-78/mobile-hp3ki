@@ -824,18 +824,17 @@ class ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
           isPlatinum
-              ? hasRemainder
-                  ? context.read<ProfileProvider>().isActive == 0
-                      ? const SizedBox()
-                      : buildExtendPremiumButton(label: 'Perpanjang Membership')
-                  : Container()
-              : context.read<ProfileProvider>().isActive == 0
-                  ? const SizedBox()
-                  : Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 100.0),
-                      child:
-                          buildActionPremiumButton(label: 'UPGRADE MEMBERSHIP'),
-                    )
+            ? hasRemainder
+              ? context.read<ProfileProvider>().isActive == 0
+                ? const SizedBox()
+                : buildExtendPremiumButton(label: 'Perpanjang Membership')
+              : const SizedBox()
+            : context.read<ProfileProvider>().isActive == 0
+              ? const SizedBox()
+              : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 100.0),
+                  child: buildActionPremiumButton(label: 'UPGRADE MEMBERSHIP'),
+                )
         ],
       ),
     );

@@ -48,13 +48,19 @@ class UpgradeMemberScreenState extends State<UpgradeMemberScreen>{
       body: Consumer<UpgradeMemberProvider>(
         builder: (BuildContext context, UpgradeMemberProvider upgradeMemberProvider, Widget? child) {
           if(upgradeMemberProvider.paymentChannelStatus == PaymentChannelStatus.loading) {
-            return Center(child: loadingList());
+            return Center(
+              child: loadingList()
+            );
           }
           else if(upgradeMemberProvider.paymentChannelStatus == PaymentChannelStatus.empty) {
-            return const Center(child: Text('Metode Pembayaran Kosong'),);
+            return const Center(
+              child: Text('Metode Pembayaran Kosong')
+            );
           }
           else if(upgradeMemberProvider.paymentChannelStatus == PaymentChannelStatus.error) {
-            return const Center(child: Text('Ada yang bermasalah'));
+            return const Center(
+              child: Text('Ada yang bermasalah')
+            );
           }
           else {
             return RefreshIndicator(
@@ -94,12 +100,12 @@ class UpgradeMemberScreenState extends State<UpgradeMemberScreen>{
                                     borderRadius: BorderRadius.circular(10.0),
                                     child: CachedNetworkImage(
                                       imageUrl: data.logo.toString(),
-                                      placeholder: (context, url) {
+                                      placeholder: (BuildContext context, String url) {
                                         return const CircleAvatar(
                                           backgroundColor: ColorResources.backgroundDisabled,
                                         );
                                       },
-                                      errorWidget: (context, url, error) {
+                                      errorWidget: (BuildContext context, String url, Object error) {
                                         return const CircleAvatar(
                                           backgroundColor: ColorResources.transparent,
                                           backgroundImage: AssetImage("assets/images/icons/ic-empty.png")
@@ -133,7 +139,6 @@ class UpgradeMemberScreenState extends State<UpgradeMemberScreen>{
     return const CustomAppBar(title: 'Pilih Metode Pembayaran',).buildAppBar(context);
   }
 }
-
 
 Widget loadingList() {
   return Shimmer.fromColors(
