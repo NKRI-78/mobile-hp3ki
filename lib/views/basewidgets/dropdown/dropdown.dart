@@ -69,9 +69,9 @@ class CustomDropdown {
     required TextEditingController dropdownC
   }) {
     return DropdownSearch<String>(
-      items: (filter, loadProps) => options,
-      decoratorProps: DropDownDecoratorProps(
-        decoration: buildDropdownSearchDecoration(label: label)
+      items: options,
+      dropdownDecoratorProps: DropDownDecoratorProps(
+        dropdownSearchDecoration: buildDropdownSearchDecoration(label: label)
       ),
       popupProps: PopupProps.dialog(
         showSearchBox: true,
@@ -93,9 +93,9 @@ class CustomDropdown {
     required TextEditingController dropdownC
   }) {
     return DropdownSearch<JobData>(
-      items: (filter, loadProps) => options,
-      decoratorProps: DropDownDecoratorProps(
-        decoration: buildDropdownSearchDecoration(label: label)
+      items: options,
+      dropdownDecoratorProps: DropDownDecoratorProps(
+        dropdownSearchDecoration: buildDropdownSearchDecoration(label: label)
       ),
       compareFn: (item1, item2) {
         return item1.id == item2.id;
@@ -121,9 +121,9 @@ class CustomDropdown {
     required TextEditingController dropdownC
   }) {
     return DropdownSearch<BusinessData>(
-      items: (filter, loadProps) => options,
-      decoratorProps: DropDownDecoratorProps(
-        decoration: buildDropdownSearchDecoration(label: label)
+     items: options,
+      dropdownDecoratorProps: DropDownDecoratorProps(
+        dropdownSearchDecoration: buildDropdownSearchDecoration(label: label)
       ),
       compareFn: (item1, item2) {
         return item1.id == item2.id;
@@ -149,9 +149,9 @@ class CustomDropdown {
     required TextEditingController dropdownC
   }) {
     return DropdownSearch<ClassificationData>(
-      items: (filter, loadProps) => options,
-      decoratorProps: DropDownDecoratorProps(
-        decoration: buildDropdownSearchDecoration(label: label)
+      items: options,
+      dropdownDecoratorProps: DropDownDecoratorProps(
+        dropdownSearchDecoration: buildDropdownSearchDecoration(label: label)
       ),
       compareFn: (item1, item2) {
         return item1.id == item2.id;
@@ -177,9 +177,9 @@ class CustomDropdown {
     required TextEditingController dropdownC
   }) {
     return DropdownSearch<OrganizationData>(
-      items: (filter, loadProps) => options,
-      decoratorProps: DropDownDecoratorProps(
-        decoration: buildDropdownSearchDecoration(label: label)
+      items: options,
+      dropdownDecoratorProps: DropDownDecoratorProps(
+        dropdownSearchDecoration: buildDropdownSearchDecoration(label: label)
       ),
       compareFn: (item1, item2) {
         return item1.id == item2.id;
@@ -207,9 +207,9 @@ class CustomDropdown {
     required TextEditingController dropdownC
   }) {
     return DropdownSearch<ProvinceData>(
-      items: (filter, loadProps) => options,
-      decoratorProps: DropDownDecoratorProps(
-        decoration: buildDropdownSearchDecoration(label: label)
+      items: options,
+      dropdownDecoratorProps: DropDownDecoratorProps(
+        dropdownSearchDecoration: buildDropdownSearchDecoration(label: label)
       ),
       compareFn: (item1, item2) {
         return item1.id == item2.id;
@@ -235,9 +235,9 @@ class CustomDropdown {
     required TextEditingController dropdownC
   }) {
     return DropdownSearch<DistrictData>(
-      items: (filter, loadProps) => options,
-      decoratorProps: DropDownDecoratorProps(
-        decoration: buildDropdownSearchDecoration(label: label)
+      items: options,
+      dropdownDecoratorProps: DropDownDecoratorProps(
+        dropdownSearchDecoration: buildDropdownSearchDecoration(label: label)
       ),
       compareFn: (item1, item2) {
         return item1.id == item2.id;
@@ -264,9 +264,9 @@ class CustomDropdown {
     required TextEditingController dropdownC
   }) {
     return DropdownSearch<CityData>(
-      items: (filter, loadProps) => options,
-      decoratorProps: DropDownDecoratorProps(
-        decoration: buildDropdownSearchDecoration(label: label)
+      items: options,
+      dropdownDecoratorProps: DropDownDecoratorProps(
+        dropdownSearchDecoration: buildDropdownSearchDecoration(label: label)
       ),
       compareFn: (item1, item2) {
         return item1.id == item2.id;
@@ -292,9 +292,9 @@ class CustomDropdown {
     required TextEditingController dropdownC
   }) {
     return DropdownSearch<SubdistrictData>(
-      items: (filter, loadProps) => options,
-      decoratorProps: DropDownDecoratorProps(
-        decoration: buildDropdownSearchDecoration(label: label)
+      items: options,
+      dropdownDecoratorProps: DropDownDecoratorProps(
+        dropdownSearchDecoration: buildDropdownSearchDecoration(label: label)
       ),
       compareFn: (item1, item2) {
         return item1.id == item2.id;

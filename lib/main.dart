@@ -2,9 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-
 import 'package:device_preview/device_preview.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 

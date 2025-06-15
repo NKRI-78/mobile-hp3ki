@@ -8,7 +8,7 @@ import 'package:hp3ki/views/screens/tracking_order/persentation/provider/trackin
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import 'package:timelines/timelines.dart';
+import 'package:timelines_plus/timelines_plus.dart';
 
 class TrackingOrderPage extends StatelessWidget {
   const TrackingOrderPage({super.key, required this.cnote});

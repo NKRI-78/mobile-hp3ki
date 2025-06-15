@@ -16,10 +16,7 @@ dependencies:
     sdk: flutter
 
 dependency_overrides:
-  wakelock_windows: any
-  win32: any
   intl: 
-  geolocator_android: 4.6.1
 
 dev_dependencies:
 
@@ -41,7 +38,8 @@ dev_dependencies:
   chips_choice: ^3.0.1
 
   # D
-  dropdown_search: ^6.0.1 
+  device_preview: ^1.2.0
+  dropdown_search: ^5.0.6
   date_count_down: ^3.0.0
   #device_preview:
   # git:
@@ -54,7 +52,6 @@ dev_dependencies:
       ref: 2.1.1
   delayed_display: ^2.0.0
   dio: ^4.0.6
-  device_preview: ^1.2.0
   dotted_border: ^2.0.0+3
 
   # E
@@ -85,8 +82,6 @@ dev_dependencies:
   flutter_svg: ^1.0.3
   fluttertagger: ^2.1.1
   flutter_switch: ^0.3.2
-  flutter_test:
-    sdk: flutter
   fluttertoast: ^8.1.1
   flutter_google_maps_webservices: ^1.1.1
 
@@ -146,7 +141,7 @@ dev_dependencies:
   # T
   table_calendar: ^3.0.8
   timeago: ^3.3.0
-  timelines: ^0.1.0
+  timelines_plus: ^1.0.7
   tuple: ^2.0.1
 
   # U
